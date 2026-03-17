@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 )
 

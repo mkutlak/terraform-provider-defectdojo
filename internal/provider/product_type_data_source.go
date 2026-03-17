@@ -3,10 +3,9 @@ package provider
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"strconv"
 
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/doximity/terraform-provider-defectdojo/internal/ref"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -121,33 +120,38 @@ func (d productTypeDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	if apiResp.StatusCode() == 200 {
 		var pt dd.ProductType
-		if *apiResp.JSON200.Count == 0 {
+		if apiResp.JSON200.Count == 0 {
 			resp.Diagnostics.AddError(
 				"Could not Retrieve Data Resource",
 				"No Product Types matched the given parameters.")
 			return
-		} else if *apiResp.JSON200.Count > 1 {
-			body, _ := ioutil.ReadAll(apiResp.HTTPResponse.Body)
+		} else if apiResp.JSON200.Count > 1 {
 			resp.Diagnostics.AddError(
 				"Could not Retrieve Data Resource",
-				fmt.Sprintf("%d Product Types matched the given parameters.\n\nResponse:\n\n%s", *apiResp.JSON200.Count, body))
+				fmt.Sprintf("%d Product Types matched the given parameters.\n\nResponse:\n\n%s", apiResp.JSON200.Count, apiResp.Body))
 			return
 		} else {
-			pt = (*apiResp.JSON200.Results)[0]
+			pt = apiResp.JSON200.Results[0]
 
-			data.Id = types.StringValue(fmt.Sprintf("%d", pt.Id))
+			if pt.Id != nil {
+				data.Id = types.StringValue(fmt.Sprintf("%d", *pt.Id))
+			}
 			data.Name = types.StringValue(pt.Name)
-			data.Description = types.StringValue(*pt.Description)
-			data.CriticalProduct = types.BoolValue(*pt.CriticalProduct)
-			data.KeyProduct = types.BoolValue(*pt.KeyProduct)
+			if pt.Description != nil {
+				data.Description = types.StringValue(*pt.Description)
+			}
+			if pt.CriticalProduct != nil {
+				data.CriticalProduct = types.BoolValue(*pt.CriticalProduct)
+			}
+			if pt.KeyProduct != nil {
+				data.KeyProduct = types.BoolValue(*pt.KeyProduct)
+			}
 		}
 	} else {
-		body, _ := ioutil.ReadAll(apiResp.HTTPResponse.Body)
-
 		resp.Diagnostics.AddError(
 			"API Error Retrieving Data Source",
 			fmt.Sprintf("Unexpected response code from API: %d", apiResp.StatusCode())+
-				fmt.Sprintf("\n\nbody:\n\n%+v", body),
+				fmt.Sprintf("\n\nbody:\n\n%+v", string(apiResp.Body)),
 		)
 		return
 	}

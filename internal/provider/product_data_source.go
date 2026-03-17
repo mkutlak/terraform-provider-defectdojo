@@ -100,6 +100,18 @@ func (t productDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Computed:            true,
 				ElementType:         types.StringType,
 			},
+			"disable_sla_breach_notifications": schema.BoolAttribute{
+				MarkdownDescription: "Disable SLA breach notifications if configured in the global settings.",
+				Computed:            true,
+			},
+			"enable_product_tag_inheritance": schema.BoolAttribute{
+				MarkdownDescription: "Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings.",
+				Computed:            true,
+			},
+			"sla_configuration": schema.Int64Attribute{
+				MarkdownDescription: "The ID of the SLA configuration to apply to this product.",
+				Computed:            true,
+			},
 		},
 	}
 }

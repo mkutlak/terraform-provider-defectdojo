@@ -1,0 +1,17 @@
+package: ddclient
+output: client.gen.go
+generate:
+  client: true
+  models: true
+  embedded-spec: false
+  echo-server: false
+  chi-server: false
+  gin-server: false
+  fiber-server: false
+  gorilla-server: false
+  iris-server: false
+  strict-server: false
+output-options:
+  skip-prune: true
+compatibility:
+  old-merge-schemas: true

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/deepmap/oapi-codegen/pkg/securityprovider"
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
+	"github.com/oapi-codegen/oapi-codegen/v2/pkg/securityprovider"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
@@ -54,8 +54,8 @@ func newClient(ctx context.Context, url string, token string, user string, pass 
 		}
 
 		tokenResponse, err := tokenclient.ApiTokenAuthCreateWithResponse(ctx, dd.ApiTokenAuthCreateJSONRequestBody{
-			Username: user,
-			Password: pass,
+			Username: &user,
+			Password: &pass,
 		})
 
 		if err != nil {
@@ -63,7 +63,9 @@ func newClient(ctx context.Context, url string, token string, user string, pass 
 		}
 
 		if tokenResponse.StatusCode() == 200 {
-			token = tokenResponse.JSON200.Token
+			if tokenResponse.JSON200.Token != nil {
+				token = *tokenResponse.JSON200.Token
+			}
 		} else {
 			return nil, fmt.Errorf("Error retrieving the api token via the API. Unexpected response code: %d", tokenResponse.StatusCode())
 		}
@@ -165,18 +167,99 @@ func (p *DefectDojoProvider) Metadata(ctx context.Context, req provider.Metadata
 
 func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
+		// Existing resources
 		NewProductResource,
 		NewProductTypeResource,
 		NewJiraProductConfigurationResource,
+		// Stage 5: Infrastructure resources
+		NewDevelopmentEnvironmentResource,
+		NewRegulationResource,
+		NewToolTypeResource,
+		NewToolConfigurationResource,
+		NewSlaConfigurationResource,
+		NewNoteTypeResource,
+		NewNetworkLocationResource,
+		NewLanguageTypeResource,
+		// Stage 6: Security & Access Control resources
+		NewUserResource,
+		NewUserContactInfoResource,
+		NewDojoGroupResource,
+		NewDojoGroupMemberResource,
+		NewGlobalRoleResource,
+		NewProductMemberResource,
+		NewProductGroupResource,
+		NewProductTypeMemberResource,
+		NewProductTypeGroupResource,
+		NewCredentialResource,
+		// Stage 7: Vulnerability Management resources
+		NewEngagementResource,
+		NewEngagementPresetResource,
+		NewDDTestResource,
+		NewFindingResource,
+		NewFindingTemplateResource,
+		NewEndpointResource,
+		NewEndpointStatusResource,
+		NewStubFindingResource,
+		NewTechnologyResource,
+		NewLanguageResource,
+		// Stage 8: Integration resources
+		NewJiraInstanceResource,
+		NewToolProductSettingsResource,
+		NewProductAPIScanConfigurationResource,
+		NewCredentialMappingResource,
+		NewRiskAcceptanceResource,
+		NewNotificationWebhookResource,
+		NewAnnouncementResource,
+		NewAssetGroupResource,
 	}
 }
 
 func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		// Existing data sources
 		NewProductDataSource,
 		NewProductTypeDataSource,
+		// Stage 5: Infrastructure data sources
+		NewDevelopmentEnvironmentDataSource,
+		NewRegulationDataSource,
+		NewToolTypeDataSource,
+		NewToolConfigurationDataSource,
+		NewSlaConfigurationDataSource,
+		NewNoteTypeDataSource,
+		NewNetworkLocationDataSource,
+		NewLanguageTypeDataSource,
+		// Stage 6: Security & Access Control data sources
+		NewUserDataSource,
+		NewUserContactInfoDataSource,
+		NewDojoGroupDataSource,
+		NewDojoGroupMemberDataSource,
+		NewGlobalRoleDataSource,
+		NewProductMemberDataSource,
+		NewProductGroupDataSource,
+		NewProductTypeMemberDataSource,
+		NewProductTypeGroupDataSource,
+		NewCredentialDataSource,
+		// Stage 7: Vulnerability Management data sources
+		NewEngagementDataSource,
+		NewEngagementPresetDataSource,
+		NewDDTestDataSource,
+		NewFindingDataSource,
+		NewFindingTemplateDataSource,
+		NewEndpointDataSource,
+		NewEndpointStatusDataSource,
+		NewStubFindingDataSource,
+		NewTechnologyDataSource,
+		NewLanguageDataSource,
+		// Stage 8: Integration data sources
+		NewJiraInstanceDataSource,
+		NewToolProductSettingsDataSource,
+		NewProductAPIScanConfigurationDataSource,
+		NewCredentialMappingDataSource,
+		NewRiskAcceptanceDataSource,
+		NewNotificationWebhookDataSource,
+		NewAnnouncementDataSource,
+		NewAssetGroupDataSource,
 	}
-
 }
 
 func (p *DefectDojoProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -57,7 +57,7 @@ func TestProductResourcePopulate(t *testing.T) {
 
 	ddProduct := productDefectdojoResource{
 		Product: dd.Product{
-			Id:                         expectedId,
+			Id:                         &expectedId,
 			Description:                expectedDescription,
 			Name:                       expectedName,
 			Revenue:                    &expectedRevenue,
@@ -331,7 +331,7 @@ func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
 	var terraformResource terraformResourceData = &productResource
 	populateDefectdojoResource(context.Background(), &diag.Diagnostics{}, terraformResource, &ddResource)
 
-	assert.Equal(t, ddProduct.Id, 0)
+	assert.Equal(t, ddProduct.Id, nilInt)
 	assert.Equal(t, ddProduct.Name, "")
 	assert.Equal(t, ddProduct.Description, "")
 

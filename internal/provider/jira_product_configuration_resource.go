@@ -3,7 +3,7 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -78,6 +78,42 @@ func (t *jiraProductConfigurationResource) Schema(ctx context.Context, req resou
 				Optional:            true,
 			},
 
+			"add_vulnerability_id_to_jira_label": schema.BoolAttribute{
+				MarkdownDescription: "Whether to add the vulnerability ID to the Jira label.",
+				Optional:            true,
+				Computed:            true,
+			},
+
+			"component": schema.StringAttribute{
+				MarkdownDescription: "The Jira component to use for issues.",
+				Optional:            true,
+				Computed:            true,
+			},
+
+			"default_assignee": schema.StringAttribute{
+				MarkdownDescription: "JIRA default assignee (name). If left blank then it defaults to whatever is configured in JIRA.",
+				Optional:            true,
+				Computed:            true,
+			},
+
+			"enabled": schema.BoolAttribute{
+				MarkdownDescription: "When disabled, Findings will no longer be pushed to Jira, even if they have already been pushed previously.",
+				Optional:            true,
+				Computed:            true,
+			},
+
+			"epic_issue_type_name": schema.StringAttribute{
+				MarkdownDescription: "The name of the structure that represents an Epic.",
+				Optional:            true,
+				Computed:            true,
+			},
+
+			"jira_labels": schema.StringAttribute{
+				MarkdownDescription: "JIRA issue labels space separated.",
+				Optional:            true,
+				Computed:            true,
+			},
+
 			"id": schema.StringAttribute{ // the id (for import purposes) MUST be a string
 				Computed:            true,
 				MarkdownDescription: "Identifier",
@@ -100,6 +136,12 @@ type jiraProductConfigurationResourceData struct {
 	JiraInstance                         types.String `tfsdk:"jira_instance_id" ddField:"JiraInstance"`
 	Product                              types.String `tfsdk:"product_id" ddField:"Product"`
 	Engagement                           types.String `tfsdk:"engagement_id" ddField:"Engagement"`
+	AddVulnerabilityIdToJiraLabel        types.Bool   `tfsdk:"add_vulnerability_id_to_jira_label" ddField:"AddVulnerabilityIdToJiraLabel"`
+	Component                            types.String `tfsdk:"component" ddField:"Component"`
+	DefaultAssignee                      types.String `tfsdk:"default_assignee" ddField:"DefaultAssignee"`
+	Enabled                              types.Bool   `tfsdk:"enabled" ddField:"Enabled"`
+	EpicIssueTypeName                    types.String `tfsdk:"epic_issue_type_name" ddField:"EpicIssueTypeName"`
+	JiraLabels                           types.String `tfsdk:"jira_labels" ddField:"JiraLabels"`
 	Id                                   types.String `tfsdk:"id" ddField:"Id"`
 }
 
@@ -107,8 +149,30 @@ type jiraProductConfigurationDefectdojoResource struct {
 	dd.JIRAProject
 }
 
+// jiraProjectToRequest converts a JIRAProject (response model) to a JIRAProjectRequest (request model).
+func jiraProjectToRequest(jp dd.JIRAProject) dd.JIRAProjectRequest {
+	return dd.JIRAProjectRequest{
+		AddVulnerabilityIdToJiraLabel:        jp.AddVulnerabilityIdToJiraLabel,
+		Component:                            jp.Component,
+		DefaultAssignee:                      jp.DefaultAssignee,
+		EnableEngagementEpicMapping:          jp.EnableEngagementEpicMapping,
+		Enabled:                              jp.Enabled,
+		Engagement:                           jp.Engagement,
+		EpicIssueTypeName:                    jp.EpicIssueTypeName,
+		IssueTemplateDir:                     jp.IssueTemplateDir,
+		JiraInstance:                         jp.JiraInstance,
+		JiraLabels:                           jp.JiraLabels,
+		Product:                              jp.Product,
+		ProductJiraSlaNotification:           jp.ProductJiraSlaNotification,
+		ProjectKey:                           jp.ProjectKey,
+		PushAllIssues:                        jp.PushAllIssues,
+		PushNotes:                            jp.PushNotes,
+		RiskAcceptanceExpirationNotification: jp.RiskAcceptanceExpirationNotification,
+	}
+}
+
 func (ddr *jiraProductConfigurationDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
-	reqBody := dd.JiraProductConfigurationsCreateJSONRequestBody(ddr.JIRAProject)
+	reqBody := jiraProjectToRequest(ddr.JIRAProject)
 	apiResp, err := client.JiraProductConfigurationsCreateWithResponse(ctx, reqBody)
 	if apiResp.JSON201 != nil {
 		ddr.JIRAProject = *apiResp.JSON201
@@ -118,7 +182,7 @@ func (ddr *jiraProductConfigurationDefectdojoResource) createApiCall(ctx context
 }
 
 func (ddr *jiraProductConfigurationDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
-	apiResp, err := client.JiraProductConfigurationsRetrieveWithResponse(ctx, idNumber)
+	apiResp, err := client.JiraProductConfigurationsRetrieveWithResponse(ctx, idNumber, &dd.JiraProductConfigurationsRetrieveParams{})
 	if apiResp.JSON200 != nil {
 		ddr.JIRAProject = *apiResp.JSON200
 	}
@@ -127,7 +191,7 @@ func (ddr *jiraProductConfigurationDefectdojoResource) readApiCall(ctx context.C
 }
 
 func (ddr *jiraProductConfigurationDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
-	reqBody := dd.JiraProductConfigurationsUpdateJSONRequestBody(ddr.JIRAProject)
+	reqBody := jiraProjectToRequest(ddr.JIRAProject)
 	apiResp, err := client.JiraProductConfigurationsUpdateWithResponse(ctx, idNumber, reqBody)
 	if apiResp.JSON200 != nil {
 		ddr.JIRAProject = *apiResp.JSON200

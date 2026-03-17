@@ -3,11 +3,13 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -26,25 +28,19 @@ func (t productTypeResource) Schema(ctx context.Context, req resource.SchemaRequ
 				MarkdownDescription: "The description of the Product Type",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.String{
-					stringDefault(""),
-				},
+				Default:             stringdefault.StaticString(""),
 			},
 			"critical_product": schema.BoolAttribute{
 				MarkdownDescription: "Is this a critical Product Type",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.Bool{
-					boolDefault(false),
-				},
+				Default:             booldefault.StaticBool(false),
 			},
 			"key_product": schema.BoolAttribute{
 				MarkdownDescription: "Is this a key Product Type",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.Bool{
-					boolDefault(false),
-				},
+				Default:             booldefault.StaticBool(false),
 			},
 			"id": schema.StringAttribute{ // the id (for import purposes) MUST be a string
 				Computed:            true,
@@ -69,8 +65,18 @@ type productTypeDefectdojoResource struct {
 	dd.ProductType
 }
 
+// productTypeToRequest converts a ProductType (response model) to a ProductTypeRequest (request model).
+func productTypeToRequest(pt dd.ProductType) dd.ProductTypeRequest {
+	return dd.ProductTypeRequest{
+		Name:            pt.Name,
+		Description:     pt.Description,
+		CriticalProduct: pt.CriticalProduct,
+		KeyProduct:      pt.KeyProduct,
+	}
+}
+
 func (ddr *productTypeDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
-	reqBody := dd.ProductTypesCreateJSONRequestBody(ddr.ProductType)
+	reqBody := productTypeToRequest(ddr.ProductType)
 	apiResp, err := client.ProductTypesCreateWithResponse(ctx, reqBody)
 	if apiResp.JSON201 != nil {
 		ddr.ProductType = *apiResp.JSON201
@@ -89,7 +95,7 @@ func (ddr *productTypeDefectdojoResource) readApiCall(ctx context.Context, clien
 }
 
 func (ddr *productTypeDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
-	reqBody := dd.ProductTypesUpdateJSONRequestBody(ddr.ProductType)
+	reqBody := productTypeToRequest(ddr.ProductType)
 	apiResp, err := client.ProductTypesUpdateWithResponse(ctx, idNumber, reqBody)
 	if apiResp.JSON200 != nil {
 		ddr.ProductType = *apiResp.JSON200

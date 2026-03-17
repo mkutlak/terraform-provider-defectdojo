@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"time"
 
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 type terraformResourceData interface {
@@ -42,6 +44,7 @@ type dataGetter interface {
 var typeOfTypesString = reflect.TypeOf(types.String{})
 var typeOfTypesBool = reflect.TypeOf(types.Bool{})
 var typeOfTypesInt64 = reflect.TypeOf(types.Int64{})
+var typeOfTypesFloat64 = reflect.TypeOf(types.Float64{})
 var typeOfStringSlice = reflect.TypeOf([]string{})
 var typeOfInt64Slice = reflect.TypeOf([]int64{})
 var typeOfTypesSet = reflect.TypeOf(types.Set{})
@@ -314,10 +317,10 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 
 			case typeOfTypesString:
 				if ddFieldDescriptor.Type.Kind() == reflect.String {
-					// if the destination field is a string, we can grab the `Value` field and assign it directly
+					// if the destination field is a string (or named string type), we can grab the `Value` field and assign it directly
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
 					if !srcIsNull {
-						ddFieldValue.Set(fieldValue.MethodByName("ValueString").Call(nil)[0])
+						ddFieldValue.Set(fieldValue.MethodByName("ValueString").Call(nil)[0].Convert(ddFieldDescriptor.Type))
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
 					// the destination field is a *string (or compatible/alias) so we have to set it to a pointer
@@ -361,6 +364,51 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						destVal.Elem().Set(reflect.ValueOf(num))
 						ddFieldValue.Set(destVal)
 					}
+				} else if ddFieldDescriptor.Type == reflect.TypeOf(time.Time{}) {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
+						t, err := time.Parse(time.RFC3339, str)
+						if err != nil {
+							diags.AddError("Error converting value", fmt.Sprintf("Could not parse datetime value %s: %s", str, err))
+							continue
+						}
+						ddFieldValue.Set(reflect.ValueOf(t))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(time.Time{}) {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
+						t, err := time.Parse(time.RFC3339, str)
+						if err != nil {
+							diags.AddError("Error converting value", fmt.Sprintf("Could not parse datetime value %s: %s", str, err))
+							continue
+						}
+						ddFieldValue.Set(reflect.ValueOf(&t))
+					}
+				} else if ddFieldDescriptor.Type == reflect.TypeOf(openapi_types.Date{}) {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
+						t, err := time.Parse("2006-01-02", str)
+						if err != nil {
+							diags.AddError("Error converting value", fmt.Sprintf("Could not parse date value %s: %s", str, err))
+							continue
+						}
+						ddFieldValue.Set(reflect.ValueOf(openapi_types.Date{Time: t}))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(openapi_types.Date{}) {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
+						t, err := time.Parse("2006-01-02", str)
+						if err != nil {
+							diags.AddError("Error converting value", fmt.Sprintf("Could not parse date value %s: %s", str, err))
+							continue
+						}
+						d := openapi_types.Date{Time: t}
+						ddFieldValue.Set(reflect.ValueOf(&d))
+					}
 				} else {
 					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
 				}
@@ -400,12 +448,83 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					} else {
 						ddFieldValue.Set(reflect.New(ddFieldDescriptor.Type).Elem())
 					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Int32 {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						v := int32(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Int())
+						ddFieldValue.Set(reflect.ValueOf(v))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int32 {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						v := int32(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Int())
+						ddFieldValue.Set(reflect.ValueOf(&v))
+					}
+				} else {
+					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
+				}
+
+			case typeOfTypesFloat64:
+				if ddFieldDescriptor.Type.Kind() == reflect.Float64 {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						ddFieldValue.Set(fieldValue.MethodByName("ValueFloat64").Call(nil)[0])
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float64 {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						v := fieldValue.MethodByName("ValueFloat64").Call(nil)[0].Float()
+						ddFieldValue.Set(reflect.ValueOf(&v))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Float32 {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						v := float32(fieldValue.MethodByName("ValueFloat64").Call(nil)[0].Float())
+						ddFieldValue.Set(reflect.ValueOf(v))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float32 {
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						v := float32(fieldValue.MethodByName("ValueFloat64").Call(nil)[0].Float())
+						ddFieldValue.Set(reflect.ValueOf(&v))
+					}
 				} else {
 					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
 				}
 
 			case typeOfTypesSet:
-				if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
+				if ddFieldDescriptor.Type.Kind() == reflect.Slice {
+					// the destination field is a direct slice (e.g. []int, []string)
+					if ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
+						if fieldValue.MethodByName("IsNull").Call(nil)[0].Bool() {
+							ddFieldValue.Set(reflect.ValueOf(make([]int, 0)))
+						} else {
+							int64s := []int64{}
+							diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &int64s, false)
+							if len(diags_) > 0 {
+								diags.Append(diags_...)
+								continue
+							}
+							ints := make([]int, 0, len(int64s))
+							for _, val := range int64s {
+								ints = append(ints, (int)(val))
+							}
+							ddFieldValue.Set(reflect.ValueOf(ints))
+						}
+					} else if ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
+						if fieldValue.MethodByName("IsNull").Call(nil)[0].Bool() {
+							ddFieldValue.Set(reflect.ValueOf(make([]string, 0)))
+						} else {
+							strs := []string{}
+							diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &strs, false)
+							if len(diags_) > 0 {
+								diags.Append(diags_...)
+								continue
+							}
+							ddFieldValue.Set(reflect.ValueOf(strs))
+						}
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
 					// the source field is a pointer to a slice
 					if ddFieldDescriptor.Type.Elem().Elem().Kind() == reflect.Int {
 						// it's a slice of int
@@ -517,6 +636,34 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
+				} else if ddFieldDescriptor.Type == reflect.TypeOf(time.Time{}) {
+					t := ddFieldValue.Interface().(time.Time)
+					if !t.IsZero() {
+						fieldValue.Set(reflect.ValueOf(types.StringValue(t.Format(time.RFC3339))))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.StringNull()))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(time.Time{}) {
+					if !ddFieldValue.IsNil() {
+						t := ddFieldValue.Elem().Interface().(time.Time)
+						fieldValue.Set(reflect.ValueOf(types.StringValue(t.Format(time.RFC3339))))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.StringNull()))
+					}
+				} else if ddFieldDescriptor.Type == reflect.TypeOf(openapi_types.Date{}) {
+					d := ddFieldValue.Interface().(openapi_types.Date)
+					if !d.Time.IsZero() {
+						fieldValue.Set(reflect.ValueOf(types.StringValue(d.Time.Format("2006-01-02"))))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.StringNull()))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(openapi_types.Date{}) {
+					if !ddFieldValue.IsNil() {
+						d := ddFieldValue.Elem().Interface().(openapi_types.Date)
+						fieldValue.Set(reflect.ValueOf(types.StringValue(d.Time.Format("2006-01-02"))))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.StringNull()))
+					}
 				} else {
 					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
 				}
@@ -549,12 +696,68 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.Int64Null()))
 					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Int32 {
+					fieldValue.Set(reflect.ValueOf(types.Int64Value(int64(ddFieldValue.Int()))))
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int32 {
+					if !ddFieldValue.IsNil() {
+						fieldValue.Set(reflect.ValueOf(types.Int64Value(int64(ddFieldValue.Elem().Int()))))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.Int64Null()))
+					}
+				} else {
+					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
+				}
+
+			case typeOfTypesFloat64:
+				if ddFieldDescriptor.Type.Kind() == reflect.Float64 {
+					fieldValue.Set(reflect.ValueOf(types.Float64Value(ddFieldValue.Float())))
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float64 {
+					if !ddFieldValue.IsNil() {
+						fieldValue.Set(reflect.ValueOf(types.Float64Value(ddFieldValue.Elem().Float())))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.Float64Null()))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Float32 {
+					fieldValue.Set(reflect.ValueOf(types.Float64Value(float64(ddFieldValue.Interface().(float32)))))
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float32 {
+					if !ddFieldValue.IsNil() {
+						fieldValue.Set(reflect.ValueOf(types.Float64Value(float64(ddFieldValue.Elem().Interface().(float32)))))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.Float64Null()))
+					}
 				} else {
 					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
 				}
 
 			case typeOfTypesSet:
-				if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
+				if ddFieldDescriptor.Type.Kind() == reflect.Slice {
+					// the source field is a direct slice (e.g. []int, []string)
+					if ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
+						if ddFieldValue.Len() > 0 || !fieldValue.MethodByName("IsNull").Call(nil)[0].Bool() {
+							elems := []attr.Value{}
+							for i := 0; i < ddFieldValue.Len(); i++ {
+								elems = append(elems, types.Int64Value(ddFieldValue.Index(i).Int()))
+							}
+							destVal, dgs := types.SetValue(types.Int64Type, elems)
+							diags.Append(dgs.Errors()...)
+							fieldValue.Set(reflect.ValueOf(destVal))
+						} else {
+							fieldValue.Set(reflect.ValueOf(types.SetNull(types.Int64Type)))
+						}
+					} else if ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
+						if ddFieldValue.Len() > 0 || !fieldValue.MethodByName("IsNull").Call(nil)[0].Bool() {
+							elems := []attr.Value{}
+							for i := 0; i < ddFieldValue.Len(); i++ {
+								elems = append(elems, types.StringValue(ddFieldValue.Index(i).String()))
+							}
+							destVal, dgs := types.SetValue(types.StringType, elems)
+							diags.Append(dgs.Errors()...)
+							fieldValue.Set(reflect.ValueOf(destVal))
+						} else {
+							fieldValue.Set(reflect.ValueOf(types.SetNull(types.StringType)))
+						}
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
 					// the source field is a pointer to a slice
 					if ddFieldDescriptor.Type.Elem().Elem().Kind() == reflect.Int {
 						// it's a slice of int

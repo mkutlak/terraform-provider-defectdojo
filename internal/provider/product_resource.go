@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"regexp"
 
-	dd "github.com/doximity/defect-dojo-client-go"
+	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -86,33 +87,25 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				MarkdownDescription: "Specify if the application is used by people outside the organization.",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.Bool{
-					boolDefault(false),
-				},
+				Default:             booldefault.StaticBool(false),
 			},
 			"internet_accessible": schema.BoolAttribute{
 				MarkdownDescription: "Specify if the application is accessible from the public internet.",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.Bool{
-					boolDefault(false),
-				},
+				Default:             booldefault.StaticBool(false),
 			},
 			"enable_skip_risk_acceptance": schema.BoolAttribute{
 				MarkdownDescription: "Allows simple risk acceptance by checking/unchecking a checkbox.",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.Bool{
-					boolDefault(false),
-				},
+				Default:             booldefault.StaticBool(false),
 			},
 			"enable_full_risk_acceptance": schema.BoolAttribute{
 				MarkdownDescription: "Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers: []planmodifier.Bool{
-					boolDefault(false),
-				},
+				Default:             booldefault.StaticBool(false),
 			},
 			"product_manager_id": schema.Int64Attribute{
 				MarkdownDescription: "The ID of the user who is the PM for this product.",
@@ -145,6 +138,22 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 					),
 				},
 			},
+			"disable_sla_breach_notifications": schema.BoolAttribute{
+				MarkdownDescription: "Disable SLA breach notifications if configured in the global settings.",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"enable_product_tag_inheritance": schema.BoolAttribute{
+				MarkdownDescription: "Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings.",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
+			"sla_configuration": schema.Int64Attribute{
+				MarkdownDescription: "The ID of the SLA configuration to apply to this product.",
+				Optional:            true,
+			},
 			"id": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "Identifier",
@@ -157,35 +166,81 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 }
 
 type productResourceData struct {
-	Name                       types.String `tfsdk:"name" ddField:"Name"`
-	Description                types.String `tfsdk:"description" ddField:"Description"`
-	ProductTypeId              types.Int64  `tfsdk:"product_type_id" ddField:"ProdType"`
-	Id                         types.String `tfsdk:"id" ddField:"Id"`
-	BusinessCriticality        types.String `tfsdk:"business_criticality" ddField:"BusinessCriticality"`
-	EnableFullRiskAcceptance   types.Bool   `tfsdk:"enable_full_risk_acceptance" ddField:"EnableFullRiskAcceptance"`
-	EnableSimpleRiskAcceptance types.Bool   `tfsdk:"enable_skip_risk_acceptance" ddField:"EnableSimpleRiskAcceptance"`
-	ExternalAudience           types.Bool   `tfsdk:"external_audience" ddField:"ExternalAudience"`
-	InternetAccessible         types.Bool   `tfsdk:"internet_accessible" ddField:"InternetAccessible"`
-	Lifecycle                  types.String `tfsdk:"life_cycle" ddField:"Lifecycle"`
-	Origin                     types.String `tfsdk:"origin" ddField:"Origin"`
-	Platform                   types.String `tfsdk:"platform" ddField:"Platform"`
-	ProdNumericGrade           types.Int64  `tfsdk:"prod_numeric_grade" ddField:"ProdNumericGrade"`
-	ProductManagerId           types.Int64  `tfsdk:"product_manager_id" ddField:"ProductManager"`
-	RegulationIds              types.Set    `tfsdk:"regulation_ids" ddField:"Regulations"`
-	Revenue                    types.String `tfsdk:"revenue" ddField:"Revenue"`
-	Tags                       types.Set    `tfsdk:"tags" ddField:"Tags"`
-	TeamManagerId              types.Int64  `tfsdk:"team_manager_id" ddField:"TeamManager"`
-	TechnicalContactId         types.Int64  `tfsdk:"technical_contact_id" ddField:"TechnicalContact"`
-	UserRecords                types.Int64  `tfsdk:"user_records" ddField:"UserRecords"`
+	Name                          types.String `tfsdk:"name" ddField:"Name"`
+	Description                   types.String `tfsdk:"description" ddField:"Description"`
+	ProductTypeId                 types.Int64  `tfsdk:"product_type_id" ddField:"ProdType"`
+	Id                            types.String `tfsdk:"id" ddField:"Id"`
+	BusinessCriticality           types.String `tfsdk:"business_criticality" ddField:"BusinessCriticality"`
+	EnableFullRiskAcceptance      types.Bool   `tfsdk:"enable_full_risk_acceptance" ddField:"EnableFullRiskAcceptance"`
+	EnableSimpleRiskAcceptance    types.Bool   `tfsdk:"enable_skip_risk_acceptance" ddField:"EnableSimpleRiskAcceptance"`
+	ExternalAudience              types.Bool   `tfsdk:"external_audience" ddField:"ExternalAudience"`
+	InternetAccessible            types.Bool   `tfsdk:"internet_accessible" ddField:"InternetAccessible"`
+	Lifecycle                     types.String `tfsdk:"life_cycle" ddField:"Lifecycle"`
+	Origin                        types.String `tfsdk:"origin" ddField:"Origin"`
+	Platform                      types.String `tfsdk:"platform" ddField:"Platform"`
+	ProdNumericGrade              types.Int64  `tfsdk:"prod_numeric_grade" ddField:"ProdNumericGrade"`
+	ProductManagerId              types.Int64  `tfsdk:"product_manager_id" ddField:"ProductManager"`
+	RegulationIds                 types.Set    `tfsdk:"regulation_ids" ddField:"Regulations"`
+	Revenue                       types.String `tfsdk:"revenue" ddField:"Revenue"`
+	Tags                          types.Set    `tfsdk:"tags" ddField:"Tags"`
+	TeamManagerId                 types.Int64  `tfsdk:"team_manager_id" ddField:"TeamManager"`
+	TechnicalContactId            types.Int64  `tfsdk:"technical_contact_id" ddField:"TechnicalContact"`
+	UserRecords                   types.Int64  `tfsdk:"user_records" ddField:"UserRecords"`
+	DisableSlaBreachNotifications types.Bool   `tfsdk:"disable_sla_breach_notifications" ddField:"DisableSlaBreachNotifications"`
+	EnableProductTagInheritance   types.Bool   `tfsdk:"enable_product_tag_inheritance" ddField:"EnableProductTagInheritance"`
+	SlaConfiguration              types.Int64  `tfsdk:"sla_configuration" ddField:"SlaConfiguration"`
 }
 
 type productDefectdojoResource struct {
 	dd.Product
 }
 
+// productToRequest converts a Product (response model) to a ProductRequest (request model).
+// The new API (v2.54.3) uses separate Request/Response schemas.
+func productToRequest(p dd.Product) dd.ProductRequest {
+	req := dd.ProductRequest{
+		Name:                          p.Name,
+		Description:                   p.Description,
+		DisableSlaBreachNotifications: p.DisableSlaBreachNotifications,
+		EnableFullRiskAcceptance:      p.EnableFullRiskAcceptance,
+		EnableProductTagInheritance:   p.EnableProductTagInheritance,
+		EnableSimpleRiskAcceptance:    p.EnableSimpleRiskAcceptance,
+		ExternalAudience:              p.ExternalAudience,
+		InternetAccessible:            p.InternetAccessible,
+		ProdNumericGrade:              p.ProdNumericGrade,
+		ProdType:                      p.ProdType,
+		ProductManager:                p.ProductManager,
+		Regulations:                   p.Regulations,
+		Revenue:                       p.Revenue,
+		SlaConfiguration:              p.SlaConfiguration,
+		Tags:                          p.Tags,
+		TeamManager:                   p.TeamManager,
+		TechnicalContact:              p.TechnicalContact,
+		UserRecords:                   p.UserRecords,
+	}
+	// Convert enum types: Product uses ProductXxx, ProductRequest uses ProductRequestXxx
+	if p.BusinessCriticality != nil {
+		v := dd.ProductRequestBusinessCriticality(*p.BusinessCriticality)
+		req.BusinessCriticality = &v
+	}
+	if p.Lifecycle != nil {
+		v := dd.ProductRequestLifecycle(*p.Lifecycle)
+		req.Lifecycle = &v
+	}
+	if p.Origin != nil {
+		v := dd.ProductRequestOrigin(*p.Origin)
+		req.Origin = &v
+	}
+	if p.Platform != nil {
+		v := dd.ProductRequestPlatform(*p.Platform)
+		req.Platform = &v
+	}
+	return req
+}
+
 func (ddr *productDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	tflog.Info(ctx, "createApiCall")
-	reqBody := dd.ProductsCreateJSONRequestBody(ddr.Product)
+	reqBody := productToRequest(ddr.Product)
 	apiResp, err := client.ProductsCreateWithResponse(ctx, reqBody)
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
 	if apiResp.JSON201 != nil {
@@ -208,7 +263,7 @@ func (ddr *productDefectdojoResource) readApiCall(ctx context.Context, client *d
 
 func (ddr *productDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	tflog.Info(ctx, "updateApiCall")
-	reqBody := dd.ProductsUpdateJSONRequestBody(ddr.Product)
+	reqBody := productToRequest(ddr.Product)
 	apiResp, err := client.ProductsUpdateWithResponse(ctx, idNumber, reqBody)
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
 	if apiResp.JSON200 != nil {
