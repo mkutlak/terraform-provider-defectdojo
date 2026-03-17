@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"regexp"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -18,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -105,7 +105,6 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				MarkdownDescription: "Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.",
 				Optional:            true,
 				Computed:            true,
-				Default:             booldefault.StaticBool(false),
 			},
 			"product_manager_id": schema.Int64Attribute{
 				MarkdownDescription: "The ID of the user who is the PM for this product.",
@@ -153,6 +152,7 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			"sla_configuration": schema.Int64Attribute{
 				MarkdownDescription: "The ID of the SLA configuration to apply to this product.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
@@ -212,11 +212,15 @@ func productToRequest(p dd.Product) dd.ProductRequest {
 		ProductManager:                p.ProductManager,
 		Regulations:                   p.Regulations,
 		Revenue:                       p.Revenue,
-		SlaConfiguration:              p.SlaConfiguration,
 		Tags:                          p.Tags,
 		TeamManager:                   p.TeamManager,
 		TechnicalContact:              p.TechnicalContact,
 		UserRecords:                   p.UserRecords,
+	}
+	// Only include SlaConfiguration when it has a meaningful value (non-nil and non-zero).
+	// Sending pk=0 causes an API validation error: "Invalid pk \"0\" - object does not exist."
+	if p.SlaConfiguration != nil && *p.SlaConfiguration != 0 {
+		req.SlaConfiguration = p.SlaConfiguration
 	}
 	// Convert enum types: Product uses ProductXxx, ProductRequest uses ProductRequestXxx
 	if p.BusinessCriticality != nil {

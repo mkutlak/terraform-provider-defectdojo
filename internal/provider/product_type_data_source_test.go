@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccProductTypeIdDataSource(t *testing.T) {
-	name := fmt.Sprintf("dox-test-repo-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -26,7 +26,7 @@ func TestAccProductTypeIdDataSource(t *testing.T) {
 }
 
 func TestAccProductTypeNameDataSource(t *testing.T) {
-	name := fmt.Sprintf("dox-test-repo-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -44,7 +44,7 @@ func TestAccProductTypeNameDataSource(t *testing.T) {
 }
 
 func TestAccProductTypeBooleansDataSource(t *testing.T) {
-	name := fmt.Sprintf("dox-test-repo-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,

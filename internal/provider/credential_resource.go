@@ -3,13 +3,13 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (t credentialResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -43,10 +43,12 @@ func (t credentialResource) Schema(ctx context.Context, req resource.SchemaReque
 			"authentication": schema.StringAttribute{
 				MarkdownDescription: "Authentication type: 'Form' or 'SSO'",
 				Optional:            true,
+				Computed:            true,
 			},
 			"http_authentication": schema.StringAttribute{
 				MarkdownDescription: "HTTP authentication type: 'Basic' or 'NTLM'",
 				Optional:            true,
+				Computed:            true,
 			},
 			"login_regex": schema.StringAttribute{
 				MarkdownDescription: "Login regex pattern",

@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccProductGroupResource(t *testing.T) {
-	groupName := fmt.Sprintf("prodgroup-%s", resource.UniqueId())
+	groupName := fmt.Sprintf("prodgroup-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -18,7 +18,7 @@ func TestAccProductGroupResource(t *testing.T) {
 				Config: testAccProductGroupResourceConfig(groupName),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet("defectdojo_product_group.test", "id"),
-					resource.TestCheckResourceAttr("defectdojo_product_group.test", "product", "1"),
+					resource.TestCheckResourceAttrSet("defectdojo_product_group.test", "product"),
 					resource.TestCheckResourceAttrSet("defectdojo_product_group.test", "group"),
 					resource.TestCheckResourceAttr("defectdojo_product_group.test", "role", "3"),
 				),
@@ -36,11 +36,16 @@ func TestAccProductGroupResource(t *testing.T) {
 func testAccProductGroupResourceConfig(groupName string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}
+resource "defectdojo_product" "pg_product" {
+  name            = %[1]q
+  description     = "test product for product group"
+  product_type_id = 1
+}
 resource "defectdojo_dojo_group" "pg_group" {
   name = %[1]q
 }
 resource "defectdojo_product_group" "test" {
-  product = 1
+  product = defectdojo_product.pg_product.id
   group   = defectdojo_dojo_group.pg_group.id
   role    = 3
 }

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strconv"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
-	"github.com/doximity/terraform-provider-defectdojo/internal/ref"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
+	"github.com/mkutlak/terraform-provider-defectdojo/internal/ref"
 )
 
 func (t productTypeDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {

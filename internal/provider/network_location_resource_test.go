@@ -8,8 +8,8 @@ import (
 )
 
 func TestAccNetworkLocationResource(t *testing.T) {
-	location := fmt.Sprintf("VPN-%s", resource.UniqueId())
-	updatedLocation := fmt.Sprintf("Internal-%s", resource.UniqueId())
+	location := fmt.Sprintf("VPN-%s", uniqueId())
+	updatedLocation := fmt.Sprintf("Internal-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,

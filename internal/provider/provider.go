@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"os"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
-	"github.com/oapi-codegen/oapi-codegen/v2/pkg/securityprovider"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
+	"github.com/oapi-codegen/oapi-codegen/v2/pkg/securityprovider"
 )
 
 // DefectDojoProvider satisfies the tfsdk.Provider interface and usually is included
@@ -195,13 +195,8 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewEngagementResource,
 		NewEngagementPresetResource,
 		NewDDTestResource,
-		NewFindingResource,
 		NewFindingTemplateResource,
 		NewEndpointResource,
-		NewEndpointStatusResource,
-		NewStubFindingResource,
-		NewTechnologyResource,
-		NewLanguageResource,
 		// Stage 8: Integration resources
 		NewJiraInstanceResource,
 		NewToolProductSettingsResource,
@@ -209,7 +204,6 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewCredentialMappingResource,
 		NewRiskAcceptanceResource,
 		NewNotificationWebhookResource,
-		NewAnnouncementResource,
 		NewAssetGroupResource,
 	}
 }
@@ -219,6 +213,7 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		// Existing data sources
 		NewProductDataSource,
 		NewProductTypeDataSource,
+		NewJiraProductConfigurationDataSource,
 		// Stage 5: Infrastructure data sources
 		NewDevelopmentEnvironmentDataSource,
 		NewRegulationDataSource,
@@ -243,13 +238,8 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewEngagementDataSource,
 		NewEngagementPresetDataSource,
 		NewDDTestDataSource,
-		NewFindingDataSource,
 		NewFindingTemplateDataSource,
 		NewEndpointDataSource,
-		NewEndpointStatusDataSource,
-		NewStubFindingDataSource,
-		NewTechnologyDataSource,
-		NewLanguageDataSource,
 		// Stage 8: Integration data sources
 		NewJiraInstanceDataSource,
 		NewToolProductSettingsDataSource,
@@ -257,7 +247,6 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewCredentialMappingDataSource,
 		NewRiskAcceptanceDataSource,
 		NewNotificationWebhookDataSource,
-		NewAnnouncementDataSource,
 		NewAssetGroupDataSource,
 	}
 }

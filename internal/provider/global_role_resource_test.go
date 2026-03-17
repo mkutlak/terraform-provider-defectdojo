@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccGlobalRoleResource(t *testing.T) {
-	username := fmt.Sprintf("globalrole-%s", resource.UniqueId())
+	username := fmt.Sprintf("globalrole-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,

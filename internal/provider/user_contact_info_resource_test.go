@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccUserContactInfoResource(t *testing.T) {
-	username := fmt.Sprintf("contacttest-%s", resource.UniqueId())
+	username := fmt.Sprintf("contacttest-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,

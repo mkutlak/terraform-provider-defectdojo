@@ -37,5 +37,3 @@ resource "defectdojo_product_type" "example" {
 ### Read-Only
 
 - `id` (String) Identifier
-
-

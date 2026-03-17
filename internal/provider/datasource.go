@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 type terraformDatasource struct {

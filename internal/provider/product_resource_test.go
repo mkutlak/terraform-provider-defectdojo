@@ -9,8 +9,8 @@ import (
 )
 
 func TestAccProductBaseResource(t *testing.T) {
-	name := fmt.Sprintf("dox-test-repo-%s", resource.UniqueId())
-	updatedName := fmt.Sprintf("dox-new-name-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
+	updatedName := fmt.Sprintf("dox-new-name-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -47,28 +47,24 @@ func TestAccProductBaseResource(t *testing.T) {
 			},
 			// Update and Read testing
 			{
-				Config: testAccProductResourceMinimalConfig(updatedName),
+				Config: testAccProductResourceUpdatedConfig(updatedName),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					// required attrs
 					resource.TestCheckResourceAttr("defectdojo_product.test", "name", updatedName),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "test"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "updated"),
 					resource.TestCheckResourceAttr("defectdojo_product.test", "product_type_id", "1"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.#", "0"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "regulation_ids.#", "0"),
-
-					resource.TestCheckNoResourceAttr("defectdojo_product.test", "business_criticality"),
-					resource.TestCheckNoResourceAttr("defectdojo_product.test", "life_cycle"),
-					resource.TestCheckNoResourceAttr("defectdojo_product.test", "origin"),
-					resource.TestCheckNoResourceAttr("defectdojo_product.test", "platform"),
-					resource.TestCheckNoResourceAttr("defectdojo_product.test", "prod_numeric_grade"),
-					resource.TestCheckNoResourceAttr("defectdojo_product.test", "revenue"),
-					resource.TestCheckNoResourceAttr("defectdojo_product.test", "user_records"),
-
-					// these booleans are reset to default value when not specified, they never return null
+					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.#", "1"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.0", "updated"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "business_criticality", "medium"),
 					resource.TestCheckResourceAttr("defectdojo_product.test", "enable_full_risk_acceptance", "false"),
 					resource.TestCheckResourceAttr("defectdojo_product.test", "enable_skip_risk_acceptance", "false"),
 					resource.TestCheckResourceAttr("defectdojo_product.test", "external_audience", "false"),
 					resource.TestCheckResourceAttr("defectdojo_product.test", "internet_accessible", "false"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "life_cycle", "retirement"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "origin", "third party library"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "platform", "desktop"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "prod_numeric_grade", "50"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "revenue", "200.00"),
+					resource.TestCheckResourceAttr("defectdojo_product.test", "user_records", "500000"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -76,8 +72,8 @@ func TestAccProductBaseResource(t *testing.T) {
 	})
 }
 func TestAccProductResourceNoTags(t *testing.T) {
-	name := fmt.Sprintf("dox-test-repo-%s", resource.UniqueId())
-	updatedName := fmt.Sprintf("dox-new-name-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
+	updatedName := fmt.Sprintf("dox-new-name-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -111,8 +107,8 @@ func TestAccProductResourceNoTags(t *testing.T) {
 }
 
 func TestAccProductResourceEmptyTags(t *testing.T) {
-	name := fmt.Sprintf("dox-test-repo-%s", resource.UniqueId())
-	updatedName := fmt.Sprintf("dox-new-name-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
+	updatedName := fmt.Sprintf("dox-new-name-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -146,7 +142,7 @@ func TestAccProductResourceEmptyTags(t *testing.T) {
 }
 
 func TestAccProductResourceDeleteDrift(t *testing.T) {
-	name := fmt.Sprintf("dox-delete-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-delete-%s", uniqueId())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -183,7 +179,7 @@ func TestAccProductResourceDeleteDrift(t *testing.T) {
 }
 
 func TestAccProductResourceInvalid(t *testing.T) {
-	name := fmt.Sprintf("dox-invalid-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-invalid-%s", uniqueId())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -279,6 +275,31 @@ resource "defectdojo_product" "test" {
 }
 `, name)
 }
+func testAccProductResourceUpdatedConfig(name string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "test" {
+  name = %[1]q
+  description = "updated"
+  product_type_id = 1
+  tags = ["updated"]
+
+  business_criticality = "medium"
+  enable_full_risk_acceptance = false
+  enable_skip_risk_acceptance = false
+  external_audience = false
+  internet_accessible = false
+  life_cycle = "retirement"
+  origin = "third party library"
+  platform = "desktop"
+  prod_numeric_grade = 50
+  regulation_ids = []
+  revenue = "200.00"
+  user_records = 500000
+}
+`, name)
+}
+
 func testAccProductResourceMinimalConfig(name string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}

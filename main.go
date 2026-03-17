@@ -5,8 +5,8 @@ import (
 	"flag"
 	"log"
 
-	"github.com/doximity/terraform-provider-defectdojo/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"github.com/mkutlak/terraform-provider-defectdojo/internal/provider"
 )
 
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
@@ -35,7 +35,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/doximity/defectdojo",
+		Address: "registry.terraform.io/mkutlak/defectdojo",
 		Debug:   debug,
 	}
 

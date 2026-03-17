@@ -30,7 +30,9 @@ data "defectdojo_product" "example" {
 ### Read-Only
 
 - `description` (String) The description of the Product
+- `disable_sla_breach_notifications` (Boolean) Disable SLA breach notifications if configured in the global settings.
 - `enable_full_risk_acceptance` (Boolean) Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.
+- `enable_product_tag_inheritance` (Boolean) Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings.
 - `enable_skip_risk_acceptance` (Boolean) Allows simple risk acceptance by checking/unchecking a checkbox.
 - `external_audience` (Boolean) Specify if the application is used by people outside the organization.
 - `internet_accessible` (Boolean) Specify if the application is accessible from the public internet.
@@ -42,9 +44,8 @@ data "defectdojo_product" "example" {
 - `product_type_id` (Number) The ID of the Product Type
 - `regulation_ids` (Set of Number) The IDs of the Regulations which apply to this product.
 - `revenue` (String) Estimate the application's revenue.
+- `sla_configuration` (Number) The ID of the SLA configuration to apply to this product.
 - `tags` (Set of String) Tags to apply to the product
 - `team_manager_id` (Number) The ID of the user who is the manager for this product.
 - `technical_contact_id` (Number) The ID of the user who is the technical contact for this product.
 - `user_records` (Number) Estimate the number of user records within the application.
-
-

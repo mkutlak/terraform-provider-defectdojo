@@ -3,13 +3,13 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (t regulationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -35,10 +35,12 @@ func (t regulationResource) Schema(ctx context.Context, req resource.SchemaReque
 			"description": schema.StringAttribute{
 				MarkdownDescription: "Information about the regulation's purpose",
 				Optional:            true,
+				Computed:            true,
 			},
 			"reference": schema.StringAttribute{
 				MarkdownDescription: "An external URL for more information",
 				Optional:            true,
+				Computed:            true,
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,

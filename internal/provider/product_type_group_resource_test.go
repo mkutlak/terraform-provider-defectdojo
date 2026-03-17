@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccProductTypeGroupResource(t *testing.T) {
-	groupName := fmt.Sprintf("ptgroup-%s", resource.UniqueId())
+	groupName := fmt.Sprintf("ptgroup-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,

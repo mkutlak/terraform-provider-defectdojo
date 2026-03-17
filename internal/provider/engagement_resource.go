@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -12,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (r engagementResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -48,10 +48,12 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 			"engagement_type": schema.StringAttribute{
 				MarkdownDescription: "Type of Engagement: 'Interactive' or 'CI/CD'",
 				Optional:            true,
+				Computed:            true,
 			},
 			"status": schema.StringAttribute{
 				MarkdownDescription: "Status of the Engagement (Not Started, Blocked, Cancelled, Completed, In Progress, On Hold, Waiting for Resource)",
 				Optional:            true,
+				Computed:            true,
 			},
 			"lead": schema.Int64Attribute{
 				MarkdownDescription: "ID of the lead user for this Engagement",
@@ -88,22 +90,27 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 			"threat_model": schema.BoolAttribute{
 				MarkdownDescription: "Whether a threat model was performed",
 				Optional:            true,
+				Computed:            true,
 			},
 			"api_test": schema.BoolAttribute{
 				MarkdownDescription: "Whether an API test was performed",
 				Optional:            true,
+				Computed:            true,
 			},
 			"pen_test": schema.BoolAttribute{
 				MarkdownDescription: "Whether a pen test was performed",
 				Optional:            true,
+				Computed:            true,
 			},
 			"check_list": schema.BoolAttribute{
 				MarkdownDescription: "Whether a check list was used",
 				Optional:            true,
+				Computed:            true,
 			},
 			"deduplication_on_engagement": schema.BoolAttribute{
 				MarkdownDescription: "If enabled deduplication will only mark a finding in this engagement as duplicate of another finding if both findings are in this engagement",
 				Optional:            true,
+				Computed:            true,
 			},
 			"first_contacted": schema.StringAttribute{
 				MarkdownDescription: "Date first contacted (format: 2006-01-02)",
@@ -195,11 +202,11 @@ func engagementToRequest(e dd.Engagement) dd.EngagementRequest {
 		Requester:                 e.Requester,
 		Tags:                      e.Tags,
 	}
-	if e.EngagementType != nil {
+	if e.EngagementType != nil && *e.EngagementType != "" {
 		v := dd.EngagementRequestEngagementType(*e.EngagementType)
 		req.EngagementType = &v
 	}
-	if e.Status != nil {
+	if e.Status != nil && *e.Status != "" {
 		v := dd.EngagementRequestStatus(*e.Status)
 		req.Status = &v
 	}

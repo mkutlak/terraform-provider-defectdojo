@@ -8,7 +8,7 @@ import (
 )
 
 func TestAccProductMemberResource(t *testing.T) {
-	username := fmt.Sprintf("prodmember-%s", resource.UniqueId())
+	username := fmt.Sprintf("prodmember-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -18,7 +18,7 @@ func TestAccProductMemberResource(t *testing.T) {
 				Config: testAccProductMemberResourceConfig(username),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet("defectdojo_product_member.test", "id"),
-					resource.TestCheckResourceAttr("defectdojo_product_member.test", "product", "1"),
+					resource.TestCheckResourceAttrSet("defectdojo_product_member.test", "product"),
 					resource.TestCheckResourceAttrSet("defectdojo_product_member.test", "user"),
 					resource.TestCheckResourceAttr("defectdojo_product_member.test", "role", "3"),
 				),
@@ -36,13 +36,18 @@ func TestAccProductMemberResource(t *testing.T) {
 func testAccProductMemberResourceConfig(username string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}
+resource "defectdojo_product" "pm_product" {
+  name            = %[1]q
+  description     = "test product for product member"
+  product_type_id = 1
+}
 resource "defectdojo_user" "pm_user" {
   username = %[1]q
   email    = "prodmember@example.com"
   password = "TestPassword123!"
 }
 resource "defectdojo_product_member" "test" {
-  product = 1
+  product = defectdojo_product.pm_product.id
   user    = defectdojo_user.pm_user.id
   role    = 3
 }

@@ -8,8 +8,8 @@ import (
 )
 
 func TestAccLanguageTypeResource(t *testing.T) {
-	language := fmt.Sprintf("TestLang-%s", resource.UniqueId())
-	updatedLanguage := fmt.Sprintf("UpdatedLang-%s", resource.UniqueId())
+	language := fmt.Sprintf("TestLang-%s", uniqueId())
+	updatedLanguage := fmt.Sprintf("UpdatedLang-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,

@@ -9,9 +9,9 @@ import (
 )
 
 func TestAccJiraProductConfigurationResource(t *testing.T) {
-	name := fmt.Sprintf("dox-test-repo-%s", resource.UniqueId())
-	jirakey := fmt.Sprintf("APPSEC%s", resource.UniqueId())
-	newjirakey := fmt.Sprintf("APPSEC%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
+	jirakey := fmt.Sprintf("APPSEC%s", uniqueId())
+	newjirakey := fmt.Sprintf("APPSEC%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -54,8 +54,8 @@ func TestAccJiraProductConfigurationResource(t *testing.T) {
 }
 
 func TestAccJiraProductConfigurationResourceDeleteDrift(t *testing.T) {
-	name := fmt.Sprintf("dox-delete-%s", resource.UniqueId())
-	jirakey := fmt.Sprintf("APPSEC%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-delete-%s", uniqueId())
+	jirakey := fmt.Sprintf("APPSEC%s", uniqueId())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -88,7 +88,7 @@ func TestAccJiraProductConfigurationResourceDeleteDrift(t *testing.T) {
 }
 
 func TestAccJiraProductConfigurationResourceInvalid(t *testing.T) {
-	name := fmt.Sprintf("dox-delete-%s", resource.UniqueId())
+	name := fmt.Sprintf("dox-delete-%s", uniqueId())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

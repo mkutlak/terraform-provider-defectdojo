@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
@@ -20,7 +21,11 @@ var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServe
 }
 
 func testAccPreCheck(t *testing.T) {
-	// You can add code here to run prior to any test case execution, for example assertions
-	// about the appropriate environment variables being set are common to see in a pre-check
-	// function.
+	if os.Getenv("DEFECTDOJO_BASEURL") == "" {
+		t.Fatal("DEFECTDOJO_BASEURL must be set for acceptance tests")
+	}
+	if os.Getenv("DEFECTDOJO_APIKEY") == "" &&
+		(os.Getenv("DEFECTDOJO_USERNAME") == "" || os.Getenv("DEFECTDOJO_PASSWORD") == "") {
+		t.Fatal("DEFECTDOJO_APIKEY or both DEFECTDOJO_USERNAME and DEFECTDOJO_PASSWORD must be set for acceptance tests")
+	}
 }

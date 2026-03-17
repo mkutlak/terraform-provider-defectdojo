@@ -3,13 +3,13 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (t slaConfigurationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -43,22 +43,27 @@ func (t slaConfigurationResource) Schema(ctx context.Context, req resource.Schem
 			"enforce_critical": schema.BoolAttribute{
 				MarkdownDescription: "When enabled, critical findings will be assigned an SLA expiration date",
 				Optional:            true,
+				Computed:            true,
 			},
 			"enforce_high": schema.BoolAttribute{
 				MarkdownDescription: "When enabled, high findings will be assigned an SLA expiration date",
 				Optional:            true,
+				Computed:            true,
 			},
 			"enforce_medium": schema.BoolAttribute{
 				MarkdownDescription: "When enabled, medium findings will be assigned an SLA expiration date",
 				Optional:            true,
+				Computed:            true,
 			},
 			"enforce_low": schema.BoolAttribute{
 				MarkdownDescription: "When enabled, low findings will be assigned an SLA expiration date",
 				Optional:            true,
+				Computed:            true,
 			},
 			"restart_sla_on_reactivation": schema.BoolAttribute{
 				MarkdownDescription: "When enabled, findings that were previously mitigated but are reactivated during reimport will have their SLA period restarted",
 				Optional:            true,
+				Computed:            true,
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,

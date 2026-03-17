@@ -3,13 +3,13 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (t userContactInfoResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -27,10 +27,12 @@ func (t userContactInfoResource) Schema(ctx context.Context, req resource.Schema
 			"phone_number": schema.StringAttribute{
 				MarkdownDescription: "Phone number in format '+999999999'. Up to 15 digits allowed.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"cell_number": schema.StringAttribute{
 				MarkdownDescription: "Cell number in format '+999999999'. Up to 15 digits allowed.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"twitter_username": schema.StringAttribute{
 				MarkdownDescription: "Twitter username",

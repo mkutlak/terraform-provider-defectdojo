@@ -8,12 +8,13 @@ import (
 )
 
 func TestAccEndpointResource(t *testing.T) {
+	name := fmt.Sprintf("endpoint-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccEndpointResourceConfig("example.com", "https"),
+				Config: testAccEndpointResourceConfig(name, "example.com", "https"),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("defectdojo_endpoint.test", "host", "example.com"),
 					resource.TestCheckResourceAttr("defectdojo_endpoint.test", "protocol", "https"),
@@ -25,7 +26,7 @@ func TestAccEndpointResource(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: testAccEndpointResourceConfig("updated.example.com", "https"),
+				Config: testAccEndpointResourceConfig(name, "updated.example.com", "https"),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("defectdojo_endpoint.test", "host", "updated.example.com"),
 				),
@@ -34,12 +35,18 @@ func TestAccEndpointResource(t *testing.T) {
 	})
 }
 
-func testAccEndpointResourceConfig(host string, protocol string) string {
+func testAccEndpointResourceConfig(name string, host string, protocol string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}
-resource "defectdojo_endpoint" "test" {
-  host     = %[1]q
-  protocol = %[2]q
+resource "defectdojo_product" "ep_product" {
+  name            = %[1]q
+  description     = "test product for endpoint"
+  product_type_id = 1
 }
-`, host, protocol)
+resource "defectdojo_endpoint" "test" {
+  host     = %[2]q
+  protocol = %[3]q
+  product  = defectdojo_product.ep_product.id
+}
+`, name, host, protocol)
 }

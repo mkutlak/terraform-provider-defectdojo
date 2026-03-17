@@ -9,9 +9,15 @@ import (
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/id"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
+
+// uniqueId returns a unique identifier for use in acceptance tests.
+func uniqueId() string {
+	return id.UniqueId()
+}
 
 func testAccDeleteResourceOutsideTerraform(resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {

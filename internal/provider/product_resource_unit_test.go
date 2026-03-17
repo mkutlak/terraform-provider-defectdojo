@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 	"gotest.tools/assert"
 )
 
@@ -353,6 +353,9 @@ func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
 	assert.Equal(t, ddProduct.TechnicalContact, nilInt)
 	assert.Equal(t, ddProduct.UserRecords, nilInt)
 
-	assert.DeepEqual(t, *ddProduct.Tags, []string{})
-	assert.DeepEqual(t, *ddProduct.Regulations, []int{})
+	// Null TF values are skipped, so pointer fields remain nil
+	var nilStringSlice *[]string
+	var nilIntSlice *[]int
+	assert.Equal(t, ddProduct.Tags, nilStringSlice)
+	assert.Equal(t, ddProduct.Regulations, nilIntSlice)
 }

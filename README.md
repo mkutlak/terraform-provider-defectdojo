@@ -2,137 +2,184 @@
 
 [DefectDojo API Terraform Provider](https://registry.terraform.io/providers/doximity/defectdojo)
 
+Terraform provider for managing [DefectDojo](https://www.defectdojo.org/) resources. Supports DefectDojo API v2.54.3.
+
 ## Requirements
 
-- [Terraform](https://www.terraform.io/downloads.html) >= 1.0
-- [Go](https://golang.org/doc/install) >= 1.17
+- [Terraform](https://www.terraform.io/downloads.html) >= 1.8
+- [Go](https://golang.org/doc/install) >= 1.25 (for building from source)
 
-## Building The Provider
+## Using the provider
 
-1. Clone the repository
-1. Enter the repository directory
-1. Build the provider using the Go `install` command:
+Configure the provider via environment variables:
+
+```shell
+export DEFECTDOJO_BASEURL="https://defectdojo.my-company.com/api/v2"
+export DEFECTDOJO_APIKEY="my-api-key"
+```
+
+Or with username/password:
+
+```shell
+export DEFECTDOJO_BASEURL="https://defectdojo.my-company.com/api/v2"
+export DEFECTDOJO_USERNAME="admin"
+export DEFECTDOJO_PASSWORD="my-password"
+```
+
+Or in the Terraform configuration:
+
+```hcl
+provider "defectdojo" {
+  base_url = "https://defectdojo.my-company.com/api/v2"
+  api_key  = var.dd_api_key
+}
+```
+
+### Example usage
+
+```hcl
+data "defectdojo_product_type" "this" {
+  name = "My Product Type"
+}
+
+resource "defectdojo_product" "this" {
+  name            = "My Application"
+  description     = "Managed by Terraform"
+  product_type_id = data.defectdojo_product_type.this.id
+}
+
+resource "defectdojo_engagement" "security_assessment" {
+  product      = defectdojo_product.this.id
+  name         = "Security Assessment"
+  target_start = "2025-01-01"
+  target_end   = "2025-12-31"
+}
+```
+
+## Supported Resources & Data Sources
+
+### Core
+
+| Resource | Data Source |
+|----------|------------|
+| `defectdojo_product` | `defectdojo_product` |
+| `defectdojo_product_type` | `defectdojo_product_type` |
+
+### Infrastructure
+
+| Resource | Data Source |
+|----------|------------|
+| `defectdojo_development_environment` | `defectdojo_development_environment` |
+| `defectdojo_regulation` | `defectdojo_regulation` |
+| `defectdojo_tool_type` | `defectdojo_tool_type` |
+| `defectdojo_tool_configuration` | `defectdojo_tool_configuration` |
+| `defectdojo_sla_configuration` | `defectdojo_sla_configuration` |
+| `defectdojo_note_type` | `defectdojo_note_type` |
+| `defectdojo_network_location` | `defectdojo_network_location` |
+| `defectdojo_language_type` | `defectdojo_language_type` |
+
+### Security & Access Control
+
+| Resource | Data Source |
+|----------|------------|
+| `defectdojo_user` | `defectdojo_user` |
+| `defectdojo_user_contact_info` | `defectdojo_user_contact_info` |
+| `defectdojo_dojo_group` | `defectdojo_dojo_group` |
+| `defectdojo_dojo_group_member` | `defectdojo_dojo_group_member` |
+| `defectdojo_global_role` | `defectdojo_global_role` |
+| `defectdojo_product_member` | `defectdojo_product_member` |
+| `defectdojo_product_group` | `defectdojo_product_group` |
+| `defectdojo_product_type_member` | `defectdojo_product_type_member` |
+| `defectdojo_product_type_group` | `defectdojo_product_type_group` |
+| `defectdojo_credential` | `defectdojo_credential` |
+
+### Vulnerability Management
+
+| Resource | Data Source |
+|----------|------------|
+| `defectdojo_engagement` | `defectdojo_engagement` |
+| `defectdojo_engagement_preset` | `defectdojo_engagement_preset` |
+| `defectdojo_test` | `defectdojo_test` |
+| `defectdojo_finding` | `defectdojo_finding` |
+| `defectdojo_finding_template` | `defectdojo_finding_template` |
+| `defectdojo_endpoint` | `defectdojo_endpoint` |
+| `defectdojo_endpoint_status` | `defectdojo_endpoint_status` |
+| `defectdojo_stub_finding` | `defectdojo_stub_finding` |
+| `defectdojo_technology` | `defectdojo_technology` |
+| `defectdojo_language` | `defectdojo_language` |
+
+### Integrations
+
+| Resource | Data Source |
+|----------|------------|
+| `defectdojo_jira_instance` | `defectdojo_jira_instance` |
+| `defectdojo_jira_product_configuration` | `defectdojo_jira_product_configuration` |
+| `defectdojo_tool_product_settings` | `defectdojo_tool_product_settings` |
+| `defectdojo_product_api_scan_configuration` | `defectdojo_product_api_scan_configuration` |
+| `defectdojo_credential_mapping` | `defectdojo_credential_mapping` |
+| `defectdojo_risk_acceptance` | `defectdojo_risk_acceptance` |
+| `defectdojo_notification_webhook` | `defectdojo_notification_webhook` |
+| `defectdojo_announcement` | `defectdojo_announcement` |
+| `defectdojo_asset_group` | `defectdojo_asset_group` |
+
+## Developing the Provider
+
+### Building
 
 ```shell
 go install
 ```
 
-## Adding Dependencies
+### Running Tests
 
-This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
-Please see the Go documentation for the most up to date information about using Go modules.
-
-To add a new dependency `github.com/author/dependency` to your Terraform provider:
+Unit tests (no DefectDojo instance required):
 
 ```shell
-go get github.com/author/dependency
-go mod tidy
+go test ./internal/provider/ -run Test -count=1
 ```
 
-Then commit the changes to `go.mod` and `go.sum`.
-
-## Using the provider
-
-You can configure the provider via environment variables:
-```
-$ export DEFECTDOJO_BASEURL="https://demo.defectdojo.org"
-$ export DEFECTDOJO_APIKEY="my-api-key"
-```
-
-Or with a username/password:
-
-```
-$ export DEFECTDOJO_BASEURL="https://demo.defectdojo.org"
-$ export DEFECTDOJO_USERNAME="admin"
-$ export DEFECTDOJO_PASSWORD="ebgngrguvegrra"
-```
-
-Or in the terraform configuration:
-
-```hcl
-provider "defectdojo" {
-  base_url = "https://defectdojo.my-company.com"
-  api_key = var.dd_api_key # don't put your key in the code!
-}
-```
-
-```hcl
-provider "defectdojo" {
-  base_url = "https://defectdojo.my-company.com"
-  username = "admin"
-  password = var.dd_password # don't put your password in the code!
-}
-```
-
-Start using resources:
-
-```
-data "defectdojo_product_type" "this" {
-  name     = "My Product Type"
-}
-
-resource "defectdojo_product" "this" {
-  name            = var.product_name
-  description     = "This product represents is named `${var.product_name}`"
-  product_type_id = data.defectdojo_product_type.this.id
-}
-```
-
-## Developing the Provider
-
-If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
-
-To compile the provider, run `go install`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
-
-To generate or update documentation, run `go generate`.
-
-In order to run the full suite of Acceptance tests, run `make testacc`.
-
-*Note:* Acceptance tests create real resources, and often cost money to run.
+Acceptance tests (requires a live DefectDojo instance):
 
 ```shell
 make testacc
 ```
 
-Run one test at a time:
+Run a single test:
 
 ```shell
 TESTARGS="-run TestFunctionName" make testacc
 ```
 
-Extra debug output:
+### Local DefectDojo for Testing
+
+A Docker Compose setup is included for running a local DefectDojo v2.54.3 instance:
 
 ```shell
-TF_LOG="DEBUG" make testacc
+make dd-up      # Start DefectDojo (wait ~60s for initialization)
+make testacc-local  # Run acceptance tests against local instance
+make dd-down    # Stop and clean up
 ```
 
-## Releasing a new version
+Default credentials: `admin` / `testpassword`
 
-Create a branch/pull-request named something like `prepare for release v0.0.1`. Update the CHANGELOG.md file.
+### Generating Documentation
 
-Merge your changes to `master` and then push a version tag to master, like:
-
-```
-$ git checkout master
-$ git pull
-$ git tag v0.0.1
-$ git push --tags
+```shell
+go generate ./...
 ```
 
-## Releasing a pre-release version
+## Releasing
 
-You can release a pre-release version from any commit. Just name the tag with a suffix:
+1. Update `CHANGELOG.md` in a PR, merge to `master`
+2. Tag `master` with `vX.Y.Z` and push tags
+3. GoReleaser (via GitHub Actions) builds and publishes to Terraform Registry
 
-```
-$ git checkout something
-$ git tag v0.0.1-pre
-$ git push --tags
-```
+Pre-release versions can be tagged from any commit with a suffix (e.g., `v0.1.0-rc1`).
 
 ## Contributing
 
-Pull requests are welcome. By contributing to this repository you are agreeing to the [Contributor License Agreement (CONTRIBUTING.md)](./CONTRIBUTING.md)
+Pull requests are welcome. By contributing to this repository you are agreeing to the [Contributor License Agreement (CONTRIBUTING.md)](./CONTRIBUTING.md).
 
-## Licencse
+## License
 
-Licensed under the Apache v2 license. See [LICENSE.txt](./LICENSE.txt)
+Licensed under the Apache v2 license. See [LICENSE.txt](./LICENSE.txt).

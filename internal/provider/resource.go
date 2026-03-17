@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"time"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -38,16 +38,16 @@ type terraformResource struct {
 }
 
 type dataGetter interface {
-	Get(context.Context, interface{}) diag.Diagnostics
+	Get(context.Context, any) diag.Diagnostics
 }
 
-var typeOfTypesString = reflect.TypeOf(types.String{})
-var typeOfTypesBool = reflect.TypeOf(types.Bool{})
-var typeOfTypesInt64 = reflect.TypeOf(types.Int64{})
-var typeOfTypesFloat64 = reflect.TypeOf(types.Float64{})
-var typeOfStringSlice = reflect.TypeOf([]string{})
-var typeOfInt64Slice = reflect.TypeOf([]int64{})
-var typeOfTypesSet = reflect.TypeOf(types.Set{})
+var typeOfTypesString = reflect.TypeFor[types.String]()
+var typeOfTypesBool = reflect.TypeFor[types.Bool]()
+var typeOfTypesInt64 = reflect.TypeFor[types.Int64]()
+var typeOfTypesFloat64 = reflect.TypeFor[types.Float64]()
+var typeOfStringSlice = reflect.TypeFor[[]string]()
+var typeOfInt64Slice = reflect.TypeFor[[]int64]()
+var typeOfTypesSet = reflect.TypeFor[types.Set]()
 
 func (r *terraformResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
@@ -292,9 +292,6 @@ func (r terraformResource) ImportState(ctx context.Context, req resource.ImportS
 func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, resourceData terraformResourceData, ddResource *defectdojoResource) {
 	resourceVal := reflect.ValueOf(resourceData).Elem()
 	resourceType := resourceVal.Type()
-	// fmt.Printf("resourceVal: %s\n", resourceVal)
-	// fmt.Printf("resourceType: %s\n", resourceType)
-
 	ddVal := reflect.ValueOf(*ddResource).Elem()
 
 	for i := 0; i < resourceVal.NumField(); i++ {
@@ -303,15 +300,21 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 		ddFieldName := tag.Get("ddField")
 		if ddFieldName != "" {
 			fieldValue := resourceVal.Field(i)
+
+			// Skip fields that are null or unknown - they should not overwrite
+			// existing values (e.g., values read from the API before an update).
+			isNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+			isUnknown := fieldValue.MethodByName("IsUnknown").Call(nil)[0].Bool()
+			if isNull || isUnknown {
+				continue
+			}
+
 			ddFieldDescriptor, ok := ddVal.Type().FieldByName(ddFieldName)
 			if !ok {
 				diags.AddError("Error: No such field", fmt.Sprintf("A field named %s was specified to look sync data from the defectdojo client type, but no such field was found.", ddFieldName))
 				continue
 			}
 			ddFieldValue := ddVal.FieldByName(ddFieldName)
-
-			// fmt.Printf("ddFieldDescriptor: Kind = %s, Name = %s\n", ddFieldDescriptor.Type.Kind(), ddFieldDescriptor.Name)
-			// fmt.Printf("fieldDescriptor: Kind = %s, Name = %s, type = %s\n", fieldDescriptor.Type.Kind(), fieldDescriptor.Name, fieldDescriptor.Type)
 
 			switch fieldDescriptor.Type {
 
@@ -364,7 +367,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						destVal.Elem().Set(reflect.ValueOf(num))
 						ddFieldValue.Set(destVal)
 					}
-				} else if ddFieldDescriptor.Type == reflect.TypeOf(time.Time{}) {
+				} else if ddFieldDescriptor.Type == reflect.TypeFor[time.Time]() {
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
 					if !srcIsNull {
 						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
@@ -375,7 +378,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						}
 						ddFieldValue.Set(reflect.ValueOf(t))
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(time.Time{}) {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
 					if !srcIsNull {
 						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
@@ -386,7 +389,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						}
 						ddFieldValue.Set(reflect.ValueOf(&t))
 					}
-				} else if ddFieldDescriptor.Type == reflect.TypeOf(openapi_types.Date{}) {
+				} else if ddFieldDescriptor.Type == reflect.TypeFor[openapi_types.Date]() {
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
 					if !srcIsNull {
 						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
@@ -397,7 +400,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						}
 						ddFieldValue.Set(reflect.ValueOf(openapi_types.Date{Time: t}))
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(openapi_types.Date{}) {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[openapi_types.Date]() {
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
 					if !srcIsNull {
 						str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
@@ -415,8 +418,10 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 
 			case typeOfTypesBool:
 				if ddFieldDescriptor.Type.Kind() == reflect.Bool {
-					// if the destination field is a bool, we can grab the `Value` field and assign it directly
-					ddFieldValue.Set(fieldValue.MethodByName("ValueBool").Call(nil)[0])
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						ddFieldValue.Set(fieldValue.MethodByName("ValueBool").Call(nil)[0])
+					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Bool {
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
 					if !srcIsNull {
@@ -424,8 +429,6 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						destVal := reflect.New(destType)
 						destVal.Elem().Set(fieldValue.MethodByName("ValueBool").Call(nil)[0].Convert(destType))
 						ddFieldValue.Set(destVal)
-					} else {
-						ddFieldValue.Set(reflect.New(ddFieldDescriptor.Type).Elem())
 					}
 				} else {
 					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
@@ -433,20 +436,19 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 
 			case typeOfTypesInt64:
 				if ddFieldDescriptor.Type.Kind() == reflect.Int {
-					// if the destination field is an int, we can grab the `Value` field and cast and assign it directly
-					destVal := reflect.New(ddFieldDescriptor.Type)
-					destVal.Elem().Set(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Convert(ddFieldDescriptor.Type))
-					ddFieldValue.Set(destVal.Elem())
+					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
+					if !srcIsNull {
+						destVal := reflect.New(ddFieldDescriptor.Type)
+						destVal.Elem().Set(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Convert(ddFieldDescriptor.Type))
+						ddFieldValue.Set(destVal.Elem())
+					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
-					// the destination field is a *int so we have to set it to a pointer
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
 					if !srcIsNull {
 						destType := ddFieldDescriptor.Type.Elem()
 						destVal := reflect.New(destType)
 						destVal.Elem().Set(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Convert(destType))
 						ddFieldValue.Set(destVal)
-					} else {
-						ddFieldValue.Set(reflect.New(ddFieldDescriptor.Type).Elem())
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Int32 {
 					srcIsNull := fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()
@@ -591,14 +593,10 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 
 	resourceVal := reflect.ValueOf(*d).Elem()
 	resourceType := resourceVal.Type()
-	// fmt.Printf("resourceVal: %s\n", resourceVal)
-	// fmt.Printf("resourceType: %s\n", resourceType)
-
 	ddVal := reflect.ValueOf(ddResource).Elem()
 
 	for i := 0; i < resourceVal.NumField(); i++ {
 		fieldDescriptor := resourceType.Field(i)
-		// fmt.Printf("field: %s\n", fieldDescriptor.Name)
 		tag := fieldDescriptor.Tag
 		ddFieldName := tag.Get("ddField")
 		if ddFieldName != "" {
@@ -610,9 +608,6 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 				continue
 			}
 			ddFieldValue := ddVal.FieldByName(ddFieldName)
-
-			// fmt.Printf("ddFieldDescriptor: Kind = %s, Name = %s\n", ddFieldDescriptor.Type.Kind(), ddFieldDescriptor.Name)
-			// fmt.Printf("fieldDescriptor: Kind = %s, Name = %s, type = %s\n", fieldDescriptor.Type.Kind(), fieldDescriptor.Name, fieldDescriptor.Type)
 
 			switch fieldDescriptor.Type {
 
@@ -636,28 +631,28 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
-				} else if ddFieldDescriptor.Type == reflect.TypeOf(time.Time{}) {
+				} else if ddFieldDescriptor.Type == reflect.TypeFor[time.Time]() {
 					t := ddFieldValue.Interface().(time.Time)
 					if !t.IsZero() {
 						fieldValue.Set(reflect.ValueOf(types.StringValue(t.Format(time.RFC3339))))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(time.Time{}) {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
 					if !ddFieldValue.IsNil() {
 						t := ddFieldValue.Elem().Interface().(time.Time)
 						fieldValue.Set(reflect.ValueOf(types.StringValue(t.Format(time.RFC3339))))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
-				} else if ddFieldDescriptor.Type == reflect.TypeOf(openapi_types.Date{}) {
+				} else if ddFieldDescriptor.Type == reflect.TypeFor[openapi_types.Date]() {
 					d := ddFieldValue.Interface().(openapi_types.Date)
 					if !d.Time.IsZero() {
 						fieldValue.Set(reflect.ValueOf(types.StringValue(d.Time.Format("2006-01-02"))))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeOf(openapi_types.Date{}) {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[openapi_types.Date]() {
 					if !ddFieldValue.IsNil() {
 						d := ddFieldValue.Elem().Interface().(openapi_types.Date)
 						fieldValue.Set(reflect.ValueOf(types.StringValue(d.Time.Format("2006-01-02"))))

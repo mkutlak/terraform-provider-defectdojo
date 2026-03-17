@@ -3,13 +3,13 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (t findingTemplateResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -112,28 +112,28 @@ func (t findingTemplateResource) Schema(ctx context.Context, req resource.Schema
 }
 
 type findingTemplateResourceData struct {
-	Title                    types.String  `tfsdk:"title" ddField:"Title"`
-	Severity                 types.String  `tfsdk:"severity" ddField:"Severity"`
-	Description              types.String  `tfsdk:"description" ddField:"Description"`
-	Mitigation               types.String  `tfsdk:"mitigation" ddField:"Mitigation"`
-	Impact                   types.String  `tfsdk:"impact" ddField:"Impact"`
-	References               types.String  `tfsdk:"references" ddField:"References"`
-	Cwe                      types.Int64   `tfsdk:"cwe" ddField:"Cwe"`
-	Cvssv3                   types.String  `tfsdk:"cvssv3" ddField:"Cvssv3"`
-	Cvssv3Score              types.Float64 `tfsdk:"cvssv3_score" ddField:"Cvssv3Score"`
-	Cvssv4                   types.String  `tfsdk:"cvssv4" ddField:"Cvssv4"`
-	Cvssv4Score              types.Float64 `tfsdk:"cvssv4_score" ddField:"Cvssv4Score"`
-	ComponentName            types.String  `tfsdk:"component_name" ddField:"ComponentName"`
-	ComponentVersion         types.String  `tfsdk:"component_version" ddField:"ComponentVersion"`
-	FixAvailable             types.Bool    `tfsdk:"fix_available" ddField:"FixAvailable"`
-	FixVersion               types.String  `tfsdk:"fix_version" ddField:"FixVersion"`
-	PlannedRemediationVersion types.String `tfsdk:"planned_remediation_version" ddField:"PlannedRemediationVersion"`
-	EffortForFixing          types.String  `tfsdk:"effort_for_fixing" ddField:"EffortForFixing"`
-	SeverityJustification    types.String  `tfsdk:"severity_justification" ddField:"SeverityJustification"`
-	StepsToReproduce         types.String  `tfsdk:"steps_to_reproduce" ddField:"StepsToReproduce"`
-	EndpointsText            types.String  `tfsdk:"endpoints_text" ddField:"EndpointsText"`
-	Notes                    types.String  `tfsdk:"notes" ddField:"Notes"`
-	Id                       types.String  `tfsdk:"id" ddField:"Id"`
+	Title                     types.String  `tfsdk:"title" ddField:"Title"`
+	Severity                  types.String  `tfsdk:"severity" ddField:"Severity"`
+	Description               types.String  `tfsdk:"description" ddField:"Description"`
+	Mitigation                types.String  `tfsdk:"mitigation" ddField:"Mitigation"`
+	Impact                    types.String  `tfsdk:"impact" ddField:"Impact"`
+	References                types.String  `tfsdk:"references" ddField:"References"`
+	Cwe                       types.Int64   `tfsdk:"cwe" ddField:"Cwe"`
+	Cvssv3                    types.String  `tfsdk:"cvssv3" ddField:"Cvssv3"`
+	Cvssv3Score               types.Float64 `tfsdk:"cvssv3_score" ddField:"Cvssv3Score"`
+	Cvssv4                    types.String  `tfsdk:"cvssv4" ddField:"Cvssv4"`
+	Cvssv4Score               types.Float64 `tfsdk:"cvssv4_score" ddField:"Cvssv4Score"`
+	ComponentName             types.String  `tfsdk:"component_name" ddField:"ComponentName"`
+	ComponentVersion          types.String  `tfsdk:"component_version" ddField:"ComponentVersion"`
+	FixAvailable              types.Bool    `tfsdk:"fix_available" ddField:"FixAvailable"`
+	FixVersion                types.String  `tfsdk:"fix_version" ddField:"FixVersion"`
+	PlannedRemediationVersion types.String  `tfsdk:"planned_remediation_version" ddField:"PlannedRemediationVersion"`
+	EffortForFixing           types.String  `tfsdk:"effort_for_fixing" ddField:"EffortForFixing"`
+	SeverityJustification     types.String  `tfsdk:"severity_justification" ddField:"SeverityJustification"`
+	StepsToReproduce          types.String  `tfsdk:"steps_to_reproduce" ddField:"StepsToReproduce"`
+	EndpointsText             types.String  `tfsdk:"endpoints_text" ddField:"EndpointsText"`
+	Notes                     types.String  `tfsdk:"notes" ddField:"Notes"`
+	Id                        types.String  `tfsdk:"id" ddField:"Id"`
 }
 
 type findingTemplateDefectdojoResource struct {
@@ -142,27 +142,27 @@ type findingTemplateDefectdojoResource struct {
 
 func findingTemplateToRequest(obj dd.FindingTemplate) dd.FindingTemplateRequest {
 	return dd.FindingTemplateRequest{
-		Title:                    obj.Title,
-		Severity:                 obj.Severity,
-		Description:              obj.Description,
-		Mitigation:               obj.Mitigation,
-		Impact:                   obj.Impact,
-		References:               obj.References,
-		Cwe:                      obj.Cwe,
-		Cvssv3:                   obj.Cvssv3,
-		Cvssv3Score:              obj.Cvssv3Score,
-		Cvssv4:                   obj.Cvssv4,
-		Cvssv4Score:              obj.Cvssv4Score,
-		ComponentName:            obj.ComponentName,
-		ComponentVersion:         obj.ComponentVersion,
-		FixAvailable:             obj.FixAvailable,
-		FixVersion:               obj.FixVersion,
+		Title:                     obj.Title,
+		Severity:                  obj.Severity,
+		Description:               obj.Description,
+		Mitigation:                obj.Mitigation,
+		Impact:                    obj.Impact,
+		References:                obj.References,
+		Cwe:                       obj.Cwe,
+		Cvssv3:                    obj.Cvssv3,
+		Cvssv3Score:               obj.Cvssv3Score,
+		Cvssv4:                    obj.Cvssv4,
+		Cvssv4Score:               obj.Cvssv4Score,
+		ComponentName:             obj.ComponentName,
+		ComponentVersion:          obj.ComponentVersion,
+		FixAvailable:              obj.FixAvailable,
+		FixVersion:                obj.FixVersion,
 		PlannedRemediationVersion: obj.PlannedRemediationVersion,
-		EffortForFixing:          obj.EffortForFixing,
-		SeverityJustification:    obj.SeverityJustification,
-		StepsToReproduce:         obj.StepsToReproduce,
-		EndpointsText:            obj.EndpointsText,
-		Notes:                    obj.Notes,
+		EffortForFixing:           obj.EffortForFixing,
+		SeverityJustification:     obj.SeverityJustification,
+		StepsToReproduce:          obj.StepsToReproduce,
+		EndpointsText:             obj.EndpointsText,
+		Notes:                     obj.Notes,
 	}
 }
 

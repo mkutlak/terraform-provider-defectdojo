@@ -3,13 +3,13 @@ package provider
 import (
 	"context"
 
-	dd "github.com/doximity/terraform-provider-defectdojo/internal/ddclient"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 func (t userResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -27,10 +27,12 @@ func (t userResource) Schema(ctx context.Context, req resource.SchemaRequest, re
 			"first_name": schema.StringAttribute{
 				MarkdownDescription: "The first name of the User",
 				Optional:            true,
+				Computed:            true,
 			},
 			"last_name": schema.StringAttribute{
 				MarkdownDescription: "The last name of the User",
 				Optional:            true,
+				Computed:            true,
 			},
 			"is_active": schema.BoolAttribute{
 				MarkdownDescription: "Whether this user account is active",
@@ -65,7 +67,7 @@ type userResourceData struct {
 	LastName    types.String `tfsdk:"last_name" ddField:"LastName"`
 	IsActive    types.Bool   `tfsdk:"is_active" ddField:"IsActive"`
 	IsSuperuser types.Bool   `tfsdk:"is_superuser" ddField:"IsSuperuser"`
-	Password    types.String `tfsdk:"password" ddField:"Password"`
+	Password    types.String `tfsdk:"password"`
 	Id          types.String `tfsdk:"id" ddField:"Id"`
 }
 
@@ -113,7 +115,8 @@ func (ddr *userDefectdojoResource) readApiCall(ctx context.Context, client *dd.C
 }
 
 func (ddr *userDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
-	reqBody := userToRequest(ddr.User, ddr.password)
+	// Don't send password on update - DefectDojo API does not allow password updates via API
+	reqBody := userToRequest(ddr.User, nil)
 	apiResp, err := client.UsersUpdateWithResponse(ctx, idNumber, reqBody)
 	if err != nil {
 		return 0, nil, err

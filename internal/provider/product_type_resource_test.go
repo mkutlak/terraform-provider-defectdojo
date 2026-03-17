@@ -8,12 +8,12 @@ import (
 )
 
 func TestAccProductTypeResource(t *testing.T) {
-	name := fmt.Sprintf("dox-test-pt-%s", resource.UniqueId())
-	desc := fmt.Sprintf("dox test pt description %s", resource.UniqueId())
+	name := fmt.Sprintf("dox-test-pt-%s", uniqueId())
+	desc := fmt.Sprintf("dox test pt description %s", uniqueId())
 	criticalProduct := "true"
 	keyProduct := "true"
-	updatedName := fmt.Sprintf("dox-new-pt-name-%s", resource.UniqueId())
-	updatedDesc := fmt.Sprintf("updated description %s", resource.UniqueId())
+	updatedName := fmt.Sprintf("dox-new-pt-name-%s", uniqueId())
+	updatedDesc := fmt.Sprintf("updated description %s", uniqueId())
 	updatedCriticalProduct := "false"
 	updatedKeyProduct := "false"
 	resource.Test(t, resource.TestCase{

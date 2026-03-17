@@ -8,8 +8,8 @@ import (
 )
 
 func TestAccDojoGroupMemberResource(t *testing.T) {
-	groupName := fmt.Sprintf("member-group-%s", resource.UniqueId())
-	username := fmt.Sprintf("member-user-%s", resource.UniqueId())
+	groupName := fmt.Sprintf("member-group-%s", uniqueId())
+	username := fmt.Sprintf("member-user-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
