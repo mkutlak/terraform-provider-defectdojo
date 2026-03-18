@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccProductDataSource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

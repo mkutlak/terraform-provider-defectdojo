@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccNetworkLocationResource(t *testing.T) {
+	t.Parallel()
 	location := fmt.Sprintf("VPN-%s", uniqueId())
 	updatedLocation := fmt.Sprintf("Internal-%s", uniqueId())
 	resource.Test(t, resource.TestCase{

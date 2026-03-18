@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccEndpointResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("endpoint-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

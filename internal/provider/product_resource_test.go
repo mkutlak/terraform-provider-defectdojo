@@ -9,6 +9,7 @@ import (
 )
 
 func TestAccProductBaseResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	updatedName := fmt.Sprintf("dox-new-name-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
@@ -72,6 +73,7 @@ func TestAccProductBaseResource(t *testing.T) {
 	})
 }
 func TestAccProductResourceNoTags(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	updatedName := fmt.Sprintf("dox-new-name-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
@@ -107,6 +109,7 @@ func TestAccProductResourceNoTags(t *testing.T) {
 }
 
 func TestAccProductResourceEmptyTags(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	updatedName := fmt.Sprintf("dox-new-name-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
@@ -142,6 +145,7 @@ func TestAccProductResourceEmptyTags(t *testing.T) {
 }
 
 func TestAccProductResourceDeleteDrift(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-delete-%s", uniqueId())
 
 	resource.Test(t, resource.TestCase{
@@ -179,6 +183,7 @@ func TestAccProductResourceDeleteDrift(t *testing.T) {
 }
 
 func TestAccProductResourceInvalid(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-invalid-%s", uniqueId())
 
 	resource.Test(t, resource.TestCase{

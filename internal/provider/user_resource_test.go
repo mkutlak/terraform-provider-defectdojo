@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccUserResource(t *testing.T) {
+	t.Parallel()
 	username := fmt.Sprintf("testuser-%s", uniqueId())
 	updatedUsername := fmt.Sprintf("updated-%s", uniqueId())
 	resource.Test(t, resource.TestCase{

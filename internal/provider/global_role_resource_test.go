@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccGlobalRoleResource(t *testing.T) {
+	t.Parallel()
 	username := fmt.Sprintf("globalrole-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

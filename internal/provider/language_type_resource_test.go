@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccLanguageTypeResource(t *testing.T) {
+	t.Parallel()
 	language := fmt.Sprintf("TestLang-%s", uniqueId())
 	updatedLanguage := fmt.Sprintf("UpdatedLang-%s", uniqueId())
 	resource.Test(t, resource.TestCase{

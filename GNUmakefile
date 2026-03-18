@@ -3,7 +3,7 @@ default: testacc
 # Run acceptance tests
 .PHONY: testacc
 testacc:
-	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m
+	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m -parallel=4
 
 .PHONY: lint
 lint:
@@ -43,4 +43,4 @@ testacc-local:
 	DEFECTDOJO_BASEURL=http://localhost:8080 \
 	DEFECTDOJO_USERNAME=admin \
 	DEFECTDOJO_PASSWORD=testpassword \
-	TF_ACC=1 go test ./internal/provider/ -v $(TESTARGS) -timeout 120m
+	TF_ACC=1 go test ./internal/provider/ -v $(TESTARGS) -timeout 120m -parallel=4

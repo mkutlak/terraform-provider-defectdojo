@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccProductTypeIdDataSource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -26,6 +27,7 @@ func TestAccProductTypeIdDataSource(t *testing.T) {
 }
 
 func TestAccProductTypeNameDataSource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -44,6 +46,7 @@ func TestAccProductTypeNameDataSource(t *testing.T) {
 }
 
 func TestAccProductTypeBooleansDataSource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

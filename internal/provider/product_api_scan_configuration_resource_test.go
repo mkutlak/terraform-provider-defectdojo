@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccProductAPIScanConfigurationResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("test-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

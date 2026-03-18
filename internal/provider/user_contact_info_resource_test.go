@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccUserContactInfoResource(t *testing.T) {
+	t.Parallel()
 	username := fmt.Sprintf("contacttest-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

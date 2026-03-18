@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccRiskAcceptanceResource(t *testing.T) {
+	t.Parallel()
 	t.Skip("Skipped: requires accepted_findings which needs Finding resources created outside Terraform")
 	name := fmt.Sprintf("test-%s", uniqueId())
 	updatedName := fmt.Sprintf("updated-%s", uniqueId())

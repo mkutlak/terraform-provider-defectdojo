@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccProductGroupResource(t *testing.T) {
+	t.Parallel()
 	groupName := fmt.Sprintf("prodgroup-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

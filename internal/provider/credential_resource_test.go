@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccCredentialResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("test-cred-%s", uniqueId())
 	updatedName := fmt.Sprintf("updated-cred-%s", uniqueId())
 	resource.Test(t, resource.TestCase{

@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccToolTypeResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("test-%s", uniqueId())
 	updatedName := fmt.Sprintf("updated-%s", uniqueId())
 	resource.Test(t, resource.TestCase{

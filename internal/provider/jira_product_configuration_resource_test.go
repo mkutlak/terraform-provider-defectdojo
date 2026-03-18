@@ -9,6 +9,7 @@ import (
 )
 
 func TestAccJiraProductConfigurationResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-repo-%s", uniqueId())
 	jirakey := fmt.Sprintf("APPSEC%s", uniqueId())
 	newjirakey := fmt.Sprintf("APPSEC%s", uniqueId())
@@ -54,6 +55,7 @@ func TestAccJiraProductConfigurationResource(t *testing.T) {
 }
 
 func TestAccJiraProductConfigurationResourceDeleteDrift(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-delete-%s", uniqueId())
 	jirakey := fmt.Sprintf("APPSEC%s", uniqueId())
 
@@ -88,6 +90,7 @@ func TestAccJiraProductConfigurationResourceDeleteDrift(t *testing.T) {
 }
 
 func TestAccJiraProductConfigurationResourceInvalid(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-delete-%s", uniqueId())
 
 	resource.Test(t, resource.TestCase{

@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccProductTypeResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("dox-test-pt-%s", uniqueId())
 	desc := fmt.Sprintf("dox test pt description %s", uniqueId())
 	criticalProduct := "true"

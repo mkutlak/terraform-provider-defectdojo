@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccAssetGroupResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("asset-group-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

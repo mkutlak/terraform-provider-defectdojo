@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccDojoGroupResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("test-group-%s", uniqueId())
 	updatedName := fmt.Sprintf("updated-group-%s", uniqueId())
 	resource.Test(t, resource.TestCase{

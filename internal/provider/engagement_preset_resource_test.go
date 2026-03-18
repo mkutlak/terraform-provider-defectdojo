@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccEngagementPresetResource(t *testing.T) {
+	t.Parallel()
 	name := fmt.Sprintf("test-%s", uniqueId())
 	updatedTitle := fmt.Sprintf("updated-%s", uniqueId())
 	resource.Test(t, resource.TestCase{

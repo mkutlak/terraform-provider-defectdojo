@@ -8,6 +8,7 @@ import (
 )
 
 func TestAccCredentialMappingResource(t *testing.T) {
+	t.Parallel()
 	t.Skip("Skipped: CredentialMapping API returns 404 on create - requires investigation")
 	name := fmt.Sprintf("credmap-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
