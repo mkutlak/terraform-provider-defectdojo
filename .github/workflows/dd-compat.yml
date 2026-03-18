@@ -1,0 +1,69 @@
+name: DefectDojo Compatibility
+
+on:
+  workflow_dispatch:
+    inputs:
+      dd_versions:
+        description: "Comma-separated list of DefectDojo versions to test (e.g. 2.56.2,2.54.3)"
+        required: true
+        default: "2.56.2,2.54.3"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Build version matrix
+        id: set-matrix
+        run: |
+          VERSIONS=$(echo "${{ github.event.inputs.dd_versions }}" | jq -R -c 'split(",") | map(gsub("\\s"; ""))')
+          echo "matrix={\"dd_version\":$VERSIONS}" >> "$GITHUB_OUTPUT"
+
+  compat:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: "go.mod"
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.*"
+          terraform_wrapper: false
+
+      - name: Start DefectDojo ${{ matrix.dd_version }}
+        run: DD_VERSION=${{ matrix.dd_version }} make dd-up
+
+      - name: Fetch OpenAPI spec
+        run: DD_VERSION=${{ matrix.dd_version }} make dd-spec
+
+      - name: Run acceptance tests
+        run: make testacc-local
+        env:
+          TF_ACC: "1"
+
+      - name: Upload OpenAPI spec
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-spec-${{ matrix.dd_version }}
+          path: openapi-specs/${{ matrix.dd_version }}/defect_dojo.json
+          retention-days: 90
+
+      - name: Stop DefectDojo
+        if: always()
+        run: make dd-down

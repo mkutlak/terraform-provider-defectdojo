@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: defectdojo/defectdojo-nginx:2.54.3
+    image: defectdojo/defectdojo-nginx:${DD_VERSION:-2.54.3}
     ports:
       - "8080:8080"
     environment:
@@ -11,7 +11,7 @@ services:
       - uwsgi
 
   uwsgi:
-    image: defectdojo/defectdojo-django:2.54.3
+    image: defectdojo/defectdojo-django:${DD_VERSION:-2.54.3}
     entrypoint: ["/wait-for-it.sh", "postgres:5432", "-t", "30", "--", "/entrypoint-uwsgi.sh"]
     environment:
       DD_DATABASE_ENGINE: django.db.backends.postgresql
@@ -35,7 +35,7 @@ services:
         condition: service_completed_successfully
 
   celerybeat:
-    image: defectdojo/defectdojo-django:2.54.3
+    image: defectdojo/defectdojo-django:${DD_VERSION:-2.54.3}
     entrypoint: ["/wait-for-it.sh", "postgres:5432", "-t", "30", "--", "/entrypoint-celery-beat.sh"]
     environment:
       DD_DATABASE_ENGINE: django.db.backends.postgresql
@@ -54,7 +54,7 @@ services:
         condition: service_healthy
 
   celeryworker:
-    image: defectdojo/defectdojo-django:2.54.3
+    image: defectdojo/defectdojo-django:${DD_VERSION:-2.54.3}
     entrypoint: ["/wait-for-it.sh", "postgres:5432", "-t", "30", "--", "/entrypoint-celery-worker.sh"]
     environment:
       DD_DATABASE_ENGINE: django.db.backends.postgresql
@@ -73,7 +73,7 @@ services:
         condition: service_healthy
 
   initializer:
-    image: defectdojo/defectdojo-django:2.54.3
+    image: defectdojo/defectdojo-django:${DD_VERSION:-2.54.3}
     entrypoint: ["/wait-for-it.sh", "postgres:5432", "-t", "30", "--", "/entrypoint-initializer.sh"]
     environment:
       DD_DATABASE_ENGINE: django.db.backends.postgresql

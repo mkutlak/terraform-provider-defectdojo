@@ -1,5 +1,8 @@
 default: testacc
 
+DD_VERSION ?= 2.54.3
+export DD_VERSION
+
 # Run acceptance tests
 .PHONY: testacc
 testacc:
@@ -44,3 +47,27 @@ testacc-local:
 	DEFECTDOJO_USERNAME=admin \
 	DEFECTDOJO_PASSWORD=testpassword \
 	TF_ACC=1 go test ./internal/provider/ -v $(TESTARGS) -timeout 120m -parallel=4
+
+# Fetch OpenAPI spec from running DefectDojo instance
+.PHONY: dd-spec
+dd-spec:
+	@echo "Fetching OpenAPI spec from DefectDojo $(DD_VERSION)..."
+	@mkdir -p openapi-specs/$(DD_VERSION)
+	@TOKEN=$$(curl -sf -X POST http://localhost:8080/api/v2/api-token-auth/ \
+		-H 'Content-Type: application/json' \
+		-d '{"username":"admin","password":"testpassword"}' | \
+		python3 -c "import sys,json; print(json.load(sys.stdin)['token'])") && \
+	curl -sf http://localhost:8080/api/v2/oa3/schema/?format=json \
+		-H "Authorization: Token $$TOKEN" \
+		-o openapi-specs/$(DD_VERSION)/defect_dojo.json && \
+	echo "Saved to openapi-specs/$(DD_VERSION)/defect_dojo.json"
+
+# Run version compatibility checks (spec collection only)
+.PHONY: dd-compat
+dd-compat:
+	bash scripts/dd-version-compat.sh
+
+# Run compatibility checks with acceptance tests
+.PHONY: dd-compat-test
+dd-compat-test:
+	bash scripts/dd-version-compat.sh --test

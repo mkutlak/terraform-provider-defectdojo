@@ -34,8 +34,11 @@ website/vendor
 # Keep windows files with windows line endings
 *.winfile eol=crlf
 
-# Provider binary and generated API spec
+# Provider binary
 terraform-provider-defectdojo
+
+# Root-level OpenAPI spec (versioned specs go in openapi-specs/)
+defect_dojo.json
 
 # Oh-My-Claude
 .omc

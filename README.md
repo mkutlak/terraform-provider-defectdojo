@@ -2,7 +2,7 @@
 
 [DefectDojo API Terraform Provider](https://registry.terraform.io/providers/mkutlak/defectdojo)
 
-Terraform provider for managing [DefectDojo](https://www.defectdojo.org/) resources. Supports DefectDojo API v2.54.3.
+Terraform provider for managing [DefectDojo](https://www.defectdojo.org/) resources. See the [provider documentation](https://registry.terraform.io/providers/mkutlak/defectdojo/latest/docs) for supported DefectDojo versions.
 
 ## Requirements
 
@@ -152,12 +152,16 @@ TESTARGS="-run TestFunctionName" make testacc
 
 ### Local DefectDojo for Testing
 
-A Docker Compose setup is included for running a local DefectDojo v2.54.3 instance:
+A Docker Compose setup is included for running a local DefectDojo instance:
 
 ```shell
-make dd-up      # Start DefectDojo (wait ~60s for initialization)
-make testacc-local  # Run acceptance tests against local instance
-make dd-down    # Stop and clean up
+make dd-up                  # Start DefectDojo (default v2.54.3)
+DD_VERSION=2.42.0 make dd-up  # Start a specific version
+make dd-spec                # Fetch OpenAPI spec from running instance
+make testacc-local          # Run acceptance tests against local instance
+make dd-down                # Stop and clean up
+make dd-compat              # Run compat checks against supported versions
+make dd-compat-test         # Compat checks + acceptance tests
 ```
 
 Default credentials: `admin` / `testpassword`
