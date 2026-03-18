@@ -51,6 +51,38 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [0.2.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.1.2...v0.2.0) (2026-03-18)
+
+
+### Features
+
+* add comprehensive set of resources and data sources ([20bd4d2](https://github.com/mkutlak/terraform-provider-defectdojo/commit/20bd4d28b0401055f5a2c5ff9bbb30e66b0cc6cf))
+* implement 0.1.0-rc1 changes and refactor to a new namespace ([3da79fe](https://github.com/mkutlak/terraform-provider-defectdojo/commit/3da79fe3172989ccad8a31f6b87d5ba3dfb3e7df))
+
+
+### Bug Fixes
+
+* enable parallel execution for acceptance tests and update manifest to v0.1.1 ([191079f](https://github.com/mkutlak/terraform-provider-defectdojo/commit/191079f7b3c750bdde746e5eb96058e39b3fa7c3))
+* improve api error handling and resource data population logic ([ffe884f](https://github.com/mkutlak/terraform-provider-defectdojo/commit/ffe884f0d4b67d2d0d4e25da5020815f2a5bc20c))
+
+
+### Miscellaneous
+
+* **master:** release 0.1.0 ([302f2cd](https://github.com/mkutlak/terraform-provider-defectdojo/commit/302f2cd095053b33ab1f50b7de85fcd47680e38a))
+* **master:** release 0.1.0 ([f4b69ea](https://github.com/mkutlak/terraform-provider-defectdojo/commit/f4b69eab5f12b7c57f6b010aefba75c2d9f6336c))
+* **master:** release 0.1.2 ([05e51fe](https://github.com/mkutlak/terraform-provider-defectdojo/commit/05e51fe7f38ef8be3b132db3cda8db9626952b79))
+* **master:** release 0.1.2 ([503c3d8](https://github.com/mkutlak/terraform-provider-defectdojo/commit/503c3d8e337aeb423352f33e8335a8517b72ad38))
+* update CI workflows, add CLAUDE.md, and update .gitignore ([8df7195](https://github.com/mkutlak/terraform-provider-defectdojo/commit/8df719594049f854041d06143c4d3c33004180a0))
+* update dependencies in go.mod and go.sum ([6df6327](https://github.com/mkutlak/terraform-provider-defectdojo/commit/6df632715d65bc39d3d483b9e52e365fcabdef67))
+
+
+### CI/CD
+
+* add setup-terraform to test workflow ([ab474c7](https://github.com/mkutlak/terraform-provider-defectdojo/commit/ab474c7c979f9af0e36e228a0a108d701372734b))
+* Add token to release-please workflow ([0656107](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0656107a7e081eb4670bebb63e1888b609dde84c))
+* Fix version from 0.1.0-rc1 to 0.0.0 ([4f3b2dc](https://github.com/mkutlak/terraform-provider-defectdojo/commit/4f3b2dc20a5c327b04712c0cf18c90d2aa94c4af))
+* setup release-please and improve local testing environment ([416f653](https://github.com/mkutlak/terraform-provider-defectdojo/commit/416f653b22a763742565be279cbc284f0a2dde96))
+
 ## [0.1.2](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.1.1...v0.1.2) (2026-03-18)
 
 
