@@ -13,11 +13,8 @@ import (
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
-//type jiraProductConfigurationResourceType struct{}
-
 func (t *jiraProductConfigurationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "A Jira Product Configuration is the connection between a Product and a Jira Instance. It defines the Product's settings for pushing Findings to Jira.",
 
 		Attributes: map[string]schema.Attribute{
@@ -114,7 +111,7 @@ func (t *jiraProductConfigurationResource) Schema(ctx context.Context, req resou
 				Computed:            true,
 			},
 
-			"id": schema.StringAttribute{ // the id (for import purposes) MUST be a string
+			"id": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "Identifier",
 				PlanModifiers: []planmodifier.String{
@@ -174,34 +171,46 @@ func jiraProjectToRequest(jp dd.JIRAProject) dd.JIRAProjectRequest {
 func (ddr *jiraProductConfigurationDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	reqBody := jiraProjectToRequest(ddr.JIRAProject)
 	apiResp, err := client.JiraProductConfigurationsCreateWithResponse(ctx, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON201 != nil {
 		ddr.JIRAProject = *apiResp.JSON201
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *jiraProductConfigurationDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.JiraProductConfigurationsRetrieveWithResponse(ctx, idNumber, &dd.JiraProductConfigurationsRetrieveParams{})
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.JIRAProject = *apiResp.JSON200
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *jiraProductConfigurationDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	reqBody := jiraProjectToRequest(ddr.JIRAProject)
 	apiResp, err := client.JiraProductConfigurationsUpdateWithResponse(ctx, idNumber, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.JIRAProject = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *jiraProductConfigurationDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.JiraProductConfigurationsDestroyWithResponse(ctx, idNumber)
-	return apiResp.StatusCode(), apiResp.Body, err
+	if err != nil {
+		return 0, nil, err
+	}
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (d *jiraProductConfigurationResourceData) id() types.String {
@@ -218,7 +227,6 @@ type jiraProductConfigurationResource struct {
 	terraformResource
 }
 
-// Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &jiraProductConfigurationResource{}
 var _ resource.ResourceWithImportState = &jiraProductConfigurationResource{}
 

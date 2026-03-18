@@ -270,7 +270,6 @@ type engagementResource struct {
 
 var _ resource.Resource = &engagementResource{}
 var _ resource.ResourceWithImportState = &engagementResource{}
-var _ resource.ResourceWithConfigure = &engagementResource{}
 
 func NewEngagementResource() resource.Resource {
 	return &engagementResource{

@@ -16,7 +16,6 @@ import (
 
 func (t productTypeResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "DefectDojo Product Type",
 
 		Attributes: map[string]schema.Attribute{
@@ -42,7 +41,7 @@ func (t productTypeResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
 			},
-			"id": schema.StringAttribute{ // the id (for import purposes) MUST be a string
+			"id": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "Identifier",
 				PlanModifiers: []planmodifier.String{
@@ -78,41 +77,52 @@ func productTypeToRequest(pt dd.ProductType) dd.ProductTypeRequest {
 func (ddr *productTypeDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	reqBody := productTypeToRequest(ddr.ProductType)
 	apiResp, err := client.ProductTypesCreateWithResponse(ctx, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON201 != nil {
 		ddr.ProductType = *apiResp.JSON201
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productTypeDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.ProductTypesRetrieveWithResponse(ctx, idNumber, &dd.ProductTypesRetrieveParams{})
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.ProductType = *apiResp.JSON200
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productTypeDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	reqBody := productTypeToRequest(ddr.ProductType)
 	apiResp, err := client.ProductTypesUpdateWithResponse(ctx, idNumber, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.ProductType = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productTypeDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.ProductTypesDestroyWithResponse(ctx, idNumber)
-	return apiResp.StatusCode(), apiResp.Body, err
+	if err != nil {
+		return 0, nil, err
+	}
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type productTypeResource struct {
 	terraformResource
 }
 
-// Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &productTypeResource{}
 var _ resource.ResourceWithImportState = &productTypeResource{}
 

@@ -24,7 +24,7 @@ func testAccDeleteResourceOutsideTerraform(resourceName string) resource.TestChe
 		// retrieve the resource by name from state
 		rs, ok := s.RootModule().Resources[resourceName]
 		if !ok {
-			return fmt.Errorf("Not found: %s", resourceName)
+			return fmt.Errorf("not found: %s", resourceName)
 		}
 
 		if rs.Primary.ID == "" {
@@ -53,7 +53,7 @@ func testAccDeleteResourceOutsideTerraform(resourceName string) resource.TestChe
 				return err
 			}
 		} else {
-			return fmt.Errorf("Unknown type: %s, %s", resourceName, err)
+			return fmt.Errorf("unknown type: %s, %s", resourceName, err)
 		}
 
 		if resp.StatusCode != 204 {

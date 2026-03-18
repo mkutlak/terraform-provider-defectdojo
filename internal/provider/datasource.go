@@ -45,7 +45,7 @@ func (r terraformDatasource) Read(ctx context.Context, req datasource.ReadReques
 	if data.id().IsNull() {
 		resp.Diagnostics.AddError(
 			"Could not Retrieve Resource",
-			"The Id field was null but it is required to retrieve the product")
+			"The Id field was null but it is required to retrieve the resource")
 		return
 	}
 
@@ -53,7 +53,7 @@ func (r terraformDatasource) Read(ctx context.Context, req datasource.ReadReques
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Could not Retrieve Resource",
-			fmt.Sprintf("Error while parsing the Product ID from state: %s", err))
+			"Error while parsing the resource ID from state: "+err.Error())
 		return
 	}
 
@@ -64,16 +64,17 @@ func (r terraformDatasource) Read(ctx context.Context, req datasource.ReadReques
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Retrieving Resource",
-			fmt.Sprintf("%s", err))
+			err.Error())
 		return
 	}
 
-	if statusCode == 200 {
+	switch statusCode {
+	case 200:
 		populateResourceData(ctx, &diags, &data, ddResource)
-	} else if statusCode == 404 {
+	case 404:
 		resp.State.RemoveResource(ctx)
 		return
-	} else {
+	default:
 		resp.Diagnostics.AddError(
 			"API Error Retrieving Resource",
 			fmt.Sprintf("Unexpected response code from API: %d", statusCode)+

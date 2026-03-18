@@ -88,32 +88,44 @@ func toolProductSettingsToRequest(t dd.ToolProductSettings) dd.ToolProductSettin
 func (ddr *toolProductSettingsDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	reqBody := toolProductSettingsToRequest(ddr.ToolProductSettings)
 	apiResp, err := client.ToolProductSettingsCreateWithResponse(ctx, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON201 != nil {
 		ddr.ToolProductSettings = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *toolProductSettingsDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.ToolProductSettingsRetrieveWithResponse(ctx, idNumber, &dd.ToolProductSettingsRetrieveParams{})
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.ToolProductSettings = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *toolProductSettingsDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	reqBody := toolProductSettingsToRequest(ddr.ToolProductSettings)
 	apiResp, err := client.ToolProductSettingsUpdateWithResponse(ctx, idNumber, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.ToolProductSettings = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *toolProductSettingsDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.ToolProductSettingsDestroyWithResponse(ctx, idNumber)
-	return apiResp.StatusCode(), apiResp.Body, err
+	if err != nil {
+		return 0, nil, err
+	}
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (d *toolProductSettingsResourceData) id() types.String {

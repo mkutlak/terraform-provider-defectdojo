@@ -113,7 +113,7 @@ func (ddr *userContactInfoDefectdojoResource) createApiCall(ctx context.Context,
 	if apiResp.JSON201 != nil {
 		ddr.UserContactInfo = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *userContactInfoDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -124,7 +124,7 @@ func (ddr *userContactInfoDefectdojoResource) readApiCall(ctx context.Context, c
 	if apiResp.JSON200 != nil {
 		ddr.UserContactInfo = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *userContactInfoDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -136,7 +136,7 @@ func (ddr *userContactInfoDefectdojoResource) updateApiCall(ctx context.Context,
 	if apiResp.JSON200 != nil {
 		ddr.UserContactInfo = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *userContactInfoDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -144,7 +144,7 @@ func (ddr *userContactInfoDefectdojoResource) deleteApiCall(ctx context.Context,
 	if err != nil {
 		return 0, nil, err
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type userContactInfoResource struct {

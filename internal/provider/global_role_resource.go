@@ -67,7 +67,7 @@ func (ddr *globalRoleDefectdojoResource) createApiCall(ctx context.Context, clie
 	if apiResp.JSON201 != nil {
 		ddr.GlobalRole = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *globalRoleDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -78,7 +78,7 @@ func (ddr *globalRoleDefectdojoResource) readApiCall(ctx context.Context, client
 	if apiResp.JSON200 != nil {
 		ddr.GlobalRole = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *globalRoleDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -90,7 +90,7 @@ func (ddr *globalRoleDefectdojoResource) updateApiCall(ctx context.Context, clie
 	if apiResp.JSON200 != nil {
 		ddr.GlobalRole = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *globalRoleDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -98,7 +98,7 @@ func (ddr *globalRoleDefectdojoResource) deleteApiCall(ctx context.Context, clie
 	if err != nil {
 		return 0, nil, err
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type globalRoleResource struct {

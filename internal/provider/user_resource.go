@@ -100,7 +100,7 @@ func (ddr *userDefectdojoResource) createApiCall(ctx context.Context, client *dd
 	if apiResp.JSON201 != nil {
 		ddr.User = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *userDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -111,7 +111,7 @@ func (ddr *userDefectdojoResource) readApiCall(ctx context.Context, client *dd.C
 	if apiResp.JSON200 != nil {
 		ddr.User = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *userDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -124,7 +124,7 @@ func (ddr *userDefectdojoResource) updateApiCall(ctx context.Context, client *dd
 	if apiResp.JSON200 != nil {
 		ddr.User = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *userDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -132,7 +132,7 @@ func (ddr *userDefectdojoResource) deleteApiCall(ctx context.Context, client *dd
 	if err != nil {
 		return 0, nil, err
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type userResource struct {

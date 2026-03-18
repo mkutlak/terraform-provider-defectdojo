@@ -81,32 +81,44 @@ func regulationToRequest(obj dd.Regulation) dd.RegulationRequest {
 func (ddr *regulationDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	reqBody := regulationToRequest(ddr.Regulation)
 	apiResp, err := client.RegulationsCreateWithResponse(ctx, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON201 != nil {
 		ddr.Regulation = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *regulationDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.RegulationsRetrieveWithResponse(ctx, idNumber)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.Regulation = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *regulationDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	reqBody := regulationToRequest(ddr.Regulation)
 	apiResp, err := client.RegulationsUpdateWithResponse(ctx, idNumber, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.Regulation = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *regulationDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.RegulationsDestroyWithResponse(ctx, idNumber)
-	return apiResp.StatusCode(), apiResp.Body, err
+	if err != nil {
+		return 0, nil, err
+	}
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type regulationResource struct {

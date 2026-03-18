@@ -14,7 +14,6 @@ import (
 
 func (t productTypeDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "Data source for Defect Dojo Product Type. You can specify either the `id` or the `name` to look up the Product Type.",
 
 		Attributes: map[string]schema.Attribute{
@@ -114,7 +113,7 @@ func (d productTypeDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Retrieving Resource",
-			fmt.Sprintf("%s", err))
+			err.Error())
 		return
 	}
 

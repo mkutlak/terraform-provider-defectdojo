@@ -159,8 +159,8 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 
 	assert.Equal(t, ddEng.Product, expectedProduct)
 	assert.Equal(t, *ddEng.Name, expectedName)
-	assert.Equal(t, ddEng.TargetStart.Time.Format("2006-01-02"), "2025-01-01")
-	assert.Equal(t, ddEng.TargetEnd.Time.Format("2006-01-02"), "2025-12-31")
+	assert.Equal(t, ddEng.TargetStart.Format("2006-01-02"), "2025-01-01")
+	assert.Equal(t, ddEng.TargetEnd.Format("2006-01-02"), "2025-12-31")
 	assert.Equal(t, *ddEng.Version, expectedVersion)
 	assert.Equal(t, *ddEng.ThreatModel, expectedThreatModel)
 }

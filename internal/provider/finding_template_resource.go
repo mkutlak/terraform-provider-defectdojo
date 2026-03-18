@@ -169,32 +169,44 @@ func findingTemplateToRequest(obj dd.FindingTemplate) dd.FindingTemplateRequest 
 func (ddr *findingTemplateDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	reqBody := findingTemplateToRequest(ddr.FindingTemplate)
 	apiResp, err := client.FindingTemplatesCreateWithResponse(ctx, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON201 != nil {
 		ddr.FindingTemplate = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *findingTemplateDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.FindingTemplatesRetrieveWithResponse(ctx, idNumber)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.FindingTemplate = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *findingTemplateDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	reqBody := findingTemplateToRequest(ddr.FindingTemplate)
 	apiResp, err := client.FindingTemplatesUpdateWithResponse(ctx, idNumber, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.FindingTemplate = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *findingTemplateDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.FindingTemplatesDestroyWithResponse(ctx, idNumber)
-	return apiResp.StatusCode(), apiResp.Body, err
+	if err != nil {
+		return 0, nil, err
+	}
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type findingTemplateResource struct {

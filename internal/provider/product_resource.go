@@ -22,7 +22,6 @@ import (
 
 func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "DefectDojo Product",
 
 		Attributes: map[string]schema.Attribute{
@@ -246,51 +245,61 @@ func (ddr *productDefectdojoResource) createApiCall(ctx context.Context, client 
 	tflog.Info(ctx, "createApiCall")
 	reqBody := productToRequest(ddr.Product)
 	apiResp, err := client.ProductsCreateWithResponse(ctx, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
 	if apiResp.JSON201 != nil {
 		ddr.Product = *apiResp.JSON201
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	tflog.Info(ctx, "readApiCall")
 	apiResp, err := client.ProductsRetrieveWithResponse(ctx, idNumber, &dd.ProductsRetrieveParams{})
+	if err != nil {
+		return 0, nil, err
+	}
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
 	if apiResp.JSON200 != nil {
 		ddr.Product = *apiResp.JSON200
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	tflog.Info(ctx, "updateApiCall")
 	reqBody := productToRequest(ddr.Product)
 	apiResp, err := client.ProductsUpdateWithResponse(ctx, idNumber, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
 	if apiResp.JSON200 != nil {
 		ddr.Product = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	tflog.Info(ctx, "deleteApiCall")
 	apiResp, err := client.ProductsDestroyWithResponse(ctx, idNumber)
+	if err != nil {
+		return 0, nil, err
+	}
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type productResource struct {
 	terraformResource
 }
 
-// Ensure provider defined types fully satisfy framework interfaces
 var _ resource.Resource = &productResource{}
 var _ resource.ResourceWithImportState = &productResource{}
-var _ resource.ResourceWithConfigure = &productResource{}
 
 func NewProductResource() resource.Resource {
 	return &productResource{

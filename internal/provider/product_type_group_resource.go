@@ -67,7 +67,7 @@ func (ddr *productTypeGroupDefectdojoResource) createApiCall(ctx context.Context
 	if apiResp.JSON201 != nil {
 		ddr.ProductTypeGroup = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productTypeGroupDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -78,7 +78,7 @@ func (ddr *productTypeGroupDefectdojoResource) readApiCall(ctx context.Context, 
 	if apiResp.JSON200 != nil {
 		ddr.ProductTypeGroup = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productTypeGroupDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -90,7 +90,7 @@ func (ddr *productTypeGroupDefectdojoResource) updateApiCall(ctx context.Context
 	if apiResp.JSON200 != nil {
 		ddr.ProductTypeGroup = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productTypeGroupDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -98,7 +98,7 @@ func (ddr *productTypeGroupDefectdojoResource) deleteApiCall(ctx context.Context
 	if err != nil {
 		return 0, nil, err
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type productTypeGroupResource struct {

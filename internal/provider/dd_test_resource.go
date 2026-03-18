@@ -165,22 +165,22 @@ func (ddr *ddTestDefectdojoResource) createApiCall(ctx context.Context, client *
 	if apiResp.JSON201 != nil {
 		// Copy fields from Test back into TestCreate
 		t := apiResp.JSON201
-		ddr.TestCreate.Id = t.Id
-		ddr.TestCreate.TestType = t.TestType
-		ddr.TestCreate.Engagement = t.Engagement
-		ddr.TestCreate.TargetStart = t.TargetStart
-		ddr.TestCreate.TargetEnd = t.TargetEnd
-		ddr.TestCreate.Title = t.Title
-		ddr.TestCreate.Description = t.Description
-		ddr.TestCreate.Version = t.Version
-		ddr.TestCreate.BranchTag = t.BranchTag
-		ddr.TestCreate.CommitHash = t.CommitHash
-		ddr.TestCreate.BuildId = t.BuildId
-		ddr.TestCreate.PercentComplete = t.PercentComplete
-		ddr.TestCreate.Environment = t.Environment
-		ddr.TestCreate.Lead = t.Lead
-		ddr.TestCreate.ScanType = t.ScanType
-		ddr.TestCreate.Tags = t.Tags
+		ddr.Id = t.Id
+		ddr.TestType = t.TestType
+		ddr.Engagement = t.Engagement
+		ddr.TargetStart = t.TargetStart
+		ddr.TargetEnd = t.TargetEnd
+		ddr.Title = t.Title
+		ddr.Description = t.Description
+		ddr.Version = t.Version
+		ddr.BranchTag = t.BranchTag
+		ddr.CommitHash = t.CommitHash
+		ddr.BuildId = t.BuildId
+		ddr.PercentComplete = t.PercentComplete
+		ddr.Environment = t.Environment
+		ddr.Lead = t.Lead
+		ddr.ScanType = t.ScanType
+		ddr.Tags = t.Tags
 	}
 	return apiResp.StatusCode(), apiResp.Body, nil
 }
@@ -194,24 +194,24 @@ func (ddr *ddTestDefectdojoResource) readApiCall(ctx context.Context, client *dd
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
 	if apiResp.JSON200 != nil {
 		t := apiResp.JSON200
-		ddr.TestCreate.Id = t.Id
-		ddr.TestCreate.TestType = t.TestType
+		ddr.Id = t.Id
+		ddr.TestType = t.TestType
 		if t.Engagement != nil {
-			ddr.TestCreate.Engagement = *t.Engagement
+			ddr.Engagement = *t.Engagement
 		}
-		ddr.TestCreate.TargetStart = t.TargetStart
-		ddr.TestCreate.TargetEnd = t.TargetEnd
-		ddr.TestCreate.Title = t.Title
-		ddr.TestCreate.Description = t.Description
-		ddr.TestCreate.Version = t.Version
-		ddr.TestCreate.BranchTag = t.BranchTag
-		ddr.TestCreate.CommitHash = t.CommitHash
-		ddr.TestCreate.BuildId = t.BuildId
-		ddr.TestCreate.PercentComplete = t.PercentComplete
-		ddr.TestCreate.Environment = t.Environment
-		ddr.TestCreate.Lead = t.Lead
-		ddr.TestCreate.ScanType = t.ScanType
-		ddr.TestCreate.Tags = t.Tags
+		ddr.TargetStart = t.TargetStart
+		ddr.TargetEnd = t.TargetEnd
+		ddr.Title = t.Title
+		ddr.Description = t.Description
+		ddr.Version = t.Version
+		ddr.BranchTag = t.BranchTag
+		ddr.CommitHash = t.CommitHash
+		ddr.BuildId = t.BuildId
+		ddr.PercentComplete = t.PercentComplete
+		ddr.Environment = t.Environment
+		ddr.Lead = t.Lead
+		ddr.ScanType = t.ScanType
+		ddr.Tags = t.Tags
 	}
 	return apiResp.StatusCode(), apiResp.Body, nil
 }
@@ -226,24 +226,24 @@ func (ddr *ddTestDefectdojoResource) updateApiCall(ctx context.Context, client *
 	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
 	if apiResp.JSON200 != nil {
 		t := apiResp.JSON200
-		ddr.TestCreate.Id = t.Id
-		ddr.TestCreate.TestType = t.TestType
+		ddr.Id = t.Id
+		ddr.TestType = t.TestType
 		if t.Engagement != nil {
-			ddr.TestCreate.Engagement = *t.Engagement
+			ddr.Engagement = *t.Engagement
 		}
-		ddr.TestCreate.TargetStart = t.TargetStart
-		ddr.TestCreate.TargetEnd = t.TargetEnd
-		ddr.TestCreate.Title = t.Title
-		ddr.TestCreate.Description = t.Description
-		ddr.TestCreate.Version = t.Version
-		ddr.TestCreate.BranchTag = t.BranchTag
-		ddr.TestCreate.CommitHash = t.CommitHash
-		ddr.TestCreate.BuildId = t.BuildId
-		ddr.TestCreate.PercentComplete = t.PercentComplete
-		ddr.TestCreate.Environment = t.Environment
-		ddr.TestCreate.Lead = t.Lead
-		ddr.TestCreate.ScanType = t.ScanType
-		ddr.TestCreate.Tags = t.Tags
+		ddr.TargetStart = t.TargetStart
+		ddr.TargetEnd = t.TargetEnd
+		ddr.Title = t.Title
+		ddr.Description = t.Description
+		ddr.Version = t.Version
+		ddr.BranchTag = t.BranchTag
+		ddr.CommitHash = t.CommitHash
+		ddr.BuildId = t.BuildId
+		ddr.PercentComplete = t.PercentComplete
+		ddr.Environment = t.Environment
+		ddr.Lead = t.Lead
+		ddr.ScanType = t.ScanType
+		ddr.Tags = t.Tags
 	}
 	return apiResp.StatusCode(), apiResp.Body, nil
 }
@@ -264,7 +264,6 @@ type ddTestResource struct {
 
 var _ resource.Resource = &ddTestResource{}
 var _ resource.ResourceWithImportState = &ddTestResource{}
-var _ resource.ResourceWithConfigure = &ddTestResource{}
 
 func NewDDTestResource() resource.Resource {
 	return &ddTestResource{

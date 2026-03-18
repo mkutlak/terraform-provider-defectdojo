@@ -76,32 +76,44 @@ func productAPIScanConfigurationToRequest(p dd.ProductAPIScanConfiguration) dd.P
 func (ddr *productAPIScanConfigurationDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	reqBody := productAPIScanConfigurationToRequest(ddr.ProductAPIScanConfiguration)
 	apiResp, err := client.ProductApiScanConfigurationsCreateWithResponse(ctx, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON201 != nil {
 		ddr.ProductAPIScanConfiguration = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productAPIScanConfigurationDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.ProductApiScanConfigurationsRetrieveWithResponse(ctx, idNumber, &dd.ProductApiScanConfigurationsRetrieveParams{})
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.ProductAPIScanConfiguration = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productAPIScanConfigurationDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	reqBody := productAPIScanConfigurationToRequest(ddr.ProductAPIScanConfiguration)
 	apiResp, err := client.ProductApiScanConfigurationsUpdateWithResponse(ctx, idNumber, reqBody)
+	if err != nil {
+		return 0, nil, err
+	}
 	if apiResp.JSON200 != nil {
 		ddr.ProductAPIScanConfiguration = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *productAPIScanConfigurationDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	apiResp, err := client.ProductApiScanConfigurationsDestroyWithResponse(ctx, idNumber)
-	return apiResp.StatusCode(), apiResp.Body, err
+	if err != nil {
+		return 0, nil, err
+	}
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (d *productAPIScanConfigurationResourceData) id() types.String {

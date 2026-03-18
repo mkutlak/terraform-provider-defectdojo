@@ -14,7 +14,6 @@ type productDataSource struct {
 
 func (t productDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "Data source for Defect Dojo Product",
 
 		Attributes: map[string]schema.Attribute{
@@ -120,7 +119,6 @@ func (d productDataSource) Metadata(ctx context.Context, req datasource.Metadata
 	resp.TypeName = req.ProviderTypeName + "_product"
 }
 
-// Ensure the implementation satisfies the desired interfaces.
 var _ datasource.DataSource = &productDataSource{}
 
 func NewProductDataSource() datasource.DataSource {

@@ -305,19 +305,6 @@ resource "defectdojo_product" "test" {
 `, name)
 }
 
-func testAccProductResourceMinimalConfig(name string) string {
-	return fmt.Sprintf(`
-provider "defectdojo" {}
-resource "defectdojo_product" "test" {
-  name = %[1]q
-  description = trimspace(<<-DOC
-	  test
-  DOC
-	)
-  product_type_id = 1
-}
-`, name)
-}
 
 func testAccProductResourceInvalidConfig(name string) string {
 	return fmt.Sprintf(`

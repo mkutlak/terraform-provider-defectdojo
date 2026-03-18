@@ -67,7 +67,7 @@ func (ddr *dojoGroupMemberDefectdojoResource) createApiCall(ctx context.Context,
 	if apiResp.JSON201 != nil {
 		ddr.DojoGroupMember = *apiResp.JSON201
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *dojoGroupMemberDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -78,7 +78,7 @@ func (ddr *dojoGroupMemberDefectdojoResource) readApiCall(ctx context.Context, c
 	if apiResp.JSON200 != nil {
 		ddr.DojoGroupMember = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *dojoGroupMemberDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -90,7 +90,7 @@ func (ddr *dojoGroupMemberDefectdojoResource) updateApiCall(ctx context.Context,
 	if apiResp.JSON200 != nil {
 		ddr.DojoGroupMember = *apiResp.JSON200
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 func (ddr *dojoGroupMemberDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
@@ -98,7 +98,7 @@ func (ddr *dojoGroupMemberDefectdojoResource) deleteApiCall(ctx context.Context,
 	if err != nil {
 		return 0, nil, err
 	}
-	return apiResp.StatusCode(), apiResp.Body, err
+	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
 type dojoGroupMemberResource struct {

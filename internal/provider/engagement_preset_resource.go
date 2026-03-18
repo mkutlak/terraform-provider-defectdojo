@@ -137,7 +137,6 @@ type engagementPresetResource struct {
 
 var _ resource.Resource = &engagementPresetResource{}
 var _ resource.ResourceWithImportState = &engagementPresetResource{}
-var _ resource.ResourceWithConfigure = &engagementPresetResource{}
 
 func NewEngagementPresetResource() resource.Resource {
 	return &engagementPresetResource{

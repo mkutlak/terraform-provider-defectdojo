@@ -33,7 +33,7 @@ type DefectDojoProvider struct {
 	version string
 }
 
-// Ensure ScaffoldingProvider satisfies various provider interfaces.
+// Ensure DefectDojoProvider satisfies various provider interfaces.
 var _ provider.Provider = &DefectDojoProvider{}
 
 // providerData can be used to store data from the Terraform configuration.
@@ -50,7 +50,7 @@ func newClient(ctx context.Context, url string, token string, user string, pass 
 	if token == "" && user != "" && pass != "" {
 		tokenclient, err := dd.NewClientWithResponses(url)
 		if err != nil {
-			return nil, fmt.Errorf("Error instantiating the client. This should never happen.")
+			return nil, fmt.Errorf("error instantiating the client")
 		}
 
 		tokenResponse, err := tokenclient.ApiTokenAuthCreateWithResponse(ctx, dd.ApiTokenAuthCreateJSONRequestBody{
@@ -59,7 +59,7 @@ func newClient(ctx context.Context, url string, token string, user string, pass 
 		})
 
 		if err != nil {
-			return nil, fmt.Errorf("Network error retrieving the token via the API: %s", err)
+			return nil, fmt.Errorf("network error retrieving the token via the API: %s", err)
 		}
 
 		if tokenResponse.StatusCode() == 200 {
@@ -67,22 +67,22 @@ func newClient(ctx context.Context, url string, token string, user string, pass 
 				token = *tokenResponse.JSON200.Token
 			}
 		} else {
-			return nil, fmt.Errorf("Error retrieving the api token via the API. Unexpected response code: %d", tokenResponse.StatusCode())
+			return nil, fmt.Errorf("error retrieving the api token via the API, unexpected response code: %d", tokenResponse.StatusCode())
 		}
 	}
 
 	if token == "" {
-		return nil, fmt.Errorf("Could not determine the api key for the defectdojo service. No api_key value provided and no DEFECTDOJO_APIKEY environment variable.")
+		return nil, fmt.Errorf("could not determine the api key for the defectdojo service: no api_key value provided and no DEFECTDOJO_APIKEY environment variable")
 	}
 
 	tokenProvider, err := securityprovider.NewSecurityProviderApiKey("header", "Authorization", fmt.Sprintf("Token %s", token))
 	if err != nil {
-		return nil, fmt.Errorf("Error instantiating the security provider. This should never happen.")
+		return nil, fmt.Errorf("error instantiating the security provider")
 	}
 
 	client, err := dd.NewClientWithResponses(url, dd.WithRequestEditorFn(tokenProvider.Intercept))
 	if err != nil {
-		return nil, fmt.Errorf("Error instantiating the client. This should never happen.")
+		return nil, fmt.Errorf("error instantiating the client")
 	}
 
 	return client, nil
@@ -146,7 +146,7 @@ func (p *DefectDojoProvider) Configure(ctx context.Context, req provider.Configu
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to configure provider",
-			fmt.Sprintf("%s", err),
+			err.Error(),
 		)
 		p.configured = false
 		p.client = nil
@@ -167,11 +167,9 @@ func (p *DefectDojoProvider) Metadata(ctx context.Context, req provider.Metadata
 
 func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		// Existing resources
 		NewProductResource,
 		NewProductTypeResource,
 		NewJiraProductConfigurationResource,
-		// Stage 5: Infrastructure resources
 		NewDevelopmentEnvironmentResource,
 		NewRegulationResource,
 		NewToolTypeResource,
@@ -180,7 +178,6 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewNoteTypeResource,
 		NewNetworkLocationResource,
 		NewLanguageTypeResource,
-		// Stage 6: Security & Access Control resources
 		NewUserResource,
 		NewUserContactInfoResource,
 		NewDojoGroupResource,
@@ -191,13 +188,11 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewProductTypeMemberResource,
 		NewProductTypeGroupResource,
 		NewCredentialResource,
-		// Stage 7: Vulnerability Management resources
 		NewEngagementResource,
 		NewEngagementPresetResource,
 		NewDDTestResource,
 		NewFindingTemplateResource,
 		NewEndpointResource,
-		// Stage 8: Integration resources
 		NewJiraInstanceResource,
 		NewToolProductSettingsResource,
 		NewProductAPIScanConfigurationResource,
@@ -210,11 +205,9 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 
 func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		// Existing data sources
 		NewProductDataSource,
 		NewProductTypeDataSource,
 		NewJiraProductConfigurationDataSource,
-		// Stage 5: Infrastructure data sources
 		NewDevelopmentEnvironmentDataSource,
 		NewRegulationDataSource,
 		NewToolTypeDataSource,
@@ -223,7 +216,6 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewNoteTypeDataSource,
 		NewNetworkLocationDataSource,
 		NewLanguageTypeDataSource,
-		// Stage 6: Security & Access Control data sources
 		NewUserDataSource,
 		NewUserContactInfoDataSource,
 		NewDojoGroupDataSource,
@@ -234,13 +226,11 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewProductTypeMemberDataSource,
 		NewProductTypeGroupDataSource,
 		NewCredentialDataSource,
-		// Stage 7: Vulnerability Management data sources
 		NewEngagementDataSource,
 		NewEngagementPresetDataSource,
 		NewDDTestDataSource,
 		NewFindingTemplateDataSource,
 		NewEndpointDataSource,
-		// Stage 8: Integration data sources
 		NewJiraInstanceDataSource,
 		NewToolProductSettingsDataSource,
 		NewProductAPIScanConfigurationDataSource,
@@ -257,24 +247,20 @@ func (p *DefectDojoProvider) Schema(ctx context.Context, req provider.SchemaRequ
 			"base_url": schema.StringAttribute{
 				MarkdownDescription: "Base URL of the defectdojo installation",
 				Optional:            true,
-				Required:            false,
 			},
 			"api_key": schema.StringAttribute{
 				MarkdownDescription: "The API Key used to authenticate to defectdojo",
 				Optional:            true,
-				Required:            false,
 				Sensitive:           true,
 			},
 			"username": schema.StringAttribute{
 				MarkdownDescription: "The username used to authenticate to defectdojo. Has no effect if api_key is set.",
 				Optional:            true,
-				Required:            false,
 				Sensitive:           true,
 			},
 			"password": schema.StringAttribute{
 				MarkdownDescription: "The password used to authenticate to defectdojo. Has no effect if api_key is set.",
 				Optional:            true,
-				Required:            false,
 				Sensitive:           true,
 			},
 		},
