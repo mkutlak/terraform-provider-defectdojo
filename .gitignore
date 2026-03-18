@@ -34,5 +34,8 @@ website/vendor
 # Keep windows files with windows line endings
 *.winfile eol=crlf
 
+# Provider binary and generated API spec
+terraform-provider-defectdojo
+
 # Oh-My-Claude
 .omc
