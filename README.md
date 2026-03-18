@@ -1,6 +1,6 @@
 # terraform-provider-defectdojo
 
-[DefectDojo API Terraform Provider](https://registry.terraform.io/providers/doximity/defectdojo)
+[DefectDojo API Terraform Provider](https://registry.terraform.io/providers/mkutlak/defectdojo)
 
 Terraform provider for managing [DefectDojo](https://www.defectdojo.org/) resources. Supports DefectDojo API v2.54.3.
 
@@ -60,67 +60,67 @@ resource "defectdojo_engagement" "security_assessment" {
 
 ### Core
 
-| Resource | Data Source |
-|----------|------------|
-| `defectdojo_product` | `defectdojo_product` |
+| Resource                  | Data Source               |
+| ------------------------- | ------------------------- |
+| `defectdojo_product`      | `defectdojo_product`      |
 | `defectdojo_product_type` | `defectdojo_product_type` |
 
 ### Infrastructure
 
-| Resource | Data Source |
-|----------|------------|
+| Resource                             | Data Source                          |
+| ------------------------------------ | ------------------------------------ |
 | `defectdojo_development_environment` | `defectdojo_development_environment` |
-| `defectdojo_regulation` | `defectdojo_regulation` |
-| `defectdojo_tool_type` | `defectdojo_tool_type` |
-| `defectdojo_tool_configuration` | `defectdojo_tool_configuration` |
-| `defectdojo_sla_configuration` | `defectdojo_sla_configuration` |
-| `defectdojo_note_type` | `defectdojo_note_type` |
-| `defectdojo_network_location` | `defectdojo_network_location` |
-| `defectdojo_language_type` | `defectdojo_language_type` |
+| `defectdojo_regulation`              | `defectdojo_regulation`              |
+| `defectdojo_tool_type`               | `defectdojo_tool_type`               |
+| `defectdojo_tool_configuration`      | `defectdojo_tool_configuration`      |
+| `defectdojo_sla_configuration`       | `defectdojo_sla_configuration`       |
+| `defectdojo_note_type`               | `defectdojo_note_type`               |
+| `defectdojo_network_location`        | `defectdojo_network_location`        |
+| `defectdojo_language_type`           | `defectdojo_language_type`           |
 
 ### Security & Access Control
 
-| Resource | Data Source |
-|----------|------------|
-| `defectdojo_user` | `defectdojo_user` |
-| `defectdojo_user_contact_info` | `defectdojo_user_contact_info` |
-| `defectdojo_dojo_group` | `defectdojo_dojo_group` |
-| `defectdojo_dojo_group_member` | `defectdojo_dojo_group_member` |
-| `defectdojo_global_role` | `defectdojo_global_role` |
-| `defectdojo_product_member` | `defectdojo_product_member` |
-| `defectdojo_product_group` | `defectdojo_product_group` |
+| Resource                         | Data Source                      |
+| -------------------------------- | -------------------------------- |
+| `defectdojo_user`                | `defectdojo_user`                |
+| `defectdojo_user_contact_info`   | `defectdojo_user_contact_info`   |
+| `defectdojo_dojo_group`          | `defectdojo_dojo_group`          |
+| `defectdojo_dojo_group_member`   | `defectdojo_dojo_group_member`   |
+| `defectdojo_global_role`         | `defectdojo_global_role`         |
+| `defectdojo_product_member`      | `defectdojo_product_member`      |
+| `defectdojo_product_group`       | `defectdojo_product_group`       |
 | `defectdojo_product_type_member` | `defectdojo_product_type_member` |
-| `defectdojo_product_type_group` | `defectdojo_product_type_group` |
-| `defectdojo_credential` | `defectdojo_credential` |
+| `defectdojo_product_type_group`  | `defectdojo_product_type_group`  |
+| `defectdojo_credential`          | `defectdojo_credential`          |
 
 ### Vulnerability Management
 
-| Resource | Data Source |
-|----------|------------|
-| `defectdojo_engagement` | `defectdojo_engagement` |
+| Resource                       | Data Source                    |
+| ------------------------------ | ------------------------------ |
+| `defectdojo_engagement`        | `defectdojo_engagement`        |
 | `defectdojo_engagement_preset` | `defectdojo_engagement_preset` |
-| `defectdojo_test` | `defectdojo_test` |
-| `defectdojo_finding` | `defectdojo_finding` |
-| `defectdojo_finding_template` | `defectdojo_finding_template` |
-| `defectdojo_endpoint` | `defectdojo_endpoint` |
-| `defectdojo_endpoint_status` | `defectdojo_endpoint_status` |
-| `defectdojo_stub_finding` | `defectdojo_stub_finding` |
-| `defectdojo_technology` | `defectdojo_technology` |
-| `defectdojo_language` | `defectdojo_language` |
+| `defectdojo_test`              | `defectdojo_test`              |
+| `defectdojo_finding`           | `defectdojo_finding`           |
+| `defectdojo_finding_template`  | `defectdojo_finding_template`  |
+| `defectdojo_endpoint`          | `defectdojo_endpoint`          |
+| `defectdojo_endpoint_status`   | `defectdojo_endpoint_status`   |
+| `defectdojo_stub_finding`      | `defectdojo_stub_finding`      |
+| `defectdojo_technology`        | `defectdojo_technology`        |
+| `defectdojo_language`          | `defectdojo_language`          |
 
 ### Integrations
 
-| Resource | Data Source |
-|----------|------------|
-| `defectdojo_jira_instance` | `defectdojo_jira_instance` |
-| `defectdojo_jira_product_configuration` | `defectdojo_jira_product_configuration` |
-| `defectdojo_tool_product_settings` | `defectdojo_tool_product_settings` |
+| Resource                                    | Data Source                                 |
+| ------------------------------------------- | ------------------------------------------- |
+| `defectdojo_jira_instance`                  | `defectdojo_jira_instance`                  |
+| `defectdojo_jira_product_configuration`     | `defectdojo_jira_product_configuration`     |
+| `defectdojo_tool_product_settings`          | `defectdojo_tool_product_settings`          |
 | `defectdojo_product_api_scan_configuration` | `defectdojo_product_api_scan_configuration` |
-| `defectdojo_credential_mapping` | `defectdojo_credential_mapping` |
-| `defectdojo_risk_acceptance` | `defectdojo_risk_acceptance` |
-| `defectdojo_notification_webhook` | `defectdojo_notification_webhook` |
-| `defectdojo_announcement` | `defectdojo_announcement` |
-| `defectdojo_asset_group` | `defectdojo_asset_group` |
+| `defectdojo_credential_mapping`             | `defectdojo_credential_mapping`             |
+| `defectdojo_risk_acceptance`                | `defectdojo_risk_acceptance`                |
+| `defectdojo_notification_webhook`           | `defectdojo_notification_webhook`           |
+| `defectdojo_announcement`                   | `defectdojo_announcement`                   |
+| `defectdojo_asset_group`                    | `defectdojo_asset_group`                    |
 
 ## Developing the Provider
 
@@ -170,16 +170,16 @@ go generate ./...
 
 ## Releasing
 
-1. Update `CHANGELOG.md` in a PR, merge to `master`
-2. Tag `master` with `vX.Y.Z` and push tags
+1. Update `CHANGELOG.md` in a PR
+2. Tag with `vX.Y.Z` and push tags
 3. GoReleaser (via GitHub Actions) builds and publishes to Terraform Registry
 
 Pre-release versions can be tagged from any commit with a suffix (e.g., `v0.1.0-rc1`).
 
-## Contributing
+## Acknowledgments
 
-Pull requests are welcome. By contributing to this repository you are agreeing to the [Contributor License Agreement (CONTRIBUTING.md)](./CONTRIBUTING.md).
+This project is a fork of the original [Doximity DefectDojo Terraform Provider](https://github.com/doximity/terraform-provider-defectdojo). We are grateful for their initial work and contributions to the community.
 
 ## License
 
-Licensed under the Apache v2 license. See [LICENSE.txt](./LICENSE.txt).
+Licensed under the Apache v2 license. See [LICENSE.md](./LICENSE.md).

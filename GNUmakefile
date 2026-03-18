@@ -10,14 +10,26 @@ lint:
 	golangci-lint run ./...
 
 # Start local DefectDojo for acceptance tests
-.PHONY: dd-up dd-down dd-logs
+.PHONY: dd-up dd-wait dd-down dd-logs
 
 dd-up:
 	docker compose up -d
-	@echo "Waiting for DefectDojo to initialize..."
-	@sleep 60
-	@echo "DefectDojo should be available at http://localhost:8080"
-	@echo "Username: admin / Password: testpassword"
+	@$(MAKE) dd-wait
+
+dd-wait:
+	@echo "Waiting for DefectDojo API to be ready..."
+	@for i in $$(seq 1 60); do \
+		if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/v2/ 2>/dev/null | grep -qE "200|401|403"; then \
+			echo "DefectDojo is ready at http://localhost:8080"; \
+			echo "Username: admin / Password: testpassword"; \
+			exit 0; \
+		fi; \
+		echo "  Attempt $$i/60 - waiting 10s..."; \
+		sleep 10; \
+	done; \
+	echo "DefectDojo failed to start"; \
+	docker compose logs uwsgi nginx; \
+	exit 1
 
 dd-down:
 	docker compose down -v

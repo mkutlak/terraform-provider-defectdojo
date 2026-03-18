@@ -53,7 +53,7 @@ Each resource follows this pattern (see `product_resource.go` as the most comple
 Name types.String `tfsdk:"name" ddField:"Name"`
 ```
 
-The `ddField` tag value must match the exact Go field name in the corresponding `ddclient` struct (e.g., `ddclient.Product`). The reflection engine handles type conversions between Terraform types (`types.String`, `types.Bool`, `types.Int64`, `types.Set`) and Go types (string, *string, bool, *bool, int, *int, *[]int, *[]string).
+The `ddField` tag value must match the exact Go field name in the corresponding `ddclient` struct (e.g., `ddclient.Product`). The reflection engine handles type conversions between Terraform types (`types.String`, `types.Bool`, `types.Int64`, `types.Set`) and Go types (string, *string, bool, *bool, int, _int, _[]int, \*[]string).
 
 ### Resources & Data Sources
 
@@ -67,6 +67,7 @@ The provider implements 33 resources and 33 data sources. See `provider.go` `Res
 ### Provider Authentication
 
 Supports two auth modes (resolved in `provider.go`):
+
 1. API key (`DEFECTDOJO_APIKEY` or `api_key` config)
 2. Username/password (`DEFECTDOJO_USERNAME`/`DEFECTDOJO_PASSWORD`) - fetches a token via `ApiTokenAuthCreate`
 
@@ -74,17 +75,47 @@ Supports two auth modes (resolved in `provider.go`):
 
 The following DefectDojo API objects are **not** implemented as Terraform resources because they are not a good fit for infrastructure-as-code management. Do not re-add them:
 
-| API Object | Reason |
-|------------|--------|
-| Finding | Created by scan tool imports, not manual IaC. Extremely complex (50+ fields). |
-| StubFinding | Scan artifact, same as Finding. |
-| EndpointStatus | Join table between endpoints and findings, managed by the system. |
-| Technology (AppAnalysis) | Auto-detected from scan results, not manually managed. |
-| Language | Auto-detected from scan results, not manually managed. |
-| Announcement | DefectDojo only allows ONE global announcement. Cannot create/delete freely. |
+| API Object               | Reason                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| Finding                  | Created by scan tool imports, not manual IaC. Extremely complex (50+ fields). |
+| StubFinding              | Scan artifact, same as Finding.                                               |
+| EndpointStatus           | Join table between endpoints and findings, managed by the system.             |
+| Technology (AppAnalysis) | Auto-detected from scan results, not manually managed.                        |
+| Language                 | Auto-detected from scan results, not manually managed.                        |
+| Announcement             | DefectDojo only allows ONE global announcement. Cannot create/delete freely.  |
 
 ## Release Process
 
-1. Update `CHANGELOG.md` in a PR, merge to `master`
-2. Tag `master` with `vX.Y.Z` and push tags
-3. GoReleaser (via GitHub Actions) builds and publishes to Terraform Registry
+This project uses [release-please](https://github.com/googleapis/release-please) for automated releases driven by [Conventional Commits](https://www.conventionalcommits.org/).
+
+### Commit Message Format
+
+```
+type(scope): description
+
+[optional body]
+
+[optional BREAKING CHANGE: description]
+```
+
+**Types:** `feat`, `fix`, `chore`, `docs`, `ci`, `refactor`, `perf`, `test`
+**Scopes (optional):** resource name, e.g. `product`, `engagement`, `endpoint`
+
+### Semver Rules
+
+- `feat:` → minor bump (new resource, data source, attribute)
+- `fix:` / `chore:` / `docs:` → patch bump
+- `feat!:` or `BREAKING CHANGE:` footer → major bump (minor while pre-1.0)
+- Resource/attribute removal or rename = breaking change
+
+### How It Works
+
+1. Merge PRs to `master` using squash-merge (PR title = commit message)
+2. release-please automatically opens/updates a Release PR with changelog + version bump
+3. Review and merge the Release PR to trigger a release
+4. GoReleaser (via GitHub Actions) builds, signs, and publishes to the Terraform Registry
+
+### Configuration
+
+- `release-please-config.json` — release-please settings
+- `.release-please-manifest.json` — current version tracker

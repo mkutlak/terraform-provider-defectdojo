@@ -27,8 +27,12 @@ services:
     volumes:
       - defectdojo_media:/app/media
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      initializer:
+        condition: service_completed_successfully
 
   celerybeat:
     image: defectdojo/defectdojo-django:2.54.3
@@ -44,8 +48,10 @@ services:
       DD_CREDENTIAL_AES_256_KEY: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       DD_CELERY_BROKER_URL: redis://redis:6379/0
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   celeryworker:
     image: defectdojo/defectdojo-django:2.54.3
@@ -61,8 +67,10 @@ services:
       DD_CREDENTIAL_AES_256_KEY: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
       DD_CELERY_BROKER_URL: redis://redis:6379/0
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   initializer:
     image: defectdojo/defectdojo-django:2.54.3
@@ -81,19 +89,30 @@ services:
       DD_ADMIN_PASSWORD: testpassword
       DD_ADMIN_MAIL: admin@defectdojo.local
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: defectdojo
       POSTGRES_USER: defectdojo
       POSTGRES_PASSWORD: defectdojo
     volumes:
       - defectdojo_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U defectdojo"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   defectdojo_media:

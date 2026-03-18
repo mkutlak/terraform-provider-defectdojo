@@ -50,7 +50,7 @@ jobs:
     name: Terraform Provider Acceptance Tests
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -60,6 +60,7 @@ jobs:
           - '1.12.*'
           - '1.14.*'
     steps:
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
@@ -67,13 +68,12 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform }}
           terraform_wrapper: false
-      - uses: actions/checkout@v6
       - run: go mod download
-      - env:
-          TF_ACC: "1"
-          DEFECTDOJO_USERNAME: cows
-          DEFECTDOJO_PASSWORD: ${{ secrets.DEFECTDOJO_PASSWORD }}
-          DEFECTDOJO_BASEURL: ${{ secrets.DEFECTDOJO_BASEURL }}
-        run: |
-          go test -v -cover ./internal/provider/
+      - name: Start DefectDojo
+        run: make dd-up
+      - name: Run acceptance tests
+        run: make testacc-local
         timeout-minutes: 10
+      - name: Stop DefectDojo
+        if: always()
+        run: make dd-down
