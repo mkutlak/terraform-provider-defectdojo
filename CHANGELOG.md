@@ -51,6 +51,19 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [0.3.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.2.0...v0.3.0) (2026-03-23)
+
+
+### Features
+
+* improve provider error reporting and schema definitions ([04ff8c4](https://github.com/mkutlak/terraform-provider-defectdojo/commit/04ff8c4459a0190cd9473a13bcd7895ae8b1a8b7))
+
+
+### Miscellaneous
+
+* add multi-version DefectDojo compatibility testing and automation ([0c2eabb](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0c2eabb8a5a5ae9613cf3d5f3beb5a6f706f5d90))
+* update dependencies and add generate-docs target ([97744b2](https://github.com/mkutlak/terraform-provider-defectdojo/commit/97744b2f0e02eb69b3802790062ab3b3fd6c4eba))
+
 ## [0.2.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.1.2...v0.2.0) (2026-03-18)
 
 
