@@ -1,0 +1,1 @@
+terraform import defectdojo_language_type.example 123

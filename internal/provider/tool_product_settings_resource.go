@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
@@ -31,11 +32,14 @@ func (t toolProductSettingsResource) Schema(ctx context.Context, req resource.Sc
 				MarkdownDescription: "Description of the tool product settings.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"url": schema.StringAttribute{
-				MarkdownDescription: "URL for the tool product settings.",
-				Optional:            true,
+				MarkdownDescription: "URL for the tool product settings. Automatically set from setting_url by the API.",
 				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"setting_url": schema.StringAttribute{
 				MarkdownDescription: "The settings URL for the tool.",
@@ -53,6 +57,7 @@ func (t toolProductSettingsResource) Schema(ctx context.Context, req resource.Sc
 				MarkdownDescription: "The project ID in the tool.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 		},
 	}
@@ -77,11 +82,12 @@ func toolProductSettingsToRequest(t dd.ToolProductSettings) dd.ToolProductSettin
 	return dd.ToolProductSettingsRequest{
 		Name:              t.Name,
 		Description:       t.Description,
-		Url:               t.Url,
 		SettingUrl:        t.SettingUrl,
 		Product:           t.Product,
 		ToolConfiguration: t.ToolConfiguration,
 		ToolProjectId:     t.ToolProjectId,
+		// Url intentionally omitted — the DD API auto-copies setting_url to url.
+		// Sending url (even empty) causes the API to overwrite setting_url.
 	}
 }
 
@@ -146,6 +152,7 @@ var _ resource.ResourceWithImportState = &toolProductSettingsResource{}
 func NewToolProductSettingsResource() resource.Resource {
 	return &toolProductSettingsResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_tool_product_settings",
 			dataProvider: toolProductSettingsDataProvider{},
 		},
 	}

@@ -1,0 +1,1 @@
+terraform import defectdojo_risk_acceptance.example 123

@@ -142,6 +142,7 @@ var _ resource.ResourceWithImportState = &notificationWebhookResource{}
 func NewNotificationWebhookResource() resource.Resource {
 	return &notificationWebhookResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_notification_webhook",
 			dataProvider: notificationWebhookDataProvider{},
 		},
 	}

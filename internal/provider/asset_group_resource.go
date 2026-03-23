@@ -119,6 +119,7 @@ var _ resource.ResourceWithImportState = &assetGroupResource{}
 func NewAssetGroupResource() resource.Resource {
 	return &assetGroupResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_asset_group",
 			dataProvider: assetGroupDataProvider{},
 		},
 	}

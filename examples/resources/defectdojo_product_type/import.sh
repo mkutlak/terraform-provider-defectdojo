@@ -1,0 +1,1 @@
+terraform import defectdojo_product_type.example 123

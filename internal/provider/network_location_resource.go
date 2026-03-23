@@ -98,7 +98,7 @@ var _ resource.ResourceWithImportState = &networkLocationResource{}
 
 func NewNetworkLocationResource() resource.Resource {
 	return &networkLocationResource{
-		terraformResource: terraformResource{dataProvider: networkLocationDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_network_location", dataProvider: networkLocationDataProvider{}},
 	}
 }
 

@@ -1,0 +1,1 @@
+terraform import defectdojo_global_role.example 123

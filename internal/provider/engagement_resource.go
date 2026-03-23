@@ -6,9 +6,13 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
@@ -49,11 +53,19 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 				MarkdownDescription: "Type of Engagement: 'Interactive' or 'CI/CD'",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString("Interactive"),
+				Validators: []validator.String{
+					stringvalidator.OneOf("Interactive", "CI/CD"),
+				},
 			},
 			"status": schema.StringAttribute{
 				MarkdownDescription: "Status of the Engagement (Not Started, Blocked, Cancelled, Completed, In Progress, On Hold, Waiting for Resource)",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString("Not Started"),
+				Validators: []validator.String{
+					stringvalidator.OneOf("Not Started", "Blocked", "Cancelled", "Completed", "In Progress", "On Hold", "Waiting for Resource"),
+				},
 			},
 			"lead": schema.Int64Attribute{
 				MarkdownDescription: "ID of the lead user for this Engagement",
@@ -91,26 +103,31 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 				MarkdownDescription: "Whether a threat model was performed",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"api_test": schema.BoolAttribute{
 				MarkdownDescription: "Whether an API test was performed",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"pen_test": schema.BoolAttribute{
 				MarkdownDescription: "Whether a pen test was performed",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"check_list": schema.BoolAttribute{
 				MarkdownDescription: "Whether a check list was used",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"deduplication_on_engagement": schema.BoolAttribute{
 				MarkdownDescription: "If enabled deduplication will only mark a finding in this engagement as duplicate of another finding if both findings are in this engagement",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"first_contacted": schema.StringAttribute{
 				MarkdownDescription: "Date first contacted (format: 2006-01-02)",
@@ -274,6 +291,7 @@ var _ resource.ResourceWithImportState = &engagementResource{}
 func NewEngagementResource() resource.Resource {
 	return &engagementResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_engagement",
 			dataProvider: engagementDataProvider{},
 		},
 	}

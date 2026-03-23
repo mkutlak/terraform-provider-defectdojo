@@ -129,6 +129,7 @@ var _ resource.ResourceWithImportState = &productTypeResource{}
 func NewProductTypeResource() resource.Resource {
 	return &productTypeResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_product_type",
 			dataProvider: productTypeDataProvider{},
 		},
 	}

@@ -1,0 +1,1 @@
+terraform import defectdojo_finding_template.example 123

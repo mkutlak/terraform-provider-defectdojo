@@ -6,7 +6,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
@@ -51,11 +53,13 @@ func (t credentialMappingResource) Schema(ctx context.Context, req resource.Sche
 				MarkdownDescription: "URL associated with the credential mapping.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"is_authn_provider": schema.BoolAttribute{
 				MarkdownDescription: "Whether this is an authentication provider.",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 		},
 	}
@@ -149,6 +153,7 @@ var _ resource.ResourceWithImportState = &credentialMappingResource{}
 func NewCredentialMappingResource() resource.Resource {
 	return &credentialMappingResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_credential_mapping",
 			dataProvider: credentialMappingDataProvider{},
 		},
 	}

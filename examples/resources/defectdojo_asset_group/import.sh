@@ -1,0 +1,1 @@
+terraform import defectdojo_asset_group.example 123

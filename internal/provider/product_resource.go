@@ -104,6 +104,7 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				MarkdownDescription: "Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"product_manager_id": schema.Int64Attribute{
 				MarkdownDescription: "The ID of the user who is the PM for this product.",
@@ -132,7 +133,7 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				ElementType:         types.StringType,
 				Validators: []validator.Set{
 					setvalidator.ValueStringsAre(
-						stringvalidator.RegexMatches(regexp.MustCompile(`\A[a-z]+\z`), "Tags must be lower case values"),
+						stringvalidator.RegexMatches(regexp.MustCompile(`\A[a-z0-9][a-z0-9_-]*\z`), "Tags must be lower case values (letters, digits, hyphens, underscores)"),
 					),
 				},
 			},
@@ -304,6 +305,7 @@ var _ resource.ResourceWithImportState = &productResource{}
 func NewProductResource() resource.Resource {
 	return &productResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_product",
 			dataProvider: productDataProvider{},
 		},
 	}

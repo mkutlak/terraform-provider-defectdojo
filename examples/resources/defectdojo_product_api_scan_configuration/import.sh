@@ -1,0 +1,1 @@
+terraform import defectdojo_product_api_scan_configuration.example 123

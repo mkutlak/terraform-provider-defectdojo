@@ -141,6 +141,7 @@ var _ resource.ResourceWithImportState = &engagementPresetResource{}
 func NewEngagementPresetResource() resource.Resource {
 	return &engagementPresetResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_engagement_preset",
 			dataProvider: engagementPresetDataProvider{},
 		},
 	}

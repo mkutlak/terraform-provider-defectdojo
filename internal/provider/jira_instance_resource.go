@@ -227,6 +227,7 @@ var _ resource.ResourceWithImportState = &jiraInstanceResource{}
 func NewJiraInstanceResource() resource.Resource {
 	return &jiraInstanceResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_jira_instance",
 			dataProvider: jiraInstanceDataProvider{},
 		},
 	}

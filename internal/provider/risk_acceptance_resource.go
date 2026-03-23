@@ -6,7 +6,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
@@ -40,6 +42,7 @@ func (t riskAcceptanceResource) Schema(ctx context.Context, req resource.SchemaR
 				MarkdownDescription: "The person that accepts the risk (can be outside DefectDojo).",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"expiration_date": schema.StringAttribute{
 				MarkdownDescription: "When the risk acceptance expires (RFC3339 format).",
@@ -55,6 +58,7 @@ func (t riskAcceptanceResource) Schema(ctx context.Context, req resource.SchemaR
 				MarkdownDescription: "Details about the risk treatment decision.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"recommendation": schema.StringAttribute{
 				MarkdownDescription: "Security team recommendation. Valid values: A, V, M, F, T.",
@@ -65,16 +69,19 @@ func (t riskAcceptanceResource) Schema(ctx context.Context, req resource.SchemaR
 				MarkdownDescription: "Details explaining the security recommendation.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"reactivate_expired": schema.BoolAttribute{
 				MarkdownDescription: "Reactivate findings when risk acceptance expires.",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"restart_sla_expired": schema.BoolAttribute{
 				MarkdownDescription: "Restart SLA for findings when risk acceptance expires.",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 		},
 	}
@@ -183,6 +190,7 @@ var _ resource.ResourceWithImportState = &riskAcceptanceResource{}
 func NewRiskAcceptanceResource() resource.Resource {
 	return &riskAcceptanceResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_risk_acceptance",
 			dataProvider: riskAcceptanceDataProvider{},
 		},
 	}

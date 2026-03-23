@@ -33,7 +33,8 @@ type dataProvider interface {
 }
 
 type terraformResource struct {
-	client *dd.ClientWithResponses
+	client   *dd.ClientWithResponses
+	typeName string
 	dataProvider
 }
 
@@ -68,7 +69,7 @@ func (r *terraformResource) Configure(ctx context.Context, req resource.Configur
 }
 
 func (r terraformResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	data, diags := r.getData(ctx, req.Config)
+	data, diags := r.getData(ctx, req.Plan)
 
 	resp.Diagnostics.Append(diags...)
 
@@ -92,7 +93,7 @@ func (r terraformResource) Create(ctx context.Context, req resource.CreateReques
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Creating Resource",
+			"Error Creating "+r.typeName,
 			err.Error())
 		return
 	}
@@ -101,7 +102,7 @@ func (r terraformResource) Create(ctx context.Context, req resource.CreateReques
 		populateResourceData(ctx, &diags, &data, ddResource)
 	} else {
 		resp.Diagnostics.AddError(
-			"API Error Creating Resource",
+			"API Error Creating "+r.typeName,
 			fmt.Sprintf("Unexpected response code from API: %d", statusCode)+
 				fmt.Sprintf("\n\nbody:\n\n%s", string(body)),
 		)
@@ -124,7 +125,7 @@ func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	if data.id().IsNull() {
 		resp.Diagnostics.AddError(
-			"Could not Retrieve Resource",
+			"Could not Retrieve "+r.typeName,
 			"The Id field was null but it is required to retrieve the resource")
 		return
 	}
@@ -132,7 +133,7 @@ func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, 
 	idNumber, err := strconv.Atoi(data.id().ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Could not Retrieve Resource",
+			"Could not Retrieve "+r.typeName,
 			"Error while parsing the resource ID from state: "+err.Error())
 		return
 	}
@@ -143,7 +144,7 @@ func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, 
 	statusCode, body, err := ddResource.readApiCall(ctx, r.client, idNumber)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Retrieving Resource",
+			"Error Retrieving "+r.typeName,
 			err.Error())
 		return
 	}
@@ -156,7 +157,7 @@ func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	default:
 		resp.Diagnostics.AddError(
-			"API Error Retrieving Resource",
+			"API Error Retrieving "+r.typeName,
 			fmt.Sprintf("Unexpected response code from API: %d", statusCode)+
 				fmt.Sprintf("\n\nbody:\n\n%+v", string(body)),
 		)
@@ -187,7 +188,7 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 
 	if data.id().IsNull() {
 		resp.Diagnostics.AddError(
-			"Could not Update Resource",
+			"Could not Update "+r.typeName,
 			"The Id field was null but it is required to update the resource")
 		return
 	}
@@ -195,7 +196,7 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 	idNumber, err := strconv.Atoi(data.id().ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Could not Update Resource",
+			"Could not Update "+r.typeName,
 			"Error while parsing the resource ID from state: "+err.Error())
 		return
 	}
@@ -207,7 +208,7 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Updating Resource",
+			"Error Updating "+r.typeName,
 			err.Error())
 		return
 	}
@@ -216,7 +217,7 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 		populateResourceData(ctx, &diags, &data, ddResource)
 	} else {
 		resp.Diagnostics.AddError(
-			"API Error Updating Resource",
+			"API Error Updating "+r.typeName,
 			fmt.Sprintf("Unexpected response code from API: %d", statusCode)+
 				fmt.Sprintf("\n\nbody:\n\n%+v", string(body)),
 		)
@@ -246,7 +247,7 @@ func (r terraformResource) Delete(ctx context.Context, req resource.DeleteReques
 
 	if data.id().IsNull() {
 		resp.Diagnostics.AddError(
-			"Could not Delete Resource",
+			"Could not Delete "+r.typeName,
 			"The Id field was null but it is required to delete the resource")
 		return
 	}
@@ -254,7 +255,7 @@ func (r terraformResource) Delete(ctx context.Context, req resource.DeleteReques
 	idNumber, err := strconv.Atoi(data.id().ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Could not Delete Resource",
+			"Could not Delete "+r.typeName,
 			"Error while parsing the resource ID from state: "+err.Error())
 		return
 	}
@@ -264,14 +265,14 @@ func (r terraformResource) Delete(ctx context.Context, req resource.DeleteReques
 	statusCode, body, err := ddResource.deleteApiCall(ctx, r.client, idNumber)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error Deleting Resource",
+			"Error Deleting "+r.typeName,
 			err.Error())
 		return
 	}
 
 	if statusCode != 204 {
 		resp.Diagnostics.AddError(
-			"API Error Deleting Resource",
+			"API Error Deleting "+r.typeName,
 			fmt.Sprintf("Unexpected response code from API: %d", statusCode)+
 				fmt.Sprintf("\n\nbody:\n\n%+v", string(body)),
 		)

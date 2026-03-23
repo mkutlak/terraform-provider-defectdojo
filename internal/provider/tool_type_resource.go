@@ -104,7 +104,7 @@ var _ resource.ResourceWithImportState = &toolTypeResource{}
 
 func NewToolTypeResource() resource.Resource {
 	return &toolTypeResource{
-		terraformResource: terraformResource{dataProvider: toolTypeDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_tool_type", dataProvider: toolTypeDataProvider{}},
 	}
 }
 

@@ -1,0 +1,1 @@
+terraform import defectdojo_regulation.example 123

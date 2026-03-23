@@ -72,7 +72,7 @@ func newClient(ctx context.Context, url string, token string, user string, pass 
 	}
 
 	if token == "" {
-		return nil, fmt.Errorf("could not determine the api key for the defectdojo service: no api_key value provided and no DEFECTDOJO_APIKEY environment variable")
+		return nil, fmt.Errorf("could not determine the api key for the defectdojo service: provide api_key (or DEFECTDOJO_APIKEY env var), or username + password (or DEFECTDOJO_USERNAME + DEFECTDOJO_PASSWORD env vars)")
 	}
 
 	tokenProvider, err := securityprovider.NewSecurityProviderApiKey("header", "Authorization", fmt.Sprintf("Token %s", token))
@@ -256,7 +256,6 @@ func (p *DefectDojoProvider) Schema(ctx context.Context, req provider.SchemaRequ
 			"username": schema.StringAttribute{
 				MarkdownDescription: "The username used to authenticate to defectdojo. Has no effect if api_key is set.",
 				Optional:            true,
-				Sensitive:           true,
 			},
 			"password": schema.StringAttribute{
 				MarkdownDescription: "The password used to authenticate to defectdojo. Has no effect if api_key is set.",

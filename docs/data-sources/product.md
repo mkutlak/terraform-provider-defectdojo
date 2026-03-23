@@ -23,12 +23,11 @@ data "defectdojo_product" "example" {
 
 ### Optional
 
-- `business_criticality` (String) The Business Criticality of the Product. Valid values are: 'very high', 'high', 'medium', 'low', 'very low', 'none'
 - `id` (String) Identifier
-- `prod_numeric_grade` (Number) The Numeric Grade of the Product
 
 ### Read-Only
 
+- `business_criticality` (String) The Business Criticality of the Product. Valid values are: 'very high', 'high', 'medium', 'low', 'very low', 'none'
 - `description` (String) The description of the Product
 - `disable_sla_breach_notifications` (Boolean) Disable SLA breach notifications if configured in the global settings.
 - `enable_full_risk_acceptance` (Boolean) Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.
@@ -40,6 +39,7 @@ data "defectdojo_product" "example" {
 - `name` (String) The name of the Product
 - `origin` (String) The Origin of the Product. Valid values are: 'third party library', 'purchased', 'contractor', 'internal', 'open source', 'outsourced'
 - `platform` (String) The Platform of the Product. Valid values are: 'web service', 'desktop', 'iot', 'mobile', 'web'
+- `prod_numeric_grade` (Number) The Numeric Grade of the Product
 - `product_manager_id` (Number) The ID of the user who is the PM for this product.
 - `product_type_id` (Number) The ID of the Product Type
 - `regulation_ids` (Set of Number) The IDs of the Regulations which apply to this product.

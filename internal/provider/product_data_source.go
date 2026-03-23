@@ -35,11 +35,11 @@ func (t productDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			},
 			"prod_numeric_grade": schema.Int64Attribute{
 				MarkdownDescription: "The Numeric Grade of the Product",
-				Optional:            true,
+				Computed:            true,
 			},
 			"business_criticality": schema.StringAttribute{
 				MarkdownDescription: "The Business Criticality of the Product. Valid values are: 'very high', 'high', 'medium', 'low', 'very low', 'none'",
-				Optional:            true,
+				Computed:            true,
 			},
 			"platform": schema.StringAttribute{
 				MarkdownDescription: "The Platform of the Product. Valid values are: 'web service', 'desktop', 'iot', 'mobile', 'web'",

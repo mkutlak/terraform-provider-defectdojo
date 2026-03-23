@@ -6,7 +6,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
@@ -28,21 +30,25 @@ func (t userResource) Schema(ctx context.Context, req resource.SchemaRequest, re
 				MarkdownDescription: "The first name of the User",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"last_name": schema.StringAttribute{
 				MarkdownDescription: "The last name of the User",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"is_active": schema.BoolAttribute{
 				MarkdownDescription: "Whether this user account is active",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(true),
 			},
 			"is_superuser": schema.BoolAttribute{
 				MarkdownDescription: "Whether this user has all permissions without explicitly assigning them",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 			"password": schema.StringAttribute{
 				MarkdownDescription: "The password for the User",
@@ -145,6 +151,7 @@ var _ resource.ResourceWithImportState = &userResource{}
 func NewUserResource() resource.Resource {
 	return &userResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_user",
 			dataProvider: userDataProvider{},
 		},
 	}

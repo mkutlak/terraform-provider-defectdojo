@@ -128,7 +128,7 @@ var _ resource.ResourceWithImportState = &noteTypeResource{}
 
 func NewNoteTypeResource() resource.Resource {
 	return &noteTypeResource{
-		terraformResource: terraformResource{dataProvider: noteTypeDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_note_type", dataProvider: noteTypeDataProvider{}},
 	}
 }
 

@@ -268,6 +268,7 @@ var _ resource.ResourceWithImportState = &ddTestResource{}
 func NewDDTestResource() resource.Resource {
 	return &ddTestResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_test",
 			dataProvider: ddTestDataProvider{},
 		},
 	}

@@ -218,7 +218,7 @@ var _ resource.ResourceWithImportState = &findingTemplateResource{}
 
 func NewFindingTemplateResource() resource.Resource {
 	return &findingTemplateResource{
-		terraformResource: terraformResource{dataProvider: findingTemplateDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_finding_template", dataProvider: findingTemplateDataProvider{}},
 	}
 }
 

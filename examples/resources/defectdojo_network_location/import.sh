@@ -1,0 +1,1 @@
+terraform import defectdojo_network_location.example 123

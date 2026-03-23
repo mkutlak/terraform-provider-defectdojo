@@ -1,0 +1,1 @@
+terraform import defectdojo_jira_product_configuration.example 123

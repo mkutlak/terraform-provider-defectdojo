@@ -111,6 +111,7 @@ var _ resource.ResourceWithImportState = &globalRoleResource{}
 func NewGlobalRoleResource() resource.Resource {
 	return &globalRoleResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_global_role",
 			dataProvider: globalRoleDataProvider{},
 		},
 	}

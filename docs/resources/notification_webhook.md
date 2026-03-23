@@ -34,3 +34,13 @@ resource "defectdojo_notification_webhook" "example" {
 
 - `id` (String) Identifier
 - `status` (String) Status of the incoming webhook (read-only).
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+terraform import defectdojo_notification_webhook.example 123
+```

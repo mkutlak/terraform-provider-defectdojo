@@ -98,7 +98,7 @@ var _ resource.ResourceWithImportState = &developmentEnvironmentResource{}
 
 func NewDevelopmentEnvironmentResource() resource.Resource {
 	return &developmentEnvironmentResource{
-		terraformResource: terraformResource{dataProvider: developmentEnvironmentDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_development_environment", dataProvider: developmentEnvironmentDataProvider{}},
 	}
 }
 

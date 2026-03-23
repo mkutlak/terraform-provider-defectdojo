@@ -104,7 +104,7 @@ var _ resource.ResourceWithImportState = &languageTypeResource{}
 
 func NewLanguageTypeResource() resource.Resource {
 	return &languageTypeResource{
-		terraformResource: terraformResource{dataProvider: languageTypeDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_language_type", dataProvider: languageTypeDataProvider{}},
 	}
 }
 

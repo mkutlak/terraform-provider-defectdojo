@@ -157,6 +157,7 @@ var _ resource.ResourceWithImportState = &userContactInfoResource{}
 func NewUserContactInfoResource() resource.Resource {
 	return &userContactInfoResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_user_contact_info",
 			dataProvider: userContactInfoDataProvider{},
 		},
 	}

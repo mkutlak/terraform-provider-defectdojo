@@ -7,7 +7,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
@@ -22,42 +24,49 @@ func (t *jiraProductConfigurationResource) Schema(ctx context.Context, req resou
 				MarkdownDescription: "The Jira Project Key",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 
 			"issue_template_dir": schema.StringAttribute{
 				MarkdownDescription: "The folder containing Django templates used to render the JIRA issue description. Leave empty to use the default jira_full templates.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 
 			"push_all_issues": schema.BoolAttribute{
 				MarkdownDescription: "Automatically maintain parity with JIRA. Always create and update JIRA tickets for findings in this Product.",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 
 			"enable_engagement_epic_mapping": schema.BoolAttribute{
 				MarkdownDescription: "Whether to map engagements to epics in Jira",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 
 			"push_notes": schema.BoolAttribute{
 				MarkdownDescription: "Whether to push notes to Jira",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 
 			"product_jira_sla_notification": schema.BoolAttribute{
 				MarkdownDescription: "Send SLA notifications as comments",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 
 			"risk_acceptance_expiration_notification": schema.BoolAttribute{
 				MarkdownDescription: "Send Risk Acceptance expiration notifications as comments",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 
 			"jira_instance_id": schema.StringAttribute{
@@ -79,36 +88,42 @@ func (t *jiraProductConfigurationResource) Schema(ctx context.Context, req resou
 				MarkdownDescription: "Whether to add the vulnerability ID to the Jira label.",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(false),
 			},
 
 			"component": schema.StringAttribute{
 				MarkdownDescription: "The Jira component to use for issues.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 
 			"default_assignee": schema.StringAttribute{
 				MarkdownDescription: "JIRA default assignee (name). If left blank then it defaults to whatever is configured in JIRA.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 
 			"enabled": schema.BoolAttribute{
 				MarkdownDescription: "When disabled, Findings will no longer be pushed to Jira, even if they have already been pushed previously.",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(true),
 			},
 
 			"epic_issue_type_name": schema.StringAttribute{
 				MarkdownDescription: "The name of the structure that represents an Epic.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 
 			"jira_labels": schema.StringAttribute{
 				MarkdownDescription: "JIRA issue labels space separated.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 
 			"id": schema.StringAttribute{
@@ -233,6 +248,7 @@ var _ resource.ResourceWithImportState = &jiraProductConfigurationResource{}
 func NewJiraProductConfigurationResource() resource.Resource {
 	return &jiraProductConfigurationResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_jira_product_configuration",
 			dataProvider: jiraProductConfigurationDataProvider{},
 		},
 	}

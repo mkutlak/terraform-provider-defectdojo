@@ -35,8 +35,18 @@ resource "defectdojo_tool_product_settings" "example" {
 
 - `description` (String) Description of the tool product settings.
 - `tool_project_id` (String) The project ID in the tool.
-- `url` (String) URL for the tool product settings.
 
 ### Read-Only
 
 - `id` (String) Identifier
+- `url` (String) URL for the tool product settings. Automatically set from setting_url by the API.
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+terraform import defectdojo_tool_product_settings.example 123
+```

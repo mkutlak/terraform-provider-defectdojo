@@ -1,0 +1,1 @@
+terraform import defectdojo_note_type.example 123

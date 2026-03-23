@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -62,6 +63,7 @@ func (t credentialResource) Schema(ctx context.Context, req resource.SchemaReque
 				MarkdownDescription: "Whether the credential is valid",
 				Optional:            true,
 				Computed:            true,
+				Default:             booldefault.StaticBool(true),
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
@@ -169,6 +171,7 @@ var _ resource.ResourceWithImportState = &credentialResource{}
 func NewCredentialResource() resource.Resource {
 	return &credentialResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_credential",
 			dataProvider: credentialDataProvider{},
 		},
 	}

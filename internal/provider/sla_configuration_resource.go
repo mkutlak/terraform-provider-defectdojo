@@ -163,7 +163,7 @@ var _ resource.ResourceWithImportState = &slaConfigurationResource{}
 
 func NewSlaConfigurationResource() resource.Resource {
 	return &slaConfigurationResource{
-		terraformResource: terraformResource{dataProvider: slaConfigurationDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_sla_configuration", dataProvider: slaConfigurationDataProvider{}},
 	}
 }
 

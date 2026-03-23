@@ -1,0 +1,1 @@
+terraform import defectdojo_user_contact_info.example 123

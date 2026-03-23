@@ -134,6 +134,7 @@ var _ resource.ResourceWithImportState = &productAPIScanConfigurationResource{}
 func NewProductAPIScanConfigurationResource() resource.Resource {
 	return &productAPIScanConfigurationResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_product_api_scan_configuration",
 			dataProvider: productAPIScanConfigurationDataProvider{},
 		},
 	}

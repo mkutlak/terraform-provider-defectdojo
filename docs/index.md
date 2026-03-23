@@ -9,6 +9,19 @@ description: |-
 
 The DefectDojo provider provides resources to interact with the [DefectDojo](https://www.defectdojo.org/) application.
 
+## Supported DefectDojo Versions
+
+This provider is built and tested against the following DefectDojo versions:
+
+| DefectDojo Version | Status | Notes |
+| ------------------ | ------ | ----- |
+| 2.56.2             | Tested | Latest tested version. |
+| 2.54.3             | Tested | Primary version. API client generated from this version. |
+
+The provider may work with other versions but only the above are regularly tested.
+If you encounter issues with an unlisted version, please
+[open an issue](https://github.com/mkutlak/terraform-provider-defectdojo/issues).
+
 ## Example Usage
 
 ### Basic Example
@@ -55,4 +68,4 @@ $ export DEFECTDOJO_PASSWORD="ebgngrguvegrra"
 - `api_key` (String, Sensitive) The API Key used to authenticate to defectdojo
 - `base_url` (String) Base URL of the defectdojo installation
 - `password` (String, Sensitive) The password used to authenticate to defectdojo. Has no effect if api_key is set.
-- `username` (String, Sensitive) The username used to authenticate to defectdojo. Has no effect if api_key is set.
+- `username` (String) The username used to authenticate to defectdojo. Has no effect if api_key is set.

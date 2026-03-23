@@ -144,7 +144,7 @@ var _ resource.ResourceWithImportState = &toolConfigurationResource{}
 
 func NewToolConfigurationResource() resource.Resource {
 	return &toolConfigurationResource{
-		terraformResource: terraformResource{dataProvider: toolConfigurationDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_tool_configuration", dataProvider: toolConfigurationDataProvider{}},
 	}
 }
 

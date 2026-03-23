@@ -111,6 +111,7 @@ var _ resource.ResourceWithImportState = &productGroupResource{}
 func NewProductGroupResource() resource.Resource {
 	return &productGroupResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_product_group",
 			dataProvider: productGroupDataProvider{},
 		},
 	}

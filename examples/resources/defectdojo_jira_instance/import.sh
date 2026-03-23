@@ -1,0 +1,1 @@
+terraform import defectdojo_jira_instance.example 123

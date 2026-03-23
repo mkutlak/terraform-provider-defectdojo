@@ -130,7 +130,7 @@ var _ resource.ResourceWithImportState = &regulationResource{}
 
 func NewRegulationResource() resource.Resource {
 	return &regulationResource{
-		terraformResource: terraformResource{dataProvider: regulationDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_regulation", dataProvider: regulationDataProvider{}},
 	}
 }
 

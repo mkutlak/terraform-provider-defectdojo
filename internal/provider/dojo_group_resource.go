@@ -110,6 +110,7 @@ var _ resource.ResourceWithImportState = &dojoGroupResource{}
 func NewDojoGroupResource() resource.Resource {
 	return &dojoGroupResource{
 		terraformResource: terraformResource{
+			typeName:     "defectdojo_dojo_group",
 			dataProvider: dojoGroupDataProvider{},
 		},
 	}

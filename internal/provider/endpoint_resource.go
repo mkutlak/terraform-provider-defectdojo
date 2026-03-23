@@ -140,7 +140,7 @@ var _ resource.ResourceWithImportState = &endpointResource{}
 
 func NewEndpointResource() resource.Resource {
 	return &endpointResource{
-		terraformResource: terraformResource{dataProvider: endpointDataProvider{}},
+		terraformResource: terraformResource{typeName: "defectdojo_endpoint", dataProvider: endpointDataProvider{}},
 	}
 }
 
