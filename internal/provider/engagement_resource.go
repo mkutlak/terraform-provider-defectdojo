@@ -36,6 +36,8 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 			"description": schema.StringAttribute{
 				MarkdownDescription: "Description of the Engagement",
 				Optional:            true,
+				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"product": schema.Int64Attribute{
 				MarkdownDescription: "ID of the Product this Engagement belongs to",
