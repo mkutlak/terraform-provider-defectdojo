@@ -51,6 +51,18 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [0.3.1](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.3.0...v0.3.1) (2026-03-23)
+
+
+### Bug Fixes
+
+* set default empty string for engagement description ([db72468](https://github.com/mkutlak/terraform-provider-defectdojo/commit/db72468bbd884d3d65fe5e2cca68ab9e9acdf945))
+
+
+### Tests
+
+* verify empty description in engagement acceptance test ([99a9c52](https://github.com/mkutlak/terraform-provider-defectdojo/commit/99a9c527ba3e7c0ead7c887e255cb6ce48e6e9f8))
+
 ## [0.3.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.2.0...v0.3.0) (2026-03-23)
 
 
