@@ -23,6 +23,7 @@ func TestAccEngagementResource(t *testing.T) {
 					resource.TestCheckResourceAttr("defectdojo_engagement.test", "target_start", "2025-01-01"),
 					resource.TestCheckResourceAttr("defectdojo_engagement.test", "target_end", "2025-12-31"),
 					resource.TestCheckResourceAttrSet("defectdojo_engagement.test", "product"),
+					resource.TestCheckResourceAttr("defectdojo_engagement.test", "description", ""),
 				),
 			},
 			// ImportState testing
