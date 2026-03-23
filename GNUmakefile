@@ -8,6 +8,10 @@ export DD_VERSION
 testacc:
 	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m -parallel=4
 
+.PHONY: generate-docs
+generate-docs:
+	go generate ./...
+
 .PHONY: lint
 lint:
 	golangci-lint run ./...
