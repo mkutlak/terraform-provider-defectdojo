@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -121,6 +123,43 @@ func (r toolTypeDataProvider) getData(ctx context.Context, getter dataGetter) (t
 }
 
 func (d *toolTypeResourceData) id() types.String { return d.Id }
+func (d *toolTypeResourceData) setId(v types.String) { d.Id = v }
+
+func (r toolTypeDataProvider) nameFromData(data terraformResourceData) (string, bool) {
+	d := data.(*toolTypeResourceData)
+	if !d.Name.IsNull() && !d.Name.IsUnknown() {
+		return d.Name.ValueString(), true
+	}
+	return "", false
+}
+
+func (r toolTypeDataProvider) listByName(ctx context.Context, client *dd.ClientWithResponses, name string, data terraformResourceData) error {
+	apiResp, err := client.ToolTypesListWithResponse(ctx, &dd.ToolTypesListParams{
+		Name: &name,
+	})
+	if err != nil {
+		return fmt.Errorf("error listing tool types: %w", err)
+	}
+	if apiResp.StatusCode() != 200 || apiResp.JSON200 == nil {
+		return fmt.Errorf("unexpected API response: status %d, body: %s", apiResp.StatusCode(), string(apiResp.Body))
+	}
+	var matched []dd.ToolType
+	for _, tt := range apiResp.JSON200.Results {
+		if strings.EqualFold(tt.Name, name) {
+			matched = append(matched, tt)
+		}
+	}
+	if len(matched) == 0 {
+		return fmt.Errorf("no tool type found with name %q", name)
+	}
+	if len(matched) > 1 {
+		return fmt.Errorf("%d tool types matched name %q, expected exactly 1", len(matched), name)
+	}
+	if matched[0].Id != nil {
+		data.setId(types.StringValue(fmt.Sprintf("%d", *matched[0].Id)))
+	}
+	return nil
+}
 
 func (d *toolTypeResourceData) defectdojoResource() defectdojoResource {
 	return &toolTypeDefectdojoResource{ToolType: dd.ToolType{}}

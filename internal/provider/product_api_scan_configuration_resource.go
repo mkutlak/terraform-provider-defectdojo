@@ -120,6 +120,8 @@ func (d *productAPIScanConfigurationResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *productAPIScanConfigurationResourceData) setId(v types.String) { d.Id = v }
+
 func (d *productAPIScanConfigurationResourceData) defectdojoResource() defectdojoResource {
 	return &productAPIScanConfigurationDefectdojoResource{ProductAPIScanConfiguration: dd.ProductAPIScanConfiguration{}}
 }

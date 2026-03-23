@@ -13,14 +13,15 @@ type jiraInstanceDataSource struct {
 
 func (t jiraInstanceDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for DefectDojo Jira Instance",
+		MarkdownDescription: "Data source for DefectDojo Jira Instance. You can specify either the `id` or the `url` to look up the Jira Instance.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",
 				Optional:            true,
 			},
 			"url": schema.StringAttribute{
-				MarkdownDescription: "The URL of the Jira instance.",
+				MarkdownDescription: "The URL of the Jira instance. Specify either id or url.",
+				Optional:            true,
 				Computed:            true,
 			},
 			"username": schema.StringAttribute{

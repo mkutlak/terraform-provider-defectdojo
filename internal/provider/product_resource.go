@@ -327,6 +327,39 @@ func (d *productResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *productResourceData) setId(v types.String) { d.Id = v }
+
+func (r productDataProvider) nameFromData(data terraformResourceData) (string, bool) {
+	d := data.(*productResourceData)
+	if !d.Name.IsNull() && !d.Name.IsUnknown() {
+		return d.Name.ValueString(), true
+	}
+	return "", false
+}
+
+func (r productDataProvider) listByName(ctx context.Context, client *dd.ClientWithResponses, name string, data terraformResourceData) error {
+	apiResp, err := client.ProductsListWithResponse(ctx, &dd.ProductsListParams{
+		NameExact: &name,
+	})
+	if err != nil {
+		return fmt.Errorf("error listing products: %w", err)
+	}
+	if apiResp.StatusCode() != 200 || apiResp.JSON200 == nil {
+		return fmt.Errorf("unexpected API response: status %d, body: %s", apiResp.StatusCode(), string(apiResp.Body))
+	}
+	if apiResp.JSON200.Count == 0 {
+		return fmt.Errorf("no product found with name %q", name)
+	}
+	if apiResp.JSON200.Count > 1 {
+		return fmt.Errorf("%d products matched name %q, expected exactly 1", apiResp.JSON200.Count, name)
+	}
+	result := apiResp.JSON200.Results[0]
+	if result.Id != nil {
+		data.setId(types.StringValue(fmt.Sprintf("%d", *result.Id)))
+	}
+	return nil
+}
+
 func (d *productResourceData) defectdojoResource() defectdojoResource {
 	return &productDefectdojoResource{
 		Product: dd.Product{},

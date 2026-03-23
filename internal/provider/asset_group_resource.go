@@ -105,6 +105,8 @@ func (d *assetGroupResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *assetGroupResourceData) setId(v types.String) { d.Id = v }
+
 func (d *assetGroupResourceData) defectdojoResource() defectdojoResource {
 	return &assetGroupDefectdojoResource{AssetGroup: dd.AssetGroup{}}
 }

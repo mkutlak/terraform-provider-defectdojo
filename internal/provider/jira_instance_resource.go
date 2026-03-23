@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -211,6 +213,44 @@ func (ddr *jiraInstanceDefectdojoResource) deleteApiCall(ctx context.Context, cl
 
 func (d *jiraInstanceResourceData) id() types.String {
 	return d.Id
+}
+
+func (d *jiraInstanceResourceData) setId(v types.String) { d.Id = v }
+
+func (r jiraInstanceDataProvider) nameFromData(data terraformResourceData) (string, bool) {
+	d := data.(*jiraInstanceResourceData)
+	if !d.Url.IsNull() && !d.Url.IsUnknown() {
+		return d.Url.ValueString(), true
+	}
+	return "", false
+}
+
+func (r jiraInstanceDataProvider) listByName(ctx context.Context, client *dd.ClientWithResponses, name string, data terraformResourceData) error {
+	apiResp, err := client.JiraInstancesListWithResponse(ctx, &dd.JiraInstancesListParams{
+		Url: &name,
+	})
+	if err != nil {
+		return fmt.Errorf("error listing jira instances: %w", err)
+	}
+	if apiResp.StatusCode() != 200 || apiResp.JSON200 == nil {
+		return fmt.Errorf("unexpected API response: status %d, body: %s", apiResp.StatusCode(), string(apiResp.Body))
+	}
+	var matched []dd.JIRAInstance
+	for _, j := range apiResp.JSON200.Results {
+		if strings.EqualFold(j.Url, name) {
+			matched = append(matched, j)
+		}
+	}
+	if len(matched) == 0 {
+		return fmt.Errorf("no jira instance found with url %q", name)
+	}
+	if len(matched) > 1 {
+		return fmt.Errorf("%d jira instances matched url %q, expected exactly 1", len(matched), name)
+	}
+	if matched[0].Id != nil {
+		data.setId(types.StringValue(fmt.Sprintf("%d", *matched[0].Id)))
+	}
+	return nil
 }
 
 func (d *jiraInstanceResourceData) defectdojoResource() defectdojoResource {

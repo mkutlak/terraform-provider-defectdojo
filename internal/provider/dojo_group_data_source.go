@@ -13,14 +13,15 @@ type dojoGroupDataSource struct {
 
 func (t dojoGroupDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for Defect Dojo Dojo Group",
+		MarkdownDescription: "Data source for Defect Dojo Dojo Group. You can specify either the `id` or the `name` to look up the Dojo Group.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",
 				Optional:            true,
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "The name of the Dojo Group",
+				MarkdownDescription: "The name of the Dojo Group. Specify either id or name.",
+				Optional:            true,
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{

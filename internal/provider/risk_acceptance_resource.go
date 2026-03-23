@@ -176,6 +176,8 @@ func (d *riskAcceptanceResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *riskAcceptanceResourceData) setId(v types.String) { d.Id = v }
+
 func (d *riskAcceptanceResourceData) defectdojoResource() defectdojoResource {
 	return &riskAcceptanceDefectdojoResource{RiskAcceptance: dd.RiskAcceptance{}}
 }

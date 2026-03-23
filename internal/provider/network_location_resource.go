@@ -115,6 +115,7 @@ func (r networkLocationDataProvider) getData(ctx context.Context, getter dataGet
 }
 
 func (d *networkLocationResourceData) id() types.String { return d.Id }
+func (d *networkLocationResourceData) setId(v types.String) { d.Id = v }
 
 func (d *networkLocationResourceData) defectdojoResource() defectdojoResource {
 	return &networkLocationDefectdojoResource{NetworkLocations: dd.NetworkLocations{}}

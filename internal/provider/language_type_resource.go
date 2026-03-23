@@ -121,6 +121,7 @@ func (r languageTypeDataProvider) getData(ctx context.Context, getter dataGetter
 }
 
 func (d *languageTypeResourceData) id() types.String { return d.Id }
+func (d *languageTypeResourceData) setId(v types.String) { d.Id = v }
 
 func (d *languageTypeResourceData) defectdojoResource() defectdojoResource {
 	return &languageTypeDefectdojoResource{LanguageType: dd.LanguageType{}}

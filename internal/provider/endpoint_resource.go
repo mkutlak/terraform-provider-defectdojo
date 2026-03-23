@@ -157,6 +157,7 @@ func (r endpointDataProvider) getData(ctx context.Context, getter dataGetter) (t
 }
 
 func (d *endpointResourceData) id() types.String { return d.Id }
+func (d *endpointResourceData) setId(v types.String) { d.Id = v }
 
 func (d *endpointResourceData) defectdojoResource() defectdojoResource {
 	return &endpointDefectdojoResource{Endpoint: dd.Endpoint{}}

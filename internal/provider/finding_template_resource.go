@@ -235,6 +235,7 @@ func (r findingTemplateDataProvider) getData(ctx context.Context, getter dataGet
 }
 
 func (d *findingTemplateResourceData) id() types.String { return d.Id }
+func (d *findingTemplateResourceData) setId(v types.String) { d.Id = v }
 
 func (d *findingTemplateResourceData) defectdojoResource() defectdojoResource {
 	return &findingTemplateDefectdojoResource{FindingTemplate: dd.FindingTemplate{}}

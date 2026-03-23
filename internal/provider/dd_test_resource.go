@@ -290,6 +290,8 @@ func (d *ddTestResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *ddTestResourceData) setId(v types.String) { d.Id = v }
+
 func (d *ddTestResourceData) defectdojoResource() defectdojoResource {
 	return &ddTestDefectdojoResource{
 		TestCreate: dd.TestCreate{},

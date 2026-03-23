@@ -29,15 +29,16 @@ func (d engagementDataSource) Metadata(ctx context.Context, req datasource.Metad
 
 func (d engagementDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "DefectDojo Engagement data source",
+		MarkdownDescription: "DefectDojo Engagement data source. You can specify either the `id` or the `name` to look up the Engagement.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Optional:            true,
 				MarkdownDescription: "Identifier",
 			},
 			"name": schema.StringAttribute{
+				Optional:            true,
 				Computed:            true,
-				MarkdownDescription: "Name of the Engagement",
+				MarkdownDescription: "Name of the Engagement. Specify either id or name.",
 			},
 			"description": schema.StringAttribute{
 				Computed:            true,

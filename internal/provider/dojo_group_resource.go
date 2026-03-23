@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -130,6 +132,44 @@ func (r dojoGroupDataProvider) getData(ctx context.Context, getter dataGetter) (
 
 func (d *dojoGroupResourceData) id() types.String {
 	return d.Id
+}
+
+func (d *dojoGroupResourceData) setId(v types.String) { d.Id = v }
+
+func (r dojoGroupDataProvider) nameFromData(data terraformResourceData) (string, bool) {
+	d := data.(*dojoGroupResourceData)
+	if !d.Name.IsNull() && !d.Name.IsUnknown() {
+		return d.Name.ValueString(), true
+	}
+	return "", false
+}
+
+func (r dojoGroupDataProvider) listByName(ctx context.Context, client *dd.ClientWithResponses, name string, data terraformResourceData) error {
+	apiResp, err := client.DojoGroupsListWithResponse(ctx, &dd.DojoGroupsListParams{
+		Name: &name,
+	})
+	if err != nil {
+		return fmt.Errorf("error listing dojo groups: %w", err)
+	}
+	if apiResp.StatusCode() != 200 || apiResp.JSON200 == nil {
+		return fmt.Errorf("unexpected API response: status %d, body: %s", apiResp.StatusCode(), string(apiResp.Body))
+	}
+	var matched []dd.DojoGroup
+	for _, g := range apiResp.JSON200.Results {
+		if strings.EqualFold(g.Name, name) {
+			matched = append(matched, g)
+		}
+	}
+	if len(matched) == 0 {
+		return fmt.Errorf("no dojo group found with name %q", name)
+	}
+	if len(matched) > 1 {
+		return fmt.Errorf("%d dojo groups matched name %q, expected exactly 1", len(matched), name)
+	}
+	if matched[0].Id != nil {
+		data.setId(types.StringValue(fmt.Sprintf("%d", *matched[0].Id)))
+	}
+	return nil
 }
 
 func (d *dojoGroupResourceData) defectdojoResource() defectdojoResource {

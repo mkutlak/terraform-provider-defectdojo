@@ -139,6 +139,8 @@ func (d *credentialMappingResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *credentialMappingResourceData) setId(v types.String) { d.Id = v }
+
 func (d *credentialMappingResourceData) defectdojoResource() defectdojoResource {
 	return &credentialMappingDefectdojoResource{CredentialMapping: dd.CredentialMapping{}}
 }

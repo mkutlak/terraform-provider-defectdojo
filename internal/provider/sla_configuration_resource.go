@@ -180,6 +180,7 @@ func (r slaConfigurationDataProvider) getData(ctx context.Context, getter dataGe
 }
 
 func (d *slaConfigurationResourceData) id() types.String { return d.Id }
+func (d *slaConfigurationResourceData) setId(v types.String) { d.Id = v }
 
 func (d *slaConfigurationResourceData) defectdojoResource() defectdojoResource {
 	return &slaConfigurationDefectdojoResource{SLAConfiguration: dd.SLAConfiguration{}}

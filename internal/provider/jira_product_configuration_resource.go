@@ -232,6 +232,8 @@ func (d *jiraProductConfigurationResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *jiraProductConfigurationResourceData) setId(v types.String) { d.Id = v }
+
 func (d *jiraProductConfigurationResourceData) defectdojoResource() defectdojoResource {
 	return &jiraProductConfigurationDefectdojoResource{
 		JIRAProject: dd.JIRAProject{},

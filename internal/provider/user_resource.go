@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -171,6 +173,44 @@ func (r userDataProvider) getData(ctx context.Context, getter dataGetter) (terra
 
 func (d *userResourceData) id() types.String {
 	return d.Id
+}
+
+func (d *userResourceData) setId(v types.String) { d.Id = v }
+
+func (r userDataProvider) nameFromData(data terraformResourceData) (string, bool) {
+	d := data.(*userResourceData)
+	if !d.Username.IsNull() && !d.Username.IsUnknown() {
+		return d.Username.ValueString(), true
+	}
+	return "", false
+}
+
+func (r userDataProvider) listByName(ctx context.Context, client *dd.ClientWithResponses, name string, data terraformResourceData) error {
+	apiResp, err := client.UsersListWithResponse(ctx, &dd.UsersListParams{
+		Username: &name,
+	})
+	if err != nil {
+		return fmt.Errorf("error listing users: %w", err)
+	}
+	if apiResp.StatusCode() != 200 || apiResp.JSON200 == nil {
+		return fmt.Errorf("unexpected API response: status %d, body: %s", apiResp.StatusCode(), string(apiResp.Body))
+	}
+	var matched []dd.User
+	for _, u := range apiResp.JSON200.Results {
+		if strings.EqualFold(u.Username, name) {
+			matched = append(matched, u)
+		}
+	}
+	if len(matched) == 0 {
+		return fmt.Errorf("no user found with username %q", name)
+	}
+	if len(matched) > 1 {
+		return fmt.Errorf("%d users matched username %q, expected exactly 1", len(matched), name)
+	}
+	if matched[0].Id != nil {
+		data.setId(types.StringValue(fmt.Sprintf("%d", *matched[0].Id)))
+	}
+	return nil
 }
 
 func (d *userResourceData) defectdojoResource() defectdojoResource {

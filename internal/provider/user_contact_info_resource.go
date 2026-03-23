@@ -179,6 +179,8 @@ func (d *userContactInfoResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *userContactInfoResourceData) setId(v types.String) { d.Id = v }
+
 func (d *userContactInfoResourceData) defectdojoResource() defectdojoResource {
 	return &userContactInfoDefectdojoResource{UserContactInfo: dd.UserContactInfo{}}
 }

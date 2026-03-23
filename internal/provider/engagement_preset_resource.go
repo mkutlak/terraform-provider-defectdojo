@@ -163,6 +163,8 @@ func (d *engagementPresetResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *engagementPresetResourceData) setId(v types.String) { d.Id = v }
+
 func (d *engagementPresetResourceData) defectdojoResource() defectdojoResource {
 	return &engagementPresetDefectdojoResource{
 		EngagementPresets: dd.EngagementPresets{},

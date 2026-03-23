@@ -128,6 +128,8 @@ func (d *notificationWebhookResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *notificationWebhookResourceData) setId(v types.String) { d.Id = v }
+
 func (d *notificationWebhookResourceData) defectdojoResource() defectdojoResource {
 	return &notificationWebhookDefectdojoResource{NotificationWebhooks: dd.NotificationWebhooks{}}
 }

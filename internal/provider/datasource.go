@@ -9,6 +9,13 @@ import (
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
+// nameFilterable is an optional interface that dataProviders can implement
+// to enable lookup by name (or another unique field) instead of numeric ID.
+type nameFilterable interface {
+	nameFromData(data terraformResourceData) (string, bool)
+	listByName(ctx context.Context, client *dd.ClientWithResponses, name string, data terraformResourceData) error
+}
+
 type terraformDatasource struct {
 	client *dd.ClientWithResponses
 	dataProvider
@@ -42,11 +49,42 @@ func (r terraformDatasource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
+	// Check for conflicting lookup parameters (both id and name specified)
+	if !data.id().IsNull() {
+		if nf, ok := r.dataProvider.(nameFilterable); ok {
+			if _, hasName := nf.nameFromData(data); hasName {
+				resp.Diagnostics.AddError(
+					"Conflicting Lookup Parameters",
+					"Specify either id or the lookup field (e.g. name, username, url), not both")
+				return
+			}
+		}
+	}
+
+	// If id is null, try name-based resolution
 	if data.id().IsNull() {
-		resp.Diagnostics.AddError(
-			"Could not Retrieve Resource",
-			"The Id field was null but it is required to retrieve the resource")
-		return
+		nf, ok := r.dataProvider.(nameFilterable)
+		if !ok {
+			resp.Diagnostics.AddError(
+				"Could not Retrieve Resource",
+				"The Id field was null but it is required to retrieve the resource")
+			return
+		}
+
+		name, hasName := nf.nameFromData(data)
+		if !hasName {
+			resp.Diagnostics.AddError(
+				"Could not Retrieve Resource",
+				"Either id or the lookup field (e.g. name, username, url) must be specified")
+			return
+		}
+
+		if err := nf.listByName(ctx, r.client, name, data); err != nil {
+			resp.Diagnostics.AddError(
+				"Error Looking Up Resource By Name",
+				err.Error())
+			return
+		}
 	}
 
 	idNumber, err := strconv.Atoi(data.id().ValueString())

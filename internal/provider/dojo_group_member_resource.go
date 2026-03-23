@@ -133,6 +133,8 @@ func (d *dojoGroupMemberResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *dojoGroupMemberResourceData) setId(v types.String) { d.Id = v }
+
 func (d *dojoGroupMemberResourceData) defectdojoResource() defectdojoResource {
 	return &dojoGroupMemberDefectdojoResource{DojoGroupMember: dd.DojoGroupMember{}}
 }

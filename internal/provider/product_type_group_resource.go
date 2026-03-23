@@ -133,6 +133,8 @@ func (d *productTypeGroupResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *productTypeGroupResourceData) setId(v types.String) { d.Id = v }
+
 func (d *productTypeGroupResourceData) defectdojoResource() defectdojoResource {
 	return &productTypeGroupDefectdojoResource{ProductTypeGroup: dd.ProductTypeGroup{}}
 }

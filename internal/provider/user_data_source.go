@@ -13,14 +13,15 @@ type userDataSource struct {
 
 func (t userDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for Defect Dojo User",
+		MarkdownDescription: "Data source for Defect Dojo User. You can specify either the `id` or the `username` to look up the User.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",
 				Optional:            true,
 			},
 			"username": schema.StringAttribute{
-				MarkdownDescription: "The username of the User",
+				MarkdownDescription: "The username of the User. Specify either id or username.",
+				Optional:            true,
 				Computed:            true,
 			},
 			"email": schema.StringAttribute{
@@ -44,7 +45,7 @@ func (t userDataSource) Schema(ctx context.Context, req datasource.SchemaRequest
 				Computed:            true,
 			},
 			"password": schema.StringAttribute{
-				MarkdownDescription: "The password for the User (not returned by API)",
+				MarkdownDescription: "The password for the User (write-only, never returned by API)",
 				Computed:            true,
 				Sensitive:           true,
 			},

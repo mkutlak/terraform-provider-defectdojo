@@ -19,6 +19,7 @@ import (
 
 type terraformResourceData interface {
 	id() types.String
+	setId(types.String)
 	defectdojoResource() defectdojoResource
 }
 

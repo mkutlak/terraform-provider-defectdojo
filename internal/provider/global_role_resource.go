@@ -133,6 +133,8 @@ func (d *globalRoleResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *globalRoleResourceData) setId(v types.String) { d.Id = v }
+
 func (d *globalRoleResourceData) defectdojoResource() defectdojoResource {
 	return &globalRoleDefectdojoResource{GlobalRole: dd.GlobalRole{}}
 }

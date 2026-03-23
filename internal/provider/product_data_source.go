@@ -14,11 +14,12 @@ type productDataSource struct {
 
 func (t productDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for Defect Dojo Product",
+		MarkdownDescription: "Data source for Defect Dojo Product. You can specify either the `id` or the `name` to look up the Product.",
 
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				MarkdownDescription: "The name of the Product",
+				MarkdownDescription: "The name of the Product. Specify either id or name.",
+				Optional:            true,
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{

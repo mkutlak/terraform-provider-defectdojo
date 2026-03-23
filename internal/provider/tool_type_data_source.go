@@ -13,14 +13,15 @@ type toolTypeDataSource struct {
 
 func (t toolTypeDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for Defect Dojo Tool Type",
+		MarkdownDescription: "Data source for Defect Dojo Tool Type. You can specify either the `id` or the `name` to look up the Tool Type.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",
 				Optional:            true,
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "The name of the Tool Type",
+				MarkdownDescription: "The name of the Tool Type. Specify either id or name.",
+				Optional:            true,
 				Computed:            true,
 			},
 			"description": schema.StringAttribute{

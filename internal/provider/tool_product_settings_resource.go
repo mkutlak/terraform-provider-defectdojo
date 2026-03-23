@@ -138,6 +138,8 @@ func (d *toolProductSettingsResourceData) id() types.String {
 	return d.Id
 }
 
+func (d *toolProductSettingsResourceData) setId(v types.String) { d.Id = v }
+
 func (d *toolProductSettingsResourceData) defectdojoResource() defectdojoResource {
 	return &toolProductSettingsDefectdojoResource{ToolProductSettings: dd.ToolProductSettings{}}
 }
