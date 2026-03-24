@@ -51,6 +51,13 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [0.4.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.3.1...v0.4.0) (2026-03-24)
+
+
+### Features
+
+* support name-based lookup for multiple data sources ([8952ac9](https://github.com/mkutlak/terraform-provider-defectdojo/commit/8952ac96ec01513c91070c467385871be2d420f2))
+
 ## [0.3.1](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.3.0...v0.3.1) (2026-03-23)
 
 
