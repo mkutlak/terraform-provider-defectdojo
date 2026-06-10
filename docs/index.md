@@ -15,8 +15,8 @@ This provider is built and tested against the following DefectDojo versions:
 
 | DefectDojo Version | Status | Notes |
 | ------------------ | ------ | ----- |
-| 2.56.2             | Tested | Latest tested version. |
-| 2.54.3             | Tested | Primary version. API client generated from this version. |
+| 2.58.4             | Tested | Latest tested version. API client generated from this version. |
+| 2.56.2             | Tested | Tested version. |
 
 The provider may work with other versions but only the above are regularly tested.
 If you encounter issues with an unlisted version, please

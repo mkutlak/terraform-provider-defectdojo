@@ -13,7 +13,7 @@ set -euo pipefail
 #   ./scripts/dd-version-compat.sh 2.54.3 2.42.0      # Check specific versions
 #   ./scripts/dd-version-compat.sh --test 2.54.3       # Test a specific version
 
-DEFAULT_VERSIONS=("2.56.2" "2.54.3")
+DEFAULT_VERSIONS=("2.58.4" "2.56.2")
 RUN_TESTS=false
 VERSIONS=()
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

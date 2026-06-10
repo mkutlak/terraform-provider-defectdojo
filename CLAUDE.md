@@ -66,7 +66,6 @@ The provider implements 33 resources and 33 data sources. See `provider.go` `Res
 ### Notable Files
 
 - `plan_modifiers.go` - Custom plan modifiers for default values (`stringDefault`, `boolDefault`)
-- `internal/ref/main.go` - Generic `Of[E]()` helper to create pointers (used in data sources)
 - `scripts/dd-version-compat.sh` - Multi-version compatibility test automation
 - `openapi-specs/<version>/defect_dojo.json` - Collected OpenAPI specs per DD version
 

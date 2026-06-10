@@ -1,6 +1,6 @@
 default: testacc
 
-DD_VERSION ?= 2.54.3
+DD_VERSION ?= 2.58.4
 export DD_VERSION
 
 # Run acceptance tests
@@ -15,6 +15,15 @@ generate-docs:
 .PHONY: lint
 lint:
 	golangci-lint run ./...
+
+# Apply modern Go idiom fixes (excludes the generated internal/ddclient package)
+.PHONY: modernize modernize-check
+modernize:
+	go run golang.org/x/tools/go/analysis/passes/modernize/cmd/modernize@latest -fix -test $$(go list ./... | grep -v '/internal/ddclient')
+
+# Report modernization opportunities without changing files
+modernize-check:
+	go run golang.org/x/tools/go/analysis/passes/modernize/cmd/modernize@latest -test $$(go list ./... | grep -v '/internal/ddclient')
 
 # Start local DefectDojo for acceptance tests
 .PHONY: dd-up dd-wait dd-down dd-logs

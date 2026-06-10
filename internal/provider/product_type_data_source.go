@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
-	"github.com/mkutlak/terraform-provider-defectdojo/internal/ref"
 )
 
 func (t productTypeDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
@@ -106,7 +105,7 @@ func (d productTypeDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	}
 
 	if !data.Name.IsNull() {
-		params.Name = ref.Of(data.Name.ValueString())
+		params.Name = new(data.Name.ValueString())
 	}
 
 	apiResp, err := d.client.ProductTypesListWithResponse(ctx, &params)
