@@ -51,6 +51,25 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [0.5.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.4.0...v0.5.0) (2026-06-10)
+
+
+### Features
+
+* target DefectDojo 2.58.4 and Go 1.26.4 ([791d352](https://github.com/mkutlak/terraform-provider-defectdojo/commit/791d352a314404dec107da26609a8c432de5dd10))
+
+
+### Miscellaneous
+
+* **deps:** bump github.com/hashicorp/terraform-plugin-docs ([2f9e35c](https://github.com/mkutlak/terraform-provider-defectdojo/commit/2f9e35cac1ca1448516debb9ea90ffff5a20bde0))
+* **deps:** bump github.com/hashicorp/terraform-plugin-sdk/v2 ([4333056](https://github.com/mkutlak/terraform-provider-defectdojo/commit/43330567dd66efaa6b6b808ba8d818eb4000ed06))
+* **deps:** bump github.com/hashicorp/terraform-plugin-testing ([9bed886](https://github.com/mkutlak/terraform-provider-defectdojo/commit/9bed8861be4ce71781d090bd49e23c8de5b99293))
+* **deps:** bump github.com/oapi-codegen/oapi-codegen/v2 ([51575e2](https://github.com/mkutlak/terraform-provider-defectdojo/commit/51575e20ecd3e86b156c8824194d5715c692c203))
+* **deps:** bump github.com/oapi-codegen/runtime from 1.3.0 to 1.3.1 ([01c1823](https://github.com/mkutlak/terraform-provider-defectdojo/commit/01c18232553c9d6144eab295c9bf3b348771681a))
+* **deps:** bump github.com/oapi-codegen/runtime from 1.3.1 to 1.4.0 ([de6edd8](https://github.com/mkutlak/terraform-provider-defectdojo/commit/de6edd83cb26fe4132a6569f12c0c27117ca3db8))
+* **deps:** bump github.com/oapi-codegen/runtime from 1.4.0 to 1.4.1 ([26b2096](https://github.com/mkutlak/terraform-provider-defectdojo/commit/26b2096484584aa9693de1ddbe987b082b30c7d4))
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([629360c](https://github.com/mkutlak/terraform-provider-defectdojo/commit/629360c4d3dc99554b0d6fb9826ce1a40a5cd604))
+
 ## [0.4.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.3.1...v0.4.0) (2026-03-24)
 
 
