@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.40.1
 	github.com/hashicorp/terraform-plugin-testing v1.16.0
 	github.com/oapi-codegen/oapi-codegen/v2 v2.7.1
-	github.com/oapi-codegen/runtime v1.4.1
+	github.com/oapi-codegen/runtime v1.4.2
 	go.yaml.in/yaml/v3 v3.0.4
 	gotest.tools v2.2.0+incompatible
 )
