@@ -123,7 +123,7 @@ type(scope): description
 
 - `feat:` → minor bump (new resource, data source, attribute)
 - `fix:` / `chore:` / `docs:` → patch bump
-- `feat!:` or `BREAKING CHANGE:` footer → major bump (minor while pre-1.0)
+- `feat!:` or `BREAKING CHANGE:` footer → major bump
 - Resource/attribute removal or rename = breaking change
 
 ### How It Works
