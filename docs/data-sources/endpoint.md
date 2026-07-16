@@ -3,12 +3,12 @@
 page_title: "defectdojo_endpoint Data Source - terraform-provider-defectdojo"
 subcategory: ""
 description: |-
-  Data source for DefectDojo Endpoint
+  Data source for DefectDojo Endpoint. Since DefectDojo 3.x endpoints are a read-only projection of Locations: this data source reads the legacy endpoint representation, but endpoints can no longer be created or modified via the API (manage Locations instead).
 ---
 
 # defectdojo_endpoint (Data Source)
 
-Data source for DefectDojo Endpoint
+Data source for DefectDojo Endpoint. Since DefectDojo 3.x endpoints are a read-only projection of Locations: this data source reads the legacy endpoint representation, but endpoints can no longer be created or modified via the API (manage Locations instead).
 
 ## Example Usage
 

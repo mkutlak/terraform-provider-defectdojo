@@ -18,6 +18,9 @@ resource "defectdojo_product_type" "example" {
   description      = "An example description"
   critical_product = false
   key_product      = false
+
+  # IDs of users authorized on this product type (DefectDojo 3.x)
+  # authorized_users = [1, 2]
 }
 ```
 
@@ -30,6 +33,7 @@ resource "defectdojo_product_type" "example" {
 
 ### Optional
 
+- `authorized_users` (Set of Number) The IDs of the users who are authorized on this Product Type. Replaces the product type member/group API removed in DefectDojo 3.x.
 - `critical_product` (Boolean) Is this a critical Product Type
 - `description` (String) The description of the Product Type
 - `key_product` (Boolean) Is this a key Product Type

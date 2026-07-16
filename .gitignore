@@ -38,7 +38,7 @@ website/vendor
 terraform-provider-defectdojo
 
 # Root-level OpenAPI spec (versioned specs go in openapi-specs/)
-defect_dojo.json
+/defect_dojo.json
 
 # Oh-My-Claude
 .omc

@@ -17,6 +17,9 @@ resource "defectdojo_product" "example" {
   name            = "An example name"
   description     = "An example description"
   product_type_id = data.defectdojo_product_type.example.id
+
+  # IDs of users authorized on this product (DefectDojo 3.x)
+  # authorized_users = [1, 2]
 }
 ```
 
@@ -31,6 +34,7 @@ resource "defectdojo_product" "example" {
 
 ### Optional
 
+- `authorized_users` (Set of Number) The IDs of the users who are authorized on this Product. Replaces the product member/group API removed in DefectDojo 3.x.
 - `business_criticality` (String) The Business Criticality of the Product. Valid values are: 'very high', 'high', 'medium', 'low', 'very low', 'none'
 - `disable_sla_breach_notifications` (Boolean) Disable SLA breach notifications if configured in the global settings.
 - `enable_full_risk_acceptance` (Boolean) Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.

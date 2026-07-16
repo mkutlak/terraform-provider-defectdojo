@@ -15,8 +15,9 @@ make testacc                            # Run all acceptance tests (needs live D
 TESTARGS="-run TestFunctionName" make testacc  # Run a single acceptance test
 TF_LOG="DEBUG" make testacc             # Acceptance tests with debug output
 go test ./internal/provider/ -run TestProductResource  # Run unit tests (no TF_ACC needed)
-DD_VERSION=2.42.0 make dd-up            # Start a specific DefectDojo version
+DD_VERSION=2.58.4 make dd-up            # Start a specific DefectDojo version
 make dd-spec                            # Fetch OpenAPI spec from running instance
+make regen-client                       # Regenerate internal/ddclient from openapi-specs/$DD_VERSION spec
 make dd-compat                          # Run multi-version compat checks (spec collection)
 make dd-compat-test                     # Run compat checks + acceptance tests
 ```
@@ -65,7 +66,7 @@ The provider implements 22 resources and 23 data sources (endpoint is data-sourc
 
 ### Notable Files
 
-- `plan_modifiers.go` - Custom plan modifiers for default values (`stringDefault`, `boolDefault`)
+- Default attribute values use the framework-native `stringdefault`/`booldefault` packages (there is no custom plan-modifier file)
 - `scripts/dd-version-compat.sh` - Multi-version compatibility test automation
 - `openapi-specs/<version>/defect_dojo.json` - Collected OpenAPI specs per DD version
 
