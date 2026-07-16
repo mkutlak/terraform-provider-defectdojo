@@ -10,10 +10,10 @@ set -euo pipefail
 # Examples:
 #   ./scripts/dd-version-compat.sh                    # Check default versions, spec only
 #   ./scripts/dd-version-compat.sh --test              # Check + run acceptance tests
-#   ./scripts/dd-version-compat.sh 2.54.3 2.42.0      # Check specific versions
-#   ./scripts/dd-version-compat.sh --test 2.54.3       # Test a specific version
+#   ./scripts/dd-version-compat.sh 3.1.101 2.58.4     # Check specific versions
+#   ./scripts/dd-version-compat.sh --test 3.1.101      # Test a specific version
 
-DEFAULT_VERSIONS=("2.58.4" "2.56.2")
+DEFAULT_VERSIONS=("3.1.101" "2.58.4")
 RUN_TESTS=false
 VERSIONS=()
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

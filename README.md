@@ -9,6 +9,12 @@ Terraform provider for managing [DefectDojo](https://www.defectdojo.org/) resour
 - [Terraform](https://www.terraform.io/downloads.html) >= 1.8
 - [Go](https://golang.org/doc/install) >= 1.25 (for building from source)
 
+### DefectDojo 2.x users
+
+Current provider releases target DefectDojo 3.x. The last DefectDojo 2.x-compatible release is
+v0.5.1 — if you run DefectDojo 2.x and need the resources removed in 3.x (RBAC
+members/groups/global roles, credentials, the endpoint resource), pin the provider to `~> 0.5`.
+
 ## Using the provider
 
 Configure the provider via environment variables:
@@ -145,8 +151,8 @@ TESTARGS="-run TestFunctionName" make testacc
 A Docker Compose setup is included for running a local DefectDojo instance:
 
 ```shell
-make dd-up                  # Start DefectDojo (default v2.58.4)
-DD_VERSION=2.42.0 make dd-up  # Start a specific version
+make dd-up                  # Start DefectDojo (default v3.1.101)
+DD_VERSION=2.58.4 make dd-up  # Start a specific version
 make dd-spec                # Fetch OpenAPI spec from running instance
 make testacc-local          # Run acceptance tests against local instance
 make dd-down                # Stop and clean up

@@ -49,7 +49,7 @@ resource "defectdojo_engagement" "example" {
 - `report_type` (Number) ID of the report type
 - `requester` (Number) ID of the requester
 - `source_code_management_uri` (String) Resource link to source code
-- `status` (String) Status of the Engagement (Not Started, Blocked, Cancelled, Completed, In Progress, On Hold, Waiting for Resource)
+- `status` (String) Status of the Engagement (Not Started, Blocked, Cancelled, Completed, In Progress, On Hold, Scheduled, Waiting for Resource)
 - `tags` (Set of String) Tags for this Engagement
 - `test_strategy` (String) Test strategy for the engagement
 - `threat_model` (Boolean) Whether a threat model was performed
