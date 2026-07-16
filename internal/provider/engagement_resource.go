@@ -62,12 +62,12 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 				},
 			},
 			"status": schema.StringAttribute{
-				MarkdownDescription: "Status of the Engagement (Not Started, Blocked, Cancelled, Completed, In Progress, On Hold, Waiting for Resource)",
+				MarkdownDescription: "Status of the Engagement (Not Started, Blocked, Cancelled, Completed, In Progress, On Hold, Scheduled, Waiting for Resource)",
 				Optional:            true,
 				Computed:            true,
 				Default:             stringdefault.StaticString("Not Started"),
 				Validators: []validator.String{
-					stringvalidator.OneOf("Not Started", "Blocked", "Cancelled", "Completed", "In Progress", "On Hold", "Waiting for Resource"),
+					stringvalidator.OneOf("Not Started", "Blocked", "Cancelled", "Completed", "In Progress", "On Hold", "Scheduled", "Waiting for Resource"),
 				},
 			},
 			"lead": schema.Int64Attribute{
