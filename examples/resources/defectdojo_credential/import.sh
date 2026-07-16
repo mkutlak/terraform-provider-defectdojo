@@ -1,1 +1,0 @@
-terraform import defectdojo_credential.example 123
