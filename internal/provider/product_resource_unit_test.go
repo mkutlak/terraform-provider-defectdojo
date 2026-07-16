@@ -55,6 +55,16 @@ func TestProductResourcePopulate(t *testing.T) {
 		},
 	)
 
+	expectedAuthorizedUsers := []int{7, 8}
+
+	expectedAuthorizedUsersSet := types.SetValueMust(
+		types.Int64Type,
+		[]attr.Value{
+			types.Int64Value(7),
+			types.Int64Value(8),
+		},
+	)
+
 	ddProduct := productDefectdojoResource{
 		Product: dd.Product{
 			Id:                         &expectedId,
@@ -77,6 +87,7 @@ func TestProductResourcePopulate(t *testing.T) {
 			UserRecords:                &expectedUserRecords,
 			Tags:                       &expectedTags,
 			Regulations:                &expectedRegulations,
+			AuthorizedUsers:            &expectedAuthorizedUsers,
 		},
 	}
 
@@ -104,6 +115,7 @@ func TestProductResourcePopulate(t *testing.T) {
 	assert.Equal(t, productResource.UserRecords.ValueInt64(), (int64)(expectedUserRecords))
 	assert.DeepEqual(t, productResource.Tags, expectedTagsSet)
 	assert.DeepEqual(t, productResource.RegulationIds, expectedRegulationsSet)
+	assert.DeepEqual(t, productResource.AuthorizedUsers, expectedAuthorizedUsersSet)
 
 	ddProduct = productDefectdojoResource{
 		Product: dd.Product{},
@@ -132,6 +144,7 @@ func TestProductResourcePopulate(t *testing.T) {
 	assert.Equal(t, productResource.UserRecords.IsNull(), true)
 	assert.DeepEqual(t, productResource.Tags, nilStringSet)
 	assert.DeepEqual(t, productResource.RegulationIds, nilInt64Set)
+	assert.DeepEqual(t, productResource.AuthorizedUsers, nilInt64Set)
 }
 func TestProductResourcePopulateNils(t *testing.T) {
 
@@ -161,6 +174,7 @@ func TestProductResourcePopulateNils(t *testing.T) {
 
 	assert.DeepEqual(t, productResource.Tags.Elements(), []attr.Value{})
 	assert.DeepEqual(t, productResource.RegulationIds.Elements(), []attr.Value{})
+	assert.DeepEqual(t, productResource.AuthorizedUsers.Elements(), []attr.Value{})
 
 	ddProduct := productDefectdojoResource{
 		Product: dd.Product{},
@@ -187,6 +201,7 @@ func TestProductResourcePopulateNils(t *testing.T) {
 	assert.Equal(t, productResource.UserRecords.ValueInt64(), (int64)(0))
 	assert.DeepEqual(t, productResource.Tags, nilStringSet)
 	assert.DeepEqual(t, productResource.RegulationIds, nilInt64Set)
+	assert.DeepEqual(t, productResource.AuthorizedUsers, nilInt64Set)
 }
 
 func TestProductResource__defectdojoResource(t *testing.T) {
@@ -232,6 +247,16 @@ func TestProductResource__defectdojoResource(t *testing.T) {
 		},
 	)
 
+	expectedAuthorizedUsers := []int{7, 8}
+
+	expectedAuthorizedUsersSet := types.SetValueMust(
+		types.Int64Type,
+		[]attr.Value{
+			types.Int64Value(7),
+			types.Int64Value(8),
+		},
+	)
+
 	productResource := productResourceData{
 		//Id:                  types.String{Value: fmt.Sprint(expectedId)},
 		Name:                types.StringValue(expectedName),
@@ -254,8 +279,9 @@ func TestProductResource__defectdojoResource(t *testing.T) {
 		TechnicalContactId: types.Int64Value(int64(expectedTechnicalContactId)),
 		UserRecords:        types.Int64Value(int64(expectedUserRecords)),
 
-		Tags:          expectedTagsSet,
-		RegulationIds: expectedRegulationsSet,
+		Tags:            expectedTagsSet,
+		RegulationIds:   expectedRegulationsSet,
+		AuthorizedUsers: expectedAuthorizedUsersSet,
 	}
 
 	ddResource := productResource.defectdojoResource()
@@ -287,6 +313,10 @@ func TestProductResource__defectdojoResource(t *testing.T) {
 
 	assert.DeepEqual(t, *ddProduct.Tags, expectedTags)
 	assert.DeepEqual(t, *ddProduct.Regulations, expectedRegulations)
+	assert.DeepEqual(t, *ddProduct.AuthorizedUsers, expectedAuthorizedUsers)
+
+	req := productToRequest(ddProduct.Product)
+	assert.DeepEqual(t, *req.AuthorizedUsers, expectedAuthorizedUsers)
 }
 
 func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
@@ -322,8 +352,9 @@ func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
 		TechnicalContactId: types.Int64Null(),
 		UserRecords:        types.Int64Null(),
 
-		Tags:          types.SetNull(types.StringType),
-		RegulationIds: types.SetNull(types.Int64Type),
+		Tags:            types.SetNull(types.StringType),
+		RegulationIds:   types.SetNull(types.Int64Type),
+		AuthorizedUsers: types.SetNull(types.Int64Type),
 	}
 
 	ddResource := productResource.defectdojoResource()
@@ -358,4 +389,5 @@ func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
 	var nilIntSlice *[]int
 	assert.Equal(t, ddProduct.Tags, nilStringSlice)
 	assert.Equal(t, ddProduct.Regulations, nilIntSlice)
+	assert.Equal(t, ddProduct.AuthorizedUsers, nilIntSlice)
 }

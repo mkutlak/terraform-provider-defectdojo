@@ -154,6 +154,12 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Optional:            true,
 				Computed:            true,
 			},
+			"authorized_users": schema.SetAttribute{
+				MarkdownDescription: "The IDs of the users who are authorized on this Product. Replaces the product member/group API removed in DefectDojo 3.x.",
+				Optional:            true,
+				Computed:            true,
+				ElementType:         types.Int64Type,
+			},
 			"id": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "Identifier",
@@ -189,6 +195,7 @@ type productResourceData struct {
 	DisableSlaBreachNotifications types.Bool   `tfsdk:"disable_sla_breach_notifications" ddField:"DisableSlaBreachNotifications"`
 	EnableProductTagInheritance   types.Bool   `tfsdk:"enable_product_tag_inheritance" ddField:"EnableProductTagInheritance"`
 	SlaConfiguration              types.Int64  `tfsdk:"sla_configuration" ddField:"SlaConfiguration"`
+	AuthorizedUsers               types.Set    `tfsdk:"authorized_users" ddField:"AuthorizedUsers"`
 }
 
 type productDefectdojoResource struct {
@@ -201,6 +208,7 @@ func productToRequest(p dd.Product) dd.ProductRequest {
 	req := dd.ProductRequest{
 		Name:                          p.Name,
 		Description:                   p.Description,
+		AuthorizedUsers:               p.AuthorizedUsers,
 		DisableSlaBreachNotifications: p.DisableSlaBreachNotifications,
 		EnableFullRiskAcceptance:      p.EnableFullRiskAcceptance,
 		EnableProductTagInheritance:   p.EnableProductTagInheritance,
