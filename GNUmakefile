@@ -75,6 +75,54 @@ dd-spec:
 		-o openapi-specs/$(DD_VERSION)/defect_dojo.json && \
 	echo "Saved to openapi-specs/$(DD_VERSION)/defect_dojo.json"
 
+# Regenerate internal/ddclient/client.gen.go from openapi-specs/$(DD_VERSION)/defect_dojo.json.
+#
+# Procedure (see internal/ddclient/generate.go for details):
+#   1. Copy the versioned spec to the repo root as defect_dojo.json (gitignored).
+#   2. Run the go.mod-pinned oapi-codegen (never a global binary) with
+#      -generate types,client,skip-fmt. skip-fmt is required: the raw output
+#      contains invalid Go that gofmt rejects, which steps 3-4 clean up.
+#   3. Delete invalid bare-nil enum constants (` = <nil>` lines). String enums
+#      with the quoted value "<nil>" are valid Go and are kept.
+#   4. Remove const blocks and Valid() methods for enum types aliased to
+#      time.Time / openapi_types.Date (Go cannot have constants of those types).
+#   5. goimports -w.
+# All post-processing steps are idempotent.
+
+DDCLIENT_GEN := internal/ddclient/client.gen.go
+OAPI_CODEGEN_VERSION = $(shell go list -m -f '{{.Version}}' github.com/oapi-codegen/oapi-codegen/v2)
+
+# awk program for step 4: pass 1 collects enum type names aliased to
+# time.Time / openapi_types.Date, pass 2 drops their const blocks and
+# Valid() methods (harmless no-op if the blocks are already gone).
+define DDCLIENT_STRIP_AWK
+NR==FNR { if ($$0 ~ /^type [A-Za-z_][A-Za-z0-9_]*[ \t]+(time\.Time|openapi_types\.Date)[ \t]*$$/) bad[$$2]=1; next }
+skip_const { if ($$0 ~ /^\)/) skip_const=0; next }
+skip_func  { if ($$0 ~ /^\}/) skip_func=0; next }
+/^\/\/ Defines values for / { t=$$5; sub(/\.$$/, "", t); if (t in bad) { skip_const=1; next } }
+/^\/\/ Valid indicates whether the value is a known member of the / { t=$$(NF-1); if (t in bad) { skip_func=1; next } }
+{ print }
+endef
+export DDCLIENT_STRIP_AWK
+
+.PHONY: regen-client
+regen-client:
+	@test -f openapi-specs/$(DD_VERSION)/defect_dojo.json || \
+		{ echo "error: openapi-specs/$(DD_VERSION)/defect_dojo.json not found"; exit 1; }
+	cp -f openapi-specs/$(DD_VERSION)/defect_dojo.json ./defect_dojo.json
+	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@$(OAPI_CODEGEN_VERSION) \
+		-generate types,client,skip-fmt -package ddclient -o $(DDCLIENT_GEN) defect_dojo.json
+	sed -i '/ = <nil>$$/d' $(DDCLIENT_GEN)
+	awk "$$DDCLIENT_STRIP_AWK" $(DDCLIENT_GEN) $(DDCLIENT_GEN) > $(DDCLIENT_GEN).tmp
+	mv -f $(DDCLIENT_GEN).tmp $(DDCLIENT_GEN)
+	@if command -v goimports >/dev/null 2>&1; then \
+		goimports -w $(DDCLIENT_GEN); \
+	else \
+		go run golang.org/x/tools/cmd/goimports@latest -w $(DDCLIENT_GEN); \
+	fi
+	go build ./internal/ddclient/
+	@echo "Regenerated $(DDCLIENT_GEN) from DefectDojo $(DD_VERSION) spec"
+
 # Run version compatibility checks (spec collection only)
 .PHONY: dd-compat
 dd-compat:

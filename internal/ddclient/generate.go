@@ -1,10 +1,27 @@
 package ddclient
 
-// To regenerate the client from the OpenAPI spec:
-//   1. Run: oapi-codegen -generate types,client,skip-fmt -package ddclient -o client.gen.go ../../defect_dojo.json
-//   2. Fix invalid bare <nil> constants: sed -i '/ = <nil>$/d' client.gen.go
-//   3. Fix orphaned return statements in switch blocks after <nil> removal
-//   4. Remove time.Time-based const blocks and their Valid() methods (time.Time cannot be a Go constant)
-//   5. Run: goimports -w client.gen.go
+// To regenerate the client from an OpenAPI spec, run:
 //
-// See the Makefile or CLAUDE.md for the full regeneration procedure.
+//	make regen-client DD_VERSION=<version>    # e.g. DD_VERSION=3.1.101
+//
+// The target encodes the full validated procedure:
+//
+//  1. Copy openapi-specs/<version>/defect_dojo.json to the repo root as
+//     defect_dojo.json (the root copy is gitignored; do not commit it).
+//  2. Run the oapi-codegen version pinned in go.mod (never a global binary):
+//     go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@<pinned> \
+//     -generate types,client,skip-fmt -package ddclient -o client.gen.go defect_dojo.json
+//     skip-fmt is required: the raw output contains invalid Go that gofmt
+//     rejects, which the post-processing below cleans up. (For the same
+//     reason the yaml config in this directory cannot generate as-is.)
+//  3. Delete invalid bare-nil enum constants: sed -i '/ = <nil>$/d' client.gen.go
+//     String enum members with the quoted value "<nil>" are valid Go and are kept.
+//  4. Remove the "Defines values for X" const blocks and Valid() methods for
+//     enum types aliased to time.Time or openapi_types.Date - Go cannot have
+//     constants of those types. This also removes the switch cases that would
+//     otherwise be orphaned by step 3 (every bare-nil constant belongs to one
+//     of these blocks).
+//  5. Run: goimports -w client.gen.go
+//
+// All post-processing steps are idempotent; see the regen-client target in
+// GNUmakefile for the exact sed/awk implementation.
