@@ -41,6 +41,12 @@ func (t productTypeResource) Schema(ctx context.Context, req resource.SchemaRequ
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
 			},
+			"authorized_users": schema.SetAttribute{
+				MarkdownDescription: "The IDs of the users who are authorized on this Product Type. Replaces the product type member/group API removed in DefectDojo 3.x.",
+				Optional:            true,
+				Computed:            true,
+				ElementType:         types.Int64Type,
+			},
 			"id": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "Identifier",
@@ -57,6 +63,7 @@ type productTypeResourceData struct {
 	Description     types.String `tfsdk:"description" ddField:"Description"`
 	CriticalProduct types.Bool   `tfsdk:"critical_product" ddField:"CriticalProduct"`
 	KeyProduct      types.Bool   `tfsdk:"key_product" ddField:"KeyProduct"`
+	AuthorizedUsers types.Set    `tfsdk:"authorized_users" ddField:"AuthorizedUsers"`
 	Id              types.String `tfsdk:"id" ddField:"Id"`
 }
 
@@ -71,6 +78,7 @@ func productTypeToRequest(pt dd.ProductType) dd.ProductTypeRequest {
 		Description:     pt.Description,
 		CriticalProduct: pt.CriticalProduct,
 		KeyProduct:      pt.KeyProduct,
+		AuthorizedUsers: pt.AuthorizedUsers,
 	}
 }
 

@@ -3,4 +3,7 @@ resource "defectdojo_product_type" "example" {
   description      = "An example description"
   critical_product = false
   key_product      = false
+
+  # IDs of users authorized on this product type (DefectDojo 3.x)
+  # authorized_users = [1, 2]
 }
