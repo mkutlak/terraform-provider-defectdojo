@@ -51,6 +51,19 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [0.5.1](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.5.0...v0.5.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* pin PGDATA for postgres 18 volume compatibility ([dd2d7f3](https://github.com/mkutlak/terraform-provider-defectdojo/commit/dd2d7f31361c9a56e6a8b82a8aebf8dfe4401555))
+
+
+### Miscellaneous
+
+* **deps:** bump actions/checkout from 6 to 7 ([0c311aa](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0c311aa7faf788c8133ddb12e15bbc9945674937))
+* **deps:** bump github.com/oapi-codegen/runtime from 1.4.1 to 1.4.2 ([b61fdce](https://github.com/mkutlak/terraform-provider-defectdojo/commit/b61fdcea75542f36857ece36712b2f03e3fd7a1d))
+
 ## [0.5.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.4.0...v0.5.0) (2026-06-10)
 
 
