@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -32,6 +33,11 @@ func (t productTypeDataSource) Schema(ctx context.Context, req datasource.Schema
 				MarkdownDescription: "Is this a key Product Type",
 				Computed:            true,
 			},
+			"authorized_users": schema.SetAttribute{
+				MarkdownDescription: "The IDs of the users who are authorized on this Product Type. Replaces the product type member/group API removed in DefectDojo 3.x.",
+				Computed:            true,
+				ElementType:         types.Int64Type,
+			},
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",
 				Optional:            true,
@@ -45,6 +51,7 @@ type productTypeDataSourceData struct {
 	Description     types.String `tfsdk:"description"`
 	CriticalProduct types.Bool   `tfsdk:"critical_product"`
 	KeyProduct      types.Bool   `tfsdk:"key_product"`
+	AuthorizedUsers types.Set    `tfsdk:"authorized_users"`
 	Id              types.String `tfsdk:"id"`
 }
 
@@ -143,6 +150,17 @@ func (d productTypeDataSource) Read(ctx context.Context, req datasource.ReadRequ
 			}
 			if pt.KeyProduct != nil {
 				data.KeyProduct = types.BoolValue(*pt.KeyProduct)
+			}
+			if pt.AuthorizedUsers != nil && len(*pt.AuthorizedUsers) > 0 {
+				elems := make([]attr.Value, 0, len(*pt.AuthorizedUsers))
+				for _, userId := range *pt.AuthorizedUsers {
+					elems = append(elems, types.Int64Value(int64(userId)))
+				}
+				authorizedUsers, dgs := types.SetValue(types.Int64Type, elems)
+				resp.Diagnostics.Append(dgs...)
+				data.AuthorizedUsers = authorizedUsers
+			} else {
+				data.AuthorizedUsers = types.SetNull(types.Int64Type)
 			}
 		}
 	} else {

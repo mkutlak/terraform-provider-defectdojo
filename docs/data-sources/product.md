@@ -34,6 +34,7 @@ data "defectdojo_product" "example" {
 
 ### Read-Only
 
+- `authorized_users` (Set of Number) The IDs of the users who are authorized on this Product. Replaces the product member/group API removed in DefectDojo 3.x.
 - `business_criticality` (String) The Business Criticality of the Product. Valid values are: 'very high', 'high', 'medium', 'low', 'very low', 'none'
 - `description` (String) The description of the Product
 - `disable_sla_breach_notifications` (Boolean) Disable SLA breach notifications if configured in the global settings.

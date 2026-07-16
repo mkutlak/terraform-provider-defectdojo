@@ -112,6 +112,11 @@ func (t productDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				MarkdownDescription: "The ID of the SLA configuration to apply to this product.",
 				Computed:            true,
 			},
+			"authorized_users": schema.SetAttribute{
+				MarkdownDescription: "The IDs of the users who are authorized on this Product. Replaces the product member/group API removed in DefectDojo 3.x.",
+				Computed:            true,
+				ElementType:         types.Int64Type,
+			},
 		},
 	}
 }
