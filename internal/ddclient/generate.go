@@ -4,6 +4,10 @@ package ddclient
 //
 //	make regen-client DD_VERSION=<version>    # e.g. DD_VERSION=3.1.101
 //
+// Prerequisite: openapi-specs/<version>/defect_dojo.json must exist locally.
+// Collected specs are LOCAL artifacts, not tracked in git - collect one first
+// with `make dd-up && make dd-spec` (optionally DD_VERSION=<version>).
+//
 // The target encodes the full validated procedure:
 //
 //  1. Copy openapi-specs/<version>/defect_dojo.json to the repo root as
