@@ -139,10 +139,19 @@ type jiraInstanceResourceData struct {
 
 type jiraInstanceDefectdojoResource struct {
 	dd.JIRAInstance
+
+	// Password is write-only in the DefectDojo API: it exists on
+	// JIRAInstanceRequest but not on the JIRAInstance response model, so it
+	// cannot live on the embedded struct. Declaring it here lets the
+	// reflection engine resolve ddField:"Password" (direct fields shadow
+	// promoted ones) so the configured value reaches create/update requests.
+	Password *string
 }
 
-func jiraInstanceToRequest(j dd.JIRAInstance) dd.JIRAInstanceRequest {
+func jiraInstanceToRequest(ddr *jiraInstanceDefectdojoResource) dd.JIRAInstanceRequest {
+	j := ddr.JIRAInstance
 	req := dd.JIRAInstanceRequest{
+		Password:                       ddr.Password,
 		Url:                            j.Url,
 		Username:                       j.Username,
 		ConfigurationName:              j.ConfigurationName,
@@ -169,7 +178,7 @@ func jiraInstanceToRequest(j dd.JIRAInstance) dd.JIRAInstanceRequest {
 }
 
 func (ddr *jiraInstanceDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
-	reqBody := jiraInstanceToRequest(ddr.JIRAInstance)
+	reqBody := jiraInstanceToRequest(ddr)
 	apiResp, err := client.JiraInstancesCreateWithResponse(ctx, reqBody)
 	if err != nil {
 		return 0, nil, err
@@ -192,7 +201,7 @@ func (ddr *jiraInstanceDefectdojoResource) readApiCall(ctx context.Context, clie
 }
 
 func (ddr *jiraInstanceDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
-	reqBody := jiraInstanceToRequest(ddr.JIRAInstance)
+	reqBody := jiraInstanceToRequest(ddr)
 	apiResp, err := client.JiraInstancesUpdateWithResponse(ctx, idNumber, reqBody)
 	if err != nil {
 		return 0, nil, err
