@@ -1,1 +1,0 @@
-terraform import defectdojo_credential_mapping.example 123

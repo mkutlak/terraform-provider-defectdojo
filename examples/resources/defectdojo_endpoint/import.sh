@@ -1,1 +1,0 @@
-terraform import defectdojo_endpoint.example 123

@@ -80,18 +80,10 @@ resource "defectdojo_engagement" "security_assessment" {
 
 ### Security & Access Control
 
-| Resource                         | Data Source                      |
-| -------------------------------- | -------------------------------- |
-| `defectdojo_user`                | `defectdojo_user`                |
-| `defectdojo_user_contact_info`   | `defectdojo_user_contact_info`   |
-| `defectdojo_dojo_group`          | `defectdojo_dojo_group`          |
-| `defectdojo_dojo_group_member`   | `defectdojo_dojo_group_member`   |
-| `defectdojo_global_role`         | `defectdojo_global_role`         |
-| `defectdojo_product_member`      | `defectdojo_product_member`      |
-| `defectdojo_product_group`       | `defectdojo_product_group`       |
-| `defectdojo_product_type_member` | `defectdojo_product_type_member` |
-| `defectdojo_product_type_group`  | `defectdojo_product_type_group`  |
-| `defectdojo_credential`          | `defectdojo_credential`          |
+| Resource                       | Data Source                    |
+| ------------------------------ | ------------------------------ |
+| `defectdojo_user`              | `defectdojo_user`              |
+| `defectdojo_user_contact_info` | `defectdojo_user_contact_info` |
 
 ### Vulnerability Management
 
@@ -102,7 +94,7 @@ resource "defectdojo_engagement" "security_assessment" {
 | `defectdojo_test`              | `defectdojo_test`              |
 | `defectdojo_finding`           | `defectdojo_finding`           |
 | `defectdojo_finding_template`  | `defectdojo_finding_template`  |
-| `defectdojo_endpoint`          | `defectdojo_endpoint`          |
+| —                              | `defectdojo_endpoint`          |
 | `defectdojo_endpoint_status`   | `defectdojo_endpoint_status`   |
 | `defectdojo_stub_finding`      | `defectdojo_stub_finding`      |
 | `defectdojo_technology`        | `defectdojo_technology`        |
@@ -116,11 +108,9 @@ resource "defectdojo_engagement" "security_assessment" {
 | `defectdojo_jira_product_configuration`     | `defectdojo_jira_product_configuration`     |
 | `defectdojo_tool_product_settings`          | `defectdojo_tool_product_settings`          |
 | `defectdojo_product_api_scan_configuration` | `defectdojo_product_api_scan_configuration` |
-| `defectdojo_credential_mapping`             | `defectdojo_credential_mapping`             |
 | `defectdojo_risk_acceptance`                | `defectdojo_risk_acceptance`                |
 | `defectdojo_notification_webhook`           | `defectdojo_notification_webhook`           |
 | `defectdojo_announcement`                   | `defectdojo_announcement`                   |
-| `defectdojo_asset_group`                    | `defectdojo_asset_group`                    |
 
 ## Developing the Provider
 

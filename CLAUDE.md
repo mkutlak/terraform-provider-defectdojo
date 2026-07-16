@@ -61,7 +61,7 @@ The `ddField` tag value must match the exact Go field name in the corresponding 
 
 ### Resources & Data Sources
 
-The provider implements 33 resources and 33 data sources. See `provider.go` `Resources()` and `DataSources()` for the full list.
+The provider implements 22 resources and 23 data sources (endpoint is data-source-only since DefectDojo 3.x). See `provider.go` `Resources()` and `DataSources()` for the full list.
 
 ### Notable Files
 
@@ -88,6 +88,17 @@ The following DefectDojo API objects are **not** implemented as Terraform resour
 | Technology (AppAnalysis) | Auto-detected from scan results, not manually managed.                        |
 | Language                 | Auto-detected from scan results, not manually managed.                        |
 | Announcement             | DefectDojo only allows ONE global announcement. Cannot create/delete freely.  |
+| Credential               | API removed in DefectDojo 3.0.                                                |
+| CredentialMapping        | API removed in DefectDojo 3.0.                                                |
+| DojoGroup                | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| DojoGroupMember          | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| GlobalRole               | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| ProductMember            | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| ProductGroup             | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| ProductTypeMember        | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| ProductTypeGroup         | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| AssetGroup               | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
+| Endpoint (as resource)   | Read-only projection since DefectDojo 3.0; data source retained.              |
 
 ## Release Process
 

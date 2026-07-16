@@ -1,1 +1,0 @@
-terraform import defectdojo_product_type_group.example 123
