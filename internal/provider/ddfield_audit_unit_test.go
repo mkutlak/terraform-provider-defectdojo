@@ -34,7 +34,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/fs"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -216,8 +216,7 @@ func TestDdFieldAuditTagsResolve(t *testing.T) {
 			ddStruct := ddStructType(t, name, data.defectdojoResource())
 
 			tagged := 0
-			for i := 0; i < tfStruct.NumField(); i++ {
-				tfField := tfStruct.Field(i)
+			for tfField := range tfStruct.Fields() {
 				tag := tfField.Tag.Get("ddField")
 				if tag == "" {
 					continue
@@ -253,28 +252,32 @@ func TestDdFieldAuditTagsResolve(t *testing.T) {
 // to the audit above).
 func TestDdFieldAuditTableIsComplete(t *testing.T) {
 	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, ".", func(fi fs.FileInfo) bool {
-		return !strings.HasSuffix(fi.Name(), "_test.go")
-	}, 0)
+	entries, err := os.ReadDir(".")
 	if err != nil {
-		t.Fatalf("failed to parse package sources: %v", err)
+		t.Fatalf("failed to read package directory: %v", err)
 	}
 
 	implementations := map[string]bool{}
-	for _, pkg := range pkgs {
-		for fileName, file := range pkg.Files {
-			for _, decl := range file.Decls {
-				fn, ok := decl.(*ast.FuncDecl)
-				if !ok || fn.Name.Name != "defectdojoResource" || fn.Recv == nil || len(fn.Recv.List) != 1 {
-					continue
-				}
-				recv := receiverTypeName(fn.Recv.List[0].Type)
-				if recv == "" {
-					t.Errorf("%s: could not determine receiver type of defectdojoResource()", fileName)
-					continue
-				}
-				implementations[recv] = true
+	for _, entry := range entries {
+		fileName := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(fileName, ".go") || strings.HasSuffix(fileName, "_test.go") {
+			continue
+		}
+		file, err := parser.ParseFile(fset, fileName, nil, 0)
+		if err != nil {
+			t.Fatalf("failed to parse %s: %v", fileName, err)
+		}
+		for _, decl := range file.Decls {
+			fn, ok := decl.(*ast.FuncDecl)
+			if !ok || fn.Name.Name != "defectdojoResource" || fn.Recv == nil || len(fn.Recv.List) != 1 {
+				continue
 			}
+			recv := receiverTypeName(fn.Recv.List[0].Type)
+			if recv == "" {
+				t.Errorf("%s: could not determine receiver type of defectdojoResource()", fileName)
+				continue
+			}
+			implementations[recv] = true
 		}
 	}
 
