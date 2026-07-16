@@ -18,6 +18,7 @@ go test ./internal/provider/ -run TestProductResource  # Run unit tests (no TF_A
 DD_VERSION=2.58.4 make dd-up            # Start a specific DefectDojo version
 make dd-spec                            # Fetch OpenAPI spec from running instance
 make regen-client                       # Regenerate internal/ddclient from openapi-specs/$DD_VERSION spec
+                                        # (spec is a local artifact, not tracked in git; collect it first via `make dd-up && make dd-spec`)
 make dd-compat                          # Run multi-version compat checks (spec collection)
 make dd-compat-test                     # Run compat checks + acceptance tests
 ```
@@ -68,7 +69,7 @@ The provider implements 22 resources and 23 data sources (endpoint is data-sourc
 
 - Default attribute values use the framework-native `stringdefault`/`booldefault` packages (there is no custom plan-modifier file)
 - `scripts/dd-version-compat.sh` - Multi-version compatibility test automation
-- `openapi-specs/<version>/defect_dojo.json` - Collected OpenAPI specs per DD version
+- `openapi-specs/<version>/defect_dojo.json` - Collected OpenAPI specs per DD version (collected locally via `make dd-up && make dd-spec`, not tracked in git)
 
 ### Provider Authentication
 

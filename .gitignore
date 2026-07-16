@@ -40,5 +40,8 @@ terraform-provider-defectdojo
 # Root-level OpenAPI spec (versioned specs go in openapi-specs/)
 /defect_dojo.json
 
+# Collected OpenAPI specs (local artifacts; regenerate via `make dd-up && make dd-spec`)
+/openapi-specs/
+
 # Oh-My-Claude
 .omc
