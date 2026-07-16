@@ -98,13 +98,8 @@ resource "defectdojo_engagement" "security_assessment" {
 | `defectdojo_engagement`        | `defectdojo_engagement`        |
 | `defectdojo_engagement_preset` | `defectdojo_engagement_preset` |
 | `defectdojo_test`              | `defectdojo_test`              |
-| `defectdojo_finding`           | `defectdojo_finding`           |
 | `defectdojo_finding_template`  | `defectdojo_finding_template`  |
 | —                              | `defectdojo_endpoint`          |
-| `defectdojo_endpoint_status`   | `defectdojo_endpoint_status`   |
-| `defectdojo_stub_finding`      | `defectdojo_stub_finding`      |
-| `defectdojo_technology`        | `defectdojo_technology`        |
-| `defectdojo_language`          | `defectdojo_language`          |
 
 ### Integrations
 
@@ -116,7 +111,6 @@ resource "defectdojo_engagement" "security_assessment" {
 | `defectdojo_product_api_scan_configuration` | `defectdojo_product_api_scan_configuration` |
 | `defectdojo_risk_acceptance`                | `defectdojo_risk_acceptance`                |
 | `defectdojo_notification_webhook`           | `defectdojo_notification_webhook`           |
-| `defectdojo_announcement`                   | `defectdojo_announcement`                   |
 
 ## Developing the Provider
 
