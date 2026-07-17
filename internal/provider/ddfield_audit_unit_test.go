@@ -84,15 +84,13 @@ var ddFieldAuditTable = map[string]terraformResourceData{
 }
 
 var (
-	auditTypeInt      = reflect.TypeFor[int]()
-	auditTypeInt32    = reflect.TypeFor[int32]()
-	auditTypeBool     = reflect.TypeFor[bool]()
-	auditTypeFloat32  = reflect.TypeFor[float32]()
-	auditTypeFloat64  = reflect.TypeFor[float64]()
-	auditTypeTime     = reflect.TypeFor[time.Time]()
-	auditTypeDate     = reflect.TypeFor[openapi_types.Date]()
-	auditTypeIntSlice = reflect.TypeFor[[]int]()
-	auditTypeStrSlice = reflect.TypeFor[[]string]()
+	auditTypeInt     = reflect.TypeFor[int]()
+	auditTypeInt32   = reflect.TypeFor[int32]()
+	auditTypeBool    = reflect.TypeFor[bool]()
+	auditTypeFloat32 = reflect.TypeFor[float32]()
+	auditTypeFloat64 = reflect.TypeFor[float64]()
+	auditTypeTime    = reflect.TypeFor[time.Time]()
+	auditTypeDate    = reflect.TypeFor[openapi_types.Date]()
 )
 
 // ddFieldPairingSupported reports whether the reflection engine in resource.go

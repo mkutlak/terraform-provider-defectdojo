@@ -232,7 +232,7 @@ func (ddr *notificationsDefectdojoResource) createApiCall(ctx context.Context, c
 	if err != nil {
 		return 0, nil, err
 	}
-	defer httpResp.Body.Close()
+	defer func() { _ = httpResp.Body.Close() }()
 	body, err := io.ReadAll(httpResp.Body)
 	if err != nil {
 		return 0, nil, err
@@ -253,7 +253,7 @@ func (ddr *notificationsDefectdojoResource) readApiCall(ctx context.Context, cli
 	if err != nil {
 		return 0, nil, err
 	}
-	defer httpResp.Body.Close()
+	defer func() { _ = httpResp.Body.Close() }()
 	body, err := io.ReadAll(httpResp.Body)
 	if err != nil {
 		return 0, nil, err
@@ -278,7 +278,7 @@ func (ddr *notificationsDefectdojoResource) updateApiCall(ctx context.Context, c
 	if err != nil {
 		return 0, nil, err
 	}
-	defer httpResp.Body.Close()
+	defer func() { _ = httpResp.Body.Close() }()
 	body, err := io.ReadAll(httpResp.Body)
 	if err != nil {
 		return 0, nil, err
@@ -298,7 +298,7 @@ func (ddr *notificationsDefectdojoResource) deleteApiCall(ctx context.Context, c
 	if err != nil {
 		return 0, nil, err
 	}
-	defer httpResp.Body.Close()
+	defer func() { _ = httpResp.Body.Close() }()
 	body, err := io.ReadAll(httpResp.Body)
 	if err != nil {
 		return 0, nil, err
