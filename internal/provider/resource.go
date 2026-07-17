@@ -29,6 +29,19 @@ type defectdojoResource interface {
 	updateApiCall(context.Context, *dd.ClientWithResponses, int) (int, []byte, error)
 	deleteApiCall(context.Context, *dd.ClientWithResponses, int) (int, []byte, error)
 }
+
+// singletonAdopter is an optional interface for defectdojoResource
+// implementations backed by an API object that always exists server-side and
+// can be neither created nor deleted (e.g. system_settings). On Create the
+// engine "adopts" the existing object: it resolves the id via adoptApiCall and
+// then applies the plan with updateApiCall instead of calling createApiCall.
+// On Delete the engine only removes the resource from Terraform state; the
+// server-side object keeps its last-applied values.
+type singletonAdopter interface {
+	// adoptApiCall resolves the singleton's id (e.g. via the list endpoint)
+	// without modifying the object. It must return 200 on success.
+	adoptApiCall(context.Context, *dd.ClientWithResponses) (id int, statusCode int, body []byte, err error)
+}
 type dataProvider interface {
 	getData(context.Context, dataGetter) (terraformResourceData, diag.Diagnostics)
 }
@@ -89,6 +102,48 @@ func (r terraformResource) Create(ctx context.Context, req resource.CreateReques
 
 	ddResource := data.defectdojoResource()
 	populateDefectdojoResource(ctx, &diags, data, &ddResource)
+
+	if sa, ok := ddResource.(singletonAdopter); ok {
+		id, statusCode, body, err := sa.adoptApiCall(ctx, r.client)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error Adopting "+r.typeName,
+				err.Error())
+			return
+		}
+		if statusCode != 200 {
+			resp.Diagnostics.AddError(
+				"API Error Adopting "+r.typeName,
+				fmt.Sprintf("Unexpected response code from API: %d", statusCode)+
+					fmt.Sprintf("\n\nbody:\n\n%s", string(body)),
+			)
+			return
+		}
+
+		statusCode, body, err = ddResource.updateApiCall(ctx, r.client, id)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error Updating Adopted "+r.typeName,
+				err.Error())
+			return
+		}
+		if statusCode != 200 {
+			resp.Diagnostics.AddError(
+				"API Error Updating Adopted "+r.typeName,
+				fmt.Sprintf("Unexpected response code from API: %d", statusCode)+
+					fmt.Sprintf("\n\nbody:\n\n%s", string(body)),
+			)
+			return
+		}
+
+		populateResourceData(ctx, &diags, &data, ddResource)
+
+		tflog.Trace(ctx, "singleton resource adopted")
+
+		diags = resp.State.Set(ctx, &data)
+		resp.Diagnostics.Append(diags...)
+		return
+	}
 
 	statusCode, body, err := ddResource.createApiCall(ctx, r.client)
 
@@ -263,6 +318,13 @@ func (r terraformResource) Delete(ctx context.Context, req resource.DeleteReques
 
 	ddResource := data.defectdojoResource()
 
+	if _, ok := ddResource.(singletonAdopter); ok {
+		// Singletons cannot be deleted server-side; only forget them from
+		// Terraform state. The object keeps its last-applied values.
+		resp.State.RemoveResource(ctx)
+		return
+	}
+
 	statusCode, body, err := ddResource.deleteApiCall(ctx, r.client, idNumber)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -436,7 +498,9 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 
 			case typeOfTypesSet:
 				if ddFieldDescriptor.Type.Kind() == reflect.Slice {
-					// the destination field is a direct slice (e.g. []int, []string)
+					// the destination field is a direct slice (e.g. []int, []string,
+					// or a slice of a defined int/string type); elements are
+					// converted one by one so defined element types work too
 					if ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
 						int64s := []int64{}
 						diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &int64s, false)
@@ -444,11 +508,11 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 							diags.Append(diags_...)
 							continue
 						}
-						ints := make([]int, 0, len(int64s))
-						for _, val := range int64s {
-							ints = append(ints, (int)(val))
+						out := reflect.MakeSlice(ddFieldDescriptor.Type, len(int64s), len(int64s))
+						for i, val := range int64s {
+							out.Index(i).Set(reflect.ValueOf((int)(val)).Convert(ddFieldDescriptor.Type.Elem()))
 						}
-						ddFieldValue.Set(reflect.ValueOf(ints))
+						ddFieldValue.Set(out)
 					} else if ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
 						strs := []string{}
 						diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &strs, false)
@@ -456,10 +520,16 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 							diags.Append(diags_...)
 							continue
 						}
-						ddFieldValue.Set(reflect.ValueOf(strs))
+						out := reflect.MakeSlice(ddFieldDescriptor.Type, len(strs), len(strs))
+						for i, val := range strs {
+							out.Index(i).Set(reflect.ValueOf(val).Convert(ddFieldDescriptor.Type.Elem()))
+						}
+						ddFieldValue.Set(out)
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
-					// the destination field is a pointer to a slice
+					// the destination field is a pointer to a slice; elements are
+					// converted one by one so defined element types (e.g. enum
+					// strings like dd.NotificationsRequestScanAdded) work too
 					if ddFieldDescriptor.Type.Elem().Elem().Kind() == reflect.Int {
 						// it's a slice of int
 						int64s := []int64{}
@@ -468,12 +538,13 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 							diags.Append(diags_...)
 							continue
 						}
-						ints := make([]int, 0, len(int64s))
-						for _, val := range int64s {
-							ints = append(ints, (int)(val))
+						sliceType := ddFieldDescriptor.Type.Elem()
+						out := reflect.MakeSlice(sliceType, len(int64s), len(int64s))
+						for i, val := range int64s {
+							out.Index(i).Set(reflect.ValueOf((int)(val)).Convert(sliceType.Elem()))
 						}
-						destVal := reflect.New(ddFieldDescriptor.Type.Elem())
-						destVal.Elem().Set(reflect.ValueOf(ints))
+						destVal := reflect.New(sliceType)
+						destVal.Elem().Set(out)
 						ddFieldValue.Set(destVal)
 					} else if ddFieldDescriptor.Type.Elem().Elem().Kind() == reflect.String {
 						// it's a slice of string
@@ -483,8 +554,13 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 							diags.Append(diags_...)
 							continue
 						}
-						destVal := reflect.New(ddFieldDescriptor.Type.Elem())
-						destVal.Elem().Set(reflect.ValueOf(strs))
+						sliceType := ddFieldDescriptor.Type.Elem()
+						out := reflect.MakeSlice(sliceType, len(strs), len(strs))
+						for i, val := range strs {
+							out.Index(i).Set(reflect.ValueOf(val).Convert(sliceType.Elem()))
+						}
+						destVal := reflect.New(sliceType)
+						destVal.Elem().Set(out)
 						ddFieldValue.Set(destVal)
 					}
 				} else {
@@ -669,8 +745,8 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 
 						if !ddFieldValue.IsZero() && (ddFieldValue.Elem().Len() > 0 || !fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()) {
 							elems := []attr.Value{}
-							for _, val := range ddFieldValue.Elem().Interface().([]int) {
-								elems = append(elems, types.Int64Value((int64)(val)))
+							for i := 0; i < ddFieldValue.Elem().Len(); i++ {
+								elems = append(elems, types.Int64Value(ddFieldValue.Elem().Index(i).Int()))
 							}
 							destVal, dgs := types.SetValue(types.Int64Type, elems)
 							diags.Append(dgs.Errors()...)
@@ -684,8 +760,8 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 
 						if !ddFieldValue.IsZero() && (ddFieldValue.Elem().Len() > 0 || !fieldValue.MethodByName("IsNull").Call(nil)[0].Bool()) {
 							elems := []attr.Value{}
-							for _, val := range ddFieldValue.Elem().Interface().([]string) {
-								elems = append(elems, types.StringValue((string)(val)))
+							for i := 0; i < ddFieldValue.Elem().Len(); i++ {
+								elems = append(elems, types.StringValue(ddFieldValue.Elem().Index(i).String()))
 							}
 							destVal, dgs := types.SetValue(types.StringType, elems)
 							diags.Append(dgs.Errors()...)
