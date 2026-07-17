@@ -10,7 +10,7 @@ import (
 // defectdojo_configuration_permission data source. Configuration permissions
 // are DefectDojo's own built-in permission registry (not something the
 // provider can create), so this test looks up a permission that is known to
-// exist in every DefectDojo instance: "add_product", a stable Django
+// exist in every DefectDojo instance: "add_user", a stable Django
 // permission codename.
 func TestAccConfigurationPermissionDataSource(t *testing.T) {
 	t.Parallel()
@@ -21,7 +21,7 @@ func TestAccConfigurationPermissionDataSource(t *testing.T) {
 			{
 				Config: testAccConfigurationPermissionDataSourceCodenameConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_configuration_permission.by_codename", "codename", "add_product"),
+					resource.TestCheckResourceAttr("data.defectdojo_configuration_permission.by_codename", "codename", "add_user"),
 					resource.TestCheckResourceAttrSet("data.defectdojo_configuration_permission.by_codename", "id"),
 					resource.TestCheckResourceAttrSet("data.defectdojo_configuration_permission.by_codename", "name"),
 				),
@@ -44,7 +44,7 @@ func testAccConfigurationPermissionDataSourceCodenameConfig() string {
 	return `
 provider "defectdojo" {}
 data "defectdojo_configuration_permission" "by_codename" {
-  codename = "add_product"
+  codename = "add_user"
 }
 `
 }
@@ -53,7 +53,7 @@ func testAccConfigurationPermissionDataSourceIdConfig() string {
 	return `
 provider "defectdojo" {}
 data "defectdojo_configuration_permission" "by_codename" {
-  codename = "add_product"
+  codename = "add_user"
 }
 data "defectdojo_configuration_permission" "by_id" {
   id = data.defectdojo_configuration_permission.by_codename.id
