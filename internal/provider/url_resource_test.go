@@ -21,7 +21,7 @@ func TestAccUrlResource(t *testing.T) {
 					resource.TestCheckResourceAttr("defectdojo_url.test", "host", host),
 					resource.TestCheckResourceAttr("defectdojo_url.test", "protocol", "https"),
 					resource.TestCheckResourceAttr("defectdojo_url.test", "port", "8443"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "path", "/api/v1"),
+					resource.TestCheckResourceAttr("defectdojo_url.test", "path", "api/v1"),
 					resource.TestCheckResourceAttr("defectdojo_url.test", "query", "foo=bar"),
 					resource.TestCheckResourceAttr("defectdojo_url.test", "fragment", "section-1"),
 					resource.TestCheckResourceAttr("defectdojo_url.test", "user_info", "user:pass"),
@@ -41,7 +41,7 @@ func TestAccUrlResource(t *testing.T) {
 				Config: testAccUrlResourceUpdatedConfig(host),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("defectdojo_url.test", "host", host),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "path", "/api/v2"),
+					resource.TestCheckResourceAttr("defectdojo_url.test", "path", "api/v2"),
 					resource.TestCheckResourceAttr("defectdojo_url.test", "tags.#", "1"),
 					resource.TestCheckResourceAttr("defectdojo_url.test", "tags.0", "updated"),
 				),
@@ -85,7 +85,7 @@ resource "defectdojo_url" "test" {
   host      = %[1]q
   protocol  = "https"
   port      = 8443
-  path      = "/api/v1"
+  path      = "api/v1"
   query     = "foo=bar"
   fragment  = "section-1"
   user_info = "user:pass"
@@ -101,7 +101,7 @@ resource "defectdojo_url" "test" {
   host      = %[1]q
   protocol  = "https"
   port      = 8443
-  path      = "/api/v2"
+  path      = "api/v2"
   query     = "foo=bar"
   fragment  = "section-1"
   user_info = "user:pass"

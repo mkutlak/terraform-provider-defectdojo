@@ -35,7 +35,7 @@ resource "defectdojo_url" "example" {
 ### Optional
 
 - `fragment` (String) The fragment identifier of the URL (optional)
-- `path` (String) The path of the URL (optional)
+- `path` (String) The path of the URL, without a leading slash — DefectDojo stores paths with the leading slash stripped (optional)
 - `port` (Number) The port number of the URL (optional)
 - `protocol` (String) The protocol of the URL (e.g., http, https, ftp, etc.)
 - `query` (String) The query string of the URL (optional)
