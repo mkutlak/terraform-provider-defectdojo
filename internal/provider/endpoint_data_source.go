@@ -17,7 +17,8 @@ type endpointDataSource struct {
 
 func (t endpointDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for DefectDojo Endpoint. Since DefectDojo 3.x endpoints are a read-only projection of Locations: this data source reads the legacy endpoint representation, but endpoints can no longer be created or modified via the API (manage Locations instead).",
+		MarkdownDescription: "Data source for DefectDojo Endpoint. Since DefectDojo 3.x endpoints are a read-only projection of Locations: this data source reads the legacy endpoint representation, but endpoints can no longer be created or modified via the API (manage Locations instead). **Deprecated:** use the `defectdojo_url` resource/data source and the `defectdojo_location` / `defectdojo_location_product` data sources instead; this data source will be removed in the next major version.",
+		DeprecationMessage:  "Endpoints are a read-only projection in DefectDojo 3.x. Use the defectdojo_url resource/data source and the defectdojo_location / defectdojo_location_product data sources instead. This data source will be removed in the next major version.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",
