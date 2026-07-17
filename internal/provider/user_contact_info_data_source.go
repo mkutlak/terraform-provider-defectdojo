@@ -59,6 +59,10 @@ func (t userContactInfoDataSource) Schema(ctx context.Context, req datasource.Sc
 				MarkdownDescription: "Forces this user to reset their password on next login",
 				Computed:            true,
 			},
+			"deduplication_execution_mode": schema.StringAttribute{
+				MarkdownDescription: "Controls how import/reimport deduplication post-processing is executed. Valid values are: 'async' (dispatch to the background and return immediately), 'async_wait' (dispatch to the background but wait for deduplication to finish before responding), 'sync' (run the import deduplication inline).",
+				Computed:            true,
+			},
 		},
 	}
 }

@@ -14,8 +14,9 @@ DefectDojo User Contact Info
 
 ```terraform
 resource "defectdojo_user_contact_info" "example" {
-  user         = 1
-  phone_number = "+15551234567"
+  user                         = 1
+  phone_number                 = "+15551234567"
+  deduplication_execution_mode = "async"
 }
 ```
 
@@ -30,6 +31,7 @@ resource "defectdojo_user_contact_info" "example" {
 
 - `block_execution` (Boolean) Instead of async deduping a finding the findings will be deduped synchronously
 - `cell_number` (String) Cell number in format '+999999999'. Up to 15 digits allowed.
+- `deduplication_execution_mode` (String) Controls how import/reimport deduplication post-processing is executed. Valid values are: 'async' (dispatch to the background and return immediately), 'async_wait' (dispatch to the background but wait for deduplication to finish before responding), 'sync' (run the import deduplication inline).
 - `force_password_reset` (Boolean) Forces this user to reset their password on next login
 - `github_username` (String) GitHub username
 - `phone_number` (String) Phone number in format '+999999999'. Up to 15 digits allowed.

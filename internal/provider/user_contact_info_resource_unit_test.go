@@ -23,20 +23,22 @@ func TestUserContactInfoResourcePopulate(t *testing.T) {
 	expectedSlackUserId := "U12345"
 	expectedBlockExecution := true
 	expectedForcePasswordReset := false
+	expectedDeduplicationExecutionMode := dd.UserContactInfoDeduplicationExecutionMode("async_wait")
 
 	ddResource := userContactInfoDefectdojoResource{
 		UserContactInfo: dd.UserContactInfo{
-			Id:                 &expectedId,
-			User:               expectedUser,
-			Title:              &expectedTitle,
-			PhoneNumber:        &expectedPhoneNumber,
-			CellNumber:         &expectedCellNumber,
-			TwitterUsername:    &expectedTwitterUsername,
-			GithubUsername:     &expectedGithubUsername,
-			SlackUsername:      &expectedSlackUsername,
-			SlackUserId:        &expectedSlackUserId,
-			BlockExecution:     &expectedBlockExecution,
-			ForcePasswordReset: &expectedForcePasswordReset,
+			Id:                         &expectedId,
+			User:                       expectedUser,
+			Title:                      &expectedTitle,
+			PhoneNumber:                &expectedPhoneNumber,
+			CellNumber:                 &expectedCellNumber,
+			TwitterUsername:            &expectedTwitterUsername,
+			GithubUsername:             &expectedGithubUsername,
+			SlackUsername:              &expectedSlackUsername,
+			SlackUserId:                &expectedSlackUserId,
+			BlockExecution:             &expectedBlockExecution,
+			ForcePasswordReset:         &expectedForcePasswordReset,
+			DeduplicationExecutionMode: &expectedDeduplicationExecutionMode,
 		},
 	}
 
@@ -55,17 +57,20 @@ func TestUserContactInfoResourcePopulate(t *testing.T) {
 	assert.Equal(t, resourceData.SlackUserId.ValueString(), expectedSlackUserId)
 	assert.Equal(t, resourceData.BlockExecution.ValueBool(), expectedBlockExecution)
 	assert.Equal(t, resourceData.ForcePasswordReset.ValueBool(), expectedForcePasswordReset)
+	assert.Equal(t, resourceData.DeduplicationExecutionMode.ValueString(), string(expectedDeduplicationExecutionMode))
 }
 
 func TestUserContactInfoResource__defectdojoResource(t *testing.T) {
 	expectedUser := 99
 	expectedTitle := "Dr."
 	expectedPhoneNumber := "+1234567890"
+	expectedDeduplicationExecutionMode := "async_wait"
 
 	resourceData := userContactInfoResourceData{
-		User:        types.Int64Value(int64(expectedUser)),
-		Title:       types.StringValue(expectedTitle),
-		PhoneNumber: types.StringValue(expectedPhoneNumber),
+		User:                       types.Int64Value(int64(expectedUser)),
+		Title:                      types.StringValue(expectedTitle),
+		PhoneNumber:                types.StringValue(expectedPhoneNumber),
+		DeduplicationExecutionMode: types.StringValue(expectedDeduplicationExecutionMode),
 	}
 
 	ddRes := resourceData.defectdojoResource()
@@ -76,4 +81,5 @@ func TestUserContactInfoResource__defectdojoResource(t *testing.T) {
 	assert.Equal(t, ddUserContactInfo.User, expectedUser)
 	assert.Equal(t, *ddUserContactInfo.Title, expectedTitle)
 	assert.Equal(t, *ddUserContactInfo.PhoneNumber, expectedPhoneNumber)
+	assert.Equal(t, string(*ddUserContactInfo.DeduplicationExecutionMode), expectedDeduplicationExecutionMode)
 }
