@@ -3,11 +3,13 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
@@ -60,6 +62,14 @@ func (t userContactInfoResource) Schema(ctx context.Context, req resource.Schema
 				Optional:            true,
 				Computed:            true,
 			},
+			"deduplication_execution_mode": schema.StringAttribute{
+				MarkdownDescription: "Controls how import/reimport deduplication post-processing is executed. Valid values are: 'async' (dispatch to the background and return immediately), 'async_wait' (dispatch to the background but wait for deduplication to finish before responding), 'sync' (run the import deduplication inline).",
+				Optional:            true,
+				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("async", "async_wait", "sync"),
+				},
+			},
 			"id": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "Identifier",
@@ -72,17 +82,18 @@ func (t userContactInfoResource) Schema(ctx context.Context, req resource.Schema
 }
 
 type userContactInfoResourceData struct {
-	User               types.Int64  `tfsdk:"user" ddField:"User"`
-	Title              types.String `tfsdk:"title" ddField:"Title"`
-	PhoneNumber        types.String `tfsdk:"phone_number" ddField:"PhoneNumber"`
-	CellNumber         types.String `tfsdk:"cell_number" ddField:"CellNumber"`
-	TwitterUsername    types.String `tfsdk:"twitter_username" ddField:"TwitterUsername"`
-	GithubUsername     types.String `tfsdk:"github_username" ddField:"GithubUsername"`
-	SlackUsername      types.String `tfsdk:"slack_username" ddField:"SlackUsername"`
-	SlackUserId        types.String `tfsdk:"slack_user_id" ddField:"SlackUserId"`
-	BlockExecution     types.Bool   `tfsdk:"block_execution" ddField:"BlockExecution"`
-	ForcePasswordReset types.Bool   `tfsdk:"force_password_reset" ddField:"ForcePasswordReset"`
-	Id                 types.String `tfsdk:"id" ddField:"Id"`
+	User                       types.Int64  `tfsdk:"user" ddField:"User"`
+	Title                      types.String `tfsdk:"title" ddField:"Title"`
+	PhoneNumber                types.String `tfsdk:"phone_number" ddField:"PhoneNumber"`
+	CellNumber                 types.String `tfsdk:"cell_number" ddField:"CellNumber"`
+	TwitterUsername            types.String `tfsdk:"twitter_username" ddField:"TwitterUsername"`
+	GithubUsername             types.String `tfsdk:"github_username" ddField:"GithubUsername"`
+	SlackUsername              types.String `tfsdk:"slack_username" ddField:"SlackUsername"`
+	SlackUserId                types.String `tfsdk:"slack_user_id" ddField:"SlackUserId"`
+	BlockExecution             types.Bool   `tfsdk:"block_execution" ddField:"BlockExecution"`
+	ForcePasswordReset         types.Bool   `tfsdk:"force_password_reset" ddField:"ForcePasswordReset"`
+	DeduplicationExecutionMode types.String `tfsdk:"deduplication_execution_mode" ddField:"DeduplicationExecutionMode"`
+	Id                         types.String `tfsdk:"id" ddField:"Id"`
 }
 
 type userContactInfoDefectdojoResource struct {
@@ -90,7 +101,7 @@ type userContactInfoDefectdojoResource struct {
 }
 
 func userContactInfoToRequest(u dd.UserContactInfo) dd.UserContactInfoRequest {
-	return dd.UserContactInfoRequest{
+	req := dd.UserContactInfoRequest{
 		User:               u.User,
 		Title:              u.Title,
 		PhoneNumber:        u.PhoneNumber,
@@ -102,6 +113,14 @@ func userContactInfoToRequest(u dd.UserContactInfo) dd.UserContactInfoRequest {
 		BlockExecution:     u.BlockExecution,
 		ForcePasswordReset: u.ForcePasswordReset,
 	}
+	// DeduplicationExecutionMode: UserContactInfo and UserContactInfoRequest use
+	// distinct named string types with identical underlying values, so a
+	// direct field copy does not compile; convert explicitly.
+	if u.DeduplicationExecutionMode != nil {
+		mode := dd.UserContactInfoRequestDeduplicationExecutionMode(*u.DeduplicationExecutionMode)
+		req.DeduplicationExecutionMode = &mode
+	}
+	return req
 }
 
 func (ddr *userContactInfoDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {

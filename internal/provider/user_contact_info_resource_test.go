@@ -22,6 +22,7 @@ func TestAccUserContactInfoResource(t *testing.T) {
 					resource.TestCheckResourceAttrSet("defectdojo_user_contact_info.test", "user"),
 					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "title", "Dr."),
 					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "phone_number", "+1234567890"),
+					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "deduplication_execution_mode", "async"),
 				),
 			},
 			// ImportState testing
@@ -36,6 +37,7 @@ func TestAccUserContactInfoResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "title", "Prof."),
 					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "phone_number", "+0987654321"),
+					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "deduplication_execution_mode", "sync"),
 				),
 			},
 		},
@@ -51,9 +53,10 @@ resource "defectdojo_user" "contactinfo_user" {
   password = "TestPassword123!"
 }
 resource "defectdojo_user_contact_info" "test" {
-  user         = defectdojo_user.contactinfo_user.id
-  title        = "Dr."
-  phone_number = "+1234567890"
+  user                         = defectdojo_user.contactinfo_user.id
+  title                        = "Dr."
+  phone_number                 = "+1234567890"
+  deduplication_execution_mode = "async"
 }
 `, username)
 }
@@ -67,9 +70,10 @@ resource "defectdojo_user" "contactinfo_user" {
   password = "TestPassword123!"
 }
 resource "defectdojo_user_contact_info" "test" {
-  user         = defectdojo_user.contactinfo_user.id
-  title        = "Prof."
-  phone_number = "+0987654321"
+  user                         = defectdojo_user.contactinfo_user.id
+  title                        = "Prof."
+  phone_number                 = "+0987654321"
+  deduplication_execution_mode = "sync"
 }
 `, username)
 }
