@@ -1,0 +1,1 @@
+terraform import defectdojo_metadata.example 123

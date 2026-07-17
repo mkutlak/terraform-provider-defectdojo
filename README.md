@@ -70,6 +70,7 @@ resource "defectdojo_engagement" "security_assessment" {
 | ------------------------- | ------------------------- |
 | `defectdojo_product`      | `defectdojo_product`      |
 | `defectdojo_product_type` | `defectdojo_product_type` |
+| `defectdojo_metadata`     | `defectdojo_metadata`     |
 
 ### Infrastructure
 
