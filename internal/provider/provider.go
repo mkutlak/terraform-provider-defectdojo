@@ -189,6 +189,7 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewProductAPIScanConfigurationResource,
 		NewRiskAcceptanceResource,
 		NewNotificationWebhookResource,
+		NewUrlResource,
 	}
 }
 
@@ -217,6 +218,7 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewProductAPIScanConfigurationDataSource,
 		NewRiskAcceptanceDataSource,
 		NewNotificationWebhookDataSource,
+		NewUrlDataSource,
 	}
 }
 
