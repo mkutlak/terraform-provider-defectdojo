@@ -63,7 +63,7 @@ The `ddField` tag value must match the exact Go field name in the corresponding 
 
 ### Resources & Data Sources
 
-The provider implements 22 resources and 23 data sources (endpoint is data-source-only since DefectDojo 3.x). See `provider.go` `Resources()` and `DataSources()` for the full list.
+The provider implements 28 resources and 32 data sources. See `provider.go` `Resources()` and `DataSources()` for the full list. Notable special cases: `endpoint` is data-source-only and deprecated (use `url`/`location`); `location`, `user_profile`, `test_type`, and `configuration_permission` are data-source-only; `system_settings` is a singleton resource (adopt-on-create via the engine's `singletonAdopter` interface, destroy = state-remove-only); `announcement` is limited to one instance server-side.
 
 ### Notable Files
 
@@ -89,7 +89,6 @@ The following DefectDojo API objects are **not** implemented as Terraform resour
 | EndpointStatus           | Join table between endpoints and findings, managed by the system.             |
 | Technology (AppAnalysis) | Auto-detected from scan results, not manually managed.                        |
 | Language                 | Auto-detected from scan results, not manually managed.                        |
-| Announcement             | DefectDojo only allows ONE global announcement. Cannot create/delete freely.  |
 | Credential               | API removed in DefectDojo 3.0.                                                |
 | CredentialMapping        | API removed in DefectDojo 3.0.                                                |
 | DojoGroup                | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
@@ -100,7 +99,16 @@ The following DefectDojo API objects are **not** implemented as Terraform resour
 | ProductTypeMember        | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
 | ProductTypeGroup         | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
 | AssetGroup               | API removed in DefectDojo 3.0 RBAC overhaul — replaced by authorized_users field. |
-| Endpoint (as resource)   | Read-only projection since DefectDojo 3.0; data source retained.              |
+| Endpoint (as resource)   | Read-only projection since DefectDojo 3.0; data source retained (deprecated — use url/location). |
+| LocationFinding          | Join between locations and import-managed findings; system-managed.           |
+| SonarQubeIssue / SonarQubeTransition | Scanner-managed artifacts of the SonarQube integration.           |
+| TestImport               | Historical records of import runs — artifacts, not desired state.             |
+| Notes (incl. object-scoped notes) | Conversational/audit artifacts, not desired state.                   |
+| Asset / Organization routes | v3 route aliases of products / product_types — would double-manage state.  |
+| jira_configurations / jira_projects routes | Legacy aliases of jira_instances / jira_product_configurations. |
+| import-scan / reimport-scan / endpoint_meta_import and other RPC-style endpoints | Actions and artifacts, not resources. |
+| TestType (as resource)   | API has no DELETE and update cannot rename; destroy would leave permanent server-side leftovers. Data source available. |
+| Metadata location/endpoint parents | Broken upstream in 3.1.101: location parent silently ignored, endpoint parent rejected. Only product/finding parents exposed. |
 
 ## Release Process
 
