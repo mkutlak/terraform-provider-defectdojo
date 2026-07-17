@@ -23,6 +23,7 @@ func TestAccUserResource(t *testing.T) {
 					resource.TestCheckResourceAttr("defectdojo_user.test", "email", "test@example.com"),
 					resource.TestCheckResourceAttr("defectdojo_user.test", "first_name", "Test"),
 					resource.TestCheckResourceAttr("defectdojo_user.test", "last_name", "User"),
+					resource.TestCheckResourceAttr("defectdojo_user.test", "is_staff", "true"),
 				),
 			},
 			// ImportState testing
@@ -38,6 +39,7 @@ func TestAccUserResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("defectdojo_user.test", "username", updatedUsername),
 					resource.TestCheckResourceAttr("defectdojo_user.test", "email", "updated@example.com"),
+					resource.TestCheckResourceAttr("defectdojo_user.test", "is_staff", "false"),
 				),
 			},
 		},
@@ -53,6 +55,7 @@ resource "defectdojo_user" "test" {
   first_name = "Test"
   last_name  = "User"
   password   = "TestPassword123!"
+  is_staff   = true
 }
 `, username)
 }
@@ -66,6 +69,7 @@ resource "defectdojo_user" "test" {
   first_name = "Updated"
   last_name  = "Name"
   password   = "UpdatedPassword123!"
+  is_staff   = false
 }
 `, username)
 }

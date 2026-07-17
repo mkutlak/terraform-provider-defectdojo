@@ -44,6 +44,10 @@ func (t userDataSource) Schema(ctx context.Context, req datasource.SchemaRequest
 				MarkdownDescription: "Whether this user has all permissions without explicitly assigning them",
 				Computed:            true,
 			},
+			"is_staff": schema.BoolAttribute{
+				MarkdownDescription: "Django staff flag",
+				Computed:            true,
+			},
 			"password": schema.StringAttribute{
 				MarkdownDescription: "The password for the User (write-only, never returned by API)",
 				Computed:            true,
