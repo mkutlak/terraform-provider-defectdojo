@@ -37,6 +37,7 @@ data "defectdojo_user" "example" {
 - `email` (String) The email address of the User
 - `first_name` (String) The first name of the User
 - `is_active` (Boolean) Whether this user account is active
+- `is_staff` (Boolean) Django staff flag
 - `is_superuser` (Boolean) Whether this user has all permissions without explicitly assigning them
 - `last_name` (String) The last name of the User
 - `password` (String, Sensitive) The password for the User (write-only, never returned by API)

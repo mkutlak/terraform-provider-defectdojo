@@ -16,6 +16,7 @@ DefectDojo User
 resource "defectdojo_user" "example" {
   username = "jdoe"
   email    = "jdoe@example.com"
+  is_staff = false
 }
 ```
 
@@ -31,6 +32,7 @@ resource "defectdojo_user" "example" {
 
 - `first_name` (String) The first name of the User
 - `is_active` (Boolean) Whether this user account is active
+- `is_staff` (Boolean) Django staff flag
 - `is_superuser` (Boolean) Whether this user has all permissions without explicitly assigning them
 - `last_name` (String) The last name of the User
 - `password` (String, Sensitive) The password for the User

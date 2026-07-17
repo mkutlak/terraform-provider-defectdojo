@@ -52,6 +52,12 @@ func (t userResource) Schema(ctx context.Context, req resource.SchemaRequest, re
 				Computed:            true,
 				Default:             booldefault.StaticBool(false),
 			},
+			"is_staff": schema.BoolAttribute{
+				MarkdownDescription: "Django staff flag",
+				Optional:            true,
+				Computed:            true,
+				Default:             booldefault.StaticBool(false),
+			},
 			"password": schema.StringAttribute{
 				MarkdownDescription: "The password for the User",
 				Optional:            true,
@@ -75,6 +81,7 @@ type userResourceData struct {
 	LastName    types.String `tfsdk:"last_name" ddField:"LastName"`
 	IsActive    types.Bool   `tfsdk:"is_active" ddField:"IsActive"`
 	IsSuperuser types.Bool   `tfsdk:"is_superuser" ddField:"IsSuperuser"`
+	IsStaff     types.Bool   `tfsdk:"is_staff" ddField:"IsStaff"`
 	Password    types.String `tfsdk:"password"`
 	Id          types.String `tfsdk:"id" ddField:"Id"`
 }
@@ -92,6 +99,7 @@ func userToRequest(u dd.User, password *string) dd.UserRequest {
 		LastName:    u.LastName,
 		IsActive:    u.IsActive,
 		IsSuperuser: u.IsSuperuser,
+		IsStaff:     u.IsStaff,
 		Password:    password,
 	}
 	// Email field: UserRequest uses openapi_types.Email same as User

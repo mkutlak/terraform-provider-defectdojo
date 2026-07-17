@@ -20,6 +20,7 @@ func TestUserResourcePopulate(t *testing.T) {
 	expectedLastName := "User"
 	expectedIsActive := true
 	expectedIsSuperuser := false
+	expectedIsStaff := true
 
 	ddUser := userDefectdojoResource{
 		User: dd.User{
@@ -30,6 +31,7 @@ func TestUserResourcePopulate(t *testing.T) {
 			LastName:    &expectedLastName,
 			IsActive:    &expectedIsActive,
 			IsSuperuser: &expectedIsSuperuser,
+			IsStaff:     &expectedIsStaff,
 		},
 	}
 
@@ -44,6 +46,7 @@ func TestUserResourcePopulate(t *testing.T) {
 	assert.Equal(t, userResource.LastName.ValueString(), expectedLastName)
 	assert.Equal(t, userResource.IsActive.ValueBool(), expectedIsActive)
 	assert.Equal(t, userResource.IsSuperuser.ValueBool(), expectedIsSuperuser)
+	assert.Equal(t, userResource.IsStaff.ValueBool(), expectedIsStaff)
 }
 
 func TestUserResourcePopulateNils(t *testing.T) {
@@ -61,6 +64,7 @@ func TestUserResourcePopulateNils(t *testing.T) {
 	assert.Equal(t, userResource.LastName.IsNull(), true)
 	assert.Equal(t, userResource.IsActive.IsNull(), true)
 	assert.Equal(t, userResource.IsSuperuser.IsNull(), true)
+	assert.Equal(t, userResource.IsStaff.IsNull(), true)
 }
 
 func TestUserResource__defectdojoResource(t *testing.T) {
@@ -70,6 +74,7 @@ func TestUserResource__defectdojoResource(t *testing.T) {
 	expectedLastName := "User"
 	expectedIsActive := true
 	expectedIsSuperuser := false
+	expectedIsStaff := true
 
 	userResource := userResourceData{
 		Username:    types.StringValue(expectedUsername),
@@ -78,6 +83,7 @@ func TestUserResource__defectdojoResource(t *testing.T) {
 		LastName:    types.StringValue(expectedLastName),
 		IsActive:    types.BoolValue(expectedIsActive),
 		IsSuperuser: types.BoolValue(expectedIsSuperuser),
+		IsStaff:     types.BoolValue(expectedIsStaff),
 	}
 
 	ddResource := userResource.defectdojoResource()
@@ -91,4 +97,5 @@ func TestUserResource__defectdojoResource(t *testing.T) {
 	assert.Equal(t, *ddUser.LastName, expectedLastName)
 	assert.Equal(t, *ddUser.IsActive, expectedIsActive)
 	assert.Equal(t, *ddUser.IsSuperuser, expectedIsSuperuser)
+	assert.Equal(t, *ddUser.IsStaff, expectedIsStaff)
 }
