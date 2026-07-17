@@ -1,8 +1,11 @@
 package provider
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
@@ -11,7 +14,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -28,8 +33,17 @@ func (t notificationsResource) Schema(ctx context.Context, req resource.SchemaRe
 	channelSetAttribute := func(description string) schema.SetAttribute {
 		return schema.SetAttribute{
 			MarkdownDescription: description,
-			Optional:            true,
-			ElementType:         types.StringType,
+			// The live API defaults any channel field left unset in a
+			// create/update request to ["alert"] rather than leaving it
+			// empty, so these must be Computed (with UseStateForUnknown) to
+			// avoid a "provider produced inconsistent result" error whenever
+			// a config leaves one of these attributes unset.
+			Optional:    true,
+			Computed:    true,
+			ElementType: types.StringType,
+			PlanModifiers: []planmodifier.Set{
+				setplanmodifier.UseStateForUnknown(),
+			},
 			Validators: []validator.Set{
 				setvalidator.ValueStringsAre(
 					stringvalidator.OneOf(notificationChannels...),
@@ -62,11 +76,27 @@ func (t notificationsResource) Schema(ctx context.Context, req resource.SchemaRe
 			},
 			"template": schema.BoolAttribute{
 				MarkdownDescription: "Whether this row is the notification template applied to new users/products.",
-				Optional:            true,
+				// The live API defaults this to false when unset in a
+				// create/update request, so it must be Computed (with
+				// UseStateForUnknown) to avoid a "provider produced
+				// inconsistent result" error when left unset in config.
+				Optional: true,
+				Computed: true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"scan_added_empty": schema.StringAttribute{
 				MarkdownDescription: "Triggered whenever an (re-)import has been done (even if that created/updated/closed no findings). Valid values: 'alert', 'mail', 'msteams', 'slack', 'webhooks'.",
-				Optional:            true,
+				// The live API defaults this to "" when unset in a
+				// create/update request, so it must be Computed (with
+				// UseStateForUnknown) to avoid a "provider produced
+				// inconsistent result" error when left unset in config.
+				Optional: true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 				Validators: []validator.String{
 					stringvalidator.OneOf(notificationChannels...),
 				},
@@ -125,110 +155,156 @@ type notificationsResourceData struct {
 	// and there is no corresponding schema attribute for it.
 }
 
-type notificationsDefectdojoResource struct {
-	dd.Notifications
-}
+// notificationsScanAddedEmpty is the wire representation of scan_added_empty.
+// The live 3.1.101 API is asymmetric for this one field: GET/LIST (and
+// create/update responses when the field was left unset in the request)
+// always return it as a JSON array of 0 or 1 strings (e.g. `[]` or
+// `["alert"]`), while the write path (POST/PUT/PATCH) only accepts - and
+// rejects an array for - a bare scalar string (e.g. `"alert"`; even `[]`
+// or `["alert"]` fail with "... is not a valid choice"). The type's default
+// MarshalJSON (inherited from the underlying string type) already produces
+// the bare-scalar shape the write path requires; only UnmarshalJSON needs to
+// be customized to also accept the array shape returned on reads.
+type notificationsScanAddedEmpty string
 
-// notificationsConvertEnumSlice converts a *[]S (e.g. *[]dd.NotificationsScanAdded)
-// to a *[]D (e.g. *[]dd.NotificationsRequestScanAdded). S and D are both defined
-// string types that share the same underlying values, but are distinct Go types
-// generated for the Notifications (response) and NotificationsRequest (request)
-// schemas respectively, so a direct assignment does not compile.
-func notificationsConvertEnumSlice[S, D ~string](in *[]S) *[]D {
-	if in == nil {
+func (v *notificationsScanAddedEmpty) UnmarshalJSON(data []byte) error {
+	var asArray []string
+	if err := json.Unmarshal(data, &asArray); err == nil {
+		if len(asArray) > 0 {
+			*v = notificationsScanAddedEmpty(asArray[0])
+		} else {
+			*v = ""
+		}
 		return nil
 	}
-	out := make([]D, len(*in))
-	for i, v := range *in {
-		out[i] = D(v)
+
+	var asString string
+	if err := json.Unmarshal(data, &asString); err != nil {
+		return fmt.Errorf("scan_added_empty: expected a string or an array of strings: %w", err)
 	}
-	return &out
+	*v = notificationsScanAddedEmpty(asString)
+	return nil
 }
 
-// notificationsToRequest converts a Notifications (response model) to a
-// NotificationsRequest (request model).
-func notificationsToRequest(n dd.Notifications) dd.NotificationsRequest {
-	req := dd.NotificationsRequest{
-		Product:  n.Product,
-		User:     n.User,
-		Template: n.Template,
+// notificationsModel mirrors the 3.1.101 /api/v2/notifications/ JSON. The
+// generated dd.Notifications/dd.NotificationsRequest cannot be used here: the
+// spec types scan_added_empty as a scalar enum, but the live API returns it as
+// an array on every read path (see notificationsScanAddedEmpty above), so the
+// generated response parsers fail to unmarshal every create/read/update.
+type notificationsModel struct {
+	Id       *int  `json:"id,omitempty"`
+	Product  *int  `json:"product,omitempty"`
+	User     *int  `json:"user,omitempty"`
+	Template *bool `json:"template,omitempty"`
 
-		AutoCloseEngagement:      notificationsConvertEnumSlice[dd.NotificationsAutoCloseEngagement, dd.NotificationsRequestAutoCloseEngagement](n.AutoCloseEngagement),
-		CloseEngagement:          notificationsConvertEnumSlice[dd.NotificationsCloseEngagement, dd.NotificationsRequestCloseEngagement](n.CloseEngagement),
-		CodeReview:               notificationsConvertEnumSlice[dd.NotificationsCodeReview, dd.NotificationsRequestCodeReview](n.CodeReview),
-		EngagementAdded:          notificationsConvertEnumSlice[dd.NotificationsEngagementAdded, dd.NotificationsRequestEngagementAdded](n.EngagementAdded),
-		JiraUpdate:               notificationsConvertEnumSlice[dd.NotificationsJiraUpdate, dd.NotificationsRequestJiraUpdate](n.JiraUpdate),
-		Other:                    notificationsConvertEnumSlice[dd.NotificationsOther, dd.NotificationsRequestOther](n.Other),
-		ProductAdded:             notificationsConvertEnumSlice[dd.NotificationsProductAdded, dd.NotificationsRequestProductAdded](n.ProductAdded),
-		ProductTypeAdded:         notificationsConvertEnumSlice[dd.NotificationsProductTypeAdded, dd.NotificationsRequestProductTypeAdded](n.ProductTypeAdded),
-		ReviewRequested:          notificationsConvertEnumSlice[dd.NotificationsReviewRequested, dd.NotificationsRequestReviewRequested](n.ReviewRequested),
-		RiskAcceptanceExpiration: notificationsConvertEnumSlice[dd.NotificationsRiskAcceptanceExpiration, dd.NotificationsRequestRiskAcceptanceExpiration](n.RiskAcceptanceExpiration),
-		ScanAdded:                notificationsConvertEnumSlice[dd.NotificationsScanAdded, dd.NotificationsRequestScanAdded](n.ScanAdded),
-		SlaBreach:                notificationsConvertEnumSlice[dd.NotificationsSlaBreach, dd.NotificationsRequestSlaBreach](n.SlaBreach),
-		SlaBreachCombined:        notificationsConvertEnumSlice[dd.NotificationsSlaBreachCombined, dd.NotificationsRequestSlaBreachCombined](n.SlaBreachCombined),
-		StaleEngagement:          notificationsConvertEnumSlice[dd.NotificationsStaleEngagement, dd.NotificationsRequestStaleEngagement](n.StaleEngagement),
-		TestAdded:                notificationsConvertEnumSlice[dd.NotificationsTestAdded, dd.NotificationsRequestTestAdded](n.TestAdded),
-		UpcomingEngagement:       notificationsConvertEnumSlice[dd.NotificationsUpcomingEngagement, dd.NotificationsRequestUpcomingEngagement](n.UpcomingEngagement),
-		UserMentioned:            notificationsConvertEnumSlice[dd.NotificationsUserMentioned, dd.NotificationsRequestUserMentioned](n.UserMentioned),
-	}
-	if n.ScanAddedEmpty != nil {
-		v := dd.NotificationsRequestScanAddedEmpty(*n.ScanAddedEmpty)
-		req.ScanAddedEmpty = &v
-	}
-	return req
+	ScanAddedEmpty *notificationsScanAddedEmpty `json:"scan_added_empty,omitempty"`
+
+	AutoCloseEngagement      *[]string `json:"auto_close_engagement,omitempty"`
+	CloseEngagement          *[]string `json:"close_engagement,omitempty"`
+	CodeReview               *[]string `json:"code_review,omitempty"`
+	EngagementAdded          *[]string `json:"engagement_added,omitempty"`
+	JiraUpdate               *[]string `json:"jira_update,omitempty"`
+	Other                    *[]string `json:"other,omitempty"`
+	ProductAdded             *[]string `json:"product_added,omitempty"`
+	ProductTypeAdded         *[]string `json:"product_type_added,omitempty"`
+	ReviewRequested          *[]string `json:"review_requested,omitempty"`
+	RiskAcceptanceExpiration *[]string `json:"risk_acceptance_expiration,omitempty"`
+	ScanAdded                *[]string `json:"scan_added,omitempty"`
+	SlaBreach                *[]string `json:"sla_breach,omitempty"`
+	SlaBreachCombined        *[]string `json:"sla_breach_combined,omitempty"`
+	StaleEngagement          *[]string `json:"stale_engagement,omitempty"`
+	TestAdded                *[]string `json:"test_added,omitempty"`
+	UpcomingEngagement       *[]string `json:"upcoming_engagement,omitempty"`
+	UserMentioned            *[]string `json:"user_mentioned,omitempty"`
+}
+
+type notificationsDefectdojoResource struct {
+	notificationsModel
 }
 
 func (ddr *notificationsDefectdojoResource) createApiCall(ctx context.Context, client *dd.ClientWithResponses) (int, []byte, error) {
 	tflog.Info(ctx, "createApiCall")
-	reqBody := notificationsToRequest(ddr.Notifications)
-	apiResp, err := client.NotificationsCreateWithResponse(ctx, reqBody)
+	reqBody, err := json.Marshal(ddr.notificationsModel)
 	if err != nil {
 		return 0, nil, err
 	}
-	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	if apiResp.JSON201 != nil {
-		ddr.Notifications = *apiResp.JSON201
+	httpResp, err := client.NotificationsCreateWithBody(ctx, "application/json", bytes.NewReader(reqBody))
+	if err != nil {
+		return 0, nil, err
+	}
+	defer httpResp.Body.Close()
+	body, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return 0, nil, err
+	}
+	tflog.Info(ctx, fmt.Sprintf("response %d: %s", httpResp.StatusCode, body))
+	if httpResp.StatusCode == 201 {
+		if err := json.Unmarshal(body, &ddr.notificationsModel); err != nil {
+			return httpResp.StatusCode, body, err
+		}
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, nil
+	return httpResp.StatusCode, body, nil
 }
 
 func (ddr *notificationsDefectdojoResource) readApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	tflog.Info(ctx, "readApiCall")
-	apiResp, err := client.NotificationsRetrieveWithResponse(ctx, idNumber, &dd.NotificationsRetrieveParams{})
+	httpResp, err := client.NotificationsRetrieve(ctx, idNumber, &dd.NotificationsRetrieveParams{})
 	if err != nil {
 		return 0, nil, err
 	}
-	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	if apiResp.JSON200 != nil {
-		ddr.Notifications = *apiResp.JSON200
+	defer httpResp.Body.Close()
+	body, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return 0, nil, err
+	}
+	tflog.Info(ctx, fmt.Sprintf("response %d: %s", httpResp.StatusCode, body))
+	if httpResp.StatusCode == 200 {
+		if err := json.Unmarshal(body, &ddr.notificationsModel); err != nil {
+			return httpResp.StatusCode, body, err
+		}
 	}
 
-	return apiResp.StatusCode(), apiResp.Body, nil
+	return httpResp.StatusCode, body, nil
 }
 
 func (ddr *notificationsDefectdojoResource) updateApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	tflog.Info(ctx, "updateApiCall")
-	reqBody := notificationsToRequest(ddr.Notifications)
-	apiResp, err := client.NotificationsUpdateWithResponse(ctx, idNumber, reqBody)
+	reqBody, err := json.Marshal(ddr.notificationsModel)
 	if err != nil {
 		return 0, nil, err
 	}
-	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	if apiResp.JSON200 != nil {
-		ddr.Notifications = *apiResp.JSON200
+	httpResp, err := client.NotificationsUpdateWithBody(ctx, idNumber, "application/json", bytes.NewReader(reqBody))
+	if err != nil {
+		return 0, nil, err
 	}
-	return apiResp.StatusCode(), apiResp.Body, nil
+	defer httpResp.Body.Close()
+	body, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return 0, nil, err
+	}
+	tflog.Info(ctx, fmt.Sprintf("response %d: %s", httpResp.StatusCode, body))
+	if httpResp.StatusCode == 200 {
+		if err := json.Unmarshal(body, &ddr.notificationsModel); err != nil {
+			return httpResp.StatusCode, body, err
+		}
+	}
+	return httpResp.StatusCode, body, nil
 }
 
 func (ddr *notificationsDefectdojoResource) deleteApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int) (int, []byte, error) {
 	tflog.Info(ctx, "deleteApiCall")
-	apiResp, err := client.NotificationsDestroyWithResponse(ctx, idNumber)
+	httpResp, err := client.NotificationsDestroy(ctx, idNumber)
 	if err != nil {
 		return 0, nil, err
 	}
-	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	return apiResp.StatusCode(), apiResp.Body, nil
+	defer httpResp.Body.Close()
+	body, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return 0, nil, err
+	}
+	tflog.Info(ctx, fmt.Sprintf("response %d: %s", httpResp.StatusCode, body))
+	return httpResp.StatusCode, body, nil
 }
 
 type notificationsResource struct {
@@ -278,6 +354,6 @@ func (d *notificationsResourceData) setId(v types.String) { d.Id = v }
 
 func (d *notificationsResourceData) defectdojoResource() defectdojoResource {
 	return &notificationsDefectdojoResource{
-		Notifications: dd.Notifications{},
+		notificationsModel: notificationsModel{},
 	}
 }
