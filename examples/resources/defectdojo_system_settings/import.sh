@@ -1,0 +1,1 @@
+terraform import defectdojo_system_settings.example 1

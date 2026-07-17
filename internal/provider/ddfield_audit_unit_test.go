@@ -72,6 +72,7 @@ var ddFieldAuditTable = map[string]terraformResourceData{
 	"regulationResourceData":                  &regulationResourceData{},
 	"riskAcceptanceResourceData":              &riskAcceptanceResourceData{},
 	"slaConfigurationResourceData":            &slaConfigurationResourceData{},
+	"systemSettingsResourceData":              &systemSettingsResourceData{},
 	"testTypeResourceData":                    &testTypeResourceData{},
 	"toolConfigurationResourceData":           &toolConfigurationResourceData{},
 	"toolProductSettingsResourceData":         &toolProductSettingsResourceData{},
