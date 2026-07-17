@@ -167,17 +167,19 @@ func ddFieldPairingSupported(tfType, ddType reflect.Type) (bool, string) {
 
 	case typeOfTypesSet:
 		switch {
-		// direct slices: the engine assigns a fresh []int/[]string, so the DD
-		// type must have underlying type []int/[]string (element type exactly
-		// int/string; a defined slice type like `type X []int` is assignable).
-		case ddType.Kind() == reflect.Slice && (ddType.Elem() == auditTypeInt || ddType.Elem() == reflect.TypeFor[string]()):
+		// direct slices: the engine converts element-wise via reflect.Convert,
+		// so any int-kind or string-kind element type works (incl. defined
+		// types like enum strings).
+		case ddType.Kind() == reflect.Slice && (ddType.Elem().Kind() == reflect.Int || ddType.Elem().Kind() == reflect.String):
 			return true, ""
-		// pointer to slice: populateResourceData type-asserts .([]int) /
-		// .([]string), so the pointed-to type must be exactly []int/[]string.
-		case isPtrTo(ddType, func(e reflect.Type) bool { return e == auditTypeIntSlice || e == auditTypeStrSlice }):
+		// pointer to slice: same element-wise conversion in both directions
+		// (populateResourceData iterates reflectively, no type assertion).
+		case isPtrTo(ddType, func(e reflect.Type) bool {
+			return e.Kind() == reflect.Slice && (e.Elem().Kind() == reflect.Int || e.Elem().Kind() == reflect.String)
+		}):
 			return true, ""
 		}
-		return false, "types.Set maps only to []int, []string (element types exactly int/string), *[]int or *[]string"
+		return false, "types.Set maps only to slices (or pointers to slices) whose element kind is int or string"
 	}
 
 	return false, fmt.Sprintf("terraform type %s is not handled by the reflection engine at all (only types.String, types.Bool, types.Int64, types.Float64, types.Set are)", tfType)
