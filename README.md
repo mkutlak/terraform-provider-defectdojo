@@ -90,8 +90,9 @@ resource "defectdojo_engagement" "security_assessment" {
 | Resource                       | Data Source                    |
 | ------------------------------ | ------------------------------ |
 | `defectdojo_user`              | `defectdojo_user`              |
-| `defectdojo_user_contact_info` | `defectdojo_user_contact_info` |
-| —                              | `defectdojo_user_profile`      |
+| `defectdojo_user_contact_info` | `defectdojo_user_contact_info`         |
+| —                              | `defectdojo_user_profile`              |
+| —                              | `defectdojo_configuration_permission`  |
 
 ### Vulnerability Management
 
