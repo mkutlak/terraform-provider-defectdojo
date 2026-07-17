@@ -48,6 +48,7 @@ import (
 // completeness check); values are zero-value instances whose
 // defectdojoResource() result is audited against their ddField tags.
 var ddFieldAuditTable = map[string]terraformResourceData{
+	"announcementResourceData":                &announcementResourceData{},
 	"ddTestResourceData":                      &ddTestResourceData{},
 	"developmentEnvironmentResourceData":      &developmentEnvironmentResourceData{},
 	"endpointResourceData":                    &endpointResourceData{},

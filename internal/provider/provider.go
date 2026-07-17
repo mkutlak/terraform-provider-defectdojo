@@ -192,6 +192,7 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewUrlResource,
 		NewLocationProductResource,
 		NewMetadataResource,
+		NewAnnouncementResource,
 	}
 }
 
@@ -225,6 +226,7 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewLocationDataSource,
 		NewMetadataDataSource,
 		NewUserProfileDataSource,
+		NewAnnouncementDataSource,
 	}
 }
 
