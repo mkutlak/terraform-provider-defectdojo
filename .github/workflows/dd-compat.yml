@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       dd_versions:
-        description: "Comma-separated list of DefectDojo versions to test (e.g. 3.1.101,2.58.4)"
+        description: "Comma-separated list of DefectDojo versions to test (e.g. 3.1.101,3.2.0 — 3.x only; 2.x is unsupported)"
         required: true
-        default: "3.1.101,2.58.4"
+        default: "3.1.101"
         type: string
 
 permissions:
