@@ -144,7 +144,7 @@ func (r noteTypeDataProvider) getData(ctx context.Context, getter dataGetter) (t
 	return &data, diags
 }
 
-func (d *noteTypeResourceData) id() types.String { return d.Id }
+func (d *noteTypeResourceData) id() types.String     { return d.Id }
 func (d *noteTypeResourceData) setId(v types.String) { d.Id = v }
 
 func (d *noteTypeResourceData) defectdojoResource() defectdojoResource {

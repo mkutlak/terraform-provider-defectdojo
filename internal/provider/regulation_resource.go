@@ -146,7 +146,7 @@ func (r regulationDataProvider) getData(ctx context.Context, getter dataGetter) 
 	return &data, diags
 }
 
-func (d *regulationResourceData) id() types.String { return d.Id }
+func (d *regulationResourceData) id() types.String     { return d.Id }
 func (d *regulationResourceData) setId(v types.String) { d.Id = v }
 
 func (d *regulationResourceData) defectdojoResource() defectdojoResource {
