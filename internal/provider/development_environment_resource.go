@@ -114,7 +114,7 @@ func (r developmentEnvironmentDataProvider) getData(ctx context.Context, getter 
 	return &data, diags
 }
 
-func (d *developmentEnvironmentResourceData) id() types.String { return d.Id }
+func (d *developmentEnvironmentResourceData) id() types.String     { return d.Id }
 func (d *developmentEnvironmentResourceData) setId(v types.String) { d.Id = v }
 
 func (d *developmentEnvironmentResourceData) defectdojoResource() defectdojoResource {

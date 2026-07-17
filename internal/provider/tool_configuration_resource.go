@@ -160,7 +160,7 @@ func (r toolConfigurationDataProvider) getData(ctx context.Context, getter dataG
 	return &data, diags
 }
 
-func (d *toolConfigurationResourceData) id() types.String { return d.Id }
+func (d *toolConfigurationResourceData) id() types.String     { return d.Id }
 func (d *toolConfigurationResourceData) setId(v types.String) { d.Id = v }
 
 func (d *toolConfigurationResourceData) defectdojoResource() defectdojoResource {

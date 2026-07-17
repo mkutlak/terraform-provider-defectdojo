@@ -305,7 +305,6 @@ resource "defectdojo_product" "test" {
 `, name)
 }
 
-
 func testAccProductResourceInvalidConfig(name string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}

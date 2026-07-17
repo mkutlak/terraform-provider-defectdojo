@@ -122,7 +122,7 @@ func (r toolTypeDataProvider) getData(ctx context.Context, getter dataGetter) (t
 	return &data, diags
 }
 
-func (d *toolTypeResourceData) id() types.String { return d.Id }
+func (d *toolTypeResourceData) id() types.String     { return d.Id }
 func (d *toolTypeResourceData) setId(v types.String) { d.Id = v }
 
 func (r toolTypeDataProvider) nameFromData(data terraformResourceData) (string, bool) {

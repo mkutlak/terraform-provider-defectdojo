@@ -120,7 +120,7 @@ func (r languageTypeDataProvider) getData(ctx context.Context, getter dataGetter
 	return &data, diags
 }
 
-func (d *languageTypeResourceData) id() types.String { return d.Id }
+func (d *languageTypeResourceData) id() types.String     { return d.Id }
 func (d *languageTypeResourceData) setId(v types.String) { d.Id = v }
 
 func (d *languageTypeResourceData) defectdojoResource() defectdojoResource {
