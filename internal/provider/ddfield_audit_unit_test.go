@@ -57,6 +57,7 @@ var ddFieldAuditTable = map[string]terraformResourceData{
 	"jiraInstanceResourceData":                &jiraInstanceResourceData{},
 	"jiraProductConfigurationResourceData":    &jiraProductConfigurationResourceData{},
 	"languageTypeResourceData":                &languageTypeResourceData{},
+	"locationProductResourceData":             &locationProductResourceData{},
 	"networkLocationResourceData":             &networkLocationResourceData{},
 	"noteTypeResourceData":                    &noteTypeResourceData{},
 	"notificationWebhookResourceData":         &notificationWebhookResourceData{},
