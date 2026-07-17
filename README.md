@@ -107,6 +107,7 @@ resource "defectdojo_engagement" "security_assessment" {
 | ----------------------------- | ----------------------------- |
 | `defectdojo_url`              | `defectdojo_url`              |
 | `defectdojo_location_product` | `defectdojo_location_product` |
+| —                             | `defectdojo_location`         |
 
 ### Integrations
 
