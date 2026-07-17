@@ -3,12 +3,15 @@ package provider
 import (
 	"context"
 	"fmt"
+	"regexp"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
@@ -34,9 +37,15 @@ func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, res
 				Computed:            true,
 			},
 			"path": schema.StringAttribute{
-				MarkdownDescription: "The path of the URL (optional)",
+				MarkdownDescription: "The path of the URL, without a leading slash — DefectDojo stores paths with the leading slash stripped (optional)",
 				Optional:            true,
 				Computed:            true,
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(
+						regexp.MustCompile(`^[^/]`),
+						"must not start with '/'; DefectDojo stores URL paths without a leading slash",
+					),
+				},
 			},
 			"query": schema.StringAttribute{
 				MarkdownDescription: "The query string of the URL (optional)",
