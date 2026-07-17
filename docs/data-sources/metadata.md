@@ -35,8 +35,6 @@ data "defectdojo_metadata" "example" {
 
 ### Read-Only
 
-- `endpoint` (Number) The ID of the Endpoint this metadata is attached to.
 - `finding` (Number) The ID of the Finding this metadata is attached to.
-- `location` (Number) The ID of the Location this metadata is attached to.
 - `product` (Number) The ID of the Product this metadata is attached to.
 - `value` (String) The value of the metadata field.

@@ -18,7 +18,7 @@ import (
 
 func (t metadataResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "DefectDojo Metadata: a custom key/value field attached to exactly one parent object (product, location, endpoint, or finding). Exactly one of `product`, `location`, `endpoint`, or `finding` must be set.",
+		MarkdownDescription: "DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of `product` or `finding` must be set. DefectDojo 3.1.101 does not support location- or endpoint-attached metadata via the API (the location parent is silently ignored and the endpoint parent is rejected), so only product and finding are exposed.",
 
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
@@ -30,15 +30,7 @@ func (t metadataResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Required:            true,
 			},
 			"product": schema.Int64Attribute{
-				MarkdownDescription: "The ID of the Product this metadata is attached to. This is the recommended parent object for metadata.",
-				Optional:            true,
-			},
-			"location": schema.Int64Attribute{
-				MarkdownDescription: "The ID of the Location this metadata is attached to.",
-				Optional:            true,
-			},
-			"endpoint": schema.Int64Attribute{
-				MarkdownDescription: "The ID of the Endpoint this metadata is attached to. Endpoints are scan-managed projections; prefer product or location.",
+				MarkdownDescription: "The ID of the Product this metadata is attached to. This is the recommended parent object for metadata. (Location- and endpoint-attached metadata are not supported: the DefectDojo 3.1.101 API ignores or rejects those parents despite advertising them.)",
 				Optional:            true,
 			},
 			"finding": schema.Int64Attribute{
@@ -57,13 +49,11 @@ func (t metadataResource) Schema(ctx context.Context, req resource.SchemaRequest
 }
 
 type metadataResourceData struct {
-	Id       types.String `tfsdk:"id" ddField:"Id"`
-	Name     types.String `tfsdk:"name" ddField:"Name"`
-	Value    types.String `tfsdk:"value" ddField:"Value"`
-	Product  types.Int64  `tfsdk:"product" ddField:"Product"`
-	Location types.Int64  `tfsdk:"location" ddField:"Location"`
-	Endpoint types.Int64  `tfsdk:"endpoint" ddField:"Endpoint"`
-	Finding  types.Int64  `tfsdk:"finding" ddField:"Finding"`
+	Id      types.String `tfsdk:"id" ddField:"Id"`
+	Name    types.String `tfsdk:"name" ddField:"Name"`
+	Value   types.String `tfsdk:"value" ddField:"Value"`
+	Product types.Int64  `tfsdk:"product" ddField:"Product"`
+	Finding types.Int64  `tfsdk:"finding" ddField:"Finding"`
 }
 
 type metadataDefectdojoResource struct {
@@ -73,12 +63,10 @@ type metadataDefectdojoResource struct {
 // metadataToRequest converts a Meta (response model) to a MetaRequest (request model).
 func metadataToRequest(m dd.Meta) dd.MetaRequest {
 	return dd.MetaRequest{
-		Endpoint: m.Endpoint,
-		Finding:  m.Finding,
-		Location: m.Location,
-		Name:     m.Name,
-		Product:  m.Product,
-		Value:    m.Value,
+		Finding: m.Finding,
+		Name:    m.Name,
+		Product: m.Product,
+		Value:   m.Value,
 	}
 }
 
@@ -156,14 +144,13 @@ func (r metadataResource) Metadata(ctx context.Context, req resource.MetadataReq
 	resp.TypeName = req.ProviderTypeName + "_metadata"
 }
 
-// ConfigValidators enforces that exactly one parent object (product, location,
-// endpoint, or finding) is set, since DefectDojo metadata must attach to
+// ConfigValidators enforces that exactly one parent object (product or
+// finding) is set, since DefectDojo metadata must attach to
 // exactly one parent.
 func (r metadataResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
 		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("product"), path.MatchRoot("endpoint"),
-			path.MatchRoot("finding"), path.MatchRoot("location"),
+			path.MatchRoot("product"), path.MatchRoot("finding"),
 		),
 	}
 }
