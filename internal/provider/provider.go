@@ -194,6 +194,7 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewMetadataResource,
 		NewAnnouncementResource,
 		NewNotificationsResource,
+		NewSystemSettingsResource,
 	}
 }
 
