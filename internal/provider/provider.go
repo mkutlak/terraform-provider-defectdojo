@@ -221,6 +221,7 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewNotificationWebhookDataSource,
 		NewUrlDataSource,
 		NewLocationProductDataSource,
+		NewLocationDataSource,
 	}
 }
 
