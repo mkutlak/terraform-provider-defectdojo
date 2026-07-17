@@ -227,6 +227,7 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewMetadataDataSource,
 		NewUserProfileDataSource,
 		NewAnnouncementDataSource,
+		NewTestTypeDataSource,
 	}
 }
 

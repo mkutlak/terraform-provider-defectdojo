@@ -101,6 +101,7 @@ resource "defectdojo_engagement" "security_assessment" {
 | `defectdojo_engagement_preset` | `defectdojo_engagement_preset` |
 | `defectdojo_test`              | `defectdojo_test`              |
 | `defectdojo_finding_template`  | `defectdojo_finding_template`  |
+| —                              | `defectdojo_test_type`         |
 | —                              | `defectdojo_endpoint`          |
 
 ### Locations
