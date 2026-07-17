@@ -51,6 +51,76 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [1.0.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.5.1...v1.0.0) (2026-07-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove resources dropped by the DefectDojo 3.x API
+
+### Features
+
+* add authorized_users attribute to product and product_type ([3b39b27](https://github.com/mkutlak/terraform-provider-defectdojo/commit/3b39b270850f197009bfd78026e154ea20a6d99a))
+* **announcement:** add announcement resource and data source ([ed1ba8a](https://github.com/mkutlak/terraform-provider-defectdojo/commit/ed1ba8a314b3dcd9bd927de90765c67e748b9687))
+* **configuration_permission:** add configuration permission data source ([61cb729](https://github.com/mkutlak/terraform-provider-defectdojo/commit/61cb72974351b7629526f03e06544bb517687dd0))
+* **endpoint:** deprecate endpoint data source in favor of url/location ([a14694f](https://github.com/mkutlak/terraform-provider-defectdojo/commit/a14694f7b12223b501e3c165c44887d1f788ecd3))
+* **engine:** support singleton adoption and defined-element sets ([4155d83](https://github.com/mkutlak/terraform-provider-defectdojo/commit/4155d834c2b5bb747394a7ebb77c46b2b40d9a89))
+* **location_product:** add location product join resource and data source ([4d13d86](https://github.com/mkutlak/terraform-provider-defectdojo/commit/4d13d864595ecccdd0a94f92f23e7ee5c6ddd6f6))
+* **location:** add read-only location data source ([344b0b7](https://github.com/mkutlak/terraform-provider-defectdojo/commit/344b0b712a4ec2ce851693f6062de576b150e7e7))
+* **metadata:** add metadata resource and data source ([9019d63](https://github.com/mkutlak/terraform-provider-defectdojo/commit/9019d635304f8be7147f2d9013ec26814b7a7bea))
+* **notifications:** add notifications resource and data source ([3e10bc5](https://github.com/mkutlak/terraform-provider-defectdojo/commit/3e10bc5910cab6144d68d7a085d0ec79d4f31a2d))
+* regenerate ddclient from DefectDojo 3.1.101 spec ([5517f52](https://github.com/mkutlak/terraform-provider-defectdojo/commit/5517f524954fd9f59b88a91f79d7924552c6a126))
+* remove resources dropped by the DefectDojo 3.x API ([a941841](https://github.com/mkutlak/terraform-provider-defectdojo/commit/a941841990cc79a846be0ac981eab786777bda62))
+* **system_settings:** add singleton system settings resource ([d34750e](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d34750e3f184310919fadd4e1d17a8dc45081365))
+* **test_type:** add test type data source ([b25e203](https://github.com/mkutlak/terraform-provider-defectdojo/commit/b25e2030bf3f28aecae08c39f89092be80c365f5))
+* **url:** add url resource and data source ([0cd76e7](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0cd76e7c8085818e2c2856929c19f6eba04c83c0))
+* **user_contact_info:** expose deduplication_execution_mode ([8c60510](https://github.com/mkutlak/terraform-provider-defectdojo/commit/8c60510dec77140d356370c6f802ef45a8736ebe))
+* **user_profile:** add current-identity data source ([932bf02](https://github.com/mkutlak/terraform-provider-defectdojo/commit/932bf02f5e9cd7f95a5d552b0ffb7f92caae2853))
+* **user:** expose is_staff ([68ecd39](https://github.com/mkutlak/terraform-provider-defectdojo/commit/68ecd39a626f2f85d8756a8a6ac7332fbe398e2e))
+
+
+### Bug Fixes
+
+* expose authorized_users in product and product_type data sources ([6b59d5d](https://github.com/mkutlak/terraform-provider-defectdojo/commit/6b59d5d99f10868f8a7e12a7aac511557e2c5b29))
+* **metadata:** drop location and endpoint parents unsupported by the 3.1 API ([25fb368](https://github.com/mkutlak/terraform-provider-defectdojo/commit/25fb368f22079a69ecc1640d2839b7ffd2fcc53e))
+* **notifications:** parse asymmetric scan_added_empty wire format ([f1a2d3c](https://github.com/mkutlak/terraform-provider-defectdojo/commit/f1a2d3c199ffd8ae2fdce8a14ef0df07576ea4c4))
+* **url:** mark server-filled optional attributes as computed ([be3f117](https://github.com/mkutlak/terraform-provider-defectdojo/commit/be3f117bb756d9ce7310e1f8fb8ad324c5f877db))
+* **url:** reject leading-slash paths that DefectDojo would normalize ([2502cb5](https://github.com/mkutlak/terraform-provider-defectdojo/commit/2502cb5fa3c21fcc137f053e85adb2a7834fe16e))
+
+
+### Miscellaneous
+
+* default DD_VERSION to 3.1.101 ([0f7f591](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0f7f59137549607bc28af0898b0ebe189d0089e4))
+* **deps:** update Go module dependencies ([9e2fd47](https://github.com/mkutlak/terraform-provider-defectdojo/commit/9e2fd47d02c4b350dc270fb964191b209d10256e))
+* fix gofmt alignment drift ([5d78712](https://github.com/mkutlak/terraform-provider-defectdojo/commit/5d78712fda07b9f6634b1ed7f98dd9a63274a334))
+* fix lint findings in notifications raw client calls and audit test ([227fef5](https://github.com/mkutlak/terraform-provider-defectdojo/commit/227fef5c2eb5c4d8616b2351aa068fff4889b1d2))
+* keep collected openapi specs untracked ([56f89e5](https://github.com/mkutlak/terraform-provider-defectdojo/commit/56f89e5ba28fa80567062ffe3e7740663719c92f))
+* release the DefectDojo 3.x line as 1.0.0 ([87c9440](https://github.com/mkutlak/terraform-provider-defectdojo/commit/87c9440d82fb1f56363686059adebcf973941a89))
+
+
+### Documentation
+
+* drop DefectDojo 2.x from supported versions ([3e15b40](https://github.com/mkutlak/terraform-provider-defectdojo/commit/3e15b4045cff4989f20c28f7e74df4cbe8bad2d6))
+* remove never-implemented resources from README tables ([d3cc085](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d3cc085038f02d5a8f859e185b86c1d48685c52e))
+* update resource counts and exclusion notes for 3.1 coverage ([5fdd3b9](https://github.com/mkutlak/terraform-provider-defectdojo/commit/5fdd3b9194ddacdb95fddb00807228bee88488be))
+
+
+### CI/CD
+
+* checkout before setup-go so module caching works ([2b75090](https://github.com/mkutlak/terraform-provider-defectdojo/commit/2b75090251371f5a9b24ca37642ea0358f35479f))
+* drop DefectDojo 2.x from compat workflow defaults ([621d7be](https://github.com/mkutlak/terraform-provider-defectdojo/commit/621d7becc5c8b5b25dee7d7bed7d472a61ab63d2))
+
+
+### Tests
+
+* add ddField coverage audit against generated client structs ([c806925](https://github.com/mkutlak/terraform-provider-defectdojo/commit/c80692536931c012a20b0d0c72dadde0a985d25c))
+* add ddField reflection audit for generated client drift ([dcb7cf6](https://github.com/mkutlak/terraform-provider-defectdojo/commit/dcb7cf6b5c06aca4c74958091d8845f723b06ece))
+* add endpoint data source acceptance test seeded via locations API ([8bee35b](https://github.com/mkutlak/terraform-provider-defectdojo/commit/8bee35bd9a7437d2864befea59f19c5e7d5bd87a))
+* **configuration_permission:** look up an existing configuration codename ([bfaf009](https://github.com/mkutlak/terraform-provider-defectdojo/commit/bfaf00932514246061166d0effba3d1626563e53))
+* extract shared location seeding helpers for acceptance tests ([d45f77a](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d45f77a75903739109b97dd37b489aa5ac103237))
+* **metadata:** match framework validator error in conflict test ([4db9a9b](https://github.com/mkutlak/terraform-provider-defectdojo/commit/4db9a9b0bc7ab34494d43f88cdb20a7632f22c7d))
+* replace deprecated parser.ParseDir in ddField audit ([7f16d8a](https://github.com/mkutlak/terraform-provider-defectdojo/commit/7f16d8a29390607b4934b5d05a76632d9a559628))
+
 ## [0.5.1](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.5.0...v0.5.1) (2026-07-16)
 
 
