@@ -26,26 +26,32 @@ func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, res
 			"protocol": schema.StringAttribute{
 				MarkdownDescription: "The protocol of the URL (e.g., http, https, ftp, etc.)",
 				Optional:            true,
+				Computed:            true,
 			},
 			"port": schema.Int64Attribute{
 				MarkdownDescription: "The port number of the URL (optional)",
 				Optional:            true,
+				Computed:            true,
 			},
 			"path": schema.StringAttribute{
 				MarkdownDescription: "The path of the URL (optional)",
 				Optional:            true,
+				Computed:            true,
 			},
 			"query": schema.StringAttribute{
 				MarkdownDescription: "The query string of the URL (optional)",
 				Optional:            true,
+				Computed:            true,
 			},
 			"fragment": schema.StringAttribute{
 				MarkdownDescription: "The fragment identifier of the URL (optional)",
 				Optional:            true,
+				Computed:            true,
 			},
 			"user_info": schema.StringAttribute{
 				MarkdownDescription: "Connection details for a given user",
 				Optional:            true,
+				Computed:            true,
 			},
 			"tags": schema.SetAttribute{
 				MarkdownDescription: "Tags to apply to the URL",
