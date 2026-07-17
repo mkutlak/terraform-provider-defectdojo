@@ -49,6 +49,7 @@ import (
 // defectdojoResource() result is audited against their ddField tags.
 var ddFieldAuditTable = map[string]terraformResourceData{
 	"announcementResourceData":                &announcementResourceData{},
+	"configurationPermissionResourceData":     &configurationPermissionResourceData{},
 	"ddTestResourceData":                      &ddTestResourceData{},
 	"developmentEnvironmentResourceData":      &developmentEnvironmentResourceData{},
 	"endpointResourceData":                    &endpointResourceData{},
