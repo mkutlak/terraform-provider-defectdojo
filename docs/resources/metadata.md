@@ -3,12 +3,12 @@
 page_title: "defectdojo_metadata Resource - terraform-provider-defectdojo"
 subcategory: ""
 description: |-
-  DefectDojo Metadata: a custom key/value field attached to exactly one parent object (product, location, endpoint, or finding). Exactly one of product, location, endpoint, or finding must be set.
+  DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of product or finding must be set. DefectDojo 3.1.101 does not support location- or endpoint-attached metadata via the API (the location parent is silently ignored and the endpoint parent is rejected), so only product and finding are exposed.
 ---
 
 # defectdojo_metadata (Resource)
 
-DefectDojo Metadata: a custom key/value field attached to exactly one parent object (product, location, endpoint, or finding). Exactly one of `product`, `location`, `endpoint`, or `finding` must be set.
+DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of `product` or `finding` must be set. DefectDojo 3.1.101 does not support location- or endpoint-attached metadata via the API (the location parent is silently ignored and the endpoint parent is rejected), so only product and finding are exposed.
 
 ## Example Usage
 
@@ -17,14 +17,11 @@ resource "defectdojo_metadata" "example" {
   name  = "environment"
   value = "production"
 
-  # Exactly one of product, location, endpoint, or finding must be set.
+  # Exactly one of product or finding must be set.
   # Attaching metadata to a product is the recommended approach.
   product = data.defectdojo_product.example.id
 
-  # location = defectdojo_url.example.id
 
-  # Discouraged: endpoints are scan-managed projections; prefer product or location.
-  # endpoint = 1
 
   # Discouraged: findings are import-managed; attaching metadata couples state to scan artifacts.
   # finding = 1
@@ -41,10 +38,8 @@ resource "defectdojo_metadata" "example" {
 
 ### Optional
 
-- `endpoint` (Number) The ID of the Endpoint this metadata is attached to. Endpoints are scan-managed projections; prefer product or location.
 - `finding` (Number) The ID of the Finding this metadata is attached to. Findings are import-managed; attaching metadata couples state to scan artifacts.
-- `location` (Number) The ID of the Location this metadata is attached to.
-- `product` (Number) The ID of the Product this metadata is attached to. This is the recommended parent object for metadata.
+- `product` (Number) The ID of the Product this metadata is attached to. This is the recommended parent object for metadata. (Location- and endpoint-attached metadata are not supported: the DefectDojo 3.1.101 API ignores or rejects those parents despite advertising them.)
 
 ### Read-Only
 

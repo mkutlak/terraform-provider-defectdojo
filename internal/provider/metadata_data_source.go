@@ -33,14 +33,6 @@ func (t metadataDataSource) Schema(ctx context.Context, req datasource.SchemaReq
 				MarkdownDescription: "The ID of the Product this metadata is attached to.",
 				Computed:            true,
 			},
-			"location": schema.Int64Attribute{
-				MarkdownDescription: "The ID of the Location this metadata is attached to.",
-				Computed:            true,
-			},
-			"endpoint": schema.Int64Attribute{
-				MarkdownDescription: "The ID of the Endpoint this metadata is attached to.",
-				Computed:            true,
-			},
 			"finding": schema.Int64Attribute{
 				MarkdownDescription: "The ID of the Finding this metadata is attached to.",
 				Computed:            true,

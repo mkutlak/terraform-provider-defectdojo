@@ -44,41 +44,6 @@ func TestAccMetadataResource(t *testing.T) {
 	})
 }
 
-func TestAccMetadataResourceLocation(t *testing.T) {
-	t.Parallel()
-	metadataName := fmt.Sprintf("dox-meta-loc-%s", uniqueId())
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		Steps: []resource.TestStep{
-			// Create and Read testing
-			{
-				Config: testAccMetadataResourceLocationConfig(metadataName, "bar"),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "name", metadataName),
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "value", "bar"),
-					resource.TestCheckResourceAttrPair("defectdojo_metadata.test", "location", "defectdojo_url.test", "id"),
-				),
-			},
-			// ImportState testing
-			{
-				ResourceName:      "defectdojo_metadata.test",
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-			// Update and Read testing
-			{
-				Config: testAccMetadataResourceLocationConfig(metadataName, "baz"),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "name", metadataName),
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "value", "baz"),
-				),
-			},
-			// Delete testing automatically occurs in TestCase
-		},
-	})
-}
-
 func TestAccMetadataResourceValidatorConflict(t *testing.T) {
 	t.Parallel()
 	name := fmt.Sprintf("dox-meta-conflict-%s", uniqueId())
@@ -140,21 +105,6 @@ resource "defectdojo_metadata" "test" {
 `, productName, metadataName, value)
 }
 
-func testAccMetadataResourceLocationConfig(metadataName, value string) string {
-	return fmt.Sprintf(`
-provider "defectdojo" {}
-resource "defectdojo_url" "test" {
-  host     = "%[1]s.example.com"
-  protocol = "https"
-}
-resource "defectdojo_metadata" "test" {
-  name     = %[1]q
-  value    = %[2]q
-  location = defectdojo_url.test.id
-}
-`, metadataName, value)
-}
-
 func testAccMetadataResourceConflictConfig(name string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}
@@ -163,15 +113,11 @@ resource "defectdojo_product" "test" {
   description     = "test"
   product_type_id = 1
 }
-resource "defectdojo_url" "test" {
-  host     = "%[1]s.example.com"
-  protocol = "https"
-}
 resource "defectdojo_metadata" "test" {
   name     = %[1]q
   value    = "bar"
   product  = defectdojo_product.test.id
-  location = defectdojo_url.test.id
+  finding  = 1
 }
 `, name)
 }
