@@ -115,9 +115,10 @@ resource "defectdojo_engagement" "security_assessment" {
 
 ### Administration
 
-| Resource                  | Data Source               |
-| ------------------------- | ------------------------- |
-| `defectdojo_announcement` | `defectdojo_announcement` |
+| Resource                   | Data Source                |
+| -------------------------- | -------------------------- |
+| `defectdojo_announcement`  | `defectdojo_announcement`  |
+| `defectdojo_notifications` | `defectdojo_notifications` |
 
 ### Integrations
 
