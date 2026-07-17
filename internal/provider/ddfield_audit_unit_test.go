@@ -65,6 +65,7 @@ var ddFieldAuditTable = map[string]terraformResourceData{
 	"networkLocationResourceData":             &networkLocationResourceData{},
 	"noteTypeResourceData":                    &noteTypeResourceData{},
 	"notificationWebhookResourceData":         &notificationWebhookResourceData{},
+	"notificationsResourceData":               &notificationsResourceData{},
 	"productAPIScanConfigurationResourceData": &productAPIScanConfigurationResourceData{},
 	"productResourceData":                     &productResourceData{},
 	"productTypeResourceData":                 &productTypeResourceData{},
