@@ -101,6 +101,12 @@ resource "defectdojo_engagement" "security_assessment" {
 | `defectdojo_finding_template`  | `defectdojo_finding_template`  |
 | —                              | `defectdojo_endpoint`          |
 
+### Locations
+
+| Resource         | Data Source      |
+| ---------------- | ---------------- |
+| `defectdojo_url` | `defectdojo_url` |
+
 ### Integrations
 
 | Resource                                    | Data Source                                 |
