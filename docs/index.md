@@ -16,7 +16,7 @@ This provider is built and tested against the following DefectDojo versions:
 | DefectDojo Version | Status | Notes |
 | ------------------ | ------ | ----- |
 | 3.1.101            | Tested | Latest tested version. API client generated from this version. |
-| 2.58.4             | Best effort | API v2 mostly compatible. Last DefectDojo 2.x line; for full 2.x support (incl. removed RBAC/credential/endpoint resources) pin provider `~> 0.5`. |
+| 2.x                | Unsupported | Not supported by provider 1.0 and later. For DefectDojo 2.x (incl. the removed RBAC/credential/endpoint resources) pin provider `~> 0.5`. |
 
 The provider may work with other versions but only the above are regularly tested.
 If you encounter issues with an unlisted version, please

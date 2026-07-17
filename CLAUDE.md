@@ -15,7 +15,7 @@ make testacc                            # Run all acceptance tests (needs live D
 TESTARGS="-run TestFunctionName" make testacc  # Run a single acceptance test
 TF_LOG="DEBUG" make testacc             # Acceptance tests with debug output
 go test ./internal/provider/ -run TestProductResource  # Run unit tests (no TF_ACC needed)
-DD_VERSION=2.58.4 make dd-up            # Start a specific DefectDojo version
+DD_VERSION=3.1.101 make dd-up           # Start a specific DefectDojo version (3.x only; 2.x is unsupported)
 make dd-spec                            # Fetch OpenAPI spec from running instance
 make regen-client                       # Regenerate internal/ddclient from openapi-specs/$DD_VERSION spec
                                         # (spec is a local artifact, not tracked in git; collect it first via `make dd-up && make dd-spec`)
