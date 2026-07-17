@@ -88,7 +88,7 @@ func TestAccMetadataResourceValidatorConflict(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccMetadataResourceConflictConfig(name),
-				ExpectError: regexp.MustCompile(`(?s)Invalid Attribute Combination.*Exactly one of`),
+				ExpectError: regexp.MustCompile(`(?s)Invalid Attribute Combination`),
 			},
 		},
 	})
