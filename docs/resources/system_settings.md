@@ -90,7 +90,7 @@ resource "defectdojo_system_settings" "example" {
 - `engagement_auto_close_days` (Number) Closes an engagement after the specified number of days past due date including last update.
 - `false_positive_history` (Boolean) (EXPERIMENTAL) DefectDojo will automatically mark the finding as a false positive if an equal finding (according to its dedupe algorithm) has been previously marked as a false positive on the same product. ATTENTION: Although the deduplication algorithm is used to determine if a finding should be marked as a false positive, this feature will not work if deduplication is enabled since it doesn't make sense to use both.
 - `filter_string_matching` (Boolean) When turned on, all filter operations in the UI will require string matches rather than ID. This is a performance enhancement to avoid fetching objects unnecessarily.
-- `jira_labels` (String) JIRA issue labels space seperated.
+- `jira_labels` (String) JIRA issue labels space separated.
 - `jira_minimum_severity` (String) Minimum severity level for pushing findings to JIRA. Valid values are: 'Critical', 'High', 'Medium', 'Low', 'Info'.
 - `jira_webhook_secret` (String, Sensitive) Secret needed in URL for incoming JIRA Webhook.
 - `lowercase_character_required` (Boolean) Requires user passwords to contain at least one lowercase letter (a-z).

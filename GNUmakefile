@@ -8,6 +8,12 @@ export DD_VERSION
 testacc:
 	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m -parallel=4
 
+# Run unit tests only. TF_ACC is deliberately unset: TestMain short-circuits
+# without it, so this needs no DefectDojo instance and finishes in seconds.
+.PHONY: test-unit
+test-unit:
+	go test ./... -race -cover $(TESTARGS)
+
 .PHONY: generate-docs
 generate-docs:
 	go generate ./...
@@ -15,6 +21,18 @@ generate-docs:
 .PHONY: lint
 lint:
 	golangci-lint run ./...
+
+.PHONY: vet
+vet:
+	go vet ./...
+
+.PHONY: fmtcheck
+fmtcheck:
+	@files=$$(gofmt -l $$(go list -f '{{.Dir}}' ./... | grep -v '/internal/ddclient')); \
+	if [ -n "$$files" ]; then \
+		echo "The following files are not gofmt'd:"; echo "$$files"; \
+		echo "Run 'gofmt -w' on them."; exit 1; \
+	fi
 
 # Apply modern Go idiom fixes (excludes the generated internal/ddclient package)
 .PHONY: modernize modernize-check

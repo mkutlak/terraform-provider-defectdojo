@@ -263,7 +263,7 @@ func (t systemSettingsResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed:            true,
 			},
 			"jira_labels": schema.StringAttribute{
-				MarkdownDescription: "JIRA issue labels space seperated.",
+				MarkdownDescription: "JIRA issue labels space separated.",
 				Optional:            true,
 				Computed:            true,
 			},
