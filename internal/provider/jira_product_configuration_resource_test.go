@@ -75,7 +75,7 @@ func TestAccJiraProductConfigurationResourceDeleteDrift(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 				Config:             testAccJiraProductConfigurationResourceConfig(name, jirakey),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testAccDeleteResourceOutsideTerraform("defectdojo_jira_product_configuration.test"),
+					testAccCheckDisappears("defectdojo_jira_product_configuration.test"),
 				),
 			},
 			{
