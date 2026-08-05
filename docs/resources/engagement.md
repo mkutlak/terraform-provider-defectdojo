@@ -27,8 +27,8 @@ resource "defectdojo_engagement" "example" {
 ### Required
 
 - `product` (Number) ID of the Product this Engagement belongs to
-- `target_end` (String) End date of the Engagement (format: 2006-01-02)
-- `target_start` (String) Start date of the Engagement (format: 2006-01-02)
+- `target_end` (String) End date of the Engagement. Date only, format `2006-01-02`. Datetime values are not accepted: the underlying DefectDojo field has no time component, so narrowing a datetime would have to guess a calendar day.
+- `target_start` (String) Start date of the Engagement. Date only, format `2006-01-02`. Datetime values are not accepted: the underlying DefectDojo field has no time component, so narrowing a datetime would have to guess a calendar day.
 
 ### Optional
 
@@ -40,7 +40,7 @@ resource "defectdojo_engagement" "example" {
 - `deduplication_on_engagement` (Boolean) If enabled deduplication will only mark a finding in this engagement as duplicate of another finding if both findings are in this engagement
 - `description` (String) Description of the Engagement
 - `engagement_type` (String) Type of Engagement: 'Interactive' or 'CI/CD'
-- `first_contacted` (String) Date first contacted (format: 2006-01-02)
+- `first_contacted` (String) Date first contacted. Date only, format `2006-01-02`; datetime values are not accepted.
 - `lead` (Number) ID of the lead user for this Engagement
 - `name` (String) Name of the Engagement
 - `pen_test` (Boolean) Whether a pen test was performed

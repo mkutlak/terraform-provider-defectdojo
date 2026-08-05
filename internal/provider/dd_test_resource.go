@@ -34,11 +34,11 @@ func (r ddTestResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 				Required:            true,
 			},
 			"target_start": schema.StringAttribute{
-				MarkdownDescription: "Start datetime of the Test (RFC3339 format, e.g. 2006-01-02T15:04:05Z)",
+				MarkdownDescription: "Start datetime of the Test. Accepts RFC3339 (`2006-01-02T15:04:05Z07:00`), a datetime without a zone (`2006-01-02T15:04:05`, read as UTC), or a date only (`2006-01-02`, read as midnight UTC). The value you configure is preserved verbatim in state. Resources brought in with `terraform import` are recorded in RFC3339 and converge to the configured form on the next apply.",
 				Required:            true,
 			},
 			"target_end": schema.StringAttribute{
-				MarkdownDescription: "End datetime of the Test (RFC3339 format, e.g. 2006-01-02T15:04:05Z)",
+				MarkdownDescription: "End datetime of the Test. Accepts RFC3339 (`2006-01-02T15:04:05Z07:00`), a datetime without a zone (`2006-01-02T15:04:05`, read as UTC), or a date only (`2006-01-02`, read as midnight UTC). The value you configure is preserved verbatim in state. Resources brought in with `terraform import` are recorded in RFC3339 and converge to the configured form on the next apply.",
 				Required:            true,
 			},
 			"title": schema.StringAttribute{

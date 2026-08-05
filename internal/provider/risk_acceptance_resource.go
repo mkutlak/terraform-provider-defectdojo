@@ -45,7 +45,7 @@ func (t riskAcceptanceResource) Schema(ctx context.Context, req resource.SchemaR
 				Default:             stringdefault.StaticString(""),
 			},
 			"expiration_date": schema.StringAttribute{
-				MarkdownDescription: "When the risk acceptance expires (RFC3339 format).",
+				MarkdownDescription: "When the risk acceptance expires. Accepts RFC3339 (`2006-01-02T15:04:05Z07:00`), a datetime without a zone (`2006-01-02T15:04:05`, read as UTC), or a date only (`2006-01-02`, read as midnight UTC). The value you configure is preserved verbatim in state.",
 				Optional:            true,
 				Computed:            true,
 			},

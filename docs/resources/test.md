@@ -28,8 +28,8 @@ resource "defectdojo_test" "example" {
 ### Required
 
 - `engagement` (Number) ID of the Engagement this Test belongs to
-- `target_end` (String) End datetime of the Test (RFC3339 format, e.g. 2006-01-02T15:04:05Z)
-- `target_start` (String) Start datetime of the Test (RFC3339 format, e.g. 2006-01-02T15:04:05Z)
+- `target_end` (String) End datetime of the Test. Accepts RFC3339 (`2006-01-02T15:04:05Z07:00`), a datetime without a zone (`2006-01-02T15:04:05`, read as UTC), or a date only (`2006-01-02`, read as midnight UTC). The value you configure is preserved verbatim in state. Resources brought in with `terraform import` are recorded in RFC3339 and converge to the configured form on the next apply.
+- `target_start` (String) Start datetime of the Test. Accepts RFC3339 (`2006-01-02T15:04:05Z07:00`), a datetime without a zone (`2006-01-02T15:04:05`, read as UTC), or a date only (`2006-01-02`, read as midnight UTC). The value you configure is preserved verbatim in state. Resources brought in with `terraform import` are recorded in RFC3339 and converge to the configured form on the next apply.
 - `test_type` (Number) ID of the Test Type
 
 ### Optional

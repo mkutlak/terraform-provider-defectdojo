@@ -45,11 +45,11 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 				Required:            true,
 			},
 			"target_start": schema.StringAttribute{
-				MarkdownDescription: "Start date of the Engagement (format: 2006-01-02)",
+				MarkdownDescription: "Start date of the Engagement. Date only, format `2006-01-02`. Datetime values are not accepted: the underlying DefectDojo field has no time component, so narrowing a datetime would have to guess a calendar day.",
 				Required:            true,
 			},
 			"target_end": schema.StringAttribute{
-				MarkdownDescription: "End date of the Engagement (format: 2006-01-02)",
+				MarkdownDescription: "End date of the Engagement. Date only, format `2006-01-02`. Datetime values are not accepted: the underlying DefectDojo field has no time component, so narrowing a datetime would have to guess a calendar day.",
 				Required:            true,
 			},
 			"engagement_type": schema.StringAttribute{
@@ -133,7 +133,7 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 				Default:             booldefault.StaticBool(false),
 			},
 			"first_contacted": schema.StringAttribute{
-				MarkdownDescription: "Date first contacted (format: 2006-01-02)",
+				MarkdownDescription: "Date first contacted. Date only, format `2006-01-02`; datetime values are not accepted.",
 				Optional:            true,
 			},
 			"source_code_management_uri": schema.StringAttribute{

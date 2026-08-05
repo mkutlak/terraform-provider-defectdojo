@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -163,4 +164,27 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 	assert.Equal(t, ddEng.TargetEnd.Format("2006-01-02"), "2025-12-31")
 	assert.Equal(t, *ddEng.Version, expectedVersion)
 	assert.Equal(t, *ddEng.ThreatModel, expectedThreatModel)
+}
+
+// TestEngagementResource__defectdojoResourceRejectsDatetime is deliberately
+// asymmetric with defectdojo_test: engagement.target_start is an
+// openapi_types.Date with no time component, and datetime -> date is
+// narrowing and ambiguous, so datetime literals are rejected outright rather
+// than silently truncated (see parseDate).
+func TestEngagementResource__defectdojoResourceRejectsDatetime(t *testing.T) {
+	expectedProduct := 5
+
+	resourceData := engagementResourceData{
+		Product:     types.Int64Value(int64(expectedProduct)),
+		TargetStart: types.StringValue("2025-01-01T00:00:00Z"),
+	}
+
+	ddRes := resourceData.defectdojoResource()
+	var tfResource terraformResourceData = &resourceData
+	var diags diag.Diagnostics
+	populateDefectdojoResource(context.Background(), &diags, tfResource, &ddRes)
+
+	assert.Equal(t, diags.HasError(), true)
+	assert.Assert(t, strings.Contains(diags.Errors()[0].Detail(), "target_start"))
+	assert.Assert(t, strings.Contains(diags.Errors()[0].Detail(), "2006-01-02"))
 }
