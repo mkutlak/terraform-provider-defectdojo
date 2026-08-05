@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -92,6 +93,67 @@ func testAccCheckDestroyed(s *terraform.State) error {
 		return fmt.Errorf("resources still exist after destroy: %s", strings.Join(survivors, ", "))
 	}
 	return nil
+}
+
+// testAccCheckDataSourceMatchesResource asserts that every attribute the data
+// source exposes has the same value as the corresponding managed resource.
+//
+// Both sides are populated by the same reflection engine from the same model,
+// so any divergence is a mapping bug. Comparing the whole overlap rather than a
+// hand-picked attribute or two means a data source cannot quietly drop a field
+// as the model grows - which is exactly how these tests rot.
+//
+// Attributes the data source does not expose at all are skipped: a data source
+// schema is legitimately allowed to be a subset. Pass names in ignore for
+// attributes that are expected to differ (e.g. write-only credentials that the
+// API never echoes back).
+func testAccCheckDataSourceMatchesResource(dataSourceName, resourceName string, ignore ...string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		ds, ok := s.RootModule().Resources[dataSourceName]
+		if !ok {
+			return fmt.Errorf("data source not found in state: %s", dataSourceName)
+		}
+		rs, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("resource not found in state: %s", resourceName)
+		}
+
+		skip := make(map[string]bool, len(ignore))
+		for _, k := range ignore {
+			skip[k] = true
+		}
+
+		var mismatches []string
+		compared := 0
+
+		for key, resourceValue := range rs.Primary.Attributes {
+			if skip[key] {
+				continue
+			}
+			dataValue, present := ds.Primary.Attributes[key]
+			if !present {
+				continue
+			}
+			compared++
+			if dataValue != resourceValue {
+				mismatches = append(mismatches,
+					fmt.Sprintf("%s: resource=%q data source=%q", key, resourceValue, dataValue))
+			}
+		}
+
+		// A schema mismatch or a renamed attribute would otherwise make this
+		// check pass by comparing nothing at all.
+		if compared == 0 {
+			return fmt.Errorf("%s vs %s: no overlapping attributes were compared; "+
+				"this check would pass vacuously", dataSourceName, resourceName)
+		}
+		if len(mismatches) > 0 {
+			sort.Strings(mismatches)
+			return fmt.Errorf("%s does not match %s in %d of %d compared attributes:\n  %s",
+				dataSourceName, resourceName, len(mismatches), compared, strings.Join(mismatches, "\n  "))
+		}
+		return nil
+	}
 }
 
 // testAccCheckDisappears deletes a resource out-of-band, so a follow-up step can
