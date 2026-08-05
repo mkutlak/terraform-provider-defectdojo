@@ -14,6 +14,7 @@ func TestAccLanguageTypeResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccLanguageTypeResourceConfig(language),

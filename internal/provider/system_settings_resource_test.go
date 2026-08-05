@@ -92,6 +92,7 @@ func TestAccSystemSettingsResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			// Adopt (Create) and Read testing
 			{
