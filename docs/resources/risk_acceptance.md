@@ -34,7 +34,7 @@ resource "defectdojo_risk_acceptance" "example" {
 - `accepted_by` (String) The person that accepts the risk (can be outside DefectDojo).
 - `decision` (String) Risk treatment decision. Valid values: A (Accept), V (Avoid), M (Mitigate), F (Fix), T (Transfer).
 - `decision_details` (String) Details about the risk treatment decision.
-- `expiration_date` (String) When the risk acceptance expires (RFC3339 format).
+- `expiration_date` (String) When the risk acceptance expires. Accepts RFC3339 (`2006-01-02T15:04:05Z07:00`), a datetime without a zone (`2006-01-02T15:04:05`, read as UTC), or a date only (`2006-01-02`, read as midnight UTC). The value you configure is preserved verbatim in state.
 - `reactivate_expired` (Boolean) Reactivate findings when risk acceptance expires.
 - `recommendation` (String) Security team recommendation. Valid values: A, V, M, F, T.
 - `recommendation_details` (String) Details explaining the security recommendation.

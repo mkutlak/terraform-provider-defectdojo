@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -128,4 +129,143 @@ func TestDDTestResource__defectdojoResource(t *testing.T) {
 	assert.Equal(t, ddTest.TargetEnd.Format(time.RFC3339), "2025-01-01T18:00:00Z")
 	assert.Equal(t, *ddTest.Title, expectedTitle)
 	assert.Equal(t, *ddTest.Description, expectedDescription)
+}
+
+// TestDDTestResource__defectdojoResourceDateOnly is the issue #23 regression:
+// a bare date literal (e.g. from formatdate("YYYY-MM-DD", ...)) must be
+// accepted for a time.Time-backed attribute, not just RFC3339.
+func TestDDTestResource__defectdojoResourceDateOnly(t *testing.T) {
+	expectedTestType := 2
+	expectedEngagement := 8
+
+	resourceData := ddTestResourceData{
+		TestType:    types.Int64Value(int64(expectedTestType)),
+		Engagement:  types.Int64Value(int64(expectedEngagement)),
+		TargetStart: types.StringValue("2026-07-28"),
+		TargetEnd:   types.StringValue("2031-07-28"),
+	}
+
+	ddRes := resourceData.defectdojoResource()
+	ddTest := ddRes.(*ddTestDefectdojoResource)
+	var tfResource terraformResourceData = &resourceData
+	var diags diag.Diagnostics
+	populateDefectdojoResource(context.Background(), &diags, tfResource, &ddRes)
+
+	assert.Equal(t, ddTest.TargetStart.Format(time.RFC3339), "2026-07-28T00:00:00Z")
+	assert.Equal(t, ddTest.TargetEnd.Format(time.RFC3339), "2031-07-28T00:00:00Z")
+	assert.Equal(t, diags.HasError(), false)
+}
+
+// TestDDTestResource__defectdojoResourceRejectsBadDatetime asserts that an
+// unparseable literal is reported via diagnostics and leaves the destination
+// field untouched (zero time). The engine must gate on HasError() before
+// making the API call, or this zero time gets transmitted to DefectDojo.
+func TestDDTestResource__defectdojoResourceRejectsBadDatetime(t *testing.T) {
+	resourceData := ddTestResourceData{
+		TargetStart: types.StringValue("yesterday"),
+	}
+
+	ddRes := resourceData.defectdojoResource()
+	ddTest := ddRes.(*ddTestDefectdojoResource)
+	var tfResource terraformResourceData = &resourceData
+	var diags diag.Diagnostics
+	populateDefectdojoResource(context.Background(), &diags, tfResource, &ddRes)
+
+	assert.Equal(t, diags.HasError(), true)
+	assert.Equal(t, len(diags.Errors()), 1)
+	assert.Assert(t, strings.Contains(diags.Errors()[0].Detail(), "target_start"))
+	assert.Assert(t, strings.Contains(diags.Errors()[0].Detail(), "yesterday"))
+	assert.Equal(t, ddTest.TargetStart.IsZero(), true)
+}
+
+// TestDDTestResourcePopulatePreservesDateOnlyLiteral is the read-direction
+// counterpart of issue #23: the server echoes the configured date literal
+// back as RFC3339 midnight, and that must not overwrite the practitioner's
+// literal in state (or every apply would show a diff).
+func TestDDTestResourcePopulatePreservesDateOnlyLiteral(t *testing.T) {
+	expectedTestType := 2
+	expectedEngagement := 8
+
+	resourceData := ddTestResourceData{
+		TestType:    types.Int64Value(int64(expectedTestType)),
+		Engagement:  types.Int64Value(int64(expectedEngagement)),
+		TargetStart: types.StringValue("2026-07-28"),
+		TargetEnd:   types.StringValue("2031-07-28"),
+	}
+
+	ddResource := ddTestDefectdojoResource{
+		TestCreate: dd.TestCreate{
+			TestType:    expectedTestType,
+			Engagement:  expectedEngagement,
+			TargetStart: time.Date(2026, 7, 28, 0, 0, 0, 0, time.UTC),
+			TargetEnd:   time.Date(2031, 7, 28, 0, 0, 0, 0, time.UTC),
+		},
+	}
+
+	var tfResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &tfResource, &ddResource)
+
+	assert.Equal(t, resourceData.TargetStart.ValueString(), "2026-07-28")
+	assert.Equal(t, resourceData.TargetEnd.ValueString(), "2031-07-28")
+}
+
+// TestDDTestResourcePopulateCanonicalisesUnknownLiteral covers the case where
+// state has no prior literal to compare against (e.g. first read after
+// create with an unknown value): the server's RFC3339 rendering is used.
+func TestDDTestResourcePopulateCanonicalisesUnknownLiteral(t *testing.T) {
+	expectedTestType := 2
+	expectedEngagement := 8
+
+	resourceData := ddTestResourceData{
+		TestType:    types.Int64Value(int64(expectedTestType)),
+		Engagement:  types.Int64Value(int64(expectedEngagement)),
+		TargetStart: types.StringUnknown(),
+		TargetEnd:   types.StringValue("2031-07-28"),
+	}
+
+	ddResource := ddTestDefectdojoResource{
+		TestCreate: dd.TestCreate{
+			TestType:    expectedTestType,
+			Engagement:  expectedEngagement,
+			TargetStart: time.Date(2026, 7, 28, 0, 0, 0, 0, time.UTC),
+			TargetEnd:   time.Date(2031, 7, 28, 0, 0, 0, 0, time.UTC),
+		},
+	}
+
+	var tfResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &tfResource, &ddResource)
+
+	assert.Equal(t, resourceData.TargetStart.ValueString(), "2026-07-28T00:00:00Z")
+	assert.Equal(t, resourceData.TargetEnd.ValueString(), "2031-07-28")
+}
+
+// TestDDTestResourcePopulateReportsRealDrift proves preservation does not
+// mask genuine drift: when the server value denotes a different instant than
+// the prior state literal, the canonical RFC3339 rendering is written so the
+// practitioner sees the change.
+func TestDDTestResourcePopulateReportsRealDrift(t *testing.T) {
+	expectedTestType := 2
+	expectedEngagement := 8
+
+	resourceData := ddTestResourceData{
+		TestType:    types.Int64Value(int64(expectedTestType)),
+		Engagement:  types.Int64Value(int64(expectedEngagement)),
+		TargetStart: types.StringValue("2026-07-28"),
+		TargetEnd:   types.StringValue("2031-07-28"),
+	}
+
+	ddResource := ddTestDefectdojoResource{
+		TestCreate: dd.TestCreate{
+			TestType:    expectedTestType,
+			Engagement:  expectedEngagement,
+			TargetStart: time.Date(2030, 1, 1, 0, 0, 0, 0, time.UTC),
+			TargetEnd:   time.Date(2031, 7, 28, 0, 0, 0, 0, time.UTC),
+		},
+	}
+
+	var tfResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &tfResource, &ddResource)
+
+	assert.Equal(t, resourceData.TargetStart.ValueString(), "2030-01-01T00:00:00Z")
+	assert.Equal(t, resourceData.TargetEnd.ValueString(), "2031-07-28")
 }
