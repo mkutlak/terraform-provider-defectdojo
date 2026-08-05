@@ -1,16 +1,29 @@
 # Terraform Provider testing workflow.
 name: Tests
 
-# This GitHub action runs your tests for each pull request and push.
-# Optionally, you can turn it on using a schedule for regular testing.
 on:
   pull_request:
     paths-ignore:
       - 'README.md'
+    # `labeled` matters: release-please applies the "autorelease: pending" label
+    # after opening its PR, and that label is what widens the Terraform matrix
+    # below. Without it the release PR would never get the full matrix.
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+    inputs:
+      full_matrix:
+        description: 'Run acceptance tests against every supported Terraform version'
+        type: boolean
+        default: false
 
 # Testing only needs permissions to read the repository contents.
 permissions:
   contents: read
+
+# Superseded runs are pointless once a PR is updated.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 # Default values to simplify job configurations below.
 env:
@@ -19,6 +32,36 @@ env:
   GO_VERSION: '1.26'
 
 jobs:
+  # Unit tests need no DefectDojo instance: TestMain short-circuits when TF_ACC
+  # is unset. Keeping them in their own job means the ddField audits, the schema
+  # meta-tests and the datetime tables still run when Docker fails to come up.
+  unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - run: go mod download
+      - run: make test-unit
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - run: make fmtcheck
+      - run: make vet
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.11.3
+
   # Ensure project builds before running testing matrix
   build:
     name: Build
@@ -48,20 +91,47 @@ jobs:
           git diff --compact-summary --exit-code || \
             (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
 
-  # Run acceptance tests in a matrix with Terraform CLI versions
-  test:
-    name: Terraform Provider Acceptance Tests
-    needs: build
+  # Normal PRs test one Terraform version; the release-please PR tests all of
+  # them. This keeps PR feedback fast while still gating a release on the full
+  # matrix. Computing the list here means there is exactly one acceptance job
+  # definition rather than two near-identical workflows.
+  matrix:
+    name: Resolve Terraform matrix
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
+    outputs:
+      terraform: ${{ steps.set.outputs.terraform }}
+    steps:
+      - id: set
+        env:
+          # release-please-action@v5 labels its PR "autorelease: pending". The
+          # branch prefix is a fallback: this repo configures a `component`, so
+          # the generated branch name varies with release-please's config.
+          # Folded scalar: the label text contains ": ", which plain YAML would
+          # parse as a nested mapping.
+          IS_RELEASE: >-
+            ${{ contains(github.event.pull_request.labels.*.name, 'autorelease: pending')
+            || startsWith(github.head_ref, 'release-please--')
+            || (github.event_name == 'workflow_dispatch' && inputs.full_matrix) }}
+        run: |
+          if [ "$IS_RELEASE" = "true" ]; then
+            echo 'terraform=["1.10.*","1.12.*","1.14.*"]' >> "$GITHUB_OUTPUT"
+            echo "Release PR detected: running the full Terraform matrix."
+          else
+            echo 'terraform=["1.14.*"]' >> "$GITHUB_OUTPUT"
+            echo "Standard PR: running Terraform 1.14 only. The full matrix runs on the release PR."
+          fi
+
+  # Run acceptance tests against a live DefectDojo instance
+  acceptance:
+    name: Acceptance Tests (Terraform ${{ matrix.terraform }})
+    needs: [build, matrix]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        # list whatever Terraform versions here you would like to support
-        terraform:
-          - '1.10.*'
-          - '1.12.*'
-          - '1.14.*'
+        terraform: ${{ fromJSON(needs.matrix.outputs.terraform) }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-go@v7
@@ -76,7 +146,10 @@ jobs:
         run: make dd-up
       - name: Run acceptance tests
         run: make testacc-local
-        timeout-minutes: 10
+        timeout-minutes: 25
+      - name: DefectDojo logs
+        if: failure()
+        run: docker compose logs --tail=200 uwsgi nginx initializer
       - name: Stop DefectDojo
         if: always()
         run: make dd-down
