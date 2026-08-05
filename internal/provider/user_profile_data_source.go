@@ -105,10 +105,9 @@ func (d userProfileDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	populateResourceData(ctx, &diags, &data, ddResource)
+	populateResourceData(ctx, &resp.Diagnostics, &data, ddResource)
 
-	diags = resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 var _ datasource.DataSource = &userProfileDataSource{}

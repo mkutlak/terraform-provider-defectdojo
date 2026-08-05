@@ -101,7 +101,14 @@ func (r terraformResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	ddResource := data.defectdojoResource()
-	populateDefectdojoResource(ctx, &diags, data, &ddResource)
+	populateDefectdojoResource(ctx, &resp.Diagnostics, data, &ddResource)
+
+	// A conversion failure (e.g. an unparseable datetime) must abort before the
+	// API call: the ddclient struct would otherwise carry a zero value that
+	// DefectDojo accepts, producing a state/config mismatch.
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	if sa, ok := ddResource.(singletonAdopter); ok {
 		id, statusCode, body, err := sa.adoptApiCall(ctx, r.client)
@@ -136,12 +143,14 @@ func (r terraformResource) Create(ctx context.Context, req resource.CreateReques
 			return
 		}
 
-		populateResourceData(ctx, &diags, &data, ddResource)
+		populateResourceData(ctx, &resp.Diagnostics, &data, ddResource)
 
 		tflog.Trace(ctx, "singleton resource adopted")
 
-		diags = resp.State.Set(ctx, &data)
-		resp.Diagnostics.Append(diags...)
+		// The singleton has already been updated server-side, so state must be
+		// written even if populateResourceData reported problems - bailing out
+		// here would lose the adoption.
+		resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 		return
 	}
 
@@ -155,7 +164,7 @@ func (r terraformResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	if statusCode == 201 {
-		populateResourceData(ctx, &diags, &data, ddResource)
+		populateResourceData(ctx, &resp.Diagnostics, &data, ddResource)
 	} else {
 		resp.Diagnostics.AddError(
 			"API Error Creating "+r.typeName,
@@ -167,8 +176,9 @@ func (r terraformResource) Create(ctx context.Context, req resource.CreateReques
 
 	tflog.Trace(ctx, "resource created")
 
-	diags = resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	// The resource exists server-side from here on; write state even if
+	// populateResourceData reported problems, so it can be managed/destroyed.
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -195,7 +205,11 @@ func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	ddResource := data.defectdojoResource()
-	populateDefectdojoResource(ctx, &diags, data, &ddResource)
+	populateDefectdojoResource(ctx, &resp.Diagnostics, data, &ddResource)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	statusCode, body, err := ddResource.readApiCall(ctx, r.client, idNumber)
 	if err != nil {
@@ -207,7 +221,7 @@ func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	switch statusCode {
 	case 200:
-		populateResourceData(ctx, &diags, &data, ddResource)
+		populateResourceData(ctx, &resp.Diagnostics, &data, ddResource)
 	case 404:
 		resp.State.RemoveResource(ctx)
 		return
@@ -220,8 +234,7 @@ func (r *terraformResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	diags = resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r terraformResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -258,7 +271,11 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 
 	ddResource := data.defectdojoResource()
-	populateDefectdojoResource(ctx, &diags, data, &ddResource)
+	populateDefectdojoResource(ctx, &resp.Diagnostics, data, &ddResource)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	statusCode, body, err := ddResource.updateApiCall(ctx, r.client, idNumber)
 
@@ -270,7 +287,7 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 
 	if statusCode == 200 {
-		populateResourceData(ctx, &diags, &data, ddResource)
+		populateResourceData(ctx, &resp.Diagnostics, &data, ddResource)
 	} else {
 		resp.Diagnostics.AddError(
 			"API Error Updating "+r.typeName,
@@ -280,8 +297,9 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	diags = resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	// The resource exists server-side; write state even if populateResourceData
+	// reported problems, so it can be managed/destroyed.
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r terraformResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

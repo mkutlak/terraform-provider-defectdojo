@@ -96,7 +96,13 @@ func (r terraformDatasource) Read(ctx context.Context, req datasource.ReadReques
 	}
 
 	ddResource := data.defectdojoResource()
-	populateDefectdojoResource(ctx, &diags, data, &ddResource)
+	populateDefectdojoResource(ctx, &resp.Diagnostics, data, &ddResource)
+
+	// A conversion failure must abort before the API call rather than sending a
+	// zero value that the server would accept.
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	statusCode, body, err := ddResource.readApiCall(ctx, r.client, idNumber)
 	if err != nil {
@@ -108,7 +114,7 @@ func (r terraformDatasource) Read(ctx context.Context, req datasource.ReadReques
 
 	switch statusCode {
 	case 200:
-		populateResourceData(ctx, &diags, &data, ddResource)
+		populateResourceData(ctx, &resp.Diagnostics, &data, ddResource)
 	case 404:
 		resp.State.RemoveResource(ctx)
 		return
@@ -121,6 +127,5 @@ func (r terraformDatasource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
-	diags = resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
