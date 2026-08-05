@@ -166,7 +166,7 @@ func TestAccProductResourceDeleteDrift(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 				Config:             testAccProductResourceConfig(name),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testAccDeleteResourceOutsideTerraform("defectdojo_product.test"),
+					testAccCheckDisappears("defectdojo_product.test"),
 				),
 			},
 			{
