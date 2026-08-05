@@ -37,6 +37,19 @@ func testAccCheckDestroyed(s *terraform.State) error {
 			continue
 		}
 
+		// Data sources appear in the same map as managed resources, keyed with a
+		// "data." prefix - the same discriminator Terraform itself uses
+		// (terraform/resource_address.go:78-80). They are reads, not ownership:
+		// nothing was created, so nothing should be expected to disappear. Two
+		// distinct failures come from not skipping them: data-source-only types
+		// (defectdojo_endpoint, _location, _user_profile,
+		// _configuration_permission) have no resource model to derive, and types
+		// shared with a resource (defectdojo_user) would assert that a
+		// pre-existing object the test merely looked up had been deleted.
+		if strings.HasPrefix(name, "data.") {
+			continue
+		}
+
 		data, ok := testAccResourceModel(rs.Type)
 		if !ok {
 			// Loud rather than silent: an unknown type means the derivation in
@@ -91,6 +104,10 @@ func testAccCheckDestroyed(s *terraform.State) error {
 func testAccCheckDisappears(resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ctx := context.Background()
+
+		if strings.HasPrefix(resourceName, "data.") {
+			return fmt.Errorf("%s: is a data source; the disappears pattern applies to managed resources only", resourceName)
+		}
 
 		rs, ok := s.RootModule().Resources[resourceName]
 		if !ok {

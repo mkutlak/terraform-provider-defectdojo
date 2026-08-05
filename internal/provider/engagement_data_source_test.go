@@ -13,6 +13,7 @@ func TestAccEngagementIdDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccEngagementDataSourceIdConfig(name),
@@ -30,6 +31,7 @@ func TestAccEngagementNameDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccEngagementDataSourceNameConfig(name),

@@ -14,6 +14,7 @@ func TestAccProductDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			// Read testing
 			{
@@ -33,6 +34,7 @@ func TestAccProductNameDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccProductDataSourceNameConfig(name),
@@ -51,6 +53,7 @@ func TestAccProductDataSourceConflict(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccProductDataSourceConflictConfig(name),

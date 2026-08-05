@@ -15,6 +15,7 @@ func TestAccProductBaseResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
@@ -79,6 +80,7 @@ func TestAccProductResourceNoTags(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
@@ -115,6 +117,7 @@ func TestAccProductResourceEmptyTags(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
@@ -151,6 +154,7 @@ func TestAccProductResourceDeleteDrift(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
@@ -189,6 +193,7 @@ func TestAccProductResourceInvalid(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute.*`),

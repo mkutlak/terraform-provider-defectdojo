@@ -15,6 +15,7 @@ func TestAccAnnouncementResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccAnnouncementResourceConfig("This is a test announcement", "info", true),
@@ -59,6 +60,7 @@ func TestAccAnnouncementDataSource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccAnnouncementDataSourceConfig("This is a test announcement", "info", true),
