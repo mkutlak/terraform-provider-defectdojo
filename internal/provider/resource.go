@@ -431,33 +431,33 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					ddFieldValue.Set(destVal)
 				} else if ddFieldDescriptor.Type == reflect.TypeFor[time.Time]() {
 					str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
-					t, err := time.Parse(time.RFC3339, str)
+					t, err := parseDateTime(str)
 					if err != nil {
-						diags.AddError("Error converting value", fmt.Sprintf("Could not parse datetime value %s: %s", str, err))
+						diags.AddError("Error converting value", fmt.Sprintf("Could not parse %s: %s", tag.Get("tfsdk"), err))
 						continue
 					}
 					ddFieldValue.Set(reflect.ValueOf(t))
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
 					str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
-					t, err := time.Parse(time.RFC3339, str)
+					t, err := parseDateTime(str)
 					if err != nil {
-						diags.AddError("Error converting value", fmt.Sprintf("Could not parse datetime value %s: %s", str, err))
+						diags.AddError("Error converting value", fmt.Sprintf("Could not parse %s: %s", tag.Get("tfsdk"), err))
 						continue
 					}
 					ddFieldValue.Set(reflect.ValueOf(&t))
 				} else if ddFieldDescriptor.Type == reflect.TypeFor[openapi_types.Date]() {
 					str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
-					t, err := time.Parse("2006-01-02", str)
+					t, err := parseDate(str)
 					if err != nil {
-						diags.AddError("Error converting value", fmt.Sprintf("Could not parse date value %s: %s", str, err))
+						diags.AddError("Error converting value", fmt.Sprintf("Could not parse %s: %s", tag.Get("tfsdk"), err))
 						continue
 					}
 					ddFieldValue.Set(reflect.ValueOf(openapi_types.Date{Time: t}))
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[openapi_types.Date]() {
 					str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
-					t, err := time.Parse("2006-01-02", str)
+					t, err := parseDate(str)
 					if err != nil {
-						diags.AddError("Error converting value", fmt.Sprintf("Could not parse date value %s: %s", str, err))
+						diags.AddError("Error converting value", fmt.Sprintf("Could not parse %s: %s", tag.Get("tfsdk"), err))
 						continue
 					}
 					d := openapi_types.Date{Time: t}
@@ -638,14 +638,18 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 				} else if ddFieldDescriptor.Type == reflect.TypeFor[time.Time]() {
 					t := ddFieldValue.Interface().(time.Time)
 					if !t.IsZero() {
-						fieldValue.Set(reflect.ValueOf(types.StringValue(t.Format(time.RFC3339))))
+						// Keep the configured/prior literal when it denotes the
+						// same instant, so state matches config (see #23).
+						current := fieldValue.Interface().(types.String)
+						fieldValue.Set(reflect.ValueOf(preserveDateTimeLiteral(current, t)))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
 					if !ddFieldValue.IsNil() {
 						t := ddFieldValue.Elem().Interface().(time.Time)
-						fieldValue.Set(reflect.ValueOf(types.StringValue(t.Format(time.RFC3339))))
+						current := fieldValue.Interface().(types.String)
+						fieldValue.Set(reflect.ValueOf(preserveDateTimeLiteral(current, t)))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
