@@ -153,3 +153,50 @@ jobs:
       - name: Stop DefectDojo
         if: always()
         run: make dd-down
+
+  # OpenTofu implements the same plugin protocol, so the provider binary works
+  # unchanged - but that is worth proving rather than assuming. One leg on
+  # latest is enough: this guards protocol compatibility, not OpenTofu version
+  # coverage, so it does not need the Terraform matrix treatment.
+  acceptance-tofu:
+    name: Acceptance Tests (OpenTofu latest)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: latest
+          tofu_wrapper: false
+      - run: go mod download
+      # Resolved explicitly rather than left to the harness. If
+      # TF_ACC_TERRAFORM_PATH were empty the harness would fall back to finding
+      # or downloading Terraform, and this job would pass while testing the
+      # wrong binary entirely.
+      - name: Resolve OpenTofu binary
+        run: |
+          TOFU_PATH="$(command -v tofu)"
+          echo "Using OpenTofu at $TOFU_PATH"
+          "$TOFU_PATH" version
+          echo "TF_ACC_TERRAFORM_PATH=$TOFU_PATH" >> "$GITHUB_ENV"
+      - name: Start DefectDojo
+        run: make dd-up
+      - name: Run acceptance tests
+        run: make testacc-local
+        timeout-minutes: 25
+        env:
+          # Without this the harness generates provider addresses under
+          # registry.terraform.io, and OpenTofu rejects them with "The legacy
+          # provider namespace \"-\" can be used only with hostname
+          # registry.opentofu.org". Every acceptance test fails at init.
+          TF_ACC_PROVIDER_HOST: registry.opentofu.org
+      - name: DefectDojo logs
+        if: failure()
+        run: docker compose logs --tail=200 uwsgi nginx initializer
+      - name: Stop DefectDojo
+        if: always()
+        run: make dd-down
