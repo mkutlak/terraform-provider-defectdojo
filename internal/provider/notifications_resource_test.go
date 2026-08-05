@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -116,13 +117,9 @@ data "defectdojo_notifications" "test" {
 // quotedList renders a Go string slice as an HCL list-of-strings literal,
 // e.g. []string{"alert", "mail"} -> `["alert", "mail"]`.
 func quotedList(values []string) string {
-	out := "["
+	quoted := make([]string, len(values))
 	for i, v := range values {
-		if i > 0 {
-			out += ", "
-		}
-		out += fmt.Sprintf("%q", v)
+		quoted[i] = fmt.Sprintf("%q", v)
 	}
-	out += "]"
-	return out
+	return "[" + strings.Join(quoted, ", ") + "]"
 }
