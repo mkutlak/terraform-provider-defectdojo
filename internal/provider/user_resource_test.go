@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccUserResource(t *testing.T) {
@@ -19,13 +22,13 @@ func TestAccUserResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccUserResourceConfig(username),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_user.test", "username", username),
-					resource.TestCheckResourceAttr("defectdojo_user.test", "email", "test@example.com"),
-					resource.TestCheckResourceAttr("defectdojo_user.test", "first_name", "Test"),
-					resource.TestCheckResourceAttr("defectdojo_user.test", "last_name", "User"),
-					resource.TestCheckResourceAttr("defectdojo_user.test", "is_staff", "true"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("username"), knownvalue.StringExact(username)),
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("email"), knownvalue.StringExact("test@example.com")),
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("first_name"), knownvalue.StringExact("Test")),
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("last_name"), knownvalue.StringExact("User")),
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("is_staff"), knownvalue.Bool(true)),
+				},
 			},
 			// ImportState testing
 			{
@@ -37,11 +40,11 @@ func TestAccUserResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccUserResourceUpdatedConfig(updatedUsername),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_user.test", "username", updatedUsername),
-					resource.TestCheckResourceAttr("defectdojo_user.test", "email", "updated@example.com"),
-					resource.TestCheckResourceAttr("defectdojo_user.test", "is_staff", "false"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("username"), knownvalue.StringExact(updatedUsername)),
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("email"), knownvalue.StringExact("updated@example.com")),
+					statecheck.ExpectKnownValue("defectdojo_user.test", tfjsonpath.New("is_staff"), knownvalue.Bool(false)),
+				},
 			},
 		},
 	})

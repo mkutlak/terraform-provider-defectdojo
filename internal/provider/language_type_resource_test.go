@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccLanguageTypeResource(t *testing.T) {
@@ -18,9 +21,9 @@ func TestAccLanguageTypeResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccLanguageTypeResourceConfig(language),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_language_type.test", "language", language),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_language_type.test", tfjsonpath.New("language"), knownvalue.StringExact(language)),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_language_type.test",
@@ -29,9 +32,9 @@ func TestAccLanguageTypeResource(t *testing.T) {
 			},
 			{
 				Config: testAccLanguageTypeResourceConfig(updatedLanguage),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_language_type.test", "language", updatedLanguage),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_language_type.test", tfjsonpath.New("language"), knownvalue.StringExact(updatedLanguage)),
+				},
 			},
 		},
 	})

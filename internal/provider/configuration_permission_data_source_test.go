@@ -4,6 +4,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 // TestAccConfigurationPermissionDataSource exercises the read-only
@@ -21,21 +24,23 @@ func TestAccConfigurationPermissionDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccConfigurationPermissionDataSourceCodenameConfig(),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_configuration_permission.by_codename", "codename", "add_user"),
-					resource.TestCheckResourceAttrSet("data.defectdojo_configuration_permission.by_codename", "id"),
-					resource.TestCheckResourceAttrSet("data.defectdojo_configuration_permission.by_codename", "name"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_configuration_permission.by_codename", tfjsonpath.New("codename"), knownvalue.StringExact("add_user")),
+					statecheck.ExpectKnownValue("data.defectdojo_configuration_permission.by_codename", tfjsonpath.New("id"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("data.defectdojo_configuration_permission.by_codename", tfjsonpath.New("name"), knownvalue.NotNull()),
+				},
 			},
 			{
 				Config: testAccConfigurationPermissionDataSourceIdConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.defectdojo_configuration_permission.by_id", "id"),
-					resource.TestCheckResourceAttrSet("data.defectdojo_configuration_permission.by_id", "name"),
 					resource.TestCheckResourceAttrPair(
 						"data.defectdojo_configuration_permission.by_id", "id",
 						"data.defectdojo_configuration_permission.by_codename", "id"),
 				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_configuration_permission.by_id", tfjsonpath.New("id"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("data.defectdojo_configuration_permission.by_id", tfjsonpath.New("name"), knownvalue.NotNull()),
+				},
 			},
 		},
 	})

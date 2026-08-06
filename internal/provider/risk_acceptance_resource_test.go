@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccRiskAcceptanceResource(t *testing.T) {
@@ -20,10 +23,10 @@ func TestAccRiskAcceptanceResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccRiskAcceptanceResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_risk_acceptance.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_risk_acceptance.test", "owner", "1"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_risk_acceptance.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_risk_acceptance.test", tfjsonpath.New("owner"), knownvalue.Int64Exact(1)),
+				},
 			},
 			// ImportState testing
 			{
@@ -35,9 +38,9 @@ func TestAccRiskAcceptanceResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccRiskAcceptanceResourceUpdatedConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_risk_acceptance.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_risk_acceptance.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

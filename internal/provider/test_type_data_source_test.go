@@ -6,6 +6,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 // TestAccTestTypeDataSource exercises the read-only defectdojo_test_type data
@@ -30,10 +33,10 @@ func TestAccTestTypeDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccTestTypeDataSourceConfig(testTypeName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_test_type.test", "name", testTypeName),
-					resource.TestCheckResourceAttrSet("data.defectdojo_test_type.test", "id"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_test_type.test", tfjsonpath.New("name"), knownvalue.StringExact(testTypeName)),
+					statecheck.ExpectKnownValue("data.defectdojo_test_type.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+				},
 			},
 		},
 	})

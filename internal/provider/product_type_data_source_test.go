@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccProductTypeIdDataSource(t *testing.T) {
@@ -18,10 +21,10 @@ func TestAccProductTypeIdDataSource(t *testing.T) {
 			// Read testing
 			{
 				Config: testAccProductTypeDataSourceIdConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "name", name),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "description", "test"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+				},
 			},
 		},
 	})
@@ -38,10 +41,10 @@ func TestAccProductTypeNameDataSource(t *testing.T) {
 			// Read testing
 			{
 				Config: testAccProductTypeDataSourceNameConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "name", name),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "description", "test"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+				},
 			},
 		},
 	})
@@ -58,22 +61,22 @@ func TestAccProductTypeBooleansDataSource(t *testing.T) {
 			// Test default values of our booleans
 			{
 				Config: testAccProductTypeBooleanChecksDefaultConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "name", name),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "description", "test"),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "critical_product", "false"),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "key_product", "false"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("critical_product"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("key_product"), knownvalue.Bool(false)),
+				},
 			},
 			// Test our booleans when defined as true
 			{
 				Config: testAccProductTypeBooleanChecksConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "name", name),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "description", "test"),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "critical_product", "true"),
-					resource.TestCheckResourceAttr("data.defectdojo_product_type.test", "key_product", "true"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("critical_product"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("data.defectdojo_product_type.test", tfjsonpath.New("key_product"), knownvalue.Bool(true)),
+				},
 			},
 		},
 	})

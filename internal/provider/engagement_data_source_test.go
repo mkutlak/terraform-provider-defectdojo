@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccEngagementIdDataSource(t *testing.T) {
@@ -17,9 +20,9 @@ func TestAccEngagementIdDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccEngagementDataSourceIdConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_engagement.test", "name", name),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_engagement.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+				},
 			},
 		},
 	})
@@ -35,10 +38,10 @@ func TestAccEngagementNameDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccEngagementDataSourceNameConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_engagement.test", "name", name),
-					resource.TestCheckResourceAttrSet("data.defectdojo_engagement.test", "id"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_engagement.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_engagement.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+				},
 			},
 		},
 	})

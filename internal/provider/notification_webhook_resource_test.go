@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccNotificationWebhookResource(t *testing.T) {
@@ -19,10 +22,10 @@ func TestAccNotificationWebhookResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccNotificationWebhookResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_notification_webhook.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_notification_webhook.test", "url", "https://hooks.example.com/webhook"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_notification_webhook.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_notification_webhook.test", tfjsonpath.New("url"), knownvalue.StringExact("https://hooks.example.com/webhook")),
+				},
 			},
 			// ImportState testing
 			{
@@ -33,9 +36,9 @@ func TestAccNotificationWebhookResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccNotificationWebhookResourceUpdatedConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_notification_webhook.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_notification_webhook.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

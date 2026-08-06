@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccFindingTemplateResource(t *testing.T) {
@@ -18,10 +21,10 @@ func TestAccFindingTemplateResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccFindingTemplateResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_finding_template.test", "title", name),
-					resource.TestCheckResourceAttr("defectdojo_finding_template.test", "severity", "High"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_finding_template.test", tfjsonpath.New("title"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_finding_template.test", tfjsonpath.New("severity"), knownvalue.StringExact("High")),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_finding_template.test",
@@ -30,9 +33,9 @@ func TestAccFindingTemplateResource(t *testing.T) {
 			},
 			{
 				Config: testAccFindingTemplateResourceConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_finding_template.test", "title", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_finding_template.test", tfjsonpath.New("title"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

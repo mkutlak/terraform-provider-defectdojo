@@ -6,6 +6,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccRegulationResource(t *testing.T) {
@@ -19,12 +22,12 @@ func TestAccRegulationResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccRegulationResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_regulation.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_regulation.test", "acronym", testAccRegulationAcronym(name)),
-					resource.TestCheckResourceAttr("defectdojo_regulation.test", "category", "other"),
-					resource.TestCheckResourceAttr("defectdojo_regulation.test", "jurisdiction", "US"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_regulation.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_regulation.test", tfjsonpath.New("acronym"), knownvalue.StringExact(testAccRegulationAcronym(name))),
+					statecheck.ExpectKnownValue("defectdojo_regulation.test", tfjsonpath.New("category"), knownvalue.StringExact("other")),
+					statecheck.ExpectKnownValue("defectdojo_regulation.test", tfjsonpath.New("jurisdiction"), knownvalue.StringExact("US")),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_regulation.test",
@@ -33,9 +36,9 @@ func TestAccRegulationResource(t *testing.T) {
 			},
 			{
 				Config: testAccRegulationResourceConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_regulation.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_regulation.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

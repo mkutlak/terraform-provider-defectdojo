@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/compare"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccUrlResource(t *testing.T) {
@@ -18,18 +22,16 @@ func TestAccUrlResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccUrlResourceConfig(host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_url.test", "host", host),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "protocol", "https"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "port", "8443"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "path", "api/v1"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "query", "foo=bar"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "fragment", "section-1"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "user_info", "user:pass"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "tags.#", "2"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "tags.0", "bar"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "tags.1", "foo"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("host"), knownvalue.StringExact(host)),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("protocol"), knownvalue.StringExact("https")),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("port"), knownvalue.Int64Exact(8443)),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("path"), knownvalue.StringExact("api/v1")),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("query"), knownvalue.StringExact("foo=bar")),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("fragment"), knownvalue.StringExact("section-1")),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("user_info"), knownvalue.StringExact("user:pass")),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("tags"), knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact("bar"), knownvalue.StringExact("foo")})),
+				},
 			},
 			// ImportState testing
 			{
@@ -40,12 +42,11 @@ func TestAccUrlResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccUrlResourceUpdatedConfig(host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_url.test", "host", host),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "path", "api/v2"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "tags.#", "1"),
-					resource.TestCheckResourceAttr("defectdojo_url.test", "tags.0", "updated"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("host"), knownvalue.StringExact(host)),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("path"), knownvalue.StringExact("api/v2")),
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("tags"), knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact("updated")})),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},
@@ -63,18 +64,18 @@ func TestAccUrlDataSource(t *testing.T) {
 			// Read by id
 			{
 				Config: testAccUrlDataSourceConfig(host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_url.test", "host", host),
-					resource.TestCheckResourceAttrPair("data.defectdojo_url.test", "id", "defectdojo_url.test", "id"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_url.test", tfjsonpath.New("host"), knownvalue.StringExact(host)),
+					statecheck.CompareValuePairs("data.defectdojo_url.test", tfjsonpath.New("id"), "defectdojo_url.test", tfjsonpath.New("id"), compare.ValuesSame()),
+				},
 			},
 			// Read by host
 			{
 				Config: testAccUrlDataSourceHostConfig(host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_url.test", "host", host),
-					resource.TestCheckResourceAttrPair("data.defectdojo_url.test", "id", "defectdojo_url.test", "id"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_url.test", tfjsonpath.New("host"), knownvalue.StringExact(host)),
+					statecheck.CompareValuePairs("data.defectdojo_url.test", tfjsonpath.New("id"), "defectdojo_url.test", tfjsonpath.New("id"), compare.ValuesSame()),
+				},
 			},
 		},
 	})

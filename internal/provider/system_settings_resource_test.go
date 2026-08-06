@@ -7,6 +7,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
@@ -97,19 +100,19 @@ func TestAccSystemSettingsResource(t *testing.T) {
 			// Adopt (Create) and Read testing
 			{
 				Config: testAccSystemSettingsResourceConfig(teamName, disclaimerNotes),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_system_settings.test", "team_name", teamName),
-					resource.TestCheckResourceAttr("defectdojo_system_settings.test", "disclaimer_notes", disclaimerNotes),
-					resource.TestCheckResourceAttr("defectdojo_system_settings.test", "id", fmt.Sprintf("%d", settingsId)),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_system_settings.test", tfjsonpath.New("team_name"), knownvalue.StringExact(teamName)),
+					statecheck.ExpectKnownValue("defectdojo_system_settings.test", tfjsonpath.New("disclaimer_notes"), knownvalue.StringExact(disclaimerNotes)),
+					statecheck.ExpectKnownValue("defectdojo_system_settings.test", tfjsonpath.New("id"), knownvalue.StringExact(fmt.Sprintf("%d", settingsId))),
+				},
 			},
 			// Update and Read testing
 			{
 				Config: testAccSystemSettingsResourceConfig(updatedTeamName, updatedDisclaimerNotes),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_system_settings.test", "team_name", updatedTeamName),
-					resource.TestCheckResourceAttr("defectdojo_system_settings.test", "disclaimer_notes", updatedDisclaimerNotes),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_system_settings.test", tfjsonpath.New("team_name"), knownvalue.StringExact(updatedTeamName)),
+					statecheck.ExpectKnownValue("defectdojo_system_settings.test", tfjsonpath.New("disclaimer_notes"), knownvalue.StringExact(updatedDisclaimerNotes)),
+				},
 			},
 			// ImportState testing. ImportStateVerify is intentionally left
 			// false (rather than using ImportStateVerifyIgnore): import

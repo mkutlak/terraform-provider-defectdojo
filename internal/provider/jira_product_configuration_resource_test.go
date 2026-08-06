@@ -6,6 +6,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccJiraProductConfigurationResource(t *testing.T) {
@@ -21,15 +24,15 @@ func TestAccJiraProductConfigurationResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccJiraProductConfigurationResourceConfig(name, jirakey),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "project_key", jirakey),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "issue_template_dir", ""),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "push_all_issues", "false"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "enable_engagement_epic_mapping", "false"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "push_notes", "false"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "product_jira_sla_notification", "false"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "risk_acceptance_expiration_notification", "false"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("project_key"), knownvalue.StringExact(jirakey)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("issue_template_dir"), knownvalue.StringExact("")),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("push_all_issues"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("enable_engagement_epic_mapping"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("push_notes"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("product_jira_sla_notification"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("risk_acceptance_expiration_notification"), knownvalue.Bool(false)),
+				},
 			},
 			// ImportState testing
 			{
@@ -40,15 +43,15 @@ func TestAccJiraProductConfigurationResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccJiraProductConfigurationResourceUpdateConfig(name, newjirakey),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "project_key", newjirakey),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "issue_template_dir", "some/dir"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "push_all_issues", "true"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "enable_engagement_epic_mapping", "true"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "push_notes", "true"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "product_jira_sla_notification", "true"),
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "risk_acceptance_expiration_notification", "true"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("project_key"), knownvalue.StringExact(newjirakey)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("issue_template_dir"), knownvalue.StringExact("some/dir")),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("push_all_issues"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("enable_engagement_epic_mapping"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("push_notes"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("product_jira_sla_notification"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("risk_acceptance_expiration_notification"), knownvalue.Bool(true)),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},
@@ -68,9 +71,9 @@ func TestAccJiraProductConfigurationResourceDeleteDrift(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccJiraProductConfigurationResourceConfig(name, jirakey),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "project_key", jirakey),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("project_key"), knownvalue.StringExact(jirakey)),
+				},
 			},
 			// Delete the underlying resource and see that it detects it has been deleted
 			{
@@ -82,9 +85,9 @@ func TestAccJiraProductConfigurationResourceDeleteDrift(t *testing.T) {
 			},
 			{
 				Config: testAccJiraProductConfigurationResourceConfig(name, jirakey),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_jira_product_configuration.test", "project_key", jirakey),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_jira_product_configuration.test", tfjsonpath.New("project_key"), knownvalue.StringExact(jirakey)),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},

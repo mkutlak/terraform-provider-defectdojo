@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccDDTestResource(t *testing.T) {
@@ -18,13 +21,13 @@ func TestAccDDTestResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccDDTestResourceConfig(name, "Test Title"),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_test.test", "title", "Test Title"),
-					resource.TestCheckResourceAttr("defectdojo_test.test", "test_type", "1"),
-					resource.TestCheckResourceAttr("defectdojo_test.test", "target_start", "2025-01-01T10:00:00Z"),
-					resource.TestCheckResourceAttr("defectdojo_test.test", "target_end", "2025-01-01T18:00:00Z"),
-					resource.TestCheckResourceAttrSet("defectdojo_test.test", "engagement"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_test.test", tfjsonpath.New("title"), knownvalue.StringExact("Test Title")),
+					statecheck.ExpectKnownValue("defectdojo_test.test", tfjsonpath.New("test_type"), knownvalue.Int64Exact(1)),
+					statecheck.ExpectKnownValue("defectdojo_test.test", tfjsonpath.New("target_start"), knownvalue.StringExact("2025-01-01T10:00:00Z")),
+					statecheck.ExpectKnownValue("defectdojo_test.test", tfjsonpath.New("target_end"), knownvalue.StringExact("2025-01-01T18:00:00Z")),
+					statecheck.ExpectKnownValue("defectdojo_test.test", tfjsonpath.New("engagement"), knownvalue.NotNull()),
+				},
 			},
 			// ImportState testing
 			{
@@ -35,9 +38,9 @@ func TestAccDDTestResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccDDTestResourceConfig(name, "Updated Test Title"),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_test.test", "title", "Updated Test Title"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_test.test", tfjsonpath.New("title"), knownvalue.StringExact("Updated Test Title")),
+				},
 			},
 		},
 	})

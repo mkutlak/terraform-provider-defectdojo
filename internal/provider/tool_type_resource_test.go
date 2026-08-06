@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccToolTypeResource(t *testing.T) {
@@ -18,9 +21,9 @@ func TestAccToolTypeResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccToolTypeResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_tool_type.test", "name", name),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_tool_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_tool_type.test",
@@ -29,9 +32,9 @@ func TestAccToolTypeResource(t *testing.T) {
 			},
 			{
 				Config: testAccToolTypeResourceConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_tool_type.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_tool_type.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

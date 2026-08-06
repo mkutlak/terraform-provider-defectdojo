@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccLocationProductResource(t *testing.T) {
@@ -19,11 +22,11 @@ func TestAccLocationProductResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccLocationProductResourceConfig(name, host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("defectdojo_location_product.test", "location"),
-					resource.TestCheckResourceAttrSet("defectdojo_location_product.test", "product"),
-					resource.TestCheckResourceAttr("defectdojo_location_product.test", "relationship", "owned_by"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("location"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("product"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("owned_by")),
+				},
 			},
 			// ImportState testing
 			{
@@ -34,9 +37,9 @@ func TestAccLocationProductResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccLocationProductResourceUpdatedConfig(name, host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_location_product.test", "relationship", "used_by"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("used_by")),
+				},
 			},
 		},
 	})
@@ -91,11 +94,11 @@ func TestAccLocationProductDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccLocationProductDataSourceConfig(name, host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.defectdojo_location_product.test", "location"),
-					resource.TestCheckResourceAttrSet("data.defectdojo_location_product.test", "product"),
-					resource.TestCheckResourceAttr("data.defectdojo_location_product.test", "relationship", "owned_by"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_location_product.test", tfjsonpath.New("location"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("data.defectdojo_location_product.test", tfjsonpath.New("product"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("data.defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("owned_by")),
+				},
 			},
 		},
 	})

@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 // TestAccAnnouncementResource is intentionally NOT run in parallel: DefectDojo
@@ -19,11 +22,11 @@ func TestAccAnnouncementResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccAnnouncementResourceConfig("This is a test announcement", "info", true),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_announcement.test", "message", "This is a test announcement"),
-					resource.TestCheckResourceAttr("defectdojo_announcement.test", "style", "info"),
-					resource.TestCheckResourceAttr("defectdojo_announcement.test", "dismissable", "true"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_announcement.test", tfjsonpath.New("message"), knownvalue.StringExact("This is a test announcement")),
+					statecheck.ExpectKnownValue("defectdojo_announcement.test", tfjsonpath.New("style"), knownvalue.StringExact("info")),
+					statecheck.ExpectKnownValue("defectdojo_announcement.test", tfjsonpath.New("dismissable"), knownvalue.Bool(true)),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_announcement.test",
@@ -32,11 +35,11 @@ func TestAccAnnouncementResource(t *testing.T) {
 			},
 			{
 				Config: testAccAnnouncementResourceConfig("This is an updated test announcement", "warning", false),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_announcement.test", "message", "This is an updated test announcement"),
-					resource.TestCheckResourceAttr("defectdojo_announcement.test", "style", "warning"),
-					resource.TestCheckResourceAttr("defectdojo_announcement.test", "dismissable", "false"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_announcement.test", tfjsonpath.New("message"), knownvalue.StringExact("This is an updated test announcement")),
+					statecheck.ExpectKnownValue("defectdojo_announcement.test", tfjsonpath.New("style"), knownvalue.StringExact("warning")),
+					statecheck.ExpectKnownValue("defectdojo_announcement.test", tfjsonpath.New("dismissable"), knownvalue.Bool(false)),
+				},
 			},
 		},
 	})
@@ -64,11 +67,11 @@ func TestAccAnnouncementDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccAnnouncementDataSourceConfig("This is a test announcement", "info", true),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_announcement.test", "message", "This is a test announcement"),
-					resource.TestCheckResourceAttr("data.defectdojo_announcement.test", "style", "info"),
-					resource.TestCheckResourceAttr("data.defectdojo_announcement.test", "dismissable", "true"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_announcement.test", tfjsonpath.New("message"), knownvalue.StringExact("This is a test announcement")),
+					statecheck.ExpectKnownValue("data.defectdojo_announcement.test", tfjsonpath.New("style"), knownvalue.StringExact("info")),
+					statecheck.ExpectKnownValue("data.defectdojo_announcement.test", tfjsonpath.New("dismissable"), knownvalue.Bool(true)),
+				},
 			},
 		},
 	})
