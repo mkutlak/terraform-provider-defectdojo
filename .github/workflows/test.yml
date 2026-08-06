@@ -58,7 +58,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - run: make fmtcheck
       - run: make vet
-      - uses: golangci/golangci-lint-action@v8
+      - uses: golangci/golangci-lint-action@v9
         with:
           version: v2.11.3
 
@@ -168,7 +168,7 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version: ${{ env.GO_VERSION }}
-      - uses: opentofu/setup-opentofu@v1
+      - uses: opentofu/setup-opentofu@v2
         with:
           tofu_version: latest
           tofu_wrapper: false
