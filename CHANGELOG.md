@@ -51,6 +51,41 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [1.0.1](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.0.0...v1.0.1) (2026-08-06)
+
+
+### Bug Fixes
+
+* surface conversion diagnostics instead of discarding them ([429b2c1](https://github.com/mkutlak/terraform-provider-defectdojo/commit/429b2c157254c942cd4b026e35185b7d15f13228)), closes [#23](https://github.com/mkutlak/terraform-provider-defectdojo/issues/23)
+* **test:** accept date-only target_start/target_end and keep the literal ([7820fbb](https://github.com/mkutlak/terraform-provider-defectdojo/commit/7820fbbc84e8b95345c619e1ded5f51211c5f5c2)), closes [#23](https://github.com/mkutlak/terraform-provider-defectdojo/issues/23)
+* **test:** close seeded response bodies to satisfy bodyclose ([50a2cd1](https://github.com/mkutlak/terraform-provider-defectdojo/commit/50a2cd1632683ca58e1bedb6aa08edde8a7f0aa3))
+
+
+### Miscellaneous
+
+* **deps:** bump actions/setup-go from 6 to 7 ([18568a0](https://github.com/mkutlak/terraform-provider-defectdojo/commit/18568a0591e69a7d39f4caf558313e283803efae))
+* **deps:** bump github.com/oapi-codegen/oapi-codegen/v2 ([eec7151](https://github.com/mkutlak/terraform-provider-defectdojo/commit/eec71513aa0d7e1ca9eec01f7a57aa679f802ecc))
+* **deps:** update Go module dependencies ([d81cd1e](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d81cd1ef524ce4ea7c0b61bdb7596e0a727656d5))
+
+
+### CI/CD
+
+* add static analysis with golangci-lint, vet and gofmt gates ([a78c96a](https://github.com/mkutlak/terraform-provider-defectdojo/commit/a78c96ab295b771eef874eda04083c2b58ecd563))
+* bump golangci-lint-action and setup-opentofu to node24 runtimes ([f533d09](https://github.com/mkutlak/terraform-provider-defectdojo/commit/f533d09e553dbda4fe080e4be48ca0f109482faa))
+* split unit tests from acceptance and gate the matrix on release PRs ([92e3065](https://github.com/mkutlak/terraform-provider-defectdojo/commit/92e30656d15f8ff9aaf1439b5f236f79e8d769ac))
+* verify the provider against OpenTofu ([7b9e837](https://github.com/mkutlak/terraform-provider-defectdojo/commit/7b9e8376e72fe553bdeaed945831c92ce3d97686))
+
+
+### Tests
+
+* add generic acceptance harness with derived resource registry ([d3e837d](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d3e837de0f692efdba97b4533f3f2912dac81e1c))
+* cover date handling and diagnostics delivery ([0d14240](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0d14240ca3cd779ff8d7ca09b5e3efd3a6088648)), closes [#23](https://github.com/mkutlak/terraform-provider-defectdojo/issues/23)
+* cover the 16 data sources that had no acceptance tests ([2e40c86](https://github.com/mkutlak/terraform-provider-defectdojo/commit/2e40c86701492b19c08daae30e16d704ea88d7aa))
+* enforce CheckDestroy on every acceptance TestCase ([dc55692](https://github.com/mkutlak/terraform-provider-defectdojo/commit/dc55692114340a03b86669963a4bcab8ba090971))
+* migrate assertions to statecheck and knownvalue ([3b04e69](https://github.com/mkutlak/terraform-provider-defectdojo/commit/3b04e690a5f58c49cdce71d7c3d6070d23df807b))
+* validate every resource and data source schema ([a075560](https://github.com/mkutlak/terraform-provider-defectdojo/commit/a075560a5c4d73cabbc61cbaf847d72fda9e7e39))
+* verify destroy for all 28 resources ([c279d6a](https://github.com/mkutlak/terraform-provider-defectdojo/commit/c279d6aa8a732fc83a39e0f8b9aca0ed4139399d))
+
 ## [1.0.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v0.5.1...v1.0.0) (2026-07-17)
 
 
