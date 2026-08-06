@@ -49,9 +49,12 @@ func seedUrlLocationWithProduct(t *testing.T, ctx context.Context, client *dd.Cl
 	}
 	productId := *prodResp.JSON201.Id
 	t.Cleanup(func() {
-		if _, err := client.ProductsDestroy(ctx, productId); err != nil {
+		resp, err := client.ProductsDestroy(ctx, productId)
+		if err != nil {
 			t.Logf("cleanup: error deleting seed product %d: %v", productId, err)
+			return
 		}
+		_ = resp.Body.Close()
 	})
 
 	// 2. Seed a URL location.
@@ -73,9 +76,12 @@ func seedUrlLocationWithProduct(t *testing.T, ctx context.Context, client *dd.Cl
 	}
 	locationId := *urlResp.JSON201.Id
 	t.Cleanup(func() {
-		if _, err := client.UrlDestroy(ctx, locationId); err != nil {
+		resp, err := client.UrlDestroy(ctx, locationId)
+		if err != nil {
 			t.Logf("cleanup: error deleting seed url location %d: %v", locationId, err)
+			return
 		}
+		_ = resp.Body.Close()
 	})
 
 	// 3. Link the location to the product; the pair is what the legacy
@@ -92,9 +98,12 @@ func seedUrlLocationWithProduct(t *testing.T, ctx context.Context, client *dd.Cl
 	}
 	linkId := *linkResp.JSON201.Id
 	t.Cleanup(func() {
-		if _, err := client.LocationProductsDestroy(ctx, linkId); err != nil {
+		resp, err := client.LocationProductsDestroy(ctx, linkId)
+		if err != nil {
 			t.Logf("cleanup: error deleting seed location-product link %d: %v", linkId, err)
+			return
 		}
+		_ = resp.Body.Close()
 	})
 
 	return seededLocation{
