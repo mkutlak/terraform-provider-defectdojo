@@ -6,6 +6,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccProductBaseResource(t *testing.T) {
@@ -20,26 +23,24 @@ func TestAccProductBaseResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccProductResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "test"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "product_type_id", "1"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.0", "bar"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.1", "foo"),
-
-					resource.TestCheckResourceAttr("defectdojo_product.test", "business_criticality", "high"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "enable_full_risk_acceptance", "true"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "enable_skip_risk_acceptance", "true"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "external_audience", "true"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "internet_accessible", "true"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "life_cycle", "production"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "origin", "internal"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "platform", "web"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "prod_numeric_grade", "100"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "regulation_ids.#", "0"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "revenue", "100.00"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "user_records", "1000000"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("product_type_id"), knownvalue.Int64Exact(1)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("business_criticality"), knownvalue.StringExact("high")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("enable_full_risk_acceptance"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("enable_skip_risk_acceptance"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("external_audience"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("internet_accessible"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("life_cycle"), knownvalue.StringExact("production")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("origin"), knownvalue.StringExact("internal")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("platform"), knownvalue.StringExact("web")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("prod_numeric_grade"), knownvalue.Int64Exact(100)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("100.00")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("user_records"), knownvalue.Int64Exact(1000000)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("tags"), knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact("bar"), knownvalue.StringExact("foo")})),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("regulation_ids"), knownvalue.SetSizeExact(0)),
+				},
 			},
 			// ImportState testing
 			{
@@ -50,24 +51,23 @@ func TestAccProductBaseResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccProductResourceUpdatedConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", updatedName),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "updated"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "product_type_id", "1"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.#", "1"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.0", "updated"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "business_criticality", "medium"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "enable_full_risk_acceptance", "false"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "enable_skip_risk_acceptance", "false"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "external_audience", "false"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "internet_accessible", "false"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "life_cycle", "retirement"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "origin", "third party library"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "platform", "desktop"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "prod_numeric_grade", "50"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "revenue", "200.00"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "user_records", "500000"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("updated")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("product_type_id"), knownvalue.Int64Exact(1)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("business_criticality"), knownvalue.StringExact("medium")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("enable_full_risk_acceptance"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("enable_skip_risk_acceptance"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("external_audience"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("internet_accessible"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("life_cycle"), knownvalue.StringExact("retirement")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("origin"), knownvalue.StringExact("third party library")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("platform"), knownvalue.StringExact("desktop")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("prod_numeric_grade"), knownvalue.Int64Exact(50)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("200.00")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("user_records"), knownvalue.Int64Exact(500000)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("tags"), knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact("updated")})),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},
@@ -85,12 +85,12 @@ func TestAccProductResourceNoTags(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccProductResourceNoTagsConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "test"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "product_type_id", "1"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.#", "0"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("product_type_id"), knownvalue.Int64Exact(1)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("tags"), knownvalue.Null()),
+				},
 			},
 			// ImportState testing
 			{
@@ -101,9 +101,9 @@ func TestAccProductResourceNoTags(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccProductResourceNoTagsConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},
@@ -122,12 +122,12 @@ func TestAccProductResourceEmptyTags(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccProductResourceEmptyTagsConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "test"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "product_type_id", "1"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "tags.#", "0"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("product_type_id"), knownvalue.Int64Exact(1)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("tags"), knownvalue.SetSizeExact(0)),
+				},
 			},
 			// ImportState testing
 			{
@@ -138,9 +138,9 @@ func TestAccProductResourceEmptyTags(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccProductResourceEmptyTagsConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},
@@ -159,11 +159,11 @@ func TestAccProductResourceDeleteDrift(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccProductResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "test"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "product_type_id", "1"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("product_type_id"), knownvalue.Int64Exact(1)),
+				},
 			},
 			// Delete the underlying resource and see that it detects it has been deleted
 			{
@@ -175,11 +175,11 @@ func TestAccProductResourceDeleteDrift(t *testing.T) {
 			},
 			{
 				Config: testAccProductResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "description", "test"),
-					resource.TestCheckResourceAttr("defectdojo_product.test", "product_type_id", "1"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("product_type_id"), knownvalue.Int64Exact(1)),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},

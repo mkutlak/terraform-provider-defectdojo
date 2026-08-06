@@ -6,6 +6,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccMetadataResource(t *testing.T) {
@@ -20,11 +23,16 @@ func TestAccMetadataResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccMetadataResourceConfig(productName, metadataName, "bar"),
+				// product is Int64 while id is String, so this pair is compared as
+				// flatmap strings; statecheck.CompareValuePairs is type-strict and
+				// reports "271 != 271" for values that are equal but differently typed.
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "name", metadataName),
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "value", "bar"),
 					resource.TestCheckResourceAttrPair("defectdojo_metadata.test", "product", "defectdojo_product.test", "id"),
 				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_metadata.test", tfjsonpath.New("name"), knownvalue.StringExact(metadataName)),
+					statecheck.ExpectKnownValue("defectdojo_metadata.test", tfjsonpath.New("value"), knownvalue.StringExact("bar")),
+				},
 			},
 			// ImportState testing
 			{
@@ -35,10 +43,10 @@ func TestAccMetadataResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccMetadataResourceConfig(productName, metadataName, "baz"),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "name", metadataName),
-					resource.TestCheckResourceAttr("defectdojo_metadata.test", "value", "baz"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_metadata.test", tfjsonpath.New("name"), knownvalue.StringExact(metadataName)),
+					statecheck.ExpectKnownValue("defectdojo_metadata.test", tfjsonpath.New("value"), knownvalue.StringExact("baz")),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},
@@ -73,20 +81,30 @@ func TestAccMetadataDataSource(t *testing.T) {
 			// Read by id
 			{
 				Config: testAccMetadataDataSourceConfig(productName, metadataName),
+				// product is Int64 while id is String, so this pair is compared as
+				// flatmap strings; statecheck.CompareValuePairs is type-strict and
+				// reports "271 != 271" for values that are equal but differently typed.
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_metadata.by_id", "name", metadataName),
-					resource.TestCheckResourceAttr("data.defectdojo_metadata.by_id", "value", "bar"),
 					resource.TestCheckResourceAttrPair("data.defectdojo_metadata.by_id", "product", "defectdojo_product.test", "id"),
 				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_metadata.by_id", tfjsonpath.New("name"), knownvalue.StringExact(metadataName)),
+					statecheck.ExpectKnownValue("data.defectdojo_metadata.by_id", tfjsonpath.New("value"), knownvalue.StringExact("bar")),
+				},
 			},
 			// Read by name
 			{
 				Config: testAccMetadataDataSourceNameConfig(productName, metadataName),
+				// product is Int64 while id is String, so this pair is compared as
+				// flatmap strings; statecheck.CompareValuePairs is type-strict and
+				// reports "271 != 271" for values that are equal but differently typed.
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_metadata.by_name", "name", metadataName),
-					resource.TestCheckResourceAttr("data.defectdojo_metadata.by_name", "value", "bar"),
 					resource.TestCheckResourceAttrPair("data.defectdojo_metadata.by_name", "product", "defectdojo_product.test", "id"),
 				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_metadata.by_name", tfjsonpath.New("name"), knownvalue.StringExact(metadataName)),
+					statecheck.ExpectKnownValue("data.defectdojo_metadata.by_name", tfjsonpath.New("value"), knownvalue.StringExact("bar")),
+				},
 			},
 		},
 	})

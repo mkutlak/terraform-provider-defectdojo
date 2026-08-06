@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccDevelopmentEnvironmentResource(t *testing.T) {
@@ -18,9 +21,9 @@ func TestAccDevelopmentEnvironmentResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDevelopmentEnvironmentResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_development_environment.test", "name", name),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_development_environment.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_development_environment.test",
@@ -29,9 +32,9 @@ func TestAccDevelopmentEnvironmentResource(t *testing.T) {
 			},
 			{
 				Config: testAccDevelopmentEnvironmentResourceConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_development_environment.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_development_environment.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

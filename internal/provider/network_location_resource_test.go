@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccNetworkLocationResource(t *testing.T) {
@@ -18,9 +21,9 @@ func TestAccNetworkLocationResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccNetworkLocationResourceConfig(location),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_network_location.test", "location", location),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_network_location.test", tfjsonpath.New("location"), knownvalue.StringExact(location)),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_network_location.test",
@@ -29,9 +32,9 @@ func TestAccNetworkLocationResource(t *testing.T) {
 			},
 			{
 				Config: testAccNetworkLocationResourceConfig(updatedLocation),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_network_location.test", "location", updatedLocation),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_network_location.test", tfjsonpath.New("location"), knownvalue.StringExact(updatedLocation)),
+				},
 			},
 		},
 	})

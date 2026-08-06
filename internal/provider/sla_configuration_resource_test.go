@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccSlaConfigurationResource(t *testing.T) {
@@ -18,9 +21,9 @@ func TestAccSlaConfigurationResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccSlaConfigurationResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_sla_configuration.test", "name", name),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_sla_configuration.test",
@@ -29,9 +32,9 @@ func TestAccSlaConfigurationResource(t *testing.T) {
 			},
 			{
 				Config: testAccSlaConfigurationResourceConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_sla_configuration.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

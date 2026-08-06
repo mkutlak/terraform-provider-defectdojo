@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccProductTypeResource(t *testing.T) {
@@ -26,11 +29,13 @@ func TestAccProductTypeResource(t *testing.T) {
 			{
 				Config: testAccProductTypeResourceConfig(name, desc, criticalProduct, keyProduct),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product_type.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_product_type.test", "description", desc),
 					resource.TestCheckResourceAttr("defectdojo_product_type.test", "critical_product", criticalProduct),
 					resource.TestCheckResourceAttr("defectdojo_product_type.test", "key_product", keyProduct),
 				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_product_type.test", tfjsonpath.New("description"), knownvalue.StringExact(desc)),
+				},
 			},
 			// ImportState testing
 			{
@@ -42,11 +47,13 @@ func TestAccProductTypeResource(t *testing.T) {
 			{
 				Config: testAccProductTypeResourceConfig(updatedName, updatedDesc, updatedCriticalProduct, updatedKeyProduct),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product_type.test", "name", updatedName),
-					resource.TestCheckResourceAttr("defectdojo_product_type.test", "description", updatedDesc),
 					resource.TestCheckResourceAttr("defectdojo_product_type.test", "critical_product", updatedCriticalProduct),
 					resource.TestCheckResourceAttr("defectdojo_product_type.test", "key_product", updatedKeyProduct),
 				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product_type.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+					statecheck.ExpectKnownValue("defectdojo_product_type.test", tfjsonpath.New("description"), knownvalue.StringExact(updatedDesc)),
+				},
 			},
 			// Delete testing automatically occurs in TestCase
 		},

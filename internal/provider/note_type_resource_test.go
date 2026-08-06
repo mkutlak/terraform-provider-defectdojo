@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccNoteTypeResource(t *testing.T) {
@@ -18,10 +21,10 @@ func TestAccNoteTypeResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccNoteTypeResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_note_type.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_note_type.test", "description", "Test note type description"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_note_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_note_type.test", tfjsonpath.New("description"), knownvalue.StringExact("Test note type description")),
+				},
 			},
 			{
 				ResourceName:      "defectdojo_note_type.test",
@@ -30,9 +33,9 @@ func TestAccNoteTypeResource(t *testing.T) {
 			},
 			{
 				Config: testAccNoteTypeResourceConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_note_type.test", "name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_note_type.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

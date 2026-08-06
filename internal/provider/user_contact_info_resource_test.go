@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccUserContactInfoResource(t *testing.T) {
@@ -18,13 +21,13 @@ func TestAccUserContactInfoResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccUserContactInfoResourceConfig(username),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("defectdojo_user_contact_info.test", "id"),
-					resource.TestCheckResourceAttrSet("defectdojo_user_contact_info.test", "user"),
-					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "title", "Dr."),
-					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "phone_number", "+1234567890"),
-					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "deduplication_execution_mode", "async"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("user"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("title"), knownvalue.StringExact("Dr.")),
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("phone_number"), knownvalue.StringExact("+1234567890")),
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("deduplication_execution_mode"), knownvalue.StringExact("async")),
+				},
 			},
 			// ImportState testing
 			{
@@ -35,11 +38,11 @@ func TestAccUserContactInfoResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccUserContactInfoResourceUpdatedConfig(username),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "title", "Prof."),
-					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "phone_number", "+0987654321"),
-					resource.TestCheckResourceAttr("defectdojo_user_contact_info.test", "deduplication_execution_mode", "sync"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("title"), knownvalue.StringExact("Prof.")),
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("phone_number"), knownvalue.StringExact("+0987654321")),
+					statecheck.ExpectKnownValue("defectdojo_user_contact_info.test", tfjsonpath.New("deduplication_execution_mode"), knownvalue.StringExact("sync")),
+				},
 			},
 		},
 	})

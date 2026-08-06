@@ -4,6 +4,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 // TestAccUserProfileDataSource exercises the read-only defectdojo_user_profile
@@ -22,11 +25,11 @@ func TestAccUserProfileDataSource(t *testing.T) {
 provider "defectdojo" {}
 data "defectdojo_user_profile" "me" {}
 `,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.defectdojo_user_profile.me", "id"),
-					resource.TestCheckResourceAttr("data.defectdojo_user_profile.me", "username", "admin"),
-					resource.TestCheckResourceAttr("data.defectdojo_user_profile.me", "is_superuser", "true"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_user_profile.me", tfjsonpath.New("id"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("data.defectdojo_user_profile.me", tfjsonpath.New("username"), knownvalue.StringExact("admin")),
+					statecheck.ExpectKnownValue("data.defectdojo_user_profile.me", tfjsonpath.New("is_superuser"), knownvalue.Bool(true)),
+				},
 			},
 		},
 	})

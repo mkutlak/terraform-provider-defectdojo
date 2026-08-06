@@ -8,6 +8,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
@@ -68,13 +71,15 @@ func TestAccEndpointDataSource(t *testing.T) {
 			{
 				Config: testAccEndpointDataSourceConfig(endpointId),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_endpoint.test", "id", strconv.Itoa(endpointId)),
-					resource.TestCheckResourceAttr("data.defectdojo_endpoint.test", "host", seeded.Host),
-					resource.TestCheckResourceAttr("data.defectdojo_endpoint.test", "protocol", seeded.Protocol),
 					resource.TestCheckResourceAttr("data.defectdojo_endpoint.test", "port", strconv.Itoa(seeded.Port)),
-					resource.TestCheckResourceAttr("data.defectdojo_endpoint.test", "path", seeded.Path),
 					resource.TestCheckResourceAttr("data.defectdojo_endpoint.test", "product", strconv.Itoa(seeded.ProductId)),
 				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_endpoint.test", tfjsonpath.New("id"), knownvalue.StringExact(strconv.Itoa(endpointId))),
+					statecheck.ExpectKnownValue("data.defectdojo_endpoint.test", tfjsonpath.New("host"), knownvalue.StringExact(seeded.Host)),
+					statecheck.ExpectKnownValue("data.defectdojo_endpoint.test", tfjsonpath.New("protocol"), knownvalue.StringExact(seeded.Protocol)),
+					statecheck.ExpectKnownValue("data.defectdojo_endpoint.test", tfjsonpath.New("path"), knownvalue.StringExact(seeded.Path)),
+				},
 			},
 		},
 	})

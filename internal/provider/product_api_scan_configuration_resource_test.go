@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccProductAPIScanConfigurationResource(t *testing.T) {
@@ -18,10 +21,10 @@ func TestAccProductAPIScanConfigurationResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccProductAPIScanConfigurationResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("defectdojo_product_api_scan_configuration.test", "tool_configuration"),
-					resource.TestCheckResourceAttrSet("defectdojo_product_api_scan_configuration.test", "product"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product_api_scan_configuration.test", tfjsonpath.New("tool_configuration"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_product_api_scan_configuration.test", tfjsonpath.New("product"), knownvalue.NotNull()),
+				},
 			},
 			// ImportState testing
 			{
@@ -32,9 +35,9 @@ func TestAccProductAPIScanConfigurationResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccProductAPIScanConfigurationResourceUpdatedConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_product_api_scan_configuration.test", "service_key_1", "updated-key"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product_api_scan_configuration.test", tfjsonpath.New("service_key_1"), knownvalue.StringExact("updated-key")),
+				},
 			},
 		},
 	})

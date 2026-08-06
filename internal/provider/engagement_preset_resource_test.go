@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccEngagementPresetResource(t *testing.T) {
@@ -19,10 +22,10 @@ func TestAccEngagementPresetResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccEngagementPresetResourceConfig(name, "Test Preset Title"),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_engagement_preset.test", "title", "Test Preset Title"),
-					resource.TestCheckResourceAttrSet("defectdojo_engagement_preset.test", "product"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_engagement_preset.test", tfjsonpath.New("title"), knownvalue.StringExact("Test Preset Title")),
+					statecheck.ExpectKnownValue("defectdojo_engagement_preset.test", tfjsonpath.New("product"), knownvalue.NotNull()),
+				},
 			},
 			// ImportState testing
 			{
@@ -33,9 +36,9 @@ func TestAccEngagementPresetResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccEngagementPresetResourceConfig(name, updatedTitle),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_engagement_preset.test", "title", updatedTitle),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_engagement_preset.test", tfjsonpath.New("title"), knownvalue.StringExact(updatedTitle)),
+				},
 			},
 		},
 	})

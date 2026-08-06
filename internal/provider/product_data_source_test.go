@@ -6,6 +6,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccProductDataSource(t *testing.T) {
@@ -19,10 +22,10 @@ func TestAccProductDataSource(t *testing.T) {
 			// Read testing
 			{
 				Config: testAccProductDataSourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_product.test", "name", name),
-					resource.TestCheckResourceAttr("data.defectdojo_product.test", "description", "test"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+				},
 			},
 		},
 	})
@@ -38,10 +41,10 @@ func TestAccProductNameDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccProductDataSourceNameConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_product.test", "name", name),
-					resource.TestCheckResourceAttr("data.defectdojo_product.test", "description", "test"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_product.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_product.test", tfjsonpath.New("description"), knownvalue.StringExact("test")),
+				},
 			},
 		},
 	})

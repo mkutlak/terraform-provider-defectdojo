@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/compare"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 // TestAccLocationDataSource exercises the read-only defectdojo_location data
@@ -22,11 +26,11 @@ func TestAccLocationDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccLocationDataSourceConfig(host),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrPair("data.defectdojo_location.test", "id", "defectdojo_url.test", "id"),
-					resource.TestCheckResourceAttrSet("data.defectdojo_location.test", "location_type"),
-					resource.TestCheckResourceAttrSet("data.defectdojo_location.test", "location_value"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.CompareValuePairs("data.defectdojo_location.test", tfjsonpath.New("id"), "defectdojo_url.test", tfjsonpath.New("id"), compare.ValuesSame()),
+					statecheck.ExpectKnownValue("data.defectdojo_location.test", tfjsonpath.New("location_type"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("data.defectdojo_location.test", tfjsonpath.New("location_value"), knownvalue.NotNull()),
+				},
 			},
 		},
 	})

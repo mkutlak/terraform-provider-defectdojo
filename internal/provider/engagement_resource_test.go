@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccEngagementResource(t *testing.T) {
@@ -19,13 +22,13 @@ func TestAccEngagementResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccEngagementResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_engagement.test", "name", name),
-					resource.TestCheckResourceAttr("defectdojo_engagement.test", "target_start", "2025-01-01"),
-					resource.TestCheckResourceAttr("defectdojo_engagement.test", "target_end", "2025-12-31"),
-					resource.TestCheckResourceAttrSet("defectdojo_engagement.test", "product"),
-					resource.TestCheckResourceAttr("defectdojo_engagement.test", "description", ""),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("target_start"), knownvalue.StringExact("2025-01-01")),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("target_end"), knownvalue.StringExact("2025-12-31")),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("product"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("description"), knownvalue.StringExact("")),
+				},
 			},
 			// ImportState testing
 			{
@@ -36,11 +39,11 @@ func TestAccEngagementResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccEngagementResourceUpdatedConfig(name, updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_engagement.test", "name", updatedName),
-					resource.TestCheckResourceAttr("defectdojo_engagement.test", "target_start", "2025-06-01"),
-					resource.TestCheckResourceAttr("defectdojo_engagement.test", "target_end", "2025-12-31"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("target_start"), knownvalue.StringExact("2025-06-01")),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("target_end"), knownvalue.StringExact("2025-12-31")),
+				},
 			},
 		},
 	})

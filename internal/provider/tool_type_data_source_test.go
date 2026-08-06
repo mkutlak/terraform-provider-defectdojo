@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccToolTypeIdDataSource(t *testing.T) {
@@ -17,9 +20,9 @@ func TestAccToolTypeIdDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccToolTypeDataSourceIdConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_tool_type.test", "name", name),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_tool_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+				},
 			},
 		},
 	})
@@ -35,10 +38,10 @@ func TestAccToolTypeNameDataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccToolTypeDataSourceNameConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_tool_type.test", "name", name),
-					resource.TestCheckResourceAttrSet("data.defectdojo_tool_type.test", "id"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_tool_type.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("data.defectdojo_tool_type.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+				},
 			},
 		},
 	})

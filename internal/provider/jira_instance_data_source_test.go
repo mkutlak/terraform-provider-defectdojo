@@ -4,6 +4,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccJiraInstanceIdDataSource(t *testing.T) {
@@ -21,9 +24,9 @@ data "defectdojo_jira_instance" "test" {
   id = "1"
 }
 `,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttrSet("data.defectdojo_jira_instance.test", "url"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_jira_instance.test", tfjsonpath.New("url"), knownvalue.NotNull()),
+				},
 			},
 		},
 	})
@@ -44,10 +47,10 @@ data "defectdojo_jira_instance" "test" {
   url = "https://jira.example.com"
 }
 `,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.defectdojo_jira_instance.test", "url", "https://jira.example.com"),
-					resource.TestCheckResourceAttrSet("data.defectdojo_jira_instance.test", "id"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("data.defectdojo_jira_instance.test", tfjsonpath.New("url"), knownvalue.StringExact("https://jira.example.com")),
+					statecheck.ExpectKnownValue("data.defectdojo_jira_instance.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+				},
 			},
 		},
 	})

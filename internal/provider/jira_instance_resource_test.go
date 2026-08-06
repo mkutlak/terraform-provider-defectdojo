@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 func TestAccJiraInstanceResource(t *testing.T) {
@@ -20,11 +23,11 @@ func TestAccJiraInstanceResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: testAccJiraInstanceResourceConfig(name),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_jira_instance.test", "configuration_name", name),
-					resource.TestCheckResourceAttr("defectdojo_jira_instance.test", "url", "https://jira.example.com"),
-					resource.TestCheckResourceAttr("defectdojo_jira_instance.test", "username", "testuser"),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_jira_instance.test", tfjsonpath.New("configuration_name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_jira_instance.test", tfjsonpath.New("url"), knownvalue.StringExact("https://jira.example.com")),
+					statecheck.ExpectKnownValue("defectdojo_jira_instance.test", tfjsonpath.New("username"), knownvalue.StringExact("testuser")),
+				},
 			},
 			// ImportState testing
 			{
@@ -36,9 +39,9 @@ func TestAccJiraInstanceResource(t *testing.T) {
 			// Update and Read testing
 			{
 				Config: testAccJiraInstanceResourceUpdatedConfig(updatedName),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("defectdojo_jira_instance.test", "configuration_name", updatedName),
-				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_jira_instance.test", tfjsonpath.New("configuration_name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})
