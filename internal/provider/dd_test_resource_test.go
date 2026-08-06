@@ -90,6 +90,7 @@ func TestAccDDTestResourceDateOnlyTargets(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
 			// Create with date-only target_start/target_end. Before the fix,
 			// this step failed with "inconsistent result after apply" raised
