@@ -62,11 +62,7 @@ func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, res
 				Optional:            true,
 				Computed:            true,
 			},
-			"tags": schema.SetAttribute{
-				MarkdownDescription: "Tags to apply to the URL",
-				Optional:            true,
-				ElementType:         types.StringType,
-			},
+			"tags": tagsSetAttribute("Tags to apply to the URL"),
 			"host_validation_failure": schema.BoolAttribute{
 				MarkdownDescription: "Dictates whether the endpoint was found to have host validation issues during creation",
 				Computed:            true,

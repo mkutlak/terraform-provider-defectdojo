@@ -81,11 +81,7 @@ func (r ddTestResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 				MarkdownDescription: "Type of scan",
 				Optional:            true,
 			},
-			"tags": schema.SetAttribute{
-				MarkdownDescription: "Tags for this Test",
-				Optional:            true,
-				ElementType:         types.StringType,
-			},
+			"tags": tagsSetAttribute("Tags for this Test"),
 		},
 	}
 }

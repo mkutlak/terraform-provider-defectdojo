@@ -6,7 +6,6 @@ import (
 	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -127,16 +126,7 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				MarkdownDescription: "The ID of the Product Type",
 				Required:            true,
 			},
-			"tags": schema.SetAttribute{
-				MarkdownDescription: "Tags to apply to the product",
-				Optional:            true,
-				ElementType:         types.StringType,
-				Validators: []validator.Set{
-					setvalidator.ValueStringsAre(
-						stringvalidator.RegexMatches(regexp.MustCompile(`\A[a-z0-9][a-z0-9_-]*\z`), "Tags must be lower case values (letters, digits, hyphens, underscores)"),
-					),
-				},
-			},
+			"tags": tagsSetAttribute("Tags to apply to the product"),
 			"disable_sla_breach_notifications": schema.BoolAttribute{
 				MarkdownDescription: "Disable SLA breach notifications if configured in the global settings.",
 				Optional:            true,
