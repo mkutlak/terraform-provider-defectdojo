@@ -25,9 +25,14 @@ func (r engagementPresetResource) Schema(ctx context.Context, req resource.Schem
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			// title and scope are blank-able but not nullable in DefectDojo:
+			// omitting them from a create/update request makes the server store
+			// (and answer with) an empty string. They must be Computed to avoid
+			// a "provider produced inconsistent result" error when left unset.
 			"title": schema.StringAttribute{
-				MarkdownDescription: "Brief description of preset",
+				MarkdownDescription: "Brief description of preset. DefectDojo stores an empty string when omitted.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"product": schema.Int64Attribute{
 				MarkdownDescription: "ID of the Product this Preset belongs to",
@@ -38,8 +43,9 @@ func (r engagementPresetResource) Schema(ctx context.Context, req resource.Schem
 				Optional:            true,
 			},
 			"scope": schema.StringAttribute{
-				MarkdownDescription: "Scope of Engagement testing, IP's/Resources/URL's",
+				MarkdownDescription: "Scope of Engagement testing, IP's/Resources/URL's. DefectDojo stores an empty string when omitted.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"network_locations": schema.SetAttribute{
 				MarkdownDescription: "IDs of network locations",

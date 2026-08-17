@@ -31,15 +31,15 @@ resource "defectdojo_sla_configuration" "example" {
 
 ### Optional
 
-- `critical` (Number) The number of days to remediate a critical finding
+- `critical` (Number) The number of days to remediate a critical finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.
 - `description` (String) Description of the SLA Configuration
 - `enforce_critical` (Boolean) When enabled, critical findings will be assigned an SLA expiration date
 - `enforce_high` (Boolean) When enabled, high findings will be assigned an SLA expiration date
 - `enforce_low` (Boolean) When enabled, low findings will be assigned an SLA expiration date
 - `enforce_medium` (Boolean) When enabled, medium findings will be assigned an SLA expiration date
-- `high` (Number) The number of days to remediate a high finding
-- `low` (Number) The number of days to remediate a low finding
-- `medium` (Number) The number of days to remediate a medium finding
+- `high` (Number) The number of days to remediate a high finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.
+- `low` (Number) The number of days to remediate a low finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.
+- `medium` (Number) The number of days to remediate a medium finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.
 - `restart_sla_on_reactivation` (Boolean) When enabled, findings that were previously mitigated but are reactivated during reimport will have their SLA period restarted
 
 ### Read-Only

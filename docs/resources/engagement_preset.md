@@ -30,9 +30,9 @@ resource "defectdojo_engagement_preset" "example" {
 
 - `network_locations` (Set of Number) IDs of network locations
 - `notes` (String) Description of what needs to be tested or setting up environment for testing
-- `scope` (String) Scope of Engagement testing, IP's/Resources/URL's
+- `scope` (String) Scope of Engagement testing, IP's/Resources/URL's. DefectDojo stores an empty string when omitted.
 - `test_type` (Set of Number) IDs of test types
-- `title` (String) Brief description of preset
+- `title` (String) Brief description of preset. DefectDojo stores an empty string when omitted.
 
 ### Read-Only
 
