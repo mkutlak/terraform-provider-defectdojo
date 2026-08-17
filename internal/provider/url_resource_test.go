@@ -83,12 +83,8 @@ func TestAccUrlDataSource(t *testing.T) {
 }
 
 // TestAccUrlResourceInvalidTags asserts the tag grammar is enforced during
-// plan. Before defectdojo_url shared product's validator, an uppercase tag was
-// accepted here and only failed at apply - after the URL had been created -
-// because DefectDojo answers with the lower-cased form.
-//
-// This mirrors TestAccProductResourceInvalid, which has covered the same
-// grammar on defectdojo_product since commit a54fb89.
+// plan. A tag containing a space is rejected by DefectDojo with a 400, so
+// catching it at plan time turns an apply-time failure into a config error.
 func TestAccUrlResourceInvalidTags(t *testing.T) {
 	t.Parallel()
 	host := fmt.Sprintf("host-%s.example.com", uniqueId())
@@ -110,7 +106,7 @@ func testAccUrlResourceInvalidTagsConfig(host string) string {
 provider "defectdojo" {}
 resource "defectdojo_url" "test" {
   host = %[1]q
-  tags = ["ok", "BAR"]
+  tags = ["ok", "needs review"]
 }
 `, host)
 }

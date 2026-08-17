@@ -92,7 +92,7 @@ type urlResourceData struct {
 	Query                 types.String `tfsdk:"query" ddField:"Query"`
 	Fragment              types.String `tfsdk:"fragment" ddField:"Fragment"`
 	UserInfo              types.String `tfsdk:"user_info" ddField:"UserInfo"`
-	Tags                  types.Set    `tfsdk:"tags" ddField:"Tags"`
+	Tags                  types.Set    `tfsdk:"tags" ddField:"Tags" ddFormat:"tags"`
 	HostValidationFailure types.Bool   `tfsdk:"host_validation_failure" ddField:"HostValidationFailure"`
 	Type                  types.String `tfsdk:"type" ddField:"Type"`
 }

@@ -103,7 +103,7 @@ type ddTestResourceData struct {
 	Environment     types.Int64  `tfsdk:"environment" ddField:"Environment"`
 	Lead            types.Int64  `tfsdk:"lead" ddField:"Lead"`
 	ScanType        types.String `tfsdk:"scan_type" ddField:"ScanType"`
-	Tags            types.Set    `tfsdk:"tags" ddField:"Tags"`
+	Tags            types.Set    `tfsdk:"tags" ddField:"Tags" ddFormat:"tags"`
 }
 
 // ddTestDefectdojoResource wraps the dd.TestCreate struct for create, and dd.Test for read/update.

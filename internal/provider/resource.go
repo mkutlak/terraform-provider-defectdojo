@@ -72,10 +72,17 @@ var typeOfTypesSet = reflect.TypeFor[types.Set]()
 // after apply". See decimal.go.
 const ddFormatDecimal = "decimal"
 
+// ddFormatTags marks a types.Set attribute holding DefectDojo tags. Tags live
+// in one instance-wide, case-insensitively matched table, so the server answers
+// with whichever spelling was registered first anywhere on the instance. The
+// read path keeps the configured spelling when the sets differ only by case.
+// See tags.go.
+const ddFormatTags = "tags"
+
 // knownDdFormats is the set of `ddFormat` struct tag values populateResourceData
 // understands. TestDdFormatTagsAreKnown turns a typo into a `go test` failure
 // instead of an apply-time diagnostic nobody reads.
-var knownDdFormats = map[string]bool{ddFormatDecimal: true}
+var knownDdFormats = map[string]bool{ddFormatDecimal: true, ddFormatTags: true}
 
 // addUnsupportedMappingError reports a (Terraform type, ddclient type) pairing
 // the reflection engine cannot convert.
@@ -105,6 +112,19 @@ func addUnhandledTerraformTypeError(diags *diag.Diagnostics, fn, tfsdkName strin
 			"%s). Only types.String, types.Bool, types.Int64, types.Float64 and types.Set are "+
 			"supported. This is a provider bug; please report it.",
 		fn, tfType, tfsdkName, ddType))
+}
+
+// renderStringSet converts a server-provided set of strings into the value to
+// store in state, honouring the optional `ddFormat` struct tag.
+//
+// Unknown ddFormat values are reported by renderStringValue and by
+// TestDdFormatTagsAreKnown, so this only has to recognise the ones that mean
+// something for a set.
+func renderStringSet(tag reflect.StructTag, current types.Set, server types.Set) types.Set {
+	if tag.Get("ddFormat") == ddFormatTags {
+		return preserveTagCase(current, server)
+	}
+	return server
 }
 
 // renderStringValue converts a server-provided string into the value to store
@@ -351,7 +371,7 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	clearNulls, clearEmpties := clearedDdFields(data, priorState, ddResource)
+	clearTargets := clearedDdFields(data, priorState, ddResource)
 
 	statusCode, body, err := ddResource.updateApiCall(ctx, r.client, idNumber)
 
@@ -363,8 +383,11 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 
 	if statusCode == 200 {
-		if len(clearNulls) > 0 || len(clearEmpties) > 0 {
-			applyClearedFields(ctx, &resp.Diagnostics, r.client, r.typeName, idNumber, ddResource, clearNulls, clearEmpties)
+		// Re-check against the update response: some DefectDojo serializers
+		// declare a default and so already cleared the field during the PUT,
+		// and a redundant PATCH can be rejected by cross-field validation.
+		if remaining := stillSetAfterUpdate(ddResource, clearTargets); len(remaining) > 0 {
+			applyClearedFields(ctx, &resp.Diagnostics, r.client, r.typeName, idNumber, ddResource, remaining)
 			if resp.Diagnostics.HasError() {
 				return
 			}
@@ -860,7 +883,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 							}
 							destVal, dgs := types.SetValue(types.StringType, elems)
 							diags.Append(dgs...)
-							fieldValue.Set(reflect.ValueOf(destVal))
+							fieldValue.Set(reflect.ValueOf(renderStringSet(tag, fieldValue.Interface().(types.Set), destVal)))
 						} else {
 							fieldValue.Set(reflect.ValueOf(types.SetNull(types.StringType)))
 						}
@@ -897,7 +920,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 							}
 							destVal, dgs := types.SetValue(types.StringType, elems)
 							diags.Append(dgs...)
-							fieldValue.Set(reflect.ValueOf(destVal))
+							fieldValue.Set(reflect.ValueOf(renderStringSet(tag, fieldValue.Interface().(types.Set), destVal)))
 						} else {
 							destVal := types.SetNull(types.StringType)
 							fieldValue.Set(reflect.ValueOf(destVal))

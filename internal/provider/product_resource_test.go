@@ -373,7 +373,7 @@ resource "defectdojo_product" "test" {
   name = %[1]q
   description = "test"
   product_type_id = 1
-  tags = ["foo", "BAR"]
+  tags = ["foo", "needs review"]
 
   business_criticality = "something else"
   revenue = "a lot of money"
@@ -434,4 +434,74 @@ resource "defectdojo_product" "test" {
 %[2]s
 }
 `, name, extra)
+}
+
+// TestAccProductResourceTagCaseCollision is the regression test for
+// DefectDojo's instance-wide, case-insensitive tag table.
+//
+// The server answers with whichever spelling of a tag was registered FIRST
+// anywhere on the instance, so a perfectly lower-case configuration breaks as
+// soon as the capitalised spelling exists - from the UI, another tool, or
+// another Terraform resource. Before preserveTagCase, the second apply below
+// failed with:
+//
+//	.tags: planned set element cty.StringVal("zz-...") does not correlate with
+//	any element in actual
+//
+// The tag name is unique per run so this cannot disturb any other test.
+func TestAccProductResourceTagCaseCollision(t *testing.T) {
+	t.Parallel()
+	suffix := uniqueId()
+	upper := fmt.Sprintf("Zz-%s", suffix)
+	lower := fmt.Sprintf("zz-%s", suffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			// Register the capitalised spelling in the instance-wide tag table.
+			{
+				Config: testAccProductResourceTagCaseConfig(suffix, upper, upper),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.seed", tfjsonpath.New("tags"),
+						knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact(upper)})),
+				},
+			},
+			// A second product asks for the lower-case spelling. DefectDojo
+			// stores the same tag and answers with the capitalised form; state
+			// must keep what the practitioner wrote.
+			{
+				Config: testAccProductResourceTagCaseConfig(suffix, upper, lower),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.other", tfjsonpath.New("tags"),
+						knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact(lower)})),
+				},
+			},
+			// And the result has to be stable, not re-diff forever.
+			{
+				Config:   testAccProductResourceTagCaseConfig(suffix, upper, lower),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccProductResourceTagCaseConfig(suffix, seedTag, otherTag string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "seed" {
+  name            = "tagcase-seed-%[1]s"
+  description     = "registers the capitalised tag spelling"
+  product_type_id = 1
+  tags            = [%[2]q]
+}
+resource "defectdojo_product" "other" {
+  name            = "tagcase-other-%[1]s"
+  description     = "asks for a different case of the same tag"
+  product_type_id = 1
+  tags            = [%[3]q]
+  depends_on      = [defectdojo_product.seed]
+}
+`, suffix, seedTag, otherTag)
 }
