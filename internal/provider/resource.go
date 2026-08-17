@@ -77,6 +77,36 @@ const ddFormatDecimal = "decimal"
 // instead of an apply-time diagnostic nobody reads.
 var knownDdFormats = map[string]bool{ddFormatDecimal: true}
 
+// addUnsupportedMappingError reports a (Terraform type, ddclient type) pairing
+// the reflection engine cannot convert.
+//
+// Every such pairing is a provider bug - almost always generated-client drift
+// after `make regen-client` - and quietly logging it drops the practitioner's
+// value into a file nobody reads. That silent-failure half of the issue #23
+// root cause is why these are diagnostics rather than tflog.Warn calls.
+//
+// Making them loud is safe precisely because TestDdFieldAuditTagsResolve proves
+// no currently-mapped field can reach them; that audit is load-bearing, not
+// advisory.
+func addUnsupportedMappingError(diags *diag.Diagnostics, fn, tfsdkName string, tfType, ddType reflect.Type) {
+	diags.AddError("Unsupported ddField Mapping", fmt.Sprintf(
+		"%s cannot convert between the Terraform type %s and the DefectDojo client type %s "+
+			"for attribute %q. This is a provider bug, usually generated-client drift after "+
+			"`make regen-client`; please report it, including the DefectDojo version in use.",
+		fn, tfType, ddType, tfsdkName))
+}
+
+// addUnhandledTerraformTypeError reports a Terraform attribute type the engine
+// does not handle at all, as opposed to a type it handles but cannot pair with
+// the given ddclient field.
+func addUnhandledTerraformTypeError(diags *diag.Diagnostics, fn, tfsdkName string, tfType, ddType reflect.Type) {
+	diags.AddError("Unsupported Terraform Attribute Type", fmt.Sprintf(
+		"%s does not handle the Terraform type %s at all (attribute %q, DefectDojo client type "+
+			"%s). Only types.String, types.Bool, types.Int64, types.Float64 and types.Set are "+
+			"supported. This is a provider bug; please report it.",
+		fn, tfType, tfsdkName, ddType))
+}
+
 // renderStringValue converts a server-provided string into the value to store
 // in state, honouring the optional `ddFormat` struct tag.
 //
@@ -499,7 +529,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					d := openapi_types.Date{Time: t}
 					ddFieldValue.Set(reflect.ValueOf(&d))
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesBool:
@@ -511,7 +541,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					destVal.Elem().Set(fieldValue.MethodByName("ValueBool").Call(nil)[0].Convert(destType))
 					ddFieldValue.Set(destVal)
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesInt64:
@@ -531,7 +561,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					v := int32(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Int())
 					ddFieldValue.Set(reflect.ValueOf(&v))
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesFloat64:
@@ -547,7 +577,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					v := float32(fieldValue.MethodByName("ValueFloat64").Call(nil)[0].Float())
 					ddFieldValue.Set(reflect.ValueOf(&v))
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesSet:
@@ -557,7 +587,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					// converted one by one so defined element types work too
 					if ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
 						int64s := []int64{}
-						diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &int64s, false)
+						diags_ := fieldValue.Interface().(types.Set).ElementsAs(ctx, &int64s, false)
 						if len(diags_) > 0 {
 							diags.Append(diags_...)
 							continue
@@ -569,7 +599,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						ddFieldValue.Set(out)
 					} else if ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
 						strs := []string{}
-						diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &strs, false)
+						diags_ := fieldValue.Interface().(types.Set).ElementsAs(ctx, &strs, false)
 						if len(diags_) > 0 {
 							diags.Append(diags_...)
 							continue
@@ -579,6 +609,11 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 							out.Index(i).Set(reflect.ValueOf(val).Convert(ddFieldDescriptor.Type.Elem()))
 						}
 						ddFieldValue.Set(out)
+					} else {
+						// A slice whose element kind is neither int nor string is not
+						// convertible by the loops above. Without this branch the value
+						// was dropped with no diagnostic and no log line at all.
+						addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
 					// the destination field is a pointer to a slice; elements are
@@ -587,7 +622,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					if ddFieldDescriptor.Type.Elem().Elem().Kind() == reflect.Int {
 						// it's a slice of int
 						int64s := []int64{}
-						diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &int64s, false)
+						diags_ := fieldValue.Interface().(types.Set).ElementsAs(ctx, &int64s, false)
 						if len(diags_) > 0 {
 							diags.Append(diags_...)
 							continue
@@ -603,7 +638,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					} else if ddFieldDescriptor.Type.Elem().Elem().Kind() == reflect.String {
 						// it's a slice of string
 						strs := []string{}
-						diags_ := fieldValue.Interface().(types.Set).ElementsAs(context.Background(), &strs, false)
+						diags_ := fieldValue.Interface().(types.Set).ElementsAs(ctx, &strs, false)
 						if len(diags_) > 0 {
 							diags.Append(diags_...)
 							continue
@@ -616,20 +651,25 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						destVal := reflect.New(sliceType)
 						destVal.Elem().Set(out)
 						ddFieldValue.Set(destVal)
+					} else {
+						// A slice whose element kind is neither int nor string is not
+						// convertible by the loops above. Without this branch the value
+						// was dropped with no diagnostic and no log line at all.
+						addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 					}
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign type %s to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			default:
-				tflog.Warn(ctx, fmt.Sprintf("WARN [populateDefectdojoResource]: Don't know how to assign anything (type was %s) to type %s\n", fieldDescriptor.Type, ddFieldDescriptor.Type))
+				addUnhandledTerraformTypeError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 			}
 		}
 	}
 }
 
 func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terraformResourceData, ddResource defectdojoResource) {
-	tflog.Info(context.Background(), "populateResourceData")
+	tflog.Info(ctx, "populateResourceData")
 
 	resourceVal := reflect.ValueOf(*d).Elem()
 	resourceType := resourceVal.Type()
@@ -707,7 +747,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesBool:
@@ -723,10 +763,20 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 						fieldValue.Set(reflect.ValueOf(types.BoolNull()))
 					}
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesInt64:
+				// int64 / *int64 are accepted here but NOT by
+				// populateDefectdojoResource, and ddFieldPairingSupported
+				// (ddfield_audit_unit_test.go) rejects the pairing for exactly that
+				// reason: the ddField contract is bidirectional.
+				//
+				// Do not "fix" the audit to match this branch. An int64 field would
+				// then round-trip cleanly on Read and be silently dropped on
+				// Create/Update - the issue #23 shape precisely. If the generated
+				// client ever grows an int64 field worth mapping, add the write-path
+				// branch first, then relax the audit.
 				if ddFieldDescriptor.Type.Kind() == reflect.Int64 || ddFieldDescriptor.Type.Kind() == reflect.Int {
 					// if the source field is an int or int64, we can cast and use it directly
 					fieldValue.Set(reflect.ValueOf(types.Int64Value((int64)(ddFieldValue.Int()))))
@@ -747,7 +797,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 						fieldValue.Set(reflect.ValueOf(types.Int64Null()))
 					}
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesFloat64:
@@ -768,7 +818,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 						fieldValue.Set(reflect.ValueOf(types.Float64Null()))
 					}
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 
 			case typeOfTypesSet:
@@ -781,7 +831,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 								elems = append(elems, types.Int64Value(ddFieldValue.Index(i).Int()))
 							}
 							destVal, dgs := types.SetValue(types.Int64Type, elems)
-							diags.Append(dgs.Errors()...)
+							diags.Append(dgs...)
 							fieldValue.Set(reflect.ValueOf(destVal))
 						} else {
 							fieldValue.Set(reflect.ValueOf(types.SetNull(types.Int64Type)))
@@ -793,11 +843,16 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 								elems = append(elems, types.StringValue(ddFieldValue.Index(i).String()))
 							}
 							destVal, dgs := types.SetValue(types.StringType, elems)
-							diags.Append(dgs.Errors()...)
+							diags.Append(dgs...)
 							fieldValue.Set(reflect.ValueOf(destVal))
 						} else {
 							fieldValue.Set(reflect.ValueOf(types.SetNull(types.StringType)))
 						}
+					} else {
+						// A slice whose element kind is neither int nor string is not
+						// convertible by the loops above. Without this branch the value
+						// was dropped with no diagnostic and no log line at all.
+						addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
 					// the source field is a pointer to a slice
@@ -810,7 +865,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 								elems = append(elems, types.Int64Value(ddFieldValue.Elem().Index(i).Int()))
 							}
 							destVal, dgs := types.SetValue(types.Int64Type, elems)
-							diags.Append(dgs.Errors()...)
+							diags.Append(dgs...)
 							fieldValue.Set(reflect.ValueOf(destVal))
 						} else {
 							destVal := types.SetNull(types.Int64Type)
@@ -825,18 +880,23 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 								elems = append(elems, types.StringValue(ddFieldValue.Elem().Index(i).String()))
 							}
 							destVal, dgs := types.SetValue(types.StringType, elems)
-							diags.Append(dgs.Errors()...)
+							diags.Append(dgs...)
 							fieldValue.Set(reflect.ValueOf(destVal))
 						} else {
 							destVal := types.SetNull(types.StringType)
 							fieldValue.Set(reflect.ValueOf(destVal))
 						}
+					} else {
+						// A slice whose element kind is neither int nor string is not
+						// convertible by the loops above. Without this branch the value
+						// was dropped with no diagnostic and no log line at all.
+						addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 					}
 				} else {
-					tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign type %s to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
+					addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
 			default:
-				tflog.Warn(ctx, fmt.Sprintf("WARN [populateResourceData]: Don't know how to assign anything (type was %s) to type %s\n", ddFieldDescriptor.Type, fieldDescriptor.Type))
+				addUnhandledTerraformTypeError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 			}
 		}
 	}
