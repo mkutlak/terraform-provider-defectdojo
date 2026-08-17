@@ -307,6 +307,19 @@ func (ddr *notificationsDefectdojoResource) deleteApiCall(ctx context.Context, c
 	return httpResp.StatusCode, body, nil
 }
 
+// clearFieldsApiCall sends the explicit-null PATCH that clears attributes
+// removed from configuration. See clear.go: omitting a field from an update
+// request leaves it unchanged, so clearing needs its own request.
+func (ddr *notificationsDefectdojoResource) clearFieldsApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int, body []byte) (int, []byte, error) {
+	tflog.Info(ctx, "notificationsDefectdojoResource clearFieldsApiCall")
+	apiResp, err := client.NotificationsPartialUpdateWithBodyWithResponse(ctx, idNumber, "application/json", bytes.NewReader(body))
+	if err != nil {
+		return 0, nil, err
+	}
+	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
+	return apiResp.StatusCode(), apiResp.Body, nil
+}
+
 type notificationsResource struct {
 	terraformResource
 }

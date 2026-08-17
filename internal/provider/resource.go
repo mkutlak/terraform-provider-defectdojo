@@ -343,6 +343,16 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
+	// Attributes the practitioner removed from configuration need an explicit
+	// null; omitting them from the update request would leave them unchanged.
+	// See clear.go and GitHub issue #30.
+	priorState, stateDiags := r.getData(ctx, req.State)
+	resp.Diagnostics.Append(stateDiags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	clearNulls, clearEmpties := clearedDdFields(data, priorState, ddResource)
+
 	statusCode, body, err := ddResource.updateApiCall(ctx, r.client, idNumber)
 
 	if err != nil {
@@ -353,6 +363,12 @@ func (r terraformResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 
 	if statusCode == 200 {
+		if len(clearNulls) > 0 || len(clearEmpties) > 0 {
+			applyClearedFields(ctx, &resp.Diagnostics, r.client, r.typeName, idNumber, ddResource, clearNulls, clearEmpties)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
 		populateResourceData(ctx, &resp.Diagnostics, &data, ddResource)
 	} else {
 		resp.Diagnostics.AddError(

@@ -380,3 +380,58 @@ resource "defectdojo_product" "test" {
 }
 `, name)
 }
+
+// TestAccProductResourceClearOptionalAttributes covers the clearing path on a
+// resource with both scalar and collection attributes (issue #30).
+//
+// Collections clear to an empty array rather than an explicit null, because
+// the API types tags and regulations as non-nullable arrays.
+func TestAccProductResourceClearOptionalAttributes(t *testing.T) {
+	t.Parallel()
+	name := fmt.Sprintf("test-clear-%s", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccProductResourceClearConfig(name, `
+  revenue              = "100.00"
+  business_criticality = "high"
+  user_records         = 1000
+  prod_numeric_grade   = 90
+  tags                 = ["alpha", "beta"]`),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("100.00")),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("user_records"), knownvalue.Int64Exact(1000)),
+				},
+			},
+			{
+				Config: testAccProductResourceClearConfig(name, ""),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("business_criticality"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("user_records"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("prod_numeric_grade"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("tags"), knownvalue.Null()),
+				},
+			},
+			{
+				Config:   testAccProductResourceClearConfig(name, ""),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccProductResourceClearConfig(name string, extra string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "test" {
+  name            = %[1]q
+  description     = "clear-attributes regression"
+  product_type_id = 1
+%[2]s
+}
+`, name, extra)
+}
