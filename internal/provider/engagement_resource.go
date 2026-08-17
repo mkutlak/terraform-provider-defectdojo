@@ -152,11 +152,7 @@ func (r engagementResource) Schema(ctx context.Context, req resource.SchemaReque
 				MarkdownDescription: "ID of the requester",
 				Optional:            true,
 			},
-			"tags": schema.SetAttribute{
-				MarkdownDescription: "Tags for this Engagement",
-				Optional:            true,
-				ElementType:         types.StringType,
-			},
+			"tags": tagsSetAttribute("Tags for this Engagement"),
 		},
 	}
 }
