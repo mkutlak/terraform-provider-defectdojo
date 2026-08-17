@@ -24,21 +24,32 @@ func (t slaConfigurationResource) Schema(ctx context.Context, req resource.Schem
 				MarkdownDescription: "Description of the SLA Configuration",
 				Optional:            true,
 			},
+			// The SLA day counts are not nullable in DefectDojo: leaving one
+			// unset in a create/update request makes the server apply its own
+			// model default and answer with it. They must therefore be Computed
+			// to avoid a "provider produced inconsistent result" error whenever
+			// a config omits one. No Default is declared, because those model
+			// defaults vary between DefectDojo versions - the server stays the
+			// source of truth.
 			"critical": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a critical finding",
+				MarkdownDescription: "The number of days to remediate a critical finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"high": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a high finding",
+				MarkdownDescription: "The number of days to remediate a high finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"medium": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a medium finding",
+				MarkdownDescription: "The number of days to remediate a medium finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"low": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a low finding",
+				MarkdownDescription: "The number of days to remediate a low finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
 				Optional:            true,
+				Computed:            true,
 			},
 			"enforce_critical": schema.BoolAttribute{
 				MarkdownDescription: "When enabled, critical findings will be assigned an SLA expiration date",

@@ -33,9 +33,18 @@ func (t locationProductResource) Schema(ctx context.Context, req resource.Schema
 				MarkdownDescription: "The ID of the Product.",
 				Required:            true,
 			},
+			// Not nullable in DefectDojo - the API enum carries "" as its blank
+			// marker, so omitting this stores and returns an empty string. It
+			// must be Computed to avoid a "provider produced inconsistent
+			// result" error when left unset, matching `status` below.
+			//
+			// The OneOf validator deliberately does not list "": validators run
+			// against config, never against the value the server writes into
+			// state.
 			"relationship": schema.StringAttribute{
-				MarkdownDescription: "The relationship between the location and the product. Valid values: 'owned_by', 'used_by'.",
+				MarkdownDescription: "The relationship between the location and the product. Valid values: 'owned_by', 'used_by'. DefectDojo stores an empty string when omitted.",
 				Optional:            true,
+				Computed:            true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("owned_by", "used_by"),
 				},

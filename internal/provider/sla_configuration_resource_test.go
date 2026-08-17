@@ -40,6 +40,54 @@ func TestAccSlaConfigurationResource(t *testing.T) {
 	})
 }
 
+// TestAccSlaConfigurationResourceMinimal applies a config that omits every SLA
+// day count. DefectDojo fills them from its own model defaults and answers with
+// them, so before critical/high/medium/low were marked Computed this failed with
+// "Provider produced inconsistent result after apply: .critical: was null, but
+// now cty.NumberIntVal(...)".
+//
+// Every existing SLA test sets all four explicitly, which is exactly why the
+// defect went unnoticed.
+func TestAccSlaConfigurationResourceMinimal(t *testing.T) {
+	t.Parallel()
+	name := fmt.Sprintf("test-minimal-%s", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSlaConfigurationResourceMinimalConfig(name),
+				ConfigStateChecks: []statecheck.StateCheck{
+					// NotNull rather than a literal: the model defaults are
+					// version-dependent, which is why no Default is declared
+					// on these attributes.
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("critical"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("high"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("medium"), knownvalue.NotNull()),
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("low"), knownvalue.NotNull()),
+				},
+			},
+			// Re-planning the same minimal config must be a no-op. This is what
+			// proves Computed-without-Default is stable, rather than merely
+			// surviving the first apply.
+			{
+				Config:   testAccSlaConfigurationResourceMinimalConfig(name),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccSlaConfigurationResourceMinimalConfig(name string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_sla_configuration" "test" {
+  name = %[1]q
+}
+`, name)
+}
+
 func testAccSlaConfigurationResourceConfig(name string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}

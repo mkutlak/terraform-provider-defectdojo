@@ -45,6 +45,53 @@ func TestAccLocationProductResource(t *testing.T) {
 	})
 }
 
+// TestAccLocationProductResourceMinimal applies a config that omits
+// relationship. The DefectDojo API enum carries "" as its blank marker, so the
+// server stores and answers with an empty string; before relationship was
+// marked Computed this failed with "Provider produced inconsistent result after
+// apply: .relationship: was null, but now cty.StringVal("")".
+func TestAccLocationProductResourceMinimal(t *testing.T) {
+	t.Parallel()
+	name := fmt.Sprintf("test-minimal-%s", uniqueId())
+	host := fmt.Sprintf("%s.example.com", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccLocationProductResourceMinimalConfig(name, host),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("")),
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("status"), knownvalue.NotNull()),
+				},
+			},
+			{
+				Config:   testAccLocationProductResourceMinimalConfig(name, host),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccLocationProductResourceMinimalConfig(name string, host string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "test" {
+  name            = %[1]q
+  description     = "test product for minimal location product"
+  product_type_id = 1
+}
+resource "defectdojo_url" "test" {
+  host = %[2]q
+}
+resource "defectdojo_location_product" "test" {
+  location = defectdojo_url.test.id
+  product  = defectdojo_product.test.id
+}
+`, name, host)
+}
+
 func testAccLocationProductResourceConfig(name string, host string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}

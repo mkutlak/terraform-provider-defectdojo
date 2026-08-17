@@ -31,7 +31,7 @@ resource "defectdojo_location_product" "example" {
 
 ### Optional
 
-- `relationship` (String) The relationship between the location and the product. Valid values: 'owned_by', 'used_by'.
+- `relationship` (String) The relationship between the location and the product. Valid values: 'owned_by', 'used_by'. DefectDojo stores an empty string when omitted.
 - `status` (String) The status of the given Location. Valid values: 'Active', 'Mitigated'.
 
 ### Read-Only
