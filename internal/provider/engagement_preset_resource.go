@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -25,14 +26,14 @@ func (r engagementPresetResource) Schema(ctx context.Context, req resource.Schem
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			// title and scope are blank-able but not nullable in DefectDojo:
-			// omitting them from a create/update request makes the server store
-			// (and answer with) an empty string. They must be Computed to avoid
-			// a "provider produced inconsistent result" error when left unset.
+			// title backs a NOT NULL column with no database default AND the
+			// serializer rejects a blank value, so it is mandatory in practice
+			// even though the OpenAPI schema omits it from `required`:
+			// leaving it out returns 500 (IntegrityError) and sending "" returns
+			// 400 ("This field may not be blank"). Verified against 3.1.101.
 			"title": schema.StringAttribute{
-				MarkdownDescription: "Brief description of preset. DefectDojo stores an empty string when omitted.",
-				Optional:            true,
-				Computed:            true,
+				MarkdownDescription: "Brief description of preset.",
+				Required:            true,
 			},
 			"product": schema.Int64Attribute{
 				MarkdownDescription: "ID of the Product this Preset belongs to",
@@ -42,10 +43,16 @@ func (r engagementPresetResource) Schema(ctx context.Context, req resource.Schem
 				MarkdownDescription: "Description of what needs to be tested or setting up environment for testing",
 				Optional:            true,
 			},
+			// scope also backs a NOT NULL column with no database default, so
+			// omitting it returns 500 - but unlike title the serializer does
+			// accept "". The Default is therefore load-bearing rather than
+			// cosmetic: the provider must put an empty string on the wire,
+			// because leaving the field out of the request crashes the server.
 			"scope": schema.StringAttribute{
-				MarkdownDescription: "Scope of Engagement testing, IP's/Resources/URL's. DefectDojo stores an empty string when omitted.",
+				MarkdownDescription: "Scope of Engagement testing, IP's/Resources/URL's. Defaults to an empty string, which DefectDojo requires to be sent explicitly.",
 				Optional:            true,
 				Computed:            true,
+				Default:             stringdefault.StaticString(""),
 			},
 			"network_locations": schema.SetAttribute{
 				MarkdownDescription: "IDs of network locations",

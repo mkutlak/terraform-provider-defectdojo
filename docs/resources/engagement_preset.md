@@ -25,14 +25,14 @@ resource "defectdojo_engagement_preset" "example" {
 ### Required
 
 - `product` (Number) ID of the Product this Preset belongs to
+- `title` (String) Brief description of preset.
 
 ### Optional
 
 - `network_locations` (Set of Number) IDs of network locations
 - `notes` (String) Description of what needs to be tested or setting up environment for testing
-- `scope` (String) Scope of Engagement testing, IP's/Resources/URL's. DefectDojo stores an empty string when omitted.
+- `scope` (String) Scope of Engagement testing, IP's/Resources/URL's. Defaults to an empty string, which DefectDojo requires to be sent explicitly.
 - `test_type` (Set of Number) IDs of test types
-- `title` (String) Brief description of preset. DefectDojo stores an empty string when omitted.
 
 ### Read-Only
 

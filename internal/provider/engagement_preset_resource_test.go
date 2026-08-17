@@ -44,10 +44,15 @@ func TestAccEngagementPresetResource(t *testing.T) {
 	})
 }
 
-// TestAccEngagementPresetResourceMinimal applies a config that omits both title
-// and scope. DefectDojo stores an empty string for each and answers with it, so
-// before they were marked Computed this failed with "Provider produced
-// inconsistent result after apply: .title: was null, but now cty.StringVal("")".
+// TestAccEngagementPresetResourceMinimal applies a config that omits scope.
+//
+// scope backs a NOT NULL column with no database default, so a request that
+// leaves it out returns 500 (IntegrityError) - the provider must put an empty
+// string on the wire, which is what the schema Default does. Sending "" is
+// accepted, unlike title, where the serializer also rejects a blank value.
+//
+// title is deliberately set here: it is Required precisely because there is no
+// value the provider could supply on the practitioner's behalf.
 func TestAccEngagementPresetResourceMinimal(t *testing.T) {
 	t.Parallel()
 	name := fmt.Sprintf("test-minimal-%s", uniqueId())
@@ -59,7 +64,6 @@ func TestAccEngagementPresetResourceMinimal(t *testing.T) {
 			{
 				Config: testAccEngagementPresetResourceMinimalConfig(name),
 				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue("defectdojo_engagement_preset.test", tfjsonpath.New("title"), knownvalue.StringExact("")),
 					statecheck.ExpectKnownValue("defectdojo_engagement_preset.test", tfjsonpath.New("scope"), knownvalue.StringExact("")),
 				},
 			},
@@ -81,6 +85,7 @@ resource "defectdojo_product" "test_product" {
 }
 resource "defectdojo_engagement_preset" "test" {
   product = defectdojo_product.test_product.id
+  title   = "minimal preset"
 }
 `, productName)
 }
