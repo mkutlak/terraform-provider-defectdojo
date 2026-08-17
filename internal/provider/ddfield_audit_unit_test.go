@@ -100,9 +100,13 @@ var (
 // ddclient field type in BOTH directions (populateDefectdojoResource and
 // populateResourceData). It mirrors the switch statements in resource.go,
 // including the places where the engine uses reflect.Value.Set with an
-// exactly-typed value (which panics or silently warns for defined types)
-// versus reflect.Value.Convert (which tolerates defined types with a matching
-// underlying kind).
+// exactly-typed value versus reflect.Value.Convert (which tolerates defined
+// types with a matching underlying kind).
+//
+// That distinction is load-bearing rather than cosmetic: the branch conditions
+// in resource.go are Kind()-based, so a defined type ENTERS an exactly-typed
+// branch and panics inside reflect.Value.Set - the fall-through error is never
+// reached. This audit is what prevents that panic.
 func ddFieldPairingSupported(tfType, ddType reflect.Type) (bool, string) {
 	isPtrTo := func(t reflect.Type, elem func(reflect.Type) bool) bool {
 		return t.Kind() == reflect.Ptr && elem(t.Elem())
@@ -147,6 +151,11 @@ func ddFieldPairingSupported(tfType, ddType reflect.Type) (bool, string) {
 		return false, "types.Bool maps only to bool or *bool"
 
 	case typeOfTypesInt64:
+		// Deliberately narrower than populateResourceData, which also accepts
+		// int64 / *int64 (see the comment at that branch in resource.go). The
+		// write path does not, so accepting the pairing here would let an int64
+		// field round-trip on Read and be silently dropped on Create/Update.
+		// Rejecting it keeps the contract bidirectional.
 		switch {
 		// int / *int use Convert(), so defined int types are ok.
 		case ddType.Kind() == reflect.Int:
