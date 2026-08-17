@@ -115,10 +115,11 @@ func (t jiraInstanceResource) Schema(ctx context.Context, req resource.SchemaReq
 }
 
 type jiraInstanceResourceData struct {
-	Id                             types.String `tfsdk:"id" ddField:"Id"`
-	Url                            types.String `tfsdk:"url" ddField:"Url"`
-	Username                       types.String `tfsdk:"username" ddField:"Username"`
-	Password                       types.String `tfsdk:"password" ddField:"Password"`
+	Id       types.String `tfsdk:"id" ddField:"Id"`
+	Url      types.String `tfsdk:"url" ddField:"Url"`
+	Username types.String `tfsdk:"username" ddField:"Username"`
+	// No ddField tag: see the comment on jiraInstanceDefectdojoResource.password.
+	Password                       types.String `tfsdk:"password"`
 	ConfigurationName              types.String `tfsdk:"configuration_name" ddField:"ConfigurationName"`
 	EpicNameId                     types.Int64  `tfsdk:"epic_name_id" ddField:"EpicNameId"`
 	OpenStatusKey                  types.Int64  `tfsdk:"open_status_key" ddField:"OpenStatusKey"`
@@ -140,18 +141,26 @@ type jiraInstanceResourceData struct {
 type jiraInstanceDefectdojoResource struct {
 	dd.JIRAInstance
 
-	// Password is write-only in the DefectDojo API: it exists on
+	// password is write-only in the DefectDojo API: it exists on
 	// JIRAInstanceRequest but not on the JIRAInstance response model, so it
-	// cannot live on the embedded struct. Declaring it here lets the
-	// reflection engine resolve ddField:"Password" (direct fields shadow
-	// promoted ones) so the configured value reaches create/update requests.
-	Password *string
+	// cannot live on the embedded struct.
+	//
+	// It is deliberately unexported and the Terraform field carries NO ddField
+	// tag. With the tag, every refresh built a fresh wrapper whose Password was
+	// nil - the response has no password to fill it from - and
+	// populateResourceData wrote StringNull() over the practitioner's
+	// configured secret, producing a permanent diff on a credential.
+	//
+	// It is reattached in jiraInstanceResourceData.defectdojoResource()
+	// instead, which is the shape user_resource.go already uses for the same
+	// problem.
+	password *string
 }
 
 func jiraInstanceToRequest(ddr *jiraInstanceDefectdojoResource) dd.JIRAInstanceRequest {
 	j := ddr.JIRAInstance
 	req := dd.JIRAInstanceRequest{
-		Password:                       ddr.Password,
+		Password:                       ddr.password,
 		Url:                            j.Url,
 		Username:                       j.Username,
 		ConfigurationName:              j.ConfigurationName,
@@ -263,7 +272,14 @@ func (r jiraInstanceDataProvider) listByName(ctx context.Context, client *dd.Cli
 }
 
 func (d *jiraInstanceResourceData) defectdojoResource() defectdojoResource {
-	return &jiraInstanceDefectdojoResource{JIRAInstance: dd.JIRAInstance{}}
+	r := &jiraInstanceDefectdojoResource{JIRAInstance: dd.JIRAInstance{}}
+	// Password is write-only; carry it across by hand so it reaches
+	// create/update requests without the read path being able to clobber it.
+	if !d.Password.IsNull() && !d.Password.IsUnknown() {
+		p := d.Password.ValueString()
+		r.password = &p
+	}
+	return r
 }
 
 type jiraInstanceResource struct {

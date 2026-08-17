@@ -86,3 +86,51 @@ func TestJiraInstanceResourcePopulateDefectdojo(t *testing.T) {
 	assert.Equal(t, ddInstance.CloseStatusKey, 21)
 	assert.Equal(t, ddInstance.InfoMappingSeverity, "Lowest")
 }
+
+// TestJiraInstanceResourcePreservesPasswordOnRefresh asserts that a refresh
+// does not clobber the configured secret.
+//
+// DefectDojo never echoes the password back - it exists on JIRAInstanceRequest
+// but not on the JIRAInstance response model - so while the Terraform field
+// carried a ddField tag, every refresh rebuilt the wrapper with a nil password
+// and populateResourceData wrote StringNull() over it. The result was a
+// permanent, retry-proof diff on a credential.
+//
+// user_resource.go has always used the shape this now copies.
+func TestJiraInstanceResourcePreservesPasswordOnRefresh(t *testing.T) {
+	resourceData := jiraInstanceResourceData{
+		Url:      types.StringValue("https://jira.example.com"),
+		Username: types.StringValue("jirauser"),
+		Password: types.StringValue("s3cret"),
+	}
+
+	// The write path must still carry the secret into the request body.
+	ddResource := resourceData.defectdojoResource().(*jiraInstanceDefectdojoResource)
+	req := jiraInstanceToRequest(ddResource)
+	assert.Assert(t, req.Password != nil)
+	assert.Equal(t, *req.Password, "s3cret")
+
+	// Simulate a read: the response model has no password field at all.
+	refreshed := &jiraInstanceDefectdojoResource{
+		JIRAInstance: dd.JIRAInstance{Url: "https://jira.example.com", Username: "jirauser"},
+	}
+	var terraformResource terraformResourceData = &resourceData
+	diags := diag.Diagnostics{}
+	populateResourceData(context.Background(), &diags, &terraformResource, refreshed)
+
+	assert.Equal(t, diags.HasError(), false)
+	assert.Equal(t, resourceData.Password.ValueString(), "s3cret")
+}
+
+// TestJiraInstanceResourceOmitsUnsetPassword confirms an unset password is sent
+// as nil rather than as an empty string, so DefectDojo leaves it untouched.
+func TestJiraInstanceResourceOmitsUnsetPassword(t *testing.T) {
+	resourceData := jiraInstanceResourceData{
+		Url:      types.StringValue("https://jira.example.com"),
+		Username: types.StringValue("jirauser"),
+		Password: types.StringNull(),
+	}
+
+	ddResource := resourceData.defectdojoResource().(*jiraInstanceDefectdojoResource)
+	assert.Assert(t, jiraInstanceToRequest(ddResource).Password == nil)
+}
