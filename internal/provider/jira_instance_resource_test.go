@@ -12,7 +12,6 @@ import (
 
 func TestAccJiraInstanceResource(t *testing.T) {
 	t.Parallel()
-	t.Skip("Skipped: JiraInstance requires write-only password handling (not yet implemented)")
 	name := fmt.Sprintf("test-%s", uniqueId())
 	updatedName := fmt.Sprintf("updated-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
