@@ -144,6 +144,11 @@ jobs:
       - run: go mod download
       - name: Start DefectDojo
         run: make dd-up
+      # Collects openapi-specs/$DD_VERSION/defect_dojo.json so the spec-backed
+      # round-trip audits run instead of skipping. See
+      # TestResourceOptionalAttributesAreNullableInSpec.
+      - name: Fetch OpenAPI spec
+        run: make dd-spec
       - name: Run acceptance tests
         run: make testacc-local
         timeout-minutes: 25
@@ -185,6 +190,11 @@ jobs:
           echo "TF_ACC_TERRAFORM_PATH=$TOFU_PATH" >> "$GITHUB_ENV"
       - name: Start DefectDojo
         run: make dd-up
+      # Collects openapi-specs/$DD_VERSION/defect_dojo.json so the spec-backed
+      # round-trip audits run instead of skipping. See
+      # TestResourceOptionalAttributesAreNullableInSpec.
+      - name: Fetch OpenAPI spec
+        run: make dd-spec
       - name: Run acceptance tests
         run: make testacc-local
         timeout-minutes: 25
