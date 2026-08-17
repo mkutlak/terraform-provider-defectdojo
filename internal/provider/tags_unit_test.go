@@ -11,22 +11,40 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// tagValidationCases are the inputs every tag-bearing resource must agree on.
-// The rejected ones are all values DefectDojo either lower-cases or refuses, so
-// accepting them in the plan only defers the failure to apply time.
+// tagValidationCases mirrors what DefectDojo 3.1.101 actually does. Each
+// accepted value below was created through the API and read back verbatim; each
+// rejected value either returns 400 or is silently split into several tags.
+// See the table in tags.go.
 var tagValidationCases = []struct {
 	tag       string
 	wantError bool
 }{
+	// Stored verbatim - the validator must not stand in the way of these.
 	{"ok", false},
 	{"ok-tag_1", false},
 	{"0-starts-with-a-digit", false},
-	{"Foo", true},           // server lower-cases
-	{"UPPER", true},         // server lower-cases
-	{"team.security", true}, // dots are outside the grammar
-	{"needs review", true},  // spaces are outside the grammar
-	{"-leading-hyphen", true},
-	{"_leading-underscore", true},
+	{"env:prod", false},
+	{"owasp:a01", false},
+	{"v1.2.3", false},
+	{"team/security", false},
+	{"tag#1", false},
+	{"tag+1", false},
+	{"_internal", false},
+	{"-legacy", false},
+	{"café", false},
+	// Uppercase round-trips unchanged on 3.1.101; rejecting it broke working
+	// configurations. See the note in tags.go.
+	{"Foo", false},
+	{"MixedCase", false},
+
+	// 400 "Invalid tag: ... Tags should not contain spaces, commas, or quotes."
+	{"needs review", true},
+	{"a'b", true},
+	// Accepted with a 201, but silently split into two tags - the issue #23
+	// shape, and the reason these are rejected at plan time.
+	{"a,b", true},
+	{`a"b`, true},
+	// The serializer drops an empty tag, so it can never round-trip.
 	{"", true},
 }
 

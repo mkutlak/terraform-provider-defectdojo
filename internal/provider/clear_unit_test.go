@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
 // TestResourcesWithClearableAttributesImplementNullClearer is the completeness
@@ -101,7 +102,15 @@ func TestClearedDdFieldsDetectsRemovedAttributes(t *testing.T) {
 		Tags:            types.SetValueMust(types.StringType, []attr.Value{types.StringValue("a")}),
 	}
 
-	nulls, empties := clearedDdFields(plan, state, plan.defectdojoResource())
+	targets := clearedDdFields(plan, state, plan.defectdojoResource())
+	var nulls, empties []string
+	for _, t := range targets {
+		if t.isSlice {
+			empties = append(empties, t.jsonName)
+		} else {
+			nulls = append(nulls, t.jsonName)
+		}
+	}
 	sort.Strings(nulls)
 	sort.Strings(empties)
 
@@ -140,9 +149,8 @@ func TestClearedDdFieldsIgnoresUnchangedAndUnknown(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			plan := &ddTestResourceData{BranchTag: tc.planValue}
 			state := &ddTestResourceData{BranchTag: types.StringValue("main")}
-			nulls, empties := clearedDdFields(plan, state, plan.defectdojoResource())
-			if len(nulls) != 0 || len(empties) != 0 {
-				t.Errorf("clearedDdFields = (%v, %v), want empty: nothing was removed from config", nulls, empties)
+			if got := clearedDdFields(plan, state, plan.defectdojoResource()); len(got) != 0 {
+				t.Errorf("clearedDdFields = %v, want empty: nothing was removed from config", got)
 			}
 		})
 	}
@@ -150,9 +158,8 @@ func TestClearedDdFieldsIgnoresUnchangedAndUnknown(t *testing.T) {
 	t.Run("state already null", func(t *testing.T) {
 		plan := &ddTestResourceData{BranchTag: types.StringNull()}
 		state := &ddTestResourceData{BranchTag: types.StringNull()}
-		nulls, empties := clearedDdFields(plan, state, plan.defectdojoResource())
-		if len(nulls) != 0 || len(empties) != 0 {
-			t.Errorf("clearedDdFields = (%v, %v), want empty: there was nothing to clear", nulls, empties)
+		if got := clearedDdFields(plan, state, plan.defectdojoResource()); len(got) != 0 {
+			t.Errorf("clearedDdFields = %v, want empty: there was nothing to clear", got)
 		}
 	})
 }
@@ -160,7 +167,11 @@ func TestClearedDdFieldsIgnoresUnchangedAndUnknown(t *testing.T) {
 func TestClearPatchBody(t *testing.T) {
 	t.Parallel()
 
-	raw, err := clearPatchBody([]string{"branch_tag", "percent_complete"}, []string{"tags"})
+	raw, err := clearPatchBody([]clearTarget{
+		{jsonName: "branch_tag"},
+		{jsonName: "percent_complete"},
+		{jsonName: "tags", isSlice: true},
+	})
 	if err != nil {
 		t.Fatalf("clearPatchBody: %v", err)
 	}
@@ -180,5 +191,66 @@ func TestClearPatchBody(t *testing.T) {
 		t.Errorf("tags missing, want an empty array")
 	} else if arr, isArr := v.([]any); !isArr || len(arr) != 0 {
 		t.Errorf("tags = %v, want an empty array (the API types tags as a non-nullable array)", v)
+	}
+}
+
+// TestStillSetAfterUpdate covers the guard that stops the provider sending a
+// redundant clear PATCH.
+//
+// Some DefectDojo serializers declare a field default, so the full update
+// already cleared the value; re-sending an explicit null is wasted at best, and
+// defectdojo_metadata rejects a lone {"product": null} with "Metadata entries
+// need either a product, endpoint, location or a finding" (verified on
+// 3.1.101) even though the row is already correct.
+func TestStillSetAfterUpdate(t *testing.T) {
+	t.Parallel()
+
+	branchTag := "main"
+	tags := []string{"alpha"}
+	ddResource := &ddTestDefectdojoResource{
+		TestCreate: dd.TestCreate{
+			BranchTag: &branchTag, // server kept it: still needs clearing
+			BuildId:   nil,        // server already cleared it
+			Tags:      &tags,      // still populated
+		},
+	}
+
+	targets := []clearTarget{
+		{jsonName: "branch_tag", ddFieldName: "BranchTag"},
+		{jsonName: "build_id", ddFieldName: "BuildId"},
+		{jsonName: "tags", ddFieldName: "Tags", isSlice: true},
+		{jsonName: "made_up", ddFieldName: "NoSuchField"},
+	}
+
+	var got []string
+	for _, target := range stillSetAfterUpdate(ddResource, targets) {
+		got = append(got, target.jsonName)
+	}
+	sort.Strings(got)
+
+	// build_id is dropped; made_up is kept because we cannot tell, so the PATCH
+	// gets to decide rather than the provider silently skipping it.
+	want := []string{"branch_tag", "made_up", "tags"}
+	if len(got) != len(want) {
+		t.Fatalf("stillSetAfterUpdate = %v, want %v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("stillSetAfterUpdate = %v, want %v", got, want)
+		}
+	}
+}
+
+// TestStillSetAfterUpdateDropsEmptyCollection guards the slice branch: an empty
+// slice means the update already emptied it.
+func TestStillSetAfterUpdateDropsEmptyCollection(t *testing.T) {
+	t.Parallel()
+
+	empty := []string{}
+	ddResource := &ddTestDefectdojoResource{TestCreate: dd.TestCreate{Tags: &empty}}
+	targets := []clearTarget{{jsonName: "tags", ddFieldName: "Tags", isSlice: true}}
+
+	if got := stillSetAfterUpdate(ddResource, targets); len(got) != 0 {
+		t.Errorf("stillSetAfterUpdate = %v, want empty: the update already emptied tags", got)
 	}
 }

@@ -179,7 +179,7 @@ type productResourceData struct {
 	ProductManagerId              types.Int64  `tfsdk:"product_manager_id" ddField:"ProductManager"`
 	RegulationIds                 types.Set    `tfsdk:"regulation_ids" ddField:"Regulations"`
 	Revenue                       types.String `tfsdk:"revenue" ddField:"Revenue" ddFormat:"decimal"`
-	Tags                          types.Set    `tfsdk:"tags" ddField:"Tags"`
+	Tags                          types.Set    `tfsdk:"tags" ddField:"Tags" ddFormat:"tags"`
 	TeamManagerId                 types.Int64  `tfsdk:"team_manager_id" ddField:"TeamManager"`
 	TechnicalContactId            types.Int64  `tfsdk:"technical_contact_id" ddField:"TechnicalContact"`
 	UserRecords                   types.Int64  `tfsdk:"user_records" ddField:"UserRecords"`

@@ -54,20 +54,79 @@ type nullClearer interface {
 	clearFieldsApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int, body []byte) (int, []byte, error)
 }
 
-// clearedDdFields returns the DefectDojo JSON field names for attributes that
-// hold a value in the prior state but are null in the plan - that is, the ones
-// the practitioner removed from configuration.
+// clearTarget is one attribute the practitioner removed from configuration,
+// resolved down to the wire field that has to be cleared.
+type clearTarget struct {
+	jsonName    string // the DefectDojo JSON field name
+	ddFieldName string // the ddclient Go field name, used to re-check after the update
+	isSlice     bool   // collections clear to [], scalars to null
+}
+
+// stillSetAfterUpdate narrows the clear list to fields the update response shows
+// are actually still populated.
 //
-// Set-typed attributes are reported separately because an empty collection, not
+// Not every DefectDojo serializer behaves the same way on a full update: where a
+// field is declared with an explicit default, DRF substitutes that default for
+// an omitted field and the PUT already clears it. Sending a redundant
+// explicit-null PATCH afterwards is at best a wasted request, and at worst a
+// failure - defectdojo_metadata validates across fields, so a lone
+// {"product": null} is rejected with "Metadata entries need either a product,
+// endpoint, location or a finding" even though the row is already correct.
+//
+// The update response is authoritative here: updateApiCall assigns it back onto
+// the wrapper, so a nil (or empty) field means the server has already dropped
+// the value.
+func stillSetAfterUpdate(ddResource defectdojoResource, targets []clearTarget) []clearTarget {
+	ddVal := reflect.ValueOf(ddResource).Elem()
+
+	var out []clearTarget
+	for _, target := range targets {
+		field := ddVal.FieldByName(target.ddFieldName)
+		if !field.IsValid() {
+			out = append(out, target) // cannot tell; let the PATCH decide
+			continue
+		}
+		if ddFieldIsEmpty(field) {
+			continue // the update already cleared it
+		}
+		out = append(out, target)
+	}
+	return out
+}
+
+// ddFieldIsEmpty reports whether a ddclient field currently holds no value.
+func ddFieldIsEmpty(field reflect.Value) bool {
+	switch field.Kind() {
+	case reflect.Ptr, reflect.Interface:
+		if field.IsNil() {
+			return true
+		}
+		return ddFieldIsEmpty(field.Elem())
+	case reflect.Slice, reflect.Map:
+		return field.IsNil() || field.Len() == 0
+	case reflect.String:
+		return field.Len() == 0
+	default:
+		return field.IsZero()
+	}
+}
+
+// clearedDdFields returns the attributes that hold a value in the prior state
+// but are null in the plan - that is, the ones the practitioner removed from
+// configuration.
+//
+// Set-typed attributes are flagged separately because an empty collection, not
 // null, is how the API expresses "no elements": the spec types tags and the
 // various *_ids as non-nullable arrays.
-func clearedDdFields(plan, state terraformResourceData, ddResource defectdojoResource) (nulls []string, empties []string) {
+func clearedDdFields(plan, state terraformResourceData, ddResource defectdojoResource) []clearTarget {
 	planVal := reflect.ValueOf(plan).Elem()
 	stateVal := reflect.ValueOf(state).Elem()
 	if planVal.Type() != stateVal.Type() {
-		return nil, nil
+		return nil
 	}
 	ddType := reflect.ValueOf(ddResource).Elem().Type()
+
+	var targets []clearTarget
 
 	for i := range planVal.NumField() {
 		fieldDescriptor := planVal.Type().Field(i)
@@ -104,14 +163,14 @@ func clearedDdFields(plan, state terraformResourceData, ddResource defectdojoRes
 			continue
 		}
 
-		if isSliceDdField(ddField.Type) {
-			empties = append(empties, jsonName)
-		} else {
-			nulls = append(nulls, jsonName)
-		}
+		targets = append(targets, clearTarget{
+			jsonName:    jsonName,
+			ddFieldName: ddFieldName,
+			isSlice:     isSliceDdField(ddField.Type),
+		})
 	}
 
-	return nulls, empties
+	return targets
 }
 
 // isSliceDdField reports whether a ddclient field is a collection (or a pointer
@@ -124,13 +183,14 @@ func isSliceDdField(t reflect.Type) bool {
 }
 
 // clearPatchBody builds the PATCH payload that clears the given fields.
-func clearPatchBody(nulls []string, empties []string) ([]byte, error) {
+func clearPatchBody(targets []clearTarget) ([]byte, error) {
 	body := map[string]any{}
-	for _, name := range nulls {
-		body[name] = nil
-	}
-	for _, name := range empties {
-		body[name] = []any{}
+	for _, target := range targets {
+		if target.isSlice {
+			body[target.jsonName] = []any{}
+		} else {
+			body[target.jsonName] = nil
+		}
 	}
 
 	var buf bytes.Buffer
@@ -151,10 +211,13 @@ func applyClearedFields(
 	typeName string,
 	idNumber int,
 	ddResource defectdojoResource,
-	nulls []string,
-	empties []string,
+	targets []clearTarget,
 ) {
-	all := append(append([]string{}, nulls...), empties...)
+	names := make([]string, 0, len(targets))
+	for _, t := range targets {
+		names = append(names, t.jsonName)
+	}
+	all := strings.Join(names, ", ")
 
 	clearer, ok := ddResource.(nullClearer)
 	if !ok {
@@ -163,11 +226,11 @@ func applyClearedFields(
 			fmt.Sprintf("The attributes %s were removed from the configuration, but %s does not "+
 				"implement clearFieldsApiCall, so the provider cannot ask DefectDojo to clear them. "+
 				"Omitting a field from an update request leaves it unchanged. This is a provider "+
-				"bug; please report it.", strings.Join(all, ", "), typeName))
+				"bug; please report it.", all, typeName))
 		return
 	}
 
-	body, err := clearPatchBody(nulls, empties)
+	body, err := clearPatchBody(targets)
 	if err != nil {
 		diags.AddError("Error Clearing Attributes on "+typeName, err.Error())
 		return
@@ -183,7 +246,7 @@ func applyClearedFields(
 			"API Error Clearing Attributes on "+typeName,
 			fmt.Sprintf("Removing %s from the configuration requires DefectDojo to accept an "+
 				"explicit null for those fields, but it answered %d.\n\nrequest:\n\n%s\n\nbody:\n\n%s",
-				strings.Join(all, ", "), statusCode, string(body), string(respBody)))
+				all, statusCode, string(body), string(respBody)))
 		return
 	}
 

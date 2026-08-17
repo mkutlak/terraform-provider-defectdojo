@@ -300,9 +300,13 @@ func TestDdFormatTagsAreKnown(t *testing.T) {
 					continue
 				}
 
-				if tfField.Type != typeOfTypesString {
-					t.Errorf("%s: field %q has ddFormat:%q but is %s; ddFormat is only honoured "+
-						"for types.String attributes", name, tfField.Name, format, tfField.Type)
+				wantTf := typeOfTypesString
+				if format == ddFormatTags {
+					wantTf = typeOfTypesSet
+				}
+				if tfField.Type != wantTf {
+					t.Errorf("%s: field %q has ddFormat:%q but is %s; that format is only honoured "+
+						"for %s attributes", name, tfField.Name, format, tfField.Type, wantTf)
 					continue
 				}
 
@@ -313,6 +317,16 @@ func TestDdFormatTagsAreKnown(t *testing.T) {
 				ddType := ddField.Type
 				if ddType.Kind() == reflect.Ptr {
 					ddType = ddType.Elem()
+				}
+				if format == ddFormatTags {
+					// renderStringSet is only reached from the string-element
+					// slice branches.
+					if ddType.Kind() != reflect.Slice || ddType.Elem().Kind() != reflect.String {
+						t.Errorf("%s: field %q has ddFormat:%q but its ddField target %s.%s is %s; "+
+							"the tag would be silently ignored",
+							name, tfField.Name, format, ddStruct, tfField.Tag.Get("ddField"), ddField.Type)
+					}
+					continue
 				}
 				if ddType.Kind() != reflect.String {
 					t.Errorf("%s: field %q has ddFormat:%q but its ddField target %s.%s is %s; "+

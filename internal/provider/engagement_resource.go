@@ -185,7 +185,7 @@ type engagementResourceData struct {
 	Preset                    types.Int64  `tfsdk:"preset" ddField:"Preset"`
 	ReportType                types.Int64  `tfsdk:"report_type" ddField:"ReportType"`
 	Requester                 types.Int64  `tfsdk:"requester" ddField:"Requester"`
-	Tags                      types.Set    `tfsdk:"tags" ddField:"Tags"`
+	Tags                      types.Set    `tfsdk:"tags" ddField:"Tags" ddFormat:"tags"`
 }
 
 type engagementDefectdojoResource struct {

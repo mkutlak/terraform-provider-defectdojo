@@ -310,14 +310,29 @@ func (ddr *notificationsDefectdojoResource) deleteApiCall(ctx context.Context, c
 // clearFieldsApiCall sends the explicit-null PATCH that clears attributes
 // removed from configuration. See clear.go: omitting a field from an update
 // request leaves it unchanged, so clearing needs its own request.
+//
+// Like every other API call on this resource it uses the RAW client method
+// rather than the ...WithResponse wrapper. The wrapper would run
+// ParseNotificationsPartialUpdateResponse, which unmarshals the body into
+// dd.Notifications, whose ScanAddedEmpty is a scalar enum - and the live API
+// answers with an array (verified on 3.1.101: GET returns
+// "scan_added_empty": []). That parser therefore fails on a PATCH that
+// actually succeeded, and the caller would see a JSON error for a request the
+// server accepted. See the notificationsModel comment above.
 func (ddr *notificationsDefectdojoResource) clearFieldsApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int, body []byte) (int, []byte, error) {
 	tflog.Info(ctx, "notificationsDefectdojoResource clearFieldsApiCall")
-	apiResp, err := client.NotificationsPartialUpdateWithBodyWithResponse(ctx, idNumber, "application/json", bytes.NewReader(body))
+	httpResp, err := client.NotificationsPartialUpdateWithBody(ctx, idNumber, "application/json", bytes.NewReader(body))
 	if err != nil {
 		return 0, nil, err
 	}
-	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	return apiResp.StatusCode(), apiResp.Body, nil
+	defer func() { _ = httpResp.Body.Close() }()
+
+	respBody, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return 0, nil, err
+	}
+	tflog.Info(ctx, fmt.Sprintf("response %s: %s", httpResp.Status, respBody))
+	return httpResp.StatusCode, respBody, nil
 }
 
 type notificationsResource struct {
