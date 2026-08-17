@@ -82,3 +82,61 @@ resource "defectdojo_engagement" "test" {
 }
 `, productName, engagementName)
 }
+
+// TestAccEngagementResourceClearOptionalAttributes covers the clearing path on
+// the resource with the second-largest Optional-only surface (issue #30).
+func TestAccEngagementResourceClearOptionalAttributes(t *testing.T) {
+	t.Parallel()
+	name := fmt.Sprintf("test-clear-%s", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccEngagementResourceClearConfig(name, `
+  branch_tag    = "main"
+  build_id      = "build-1"
+  commit_hash   = "abc123"
+  version       = "v1"
+  reason        = "scheduled"
+  tracker       = "https://tracker.example.com/1"
+  test_strategy = "https://strategy.example.com/plan"
+  tags          = ["alpha"]`),
+			},
+			{
+				Config: testAccEngagementResourceClearConfig(name, ""),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("branch_tag"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("build_id"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("commit_hash"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("version"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("reason"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_engagement.test", tfjsonpath.New("tags"), knownvalue.Null()),
+				},
+			},
+			{
+				Config:   testAccEngagementResourceClearConfig(name, ""),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccEngagementResourceClearConfig(name string, extra string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "clear_p" {
+  name            = %[1]q
+  description     = "clear-attributes regression"
+  product_type_id = 1
+}
+resource "defectdojo_engagement" "test" {
+  name         = %[1]q
+  product      = defectdojo_product.clear_p.id
+  target_start = "2026-01-01"
+  target_end   = "2026-12-31"
+%[2]s
+}
+`, name, extra)
+}

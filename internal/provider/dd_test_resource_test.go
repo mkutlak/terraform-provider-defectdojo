@@ -137,3 +137,82 @@ resource "defectdojo_test" "dateonly" {
 }
 `, name)
 }
+
+// TestAccDdTestResourceClearOptionalAttributes is the regression test for
+// GitHub issue #30.
+//
+// Removing a previously-set Optional attribute from configuration used to fail
+// with "Provider produced inconsistent result after apply: .branch_tag: was
+// null, but now cty.StringVal(...)". Every generated request struct field is a
+// pointer with `omitempty`, so the update request simply omitted the field and
+// DefectDojo left the column untouched; the read path then wrote the stale
+// value back over the planned null.
+//
+// The error was retry-proof and fired after the server had already been
+// mutated. Clearing now goes through an explicit-null PATCH (see clear.go).
+func TestAccDdTestResourceClearOptionalAttributes(t *testing.T) {
+	t.Parallel()
+	name := fmt.Sprintf("test-clear-%s", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDdTestResourceClearConfig(name, `
+  branch_tag       = "main"
+  build_id         = "build-1"
+  commit_hash      = "abc123"
+  percent_complete = 50
+  version          = "v1"
+  tags             = ["alpha"]`),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("branch_tag"), knownvalue.StringExact("main")),
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("percent_complete"), knownvalue.Int64Exact(50)),
+				},
+			},
+			// Every optional attribute removed from config: they must actually
+			// be cleared server-side, not silently retained.
+			{
+				Config: testAccDdTestResourceClearConfig(name, ""),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("branch_tag"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("build_id"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("commit_hash"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("percent_complete"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("version"), knownvalue.Null()),
+					statecheck.ExpectKnownValue("defectdojo_test.t", tfjsonpath.New("tags"), knownvalue.Null()),
+				},
+			},
+			// The cleared state must be stable, not re-diff on every plan.
+			{
+				Config:   testAccDdTestResourceClearConfig(name, ""),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccDdTestResourceClearConfig(name string, extra string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "p" {
+  name            = %[1]q
+  description     = "issue 30 regression"
+  product_type_id = 1
+}
+resource "defectdojo_engagement" "e" {
+  name         = %[1]q
+  product      = defectdojo_product.p.id
+  target_start = "2026-01-01"
+  target_end   = "2026-12-31"
+}
+resource "defectdojo_test" "t" {
+  engagement   = defectdojo_engagement.e.id
+  test_type    = 1
+  target_start = "2026-01-01T00:00:00Z"
+  target_end   = "2026-01-02T00:00:00Z"
+%[2]s
+}
+`, name, extra)
+}
