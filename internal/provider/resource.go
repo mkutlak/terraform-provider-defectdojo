@@ -3,8 +3,11 @@ package provider
 import (
 	"context"
 	"fmt"
+	"maps"
 	"reflect"
+	"slices"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -61,6 +64,39 @@ var typeOfTypesBool = reflect.TypeFor[types.Bool]()
 var typeOfTypesInt64 = reflect.TypeFor[types.Int64]()
 var typeOfTypesFloat64 = reflect.TypeFor[types.Float64]()
 var typeOfTypesSet = reflect.TypeFor[types.Set]()
+
+// ddFormatDecimal marks a types.String attribute whose DefectDojo column is a
+// Django DecimalField. The server answers in one canonical form, so the read
+// path keeps the configured literal when it denotes the same amount rather
+// than rewriting state and tripping "Provider produced inconsistent result
+// after apply". See decimal.go.
+const ddFormatDecimal = "decimal"
+
+// knownDdFormats is the set of `ddFormat` struct tag values populateResourceData
+// understands. TestDdFormatTagsAreKnown turns a typo into a `go test` failure
+// instead of an apply-time diagnostic nobody reads.
+var knownDdFormats = map[string]bool{ddFormatDecimal: true}
+
+// renderStringValue converts a server-provided string into the value to store
+// in state, honouring the optional `ddFormat` struct tag.
+//
+// An unrecognised ddFormat is an error rather than a silent pass-through: a tag
+// that does not do what it says is exactly the kind of quiet degradation that
+// let issue #23 survive.
+func renderStringValue(diags *diag.Diagnostics, tag reflect.StructTag, current types.String, server string) types.String {
+	switch format := tag.Get("ddFormat"); format {
+	case "":
+		return types.StringValue(server)
+	case ddFormatDecimal:
+		return preserveDecimalLiteral(current, server)
+	default:
+		diags.AddError("Unknown ddFormat Tag", fmt.Sprintf(
+			"Attribute %q carries ddFormat:%q, which populateResourceData does not understand "+
+				"(valid values: %s). This is a provider bug; please report it.",
+			tag.Get("tfsdk"), format, strings.Join(slices.Sorted(maps.Keys(knownDdFormats)), ", ")))
+		return types.StringValue(server)
+	}
+}
 
 func (r *terraformResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
@@ -617,13 +653,16 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 
 			case typeOfTypesString:
 				if ddFieldDescriptor.Type.Kind() == reflect.String {
-					// if the source field is a string, we can use it directly
-					fieldValue.Set(reflect.ValueOf(types.StringValue(ddFieldValue.String())))
+					// if the source field is a string, we can use it directly,
+					// subject to any `ddFormat` normalisation the attribute asks for
+					current := fieldValue.Interface().(types.String)
+					fieldValue.Set(reflect.ValueOf(renderStringValue(diags, tag, current, ddFieldValue.String())))
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
 					// if the source field is a pointer, make sure it's a pointer to a string, and then we can grab the pointed-to value,
 					// but only if the pointer is not nil
 					if !ddFieldValue.IsNil() {
-						fieldValue.Set(reflect.ValueOf(types.StringValue(ddFieldValue.Elem().String())))
+						current := fieldValue.Interface().(types.String)
+						fieldValue.Set(reflect.ValueOf(renderStringValue(diags, tag, current, ddFieldValue.Elem().String())))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}

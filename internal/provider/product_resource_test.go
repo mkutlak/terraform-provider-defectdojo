@@ -203,6 +203,62 @@ func TestAccProductResourceInvalid(t *testing.T) {
 	})
 }
 
+// TestAccProductResourceRevenueLiteral applies a revenue that is valid per the
+// schema regex but not in DefectDojo's canonical two-decimal-place form.
+//
+// DefectDojo stores revenue as a Django DecimalField(decimal_places=2), so it
+// echoes "100" back as "100.00". Before the ddFormat:"decimal" tag, that
+// rewrote state out from under the config and every apply failed with
+// "Provider produced inconsistent result after apply". Every other product test
+// hardcodes the already-canonical "100.00", which is why this went unnoticed.
+func TestAccProductResourceRevenueLiteral(t *testing.T) {
+	t.Parallel()
+	name := fmt.Sprintf("test-revenue-%s", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccProductResourceRevenueConfig(name, "100"),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("100")),
+				},
+			},
+			{
+				Config:   testAccProductResourceRevenueConfig(name, "100"),
+				PlanOnly: true,
+			},
+			// A single decimal place is canonicalised to two server-side too.
+			{
+				Config: testAccProductResourceRevenueConfig(name, "250.5"),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("250.5")),
+				},
+			},
+			// The canonical spelling must still round-trip untouched.
+			{
+				Config: testAccProductResourceRevenueConfig(name, "300.00"),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("300.00")),
+				},
+			},
+		},
+	})
+}
+
+func testAccProductResourceRevenueConfig(name string, revenue string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "test" {
+  name            = %[1]q
+  description     = "revenue round-trip test"
+  product_type_id = 1
+  revenue         = %[2]q
+}
+`, name, revenue)
+}
+
 func testAccProductResourceNoTagsConfig(name string) string {
 	return fmt.Sprintf(`
 provider "defectdojo" {}
