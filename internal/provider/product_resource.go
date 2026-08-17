@@ -75,7 +75,7 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				},
 			},
 			"revenue": schema.StringAttribute{
-				MarkdownDescription: "Estimate the application's revenue.",
+				MarkdownDescription: "Estimate the application's revenue. DefectDojo stores this as a decimal with two places and echoes it back in that form, but a shorter equivalent literal such as `\"100\"` is kept as written in state.",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.RegexMatches(regexp.MustCompile(`\A-?\d{0,13}(?:\.\d{0,2})?\z`), `Must be a decimal number format, i.e. /^-?\d{0,13}(?:\.\d{0,2})?$/`),
@@ -177,7 +177,7 @@ type productResourceData struct {
 	ProdNumericGrade              types.Int64  `tfsdk:"prod_numeric_grade" ddField:"ProdNumericGrade"`
 	ProductManagerId              types.Int64  `tfsdk:"product_manager_id" ddField:"ProductManager"`
 	RegulationIds                 types.Set    `tfsdk:"regulation_ids" ddField:"Regulations"`
-	Revenue                       types.String `tfsdk:"revenue" ddField:"Revenue"`
+	Revenue                       types.String `tfsdk:"revenue" ddField:"Revenue" ddFormat:"decimal"`
 	Tags                          types.Set    `tfsdk:"tags" ddField:"Tags"`
 	TeamManagerId                 types.Int64  `tfsdk:"team_manager_id" ddField:"TeamManager"`
 	TechnicalContactId            types.Int64  `tfsdk:"technical_contact_id" ddField:"TechnicalContact"`

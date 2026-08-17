@@ -34,8 +34,10 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"maps"
 	"os"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -254,6 +256,66 @@ func TestDdFieldAuditTagsResolve(t *testing.T) {
 	}
 
 	t.Logf("audited %d resource models, %d ddField tags total", len(ddFieldAuditTable), totalTags)
+}
+
+// TestDdFormatTagsAreKnown asserts that every `ddFormat` struct tag names a
+// format populateResourceData actually implements, and sits on a pairing the
+// read path can apply it to.
+//
+// Without this, a typo like ddFormat:"decimel" would compile, pass every
+// existing test, and only surface as a runtime diagnostic for whichever
+// practitioner happened to exercise that resource. renderStringValue is only
+// reachable from the string / *string branches of the typeOfTypesString case,
+// so a tag anywhere else would be silently inert - the quiet degradation issue
+// #23 taught us to distrust.
+func TestDdFormatTagsAreKnown(t *testing.T) {
+	tagged := 0
+
+	for name, data := range ddFieldAuditTable {
+		t.Run(name, func(t *testing.T) {
+			tfStruct := reflect.TypeOf(data).Elem()
+			ddStruct := ddStructType(t, name, data.defectdojoResource())
+
+			for tfField := range tfStruct.Fields() {
+				format := tfField.Tag.Get("ddFormat")
+				if format == "" {
+					continue
+				}
+				tagged++
+
+				if !knownDdFormats[format] {
+					t.Errorf("%s: field %q has ddFormat:%q, which populateResourceData does not "+
+						"implement (valid values: %s)",
+						name, tfField.Name, format,
+						strings.Join(slices.Sorted(maps.Keys(knownDdFormats)), ", "))
+					continue
+				}
+
+				if tfField.Type != typeOfTypesString {
+					t.Errorf("%s: field %q has ddFormat:%q but is %s; ddFormat is only honoured "+
+						"for types.String attributes", name, tfField.Name, format, tfField.Type)
+					continue
+				}
+
+				ddField, ok := ddStruct.FieldByName(tfField.Tag.Get("ddField"))
+				if !ok {
+					continue // reported by TestDdFieldAuditTagsResolve
+				}
+				ddType := ddField.Type
+				if ddType.Kind() == reflect.Ptr {
+					ddType = ddType.Elem()
+				}
+				if ddType.Kind() != reflect.String {
+					t.Errorf("%s: field %q has ddFormat:%q but its ddField target %s.%s is %s; "+
+						"renderStringValue is only reached from the string / *string branches, "+
+						"so the tag would be silently ignored",
+						name, tfField.Name, format, ddStruct, tfField.Tag.Get("ddField"), ddField.Type)
+				}
+			}
+		})
+	}
+
+	t.Logf("audited %d ddFormat tags across %d resource models", tagged, len(ddFieldAuditTable))
 }
 
 // TestDdFieldAuditTableIsComplete parses the package sources and fails if a
