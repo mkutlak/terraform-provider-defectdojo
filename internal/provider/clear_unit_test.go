@@ -2,6 +2,7 @@ package provider
 
 import (
 	"encoding/json"
+	"slices"
 	"sort"
 	"testing"
 
@@ -164,6 +165,42 @@ func TestClearedDdFieldsIgnoresUnchangedAndUnknown(t *testing.T) {
 	})
 }
 
+// TestClearedDdFieldsDetectsRemovedZeroValues is the state-side half of the
+// same distinction stillSetAfterUpdate has to make.
+//
+// This diff reads Terraform values, not Go ones, and there null is its own
+// sentinel: types.Int64Value(0), types.BoolValue(false) and
+// types.StringValue("") are all non-null, so an attribute that held a zero and
+// was then removed from configuration is a clear target like any other. It has
+// to be, or removing branch_tag = "" would leave the empty string on the server
+// and fail the apply.
+func TestClearedDdFieldsDetectsRemovedZeroValues(t *testing.T) {
+	t.Parallel()
+
+	plan := &ddTestResourceData{
+		BranchTag:       types.StringNull(),
+		PercentComplete: types.Int64Null(),
+		Tags:            types.SetNull(types.StringType),
+	}
+	state := &ddTestResourceData{
+		BranchTag:       types.StringValue(""),
+		PercentComplete: types.Int64Value(0),
+		Tags:            types.SetValueMust(types.StringType, []attr.Value{}),
+	}
+
+	var got []string
+	for _, target := range clearedDdFields(plan, state, plan.defectdojoResource()) {
+		got = append(got, target.jsonName)
+	}
+	sort.Strings(got)
+
+	want := []string{"branch_tag", "percent_complete", "tags"}
+	if !slices.Equal(got, want) {
+		t.Errorf("clearedDdFields = %v, want %v: a zero is a value, so removing it from "+
+			"configuration still has to be cleared", got, want)
+	}
+}
+
 func TestClearPatchBody(t *testing.T) {
 	t.Parallel()
 
@@ -252,5 +289,76 @@ func TestStillSetAfterUpdateDropsEmptyCollection(t *testing.T) {
 
 	if got := stillSetAfterUpdate(ddResource, targets); len(got) != 0 {
 		t.Errorf("stillSetAfterUpdate = %v, want empty: the update already emptied tags", got)
+	}
+}
+
+// TestStillSetAfterUpdateKeepsZeroValuedScalars pins the difference between "the
+// server dropped the value" and "the server stored a zero".
+//
+// DefectDojo keeps 0, false and "" verbatim; it does not coerce them to null.
+// Verified on 3.1.101: PATCH {"percent_complete": 0, "branch_tag": ""} reads
+// back as 0 and "". So a non-nil pointer to a zero value is a value the server
+// chose to send, not evidence that the update already cleared the column. Only
+// a nil pointer is that evidence.
+//
+// Judging emptiness by the pointee made this guard swallow the clear target,
+// no explicit-null PATCH went out, the read path wrote the stored zero back
+// over the planned null, and the apply died with the very inconsistency the
+// clearing mechanism exists to prevent:
+//
+//	.percent_complete: was null, but now cty.NumberIntVal(0)
+//	.branch_tag:       was null, but now cty.StringVal("")
+//
+// The Slice branch is a different convention and stays as it is: the API types
+// collections as non-nullable arrays, so [] genuinely means "no elements".
+func TestStillSetAfterUpdateKeepsZeroValuedScalars(t *testing.T) {
+	t.Parallel()
+
+	zeroInt := 0
+	emptyString := ""
+	falseBool := false
+
+	for _, tc := range []struct {
+		name       string
+		ddResource defectdojoResource
+		targets    []clearTarget
+		want       []string
+	}{
+		{
+			name: `*int holding 0 and *string holding ""`,
+			ddResource: &ddTestDefectdojoResource{TestCreate: dd.TestCreate{
+				PercentComplete: &zeroInt,
+				BranchTag:       &emptyString,
+				BuildId:         &emptyString,
+			}},
+			targets: []clearTarget{
+				{jsonName: "percent_complete", ddFieldName: "PercentComplete"},
+				{jsonName: "branch_tag", ddFieldName: "BranchTag"},
+				{jsonName: "build_id", ddFieldName: "BuildId"},
+			},
+			want: []string{"branch_tag", "build_id", "percent_complete"},
+		},
+		{
+			name: "*bool holding false",
+			ddResource: &findingTemplateDefectdojoResource{FindingTemplate: dd.FindingTemplate{
+				FixAvailable: &falseBool,
+			}},
+			targets: []clearTarget{{jsonName: "fix_available", ddFieldName: "FixAvailable"}},
+			want:    []string{"fix_available"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var got []string
+			for _, target := range stillSetAfterUpdate(tc.ddResource, tc.targets) {
+				got = append(got, target.jsonName)
+			}
+			sort.Strings(got)
+
+			if !slices.Equal(got, tc.want) {
+				t.Errorf("stillSetAfterUpdate = %v, want %v: DefectDojo stores 0, false and \"\" "+
+					"verbatim, so a non-nil pointer to one still needs an explicit-null PATCH",
+					got, tc.want)
+			}
+		})
 	}
 }
