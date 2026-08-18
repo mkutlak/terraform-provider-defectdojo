@@ -95,19 +95,38 @@ func stillSetAfterUpdate(ddResource defectdojoResource, targets []clearTarget) [
 }
 
 // ddFieldIsEmpty reports whether a ddclient field currently holds no value.
+//
+// "No value" means nil, never zero. DefectDojo stores 0, false and "" verbatim
+// rather than coercing them to null - verified on 3.1.101, where
+// PATCH {"percent_complete": 0, "branch_tag": ""} reads back as 0 and "" - so a
+// non-nil pointer to a zero value is a value the server chose to send, and the
+// clear target has to survive. Judging a pointer by its pointee dropped exactly
+// those targets, no PATCH went out, and the apply failed with the inconsistency
+// this whole mechanism exists to prevent (GitHub issue #30):
+//
+//	.percent_complete: was null, but now cty.NumberIntVal(0)
+//	.branch_tag:       was null, but now cty.StringVal("")
 func ddFieldIsEmpty(field reflect.Value) bool {
 	switch field.Kind() {
 	case reflect.Ptr, reflect.Interface:
+		// Nil is the whole test. The pointee still gets looked at because the
+		// collections arrive as *[]T, and there an empty slice does mean empty.
 		if field.IsNil() {
 			return true
 		}
 		return ddFieldIsEmpty(field.Elem())
 	case reflect.Slice, reflect.Map:
+		// The other convention, and the correct one here: the spec types tags
+		// and the various id sets as non-nullable arrays, so an empty array is
+		// how the server says "no elements".
 		return field.IsNil() || field.Len() == 0
-	case reflect.String:
-		return field.Len() == 0
 	default:
-		return field.IsZero()
+		// A scalar reaches this point either dereferenced - in which case the
+		// pointer was not nil - or as a bare field that has no spelling for
+		// "unset" at all. Neither can show that the update cleared anything, so
+		// keep the target and let the PATCH decide, as for an unresolvable
+		// field name.
+		return false
 	}
 }
 
