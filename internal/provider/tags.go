@@ -1,6 +1,8 @@
 package provider
 
 import (
+	"context"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -44,6 +46,97 @@ const tagPatternMessage = `Tags must not be empty or contain spaces, commas, sin
 	`DefectDojo rejects spaces and single quotes outright, and silently splits a tag containing ` +
 	`a comma or a double quote into several tags, which would make state disagree with configuration.`
 
+// tagCaseCollisionValidator rejects a `tags` set that holds two spellings of
+// what DefectDojo stores as a single tag.
+//
+// Every tag table keys its rows on a lower-cased slug, so names are matched
+// case-insensitively and `tags = ["Foo","foo"]` is one tag by the time it
+// reaches the database. Verified on 3.1.101:
+//
+//	POST /api/v2/products/ {"tags":["Backend","backend"]}
+//	  -> 201, create response ['Backend', 'Backend']   (one spelling, twice)
+//	  -> GET returns ['Backend']                       (one tag)
+//
+// The apply itself succeeds, which is what makes this worth catching early: the
+// configuration asks for two elements, the server only ever reports one, and
+// every later plan proposes adding the missing spelling again, forever.
+//
+// This cannot live in tagPattern. Each element is a perfectly legal tag on its
+// own - "Foo" and "foo" both round-trip when they are the only spelling in
+// play - so only the set as a whole is contradictory, and only a set-level
+// validator can see that.
+type tagCaseCollisionValidator struct{}
+
+func (v tagCaseCollisionValidator) Description(_ context.Context) string {
+	return "tag names must not differ only by letter case, because DefectDojo matches them case-insensitively"
+}
+
+func (v tagCaseCollisionValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v tagCaseCollisionValidator) ValidateSet(_ context.Context, req validator.SetRequest, resp *validator.SetResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	elems := req.ConfigValue.Elements()
+	firstSpelling := make(map[string]string, len(elems))
+	for _, e := range elems {
+		s, ok := e.(types.String)
+		if !ok || s.IsNull() || s.IsUnknown() {
+			continue
+		}
+		tag := s.ValueString()
+		folded := strings.ToLower(tag)
+		if first, collides := firstSpelling[folded]; collides {
+			resp.Diagnostics.AddAttributeError(req.Path, "Case-Colliding Tags", fmt.Sprintf(
+				"tags contains both %q and %q, which DefectDojo stores as a single tag: tag "+
+					"names are keyed on a lower-cased slug, so they are matched "+
+					"case-insensitively. Writing both stores one tag and the read returns one "+
+					"element, so this configuration can never be satisfied - the apply succeeds "+
+					"and every later plan proposes adding the missing spelling again. Keep one "+
+					"spelling of the tag.",
+				first, tag))
+			return
+		}
+		firstSpelling[folded] = tag
+	}
+}
+
+// dedupeTagElements drops repeated elements from a tag list the server sent,
+// keeping the first occurrence of each.
+//
+// A Terraform set cannot hold a duplicate, and DefectDojo can answer with one:
+// a create under product tag inheritance echoes the child's own tag twice, and
+// a case-colliding write echoes one spelling twice. types.SetValue does not
+// police duplicates, so the value used to reach state intact and the framework
+// rejected it afterwards with a diagnostic that named neither DefectDojo nor
+// the cause.
+//
+// The comparison is exact rather than case-folded. Two spellings of one tag
+// never come back from a single object - the tag table resolves them to one row
+// before the response is rendered - so folding here would only ever discard a
+// genuine second tag, and it would have to invent a rule for which spelling
+// survives.
+func dedupeTagElements(elems []attr.Value) []attr.Value {
+	out := make([]attr.Value, 0, len(elems))
+	seen := make(map[string]bool, len(elems))
+	for _, e := range elems {
+		s, ok := e.(types.String)
+		if !ok || s.IsNull() || s.IsUnknown() {
+			out = append(out, e)
+			continue
+		}
+		if seen[s.ValueString()] {
+			continue
+		}
+		seen[s.ValueString()] = true
+		out = append(out, e)
+	}
+	return out
+}
+
 // tagsSetAttribute builds the `tags` attribute shared by every tag-bearing
 // resource. Callers pass their own description so the generated docs keep the
 // wording each resource already used.
@@ -56,6 +149,7 @@ func tagsSetAttribute(markdownDescription string) schema.SetAttribute {
 			setvalidator.ValueStringsAre(
 				stringvalidator.RegexMatches(tagPattern, tagPatternMessage),
 			),
+			tagCaseCollisionValidator{},
 		},
 	}
 }
@@ -63,11 +157,20 @@ func tagsSetAttribute(markdownDescription string) schema.SetAttribute {
 // preserveTagCase keeps the configured spelling of a tag set when the server's
 // answer differs only by letter case.
 //
-// DefectDojo stores tags in a single instance-wide table, matched
-// case-insensitively, and answers with whichever spelling was registered FIRST
-// anywhere on that instance. Verified on 3.1.101: with "Foo" already present,
+// DefectDojo gives each object type its own tag table - Tagulous_Product_tags,
+// Tagulous_Engagement_tags, Tagulous_Test_tags and so on - and keys every row
+// on a lower-cased slug beside the name it was created with. Names are
+// therefore matched case-insensitively, and the server answers with whichever
+// spelling was registered FIRST in that type's table, by any object of that
+// type on the instance. Verified on 3.1.101: with "Foo" already present,
 // creating a product with tags ["foo","bar"] returns ["Foo","bar"]; with
 // "ZZTOP" present, submitting "zztop" returns "ZZTOP".
+//
+// The scope is the object type, not the instance: a product storing
+// "MixedCase" leaves an engagement free to store "mixedcase", because the two
+// rows live in different tables. Every TagField is declared force_lowercase, but
+// that only reaches the slug - the name keeps the submitted spelling, which is
+// why uppercase round-trips at all.
 //
 // That makes the returned spelling a property of global server state rather
 // than of the practitioner's configuration, so no schema validator can prevent
@@ -112,6 +215,12 @@ func preserveTagCase(current types.Set, server types.Set) types.Set {
 	if !ok {
 		return server
 	}
+	// The raw counts already agree, so this only differs from that check when
+	// one side collapses under folding - which means `current` holds two
+	// spellings of one tag. tagCaseCollisionValidator keeps that out of new
+	// configurations, but state written before it existed can still carry it,
+	// and folding such a set down would make it look like a match for a server
+	// answer it does not describe.
 	if len(currentFolded) != len(serverFolded) {
 		return server
 	}

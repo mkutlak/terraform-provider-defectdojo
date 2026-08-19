@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -139,4 +140,78 @@ resource "defectdojo_engagement" "test" {
 %[2]s
 }
 `, name, extra)
+}
+
+// TestAccEngagementResourceProductTagInheritance covers a child of a product
+// with enable_product_tag_inheritance set.
+//
+// DefectDojo merges the product's tags into every Engagement, Test and Finding
+// underneath it, and the create response then lists the child's own tag twice.
+// A Terraform set cannot hold that, so the apply used to die on a framework
+// diagnostic that named neither DefectDojo nor tag inheritance:
+//
+//	Error: Duplicate Set Element
+//	  with defectdojo_engagement.child,
+//	  This attribute contains duplicate values of: tftypes.String<"tfsprint">
+//
+// The server's list is deduplicated now, so what surfaces is the real problem
+// underneath: the server holds a tag the configuration never asked for.
+// Inherited tags are also sticky - PATCHing them away re-adds them - so the
+// only configuration DefectDojo can satisfy is one that lists them, which is
+// the second step here.
+func TestAccEngagementResourceProductTagInheritance(t *testing.T) {
+	t.Parallel()
+	suffix := uniqueId()
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			// Not listing the inherited tag cannot converge. This pins the
+			// error the practitioner actually gets; it must never go back to
+			// being "Duplicate Set Element".
+			{
+				Config:      testAccEngagementInheritanceConfig(suffix, fmt.Sprintf(`"sprint-%s"`, suffix)),
+				ExpectError: regexp.MustCompile(`(?s)inconsistent result after apply`),
+			},
+			// Listing it does converge, and stays converged.
+			{
+				Config: testAccEngagementInheritanceConfig(suffix,
+					fmt.Sprintf(`"sprint-%[1]s", "team-%[1]s"`, suffix)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_engagement.child", tfjsonpath.New("tags"),
+						knownvalue.SetExact([]knownvalue.Check{
+							knownvalue.StringExact(fmt.Sprintf("sprint-%s", suffix)),
+							knownvalue.StringExact(fmt.Sprintf("team-%s", suffix)),
+						})),
+				},
+			},
+			{
+				Config: testAccEngagementInheritanceConfig(suffix,
+					fmt.Sprintf(`"sprint-%[1]s", "team-%[1]s"`, suffix)),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccEngagementInheritanceConfig(suffix, childTags string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "inherit_p" {
+  name                           = "inherit-%[1]s"
+  description                    = "propagates its tags to every child"
+  product_type_id                = 1
+  enable_product_tag_inheritance = true
+  tags                           = ["team-%[1]s"]
+}
+resource "defectdojo_engagement" "child" {
+  name         = "inherit-child-%[1]s"
+  product      = defectdojo_product.inherit_p.id
+  target_start = "2026-01-01"
+  target_end   = "2026-12-31"
+  tags         = [%[2]s]
+}
+`, suffix, childTags)
 }

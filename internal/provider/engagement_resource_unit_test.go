@@ -166,6 +166,43 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 	assert.Equal(t, *ddEng.ThreatModel, expectedThreatModel)
 }
 
+// TestEngagementResourcePopulateDedupesServerTags covers the create response
+// DefectDojo sends for a child of a product with tag inheritance enabled.
+//
+// The inheritance signal merges the product's tags into the child and the
+// serializer then renders the child's OWN tag twice. Verified on 3.1.101 with a
+// product carrying tags ['team-a'] and enable_product_tag_inheritance = true:
+//
+//	POST /api/v2/engagements/ {"tags":["sprint-1"]}
+//	  -> 201, create response tags ['sprint-1', 'team-a', 'sprint-1']
+//	  -> GET returns ['sprint-1', 'team-a']
+//
+// A Terraform set cannot hold that. types.SetValue does not police duplicates,
+// so the value reached state intact and the framework rejected it afterwards
+// with a diagnostic that names neither DefectDojo nor tag inheritance:
+//
+//	Error: Duplicate Set Element
+//	  This attribute contains duplicate values of: tftypes.String<"sprint-1">
+//
+// so the server's list is deduplicated before the set is built.
+func TestEngagementResourcePopulateDedupesServerTags(t *testing.T) {
+	serverTags := []string{"sprint-1", "team-a", "sprint-1"}
+	ddEngagement := engagementDefectdojoResource{
+		Engagement: dd.Engagement{Tags: &serverTags},
+	}
+
+	// The practitioner configured only the engagement's own tag.
+	engagementResource := engagementResourceData{Tags: tagSet("sprint-1")}
+	var terraformResource terraformResourceData = &engagementResource
+
+	diags := diag.Diagnostics{}
+	populateResourceData(context.Background(), &diags, &terraformResource, &ddEngagement)
+
+	assert.Equal(t, diags.HasError(), false)
+	assert.Equal(t, len(engagementResource.Tags.Elements()), 2)
+	assert.Assert(t, engagementResource.Tags.Equal(tagSet("sprint-1", "team-a")))
+}
+
 // TestEngagementResource__defectdojoResourceRejectsDatetime is deliberately
 // asymmetric with defectdojo_test: engagement.target_start is an
 // openapi_types.Date with no time component, and datetime -> date is
