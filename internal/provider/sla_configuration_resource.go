@@ -15,6 +15,26 @@ import (
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
+// slaDayCountDescription builds the description shared by the four SLA day
+// counts, which differ only in the severity they name. The warning is long
+// enough that four copies would drift apart.
+//
+// It has to be spelled out because the obvious reading of an Optional
+// attribute - delete the line, get the default back - is wrong here, and wrong
+// in a way that leaves the server holding a value nothing in the configuration
+// mentions any more.
+func slaDayCountDescription(severity string) string {
+	return "The number of days to remediate a " + severity + " finding. Omitting this attribute when the SLA " +
+		"configuration is created lets DefectDojo apply its own default (which varies by version), and that value is " +
+		"read back into state. Removing it from an existing configuration does not put the default back: the attribute " +
+		"is computed, so Terraform reuses the value already in state, plans no change, and DefectDojo keeps what it " +
+		"holds. DefectDojo offers no way back either - the column is not nullable, so a request sending null is refused. " +
+		"To change the value, set it explicitly; to hand it back to DefectDojo, recreate the resource with " +
+		"`terraform apply -replace=...`, which restores the version default but assigns a new `id`, so every " +
+		"`defectdojo_product` whose `sla_configuration` points at it has to be updated to match. `terraform state rm` " +
+		"does not help: re-importing reads the stored value straight back."
+}
+
 func (t slaConfigurationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "DefectDojo SLA Configuration",
@@ -34,23 +54,26 @@ func (t slaConfigurationResource) Schema(ctx context.Context, req resource.Schem
 			// a config omits one. No Default is declared, because those model
 			// defaults vary between DefectDojo versions - the server stays the
 			// source of truth.
+			//
+			// Being Computed makes them write-once-then-sticky, which is what
+			// slaDayCountDescription exists to say out loud.
 			"critical": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a critical finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
+				MarkdownDescription: slaDayCountDescription("critical"),
 				Optional:            true,
 				Computed:            true,
 			},
 			"high": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a high finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
+				MarkdownDescription: slaDayCountDescription("high"),
 				Optional:            true,
 				Computed:            true,
 			},
 			"medium": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a medium finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
+				MarkdownDescription: slaDayCountDescription("medium"),
 				Optional:            true,
 				Computed:            true,
 			},
 			"low": schema.Int64Attribute{
-				MarkdownDescription: "The number of days to remediate a low finding. If omitted, DefectDojo assigns its own default (which varies by version) and that value is read back into state.",
+				MarkdownDescription: slaDayCountDescription("low"),
 				Optional:            true,
 				Computed:            true,
 			},
