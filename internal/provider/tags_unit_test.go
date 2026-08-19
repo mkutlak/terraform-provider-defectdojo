@@ -88,10 +88,13 @@ func runTagSetValidators(t *testing.T, tagsAttr schema.SetAttribute, tag string)
 // exposing a "tags" attribute enforces DefectDojo's tag grammar.
 //
 // Three of the four tag-bearing resources (engagement, test, url) shipped with
-// no validator at all, so `tags = ["Foo"]` was accepted at plan time and then
-// failed at apply - after the object had already been created - because the
-// server answers with the lower-cased form. product has had the validator since
-// commit a54fb89; this test is what keeps the other three from drifting again.
+// no validator at all, so `tags = ["a,b"]` was accepted at plan time and then
+// failed at apply - after the object had already been created - because
+// DefectDojo silently splits that into two tags. Letter case is not the
+// problem: force_lowercase reaches only the slug, so the name keeps the
+// spelling it was submitted with and "Foo" round-trips unchanged. product has
+// had a validator since commit a54fb89; this test is what keeps the other three
+// from drifting again.
 //
 // It checks behaviour rather than comparing validator slices: a
 // stringvalidator.RegexMatches holds a *regexp.Regexp, which does not compare

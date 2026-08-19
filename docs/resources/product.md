@@ -50,7 +50,7 @@ resource "defectdojo_product" "example" {
 - `regulation_ids` (Set of Number) The IDs of the Regulations which apply to this product.
 - `revenue` (String) Estimate the application's revenue. DefectDojo stores this as a decimal with two places and echoes it back in that form, but a shorter equivalent literal such as `"100"` is kept as written in state.
 - `sla_configuration` (Number) The ID of the SLA configuration to apply to this product.
-- `tags` (Set of String) Tags to apply to the product
+- `tags` (Set of String) Tags to apply to the product. Tags must not contain spaces, commas or quotes, and the configured spelling is kept when DefectDojo answers with a different letter case.
 - `team_manager_id` (Number) The ID of the user who is the manager for this product.
 - `technical_contact_id` (Number) The ID of the user who is the technical contact for this product.
 - `user_records` (Number) Estimate the number of user records within the application.
