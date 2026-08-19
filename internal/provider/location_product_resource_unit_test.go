@@ -160,3 +160,63 @@ func TestLocationProductResource__defectdojoResource_Nulls(t *testing.T) {
 	assert.Equal(t, req.Relationship, nilReqRelationship)
 	assert.Equal(t, req.Status, nilReqStatus)
 }
+
+// TestLocationProductRelationshipAcceptsBlank pins the empty string as a value
+// a configuration may carry.
+//
+// A create that omits relationship stores and reads back "", so state holds a
+// value the OneOf used to reject at plan time:
+//
+//	Attribute relationship value must be one of: ["owned_by" "used_by"], got: ""
+//
+// That made the blank the provider itself produces unwritable, and since a
+// Computed attribute cannot be cleared by deleting it from configuration
+// either, there was no way back to it. "" is a genuine member of the enum -
+// dd.LocationProductReferenceRequestRelationshipEmpty - and DefectDojo 3.1.101
+// accepts it on create and update.
+func TestLocationProductRelationshipAcceptsBlank(t *testing.T) {
+	t.Parallel()
+
+	attr := resourceStringAttribute(t, "defectdojo_location_product", "relationship")
+	for _, tc := range []struct {
+		value     string
+		wantError bool
+	}{
+		{"", false},
+		{"owned_by", false},
+		{"used_by", false},
+		{"bogus", true},
+		{"Owned_By", true},
+	} {
+		got := runStringValidators(t, "relationship", attr, tc.value)
+		if got != tc.wantError {
+			verb := "accepted"
+			if got {
+				verb = "rejected"
+			}
+			t.Errorf("relationship = %q was %s, but wantError=%v", tc.value, verb, tc.wantError)
+		}
+	}
+}
+
+// TestLocationProductStatusRejectsBlank is the other half of the pair above.
+//
+// status looks like the same shape - Optional, Computed, a OneOf - but its enum
+// has no blank member: DefectDojo 3.1.101 answers a status of "" with
+// `"" is not a valid choice.` and fills the field with "Mitigated" when it is
+// omitted, so there is no state value the validator has to be able to express.
+// Without this, "fix the relationship validator" reads like an argument for
+// loosening every enum on the resource.
+func TestLocationProductStatusRejectsBlank(t *testing.T) {
+	t.Parallel()
+
+	attr := resourceStringAttribute(t, "defectdojo_location_product", "status")
+	if !runStringValidators(t, "status", attr, "") {
+		t.Error(`status = "" was accepted, but DefectDojo rejects it as an invalid choice`)
+	}
+	for _, value := range []string{"Active", "Mitigated"} {
+		if runStringValidators(t, "status", attr, value) {
+			t.Errorf("status = %q was rejected, but it is a valid choice", value)
+		}
+	}
+}
