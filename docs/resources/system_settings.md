@@ -74,7 +74,7 @@ resource "defectdojo_system_settings" "example" {
 - `enable_notify_sla_exponential_backoff` (Boolean) Enable an exponential backoff strategy for SLA breach notifications, e.g. 1, 2, 4, 8, etc. Otherwise it alerts every day.
 - `enable_notify_sla_jira_only` (Boolean) Enables Notify when time to remediate according to Finding SLA's is breached for Findings that are linked to JIRA issues. Notification is disabled for Findings not linked to JIRA issues.
 - `enable_product_grade` (Boolean) Displays a grade letter next to a product to show the overall health.
-- `enable_product_tag_inheritance` (Boolean) Enables product tag inheritance globally for all products. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings.
+- `enable_product_tag_inheritance` (Boolean) Enables product tag inheritance globally for all products. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings. DefectDojo writes the inherited tags onto the child objects themselves and re-adds them if they are removed, so every Terraform-managed `defectdojo_engagement` and `defectdojo_test` on the instance must repeat its product's tags in its own `tags`. One that does not fails to apply, because the server then reports tags the configuration never asked for.
 - `enable_product_tracking_files` (Boolean) With this setting turned off, the product tracking files will be disabled in the user interface.
 - `enable_questionnaires` (Boolean) With this setting turned off, questionnaires will be disabled in the user interface.
 - `enable_similar_findings` (Boolean) Enable the query of similar findings on the view finding page. This feature can involve potentially large queries and negatively impact performance.

@@ -135,10 +135,13 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Default:             booldefault.StaticBool(false),
 			},
 			"enable_product_tag_inheritance": schema.BoolAttribute{
-				MarkdownDescription: "Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings.",
-				Optional:            true,
-				Computed:            true,
-				Default:             booldefault.StaticBool(false),
+				MarkdownDescription: "Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings. " +
+					"DefectDojo writes the inherited tags onto the child objects themselves and re-adds them if they are removed, so a Terraform-managed " +
+					"`defectdojo_engagement` or `defectdojo_test` under this product must repeat the product's tags in its own `tags`. One that does not " +
+					"fails to apply, because the server then reports tags the configuration never asked for.",
+				Optional: true,
+				Computed: true,
+				Default:  booldefault.StaticBool(false),
 			},
 			"sla_configuration": schema.Int64Attribute{
 				MarkdownDescription: "The ID of the SLA configuration to apply to this product.",
