@@ -38,7 +38,7 @@ resource "defectdojo_product" "example" {
 - `business_criticality` (String) The Business Criticality of the Product. Valid values are: 'very high', 'high', 'medium', 'low', 'very low', 'none'
 - `disable_sla_breach_notifications` (Boolean) Disable SLA breach notifications if configured in the global settings.
 - `enable_full_risk_acceptance` (Boolean) Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.
-- `enable_product_tag_inheritance` (Boolean) Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings.
+- `enable_product_tag_inheritance` (Boolean) Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings. DefectDojo writes the inherited tags onto the child objects themselves and re-adds them if they are removed, so a Terraform-managed `defectdojo_engagement` or `defectdojo_test` under this product must repeat the product's tags in its own `tags`. One that does not fails to apply, because the server then reports tags the configuration never asked for.
 - `enable_skip_risk_acceptance` (Boolean) Allows simple risk acceptance by checking/unchecking a checkbox.
 - `external_audience` (Boolean) Specify if the application is used by people outside the organization.
 - `internet_accessible` (Boolean) Specify if the application is accessible from the public internet.
