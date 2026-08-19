@@ -42,7 +42,7 @@ resource "defectdojo_test" "example" {
 - `lead` (Number) ID of the lead user
 - `percent_complete` (Number) Percentage of test completion
 - `scan_type` (String) Type of scan
-- `tags` (Set of String) Tags for this Test
+- `tags` (Set of String) Tags for this Test. Tags must not contain spaces, commas or quotes, and the configured spelling is kept when DefectDojo answers with a different letter case.
 - `title` (String) Title of the Test
 - `version` (String) Version tested
 

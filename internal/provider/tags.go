@@ -137,12 +137,22 @@ func dedupeTagElements(elems []attr.Value) []attr.Value {
 	return out
 }
 
+// tagsSharedDescription documents what this file wires in, as opposed to what
+// any one resource is for. It lives beside the code that enforces it, and is
+// appended to all four descriptions from here, because four copies of it in
+// four schemas could drift apart from each other and from the behaviour - the
+// same reason the validators and the case preservation are shared rather than
+// repeated per resource.
+const tagsSharedDescription = "Tags must not contain spaces, commas or quotes, and the configured " +
+	"spelling is kept when DefectDojo answers with a different letter case."
+
 // tagsSetAttribute builds the `tags` attribute shared by every tag-bearing
 // resource. Callers pass their own description so the generated docs keep the
-// wording each resource already used.
+// wording each resource already used; it is a bare phrase, and the sentence
+// break before tagsSharedDescription is added here.
 func tagsSetAttribute(markdownDescription string) schema.SetAttribute {
 	return schema.SetAttribute{
-		MarkdownDescription: markdownDescription,
+		MarkdownDescription: markdownDescription + ". " + tagsSharedDescription,
 		Optional:            true,
 		ElementType:         types.StringType,
 		Validators: []validator.Set{

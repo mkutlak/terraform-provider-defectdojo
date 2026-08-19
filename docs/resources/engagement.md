@@ -50,7 +50,7 @@ resource "defectdojo_engagement" "example" {
 - `requester` (Number) ID of the requester
 - `source_code_management_uri` (String) Resource link to source code
 - `status` (String) Status of the Engagement (Not Started, Blocked, Cancelled, Completed, In Progress, On Hold, Scheduled, Waiting for Resource)
-- `tags` (Set of String) Tags for this Engagement
+- `tags` (Set of String) Tags for this Engagement. Tags must not contain spaces, commas or quotes, and the configured spelling is kept when DefectDojo answers with a different letter case.
 - `test_strategy` (String) Test strategy for the engagement
 - `threat_model` (Boolean) Whether a threat model was performed
 - `tracker` (String) Link to epic or ticket system with changes to version
