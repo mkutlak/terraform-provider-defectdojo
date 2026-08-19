@@ -121,6 +121,47 @@ func TestUrlResourcePopulateNils(t *testing.T) {
 	assert.DeepEqual(t, urlResource.Tags, nilStringSet)
 }
 
+// TestUrlResourcePopulateHostPreservesCase drives the ddFormat mechanism
+// through the reflection engine itself, not just the helper.
+//
+// DefectDojo lower-cases every host it stores, so a configured
+// "API.Example.COM" is echoed back as "api.example.com". Before the
+// ddFormat:"host" tag, the read path wrote the server's spelling over the
+// practitioner's, state disagreed with config, and Terraform failed the apply
+// with "Provider produced inconsistent result after apply".
+func TestUrlResourcePopulateHostPreservesCase(t *testing.T) {
+	ddUrl := urlDefectdojoResource{
+		URL: dd.URL{Host: "api.example.com"},
+	}
+
+	// The practitioner's configured value, as it sits in the plan.
+	urlResource := urlResourceData{Host: types.StringValue("API.Example.COM")}
+	var terraformResource terraformResourceData = &urlResource
+
+	diags := diag.Diagnostics{}
+	populateResourceData(context.Background(), &diags, &terraformResource, &ddUrl)
+
+	assert.Equal(t, diags.HasError(), false)
+	assert.Equal(t, urlResource.Host.ValueString(), "API.Example.COM")
+}
+
+// TestUrlResourcePopulateHostReportsRealDrift is the other half of the
+// contract: preservation must not hide an out-of-band change.
+func TestUrlResourcePopulateHostReportsRealDrift(t *testing.T) {
+	ddUrl := urlDefectdojoResource{
+		URL: dd.URL{Host: "other.example.com"},
+	}
+
+	urlResource := urlResourceData{Host: types.StringValue("API.Example.COM")}
+	var terraformResource terraformResourceData = &urlResource
+
+	diags := diag.Diagnostics{}
+	populateResourceData(context.Background(), &diags, &terraformResource, &ddUrl)
+
+	assert.Equal(t, diags.HasError(), false)
+	assert.Equal(t, urlResource.Host.ValueString(), "other.example.com")
+}
+
 func TestUrlResource__defectdojoResource(t *testing.T) {
 	expectedHost := "example.com"
 	expectedProtocol := "https"

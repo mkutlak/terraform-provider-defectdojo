@@ -18,6 +18,28 @@ import (
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
+// urlProtocols is the set of protocols DefectDojo accepts for a URL.
+//
+// dojo/url/validators.py validate_protocol() rejects anything that is not a key
+// of DEFAULT_PORTS - the same table clean_port() reads to fill in a default port
+// - with "<value> is not a supported protocol". The rule is therefore membership
+// of a fixed set, not, as the uniformly lower-case spellings might suggest, a
+// case convention: "HTTPS" and "ws" are both rejected, "https" and "tcp" are
+// both accepted.
+//
+// The OpenAPI spec types protocol as a plain string with maxLength 10 and
+// documents none of this, so the list was read off DEFAULT_PORTS in DefectDojo
+// 3.1.101 and confirmed over the API: every entry below POSTs 201, while
+// "HTTPS", "Https", "FTP", "ws", "wss", "file", "gopher", "mysql", "grpc" and
+// "udp" all POST 400. The empty string is a member - it is how DefectDojo
+// spells "no protocol", and it leaves the port unset.
+var urlProtocols = []string{
+	"", "ftp", "ftps", "ftps-data", "http", "https", "imap", "imaps", "irc",
+	"ldap", "ldaps", "mqtt", "mqtts", "nntp", "nntps", "openvpn", "pop3",
+	"pop3s", "rdp", "rtsp", "sftp", "sip", "sips", "smb", "smtp", "smtps",
+	"ssh", "submission", "tcp", "telnet", "tftp", "vnc",
+}
+
 func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "DefectDojo URL",
@@ -28,9 +50,16 @@ func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, res
 				Required:            true,
 			},
 			"protocol": schema.StringAttribute{
-				MarkdownDescription: "The protocol of the URL (e.g., http, https, ftp, etc.)",
-				Optional:            true,
-				Computed:            true,
+				MarkdownDescription: "The protocol of the URL. DefectDojo only accepts a protocol it knows a " +
+					"default port for, and only in lower case. Valid values are: 'ftp', 'ftps', 'ftps-data', " +
+					"'http', 'https', 'imap', 'imaps', 'irc', 'ldap', 'ldaps', 'mqtt', 'mqtts', 'nntp', 'nntps', " +
+					"'openvpn', 'pop3', 'pop3s', 'rdp', 'rtsp', 'sftp', 'sip', 'sips', 'smb', 'smtp', 'smtps', " +
+					"'ssh', 'submission', 'tcp', 'telnet', 'tftp', 'vnc'",
+				Optional: true,
+				Computed: true,
+				Validators: []validator.String{
+					stringvalidator.OneOf(urlProtocols...),
+				},
 			},
 			"port": schema.Int64Attribute{
 				MarkdownDescription: "The port number of the URL (optional)",
@@ -85,7 +114,7 @@ func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, res
 
 type urlResourceData struct {
 	Id                    types.String `tfsdk:"id" ddField:"Id"`
-	Host                  types.String `tfsdk:"host" ddField:"Host"`
+	Host                  types.String `tfsdk:"host" ddField:"Host" ddFormat:"host"`
 	Protocol              types.String `tfsdk:"protocol" ddField:"Protocol"`
 	Port                  types.Int64  `tfsdk:"port" ddField:"Port"`
 	Path                  types.String `tfsdk:"path" ddField:"Path"`

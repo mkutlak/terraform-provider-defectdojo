@@ -338,6 +338,14 @@ func TestDdFormatTagsAreKnown(t *testing.T) {
 		})
 	}
 
+	// Every assertion above sits behind `if format == "" { continue }`, so the
+	// test passes just as quietly when nothing carries a ddFormat tag at all -
+	// after a struct loses its tags, say, or a bad merge. The provider does use
+	// the mechanism, so finding none of it means this audit is not running.
+	if tagged == 0 {
+		t.Error("no ddFormat tags found across the audit table; either the tags were lost or this test is no longer reaching them")
+	}
+
 	t.Logf("audited %d ddFormat tags across %d resource models", tagged, len(ddFieldAuditTable))
 }
 

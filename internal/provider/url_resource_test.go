@@ -3,6 +3,7 @@ package provider
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/compare"
@@ -99,6 +100,95 @@ func TestAccUrlResourceInvalidTags(t *testing.T) {
 			},
 		},
 	})
+}
+
+// TestAccUrlResourceHostCase applies a host whose configured spelling is not
+// the one DefectDojo stores.
+//
+// DefectDojo case-folds every host (dojo/url/models.py, URL.clean_host), so the
+// read path used to write "api.example.com" over a configured "API.Example.COM"
+// and every apply failed at create with "Provider produced inconsistent result
+// after apply", after which the URL sat in state tainted and the next apply
+// destroyed it, created it again and failed identically. Every other url test
+// hardcodes an already-lower-case host, which is why this went unnoticed.
+//
+// There is deliberately no ImportState step: import has no configured value to
+// preserve, so it stores the server's lower-case spelling, exactly like the
+// decimal and datetime helpers. TestAccUrlResource still covers import with a
+// lower-case host.
+func TestAccUrlResourceHostCase(t *testing.T) {
+	t.Parallel()
+	host := fmt.Sprintf("Host-%s.Example.COM", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccUrlResourceHostOnlyConfig(host),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("host"), knownvalue.StringExact(host)),
+				},
+			},
+			// The refresh must not rewrite state either, so the next plan is empty.
+			{
+				Config:   testAccUrlResourceHostOnlyConfig(host),
+				PlanOnly: true,
+			},
+			// Rewriting the configured spelling is still a change Terraform
+			// applies and converges on, rather than a permanent diff.
+			{
+				Config: testAccUrlResourceHostOnlyConfig(strings.ToLower(host)),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("host"), knownvalue.StringExact(strings.ToLower(host))),
+				},
+			},
+		},
+	})
+}
+
+// TestAccUrlResourceInvalidProtocol asserts the protocol set is enforced during
+// plan. DefectDojo answers an unsupported protocol with a 400, which would
+// otherwise only surface once the apply is already under way. "HTTPS" is the
+// interesting spelling: it is the upper-case form of an accepted value, which
+// makes it the natural mistake to pair with an upper-case host.
+func TestAccUrlResourceInvalidProtocol(t *testing.T) {
+	t.Parallel()
+	host := fmt.Sprintf("host-%s.example.com", uniqueId())
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		CheckDestroy:             testAccCheckDestroyed,
+		Steps: []resource.TestStep{
+			{
+				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute\s+Value\s+Match.*`),
+				Config:      testAccUrlResourceProtocolConfig(host, "HTTPS"),
+			},
+			{
+				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute\s+Value\s+Match.*`),
+				Config:      testAccUrlResourceProtocolConfig(host, "wss"),
+			},
+		},
+	})
+}
+
+func testAccUrlResourceProtocolConfig(host, protocol string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_url" "test" {
+  host     = %[1]q
+  protocol = %[2]q
+}
+`, host, protocol)
+}
+
+func testAccUrlResourceHostOnlyConfig(host string) string {
+	return fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_url" "test" {
+  host = %[1]q
+}
+`, host)
 }
 
 func testAccUrlResourceInvalidTagsConfig(host string) string {
