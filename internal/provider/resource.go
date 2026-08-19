@@ -120,17 +120,27 @@ func addUnhandledTerraformTypeError(diags *diag.Diagnostics, fn, tfsdkName strin
 		fn, tfType, tfsdkName, ddType))
 }
 
-// renderStringSet converts a server-provided set of strings into the value to
-// store in state, honouring the optional `ddFormat` struct tag.
+// renderStringSet builds the value to store in state from the list of strings
+// the server sent, honouring the optional `ddFormat` struct tag.
+//
+// It owns the types.SetValue call rather than taking a ready-made set, because
+// a tag list has to be deduplicated BEFORE the set is built: types.SetValue
+// does not police duplicates, so a duplicate reaches state and the framework
+// rejects it later with "Duplicate Set Element".
 //
 // Unknown ddFormat values are reported by renderStringValue and by
 // TestDdFormatTagsAreKnown, so this only has to recognise the ones that mean
 // something for a set.
-func renderStringSet(tag reflect.StructTag, current types.Set, server types.Set) types.Set {
-	if tag.Get("ddFormat") == ddFormatTags {
-		return preserveTagCase(current, server)
+func renderStringSet(diags *diag.Diagnostics, tag reflect.StructTag, current types.Set, elems []attr.Value) types.Set {
+	if tag.Get("ddFormat") != ddFormatTags {
+		server, dgs := types.SetValue(types.StringType, elems)
+		diags.Append(dgs...)
+		return server
 	}
-	return server
+
+	server, dgs := types.SetValue(types.StringType, dedupeTagElements(elems))
+	diags.Append(dgs...)
+	return preserveTagCase(current, server)
 }
 
 // renderStringValue converts a server-provided string into the value to store
@@ -889,9 +899,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 							for i := 0; i < ddFieldValue.Len(); i++ {
 								elems = append(elems, types.StringValue(ddFieldValue.Index(i).String()))
 							}
-							destVal, dgs := types.SetValue(types.StringType, elems)
-							diags.Append(dgs...)
-							fieldValue.Set(reflect.ValueOf(renderStringSet(tag, fieldValue.Interface().(types.Set), destVal)))
+							fieldValue.Set(reflect.ValueOf(renderStringSet(diags, tag, fieldValue.Interface().(types.Set), elems)))
 						} else {
 							fieldValue.Set(reflect.ValueOf(types.SetNull(types.StringType)))
 						}
@@ -926,9 +934,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 							for i := 0; i < ddFieldValue.Elem().Len(); i++ {
 								elems = append(elems, types.StringValue(ddFieldValue.Elem().Index(i).String()))
 							}
-							destVal, dgs := types.SetValue(types.StringType, elems)
-							diags.Append(dgs...)
-							fieldValue.Set(reflect.ValueOf(renderStringSet(tag, fieldValue.Interface().(types.Set), destVal)))
+							fieldValue.Set(reflect.ValueOf(renderStringSet(diags, tag, fieldValue.Interface().(types.Set), elems)))
 						} else {
 							destVal := types.SetNull(types.StringType)
 							fieldValue.Set(reflect.ValueOf(destVal))

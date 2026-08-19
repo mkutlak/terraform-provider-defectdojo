@@ -66,6 +66,17 @@ func TestPreserveTagCase(t *testing.T) {
 			want:    tagSet("foo", "bar"),
 		},
 		{
+			// State written before the case-collision validator existed can
+			// still hold two spellings of one tag. Folding it down would make
+			// it look like a match for a server set of the same folded size,
+			// so the folded counts are compared as well as the raw ones. Here
+			// the raw counts agree (2 and 2) and only the folded ones differ.
+			name:    "a case-colliding current does not match a larger server set",
+			current: tagSet("Foo", "foo"),
+			server:  tagSet("Foo", "bar"),
+			want:    tagSet("Foo", "bar"),
+		},
+		{
 			// On import there is nothing to preserve.
 			name:    "null current takes the server value",
 			current: types.SetNull(types.StringType),
