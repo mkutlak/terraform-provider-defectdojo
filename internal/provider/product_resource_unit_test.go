@@ -446,3 +446,56 @@ func TestProductResourcePopulateRevenueReportsRealDrift(t *testing.T) {
 	assert.Equal(t, diags.HasError(), false)
 	assert.Equal(t, productResource.Revenue.ValueString(), "250.00")
 }
+
+// TestProductDescriptionValidator mirrors what DefectDojo 3.1.101 does with
+// product.description. Every accepted value below was POSTed to
+// /api/v2/products/ and read back unchanged; every rejected one is either a
+// 400 or comes back rewritten.
+//
+// The validator exists because DRF trims the field - POST "  abc  " is a 201
+// carrying "abc" - which is issue #23 again, so the whitespace has to be
+// refused at plan time. It is not there to impose a minimum length or to ban
+// newlines, and DefectDojo imposes neither.
+func TestProductDescriptionValidator(t *testing.T) {
+	t.Parallel()
+
+	attr := resourceStringAttribute(t, "defectdojo_product", "description")
+	for _, tc := range []struct {
+		description string
+		wantError   bool
+	}{
+		{"A Description", false},
+		{"ab", false},
+		// A one-character description is a perfectly ordinary value.
+		{"d", false},
+		// So is a multi-line one, on a field the UI renders as a textarea.
+		{"line1\nline2", false},
+		{"first\n\nthird", false},
+		{"a\nb\nc\n\nd", false},
+		// Whitespace inside the value survives the server's trim untouched.
+		{"a  \n  b", false},
+		{"has internal   spaces", false},
+
+		// Trimmed by the server, so the applied value could never match the
+		// configuration.
+		{" abc", true},
+		{"abc ", true},
+		{"\nabc", true},
+		{"abc\n", true},
+		{"\tabc", true},
+		{"  abc  ", true},
+		{" ", true},
+		// 400 "This field may not be blank."
+		{"", true},
+	} {
+		got := runStringValidators(t, "description", attr, tc.description)
+		if got == tc.wantError {
+			continue
+		}
+		verb := "accepted"
+		if got {
+			verb = "rejected"
+		}
+		t.Errorf("description = %q was %s, but wantError=%v", tc.description, verb, tc.wantError)
+	}
+}

@@ -33,7 +33,17 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				MarkdownDescription: "The description of the Product",
 				Required:            true,
 				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile(`\A[^\s].*[^\s]\z`), "The description must not have leading or trailing whitespace"),
+					// DRF trims the field - POST "  abc  " is a 201 carrying
+					// "abc" - and refuses a blank one, so both are caught here
+					// rather than after the product exists. `(?s:.*\S)?` is
+					// what lets a one-character description and a multi-line
+					// one through: `.` does not match a newline without the s
+					// flag, and the trailing `\S` must be optional or the
+					// shortest legal description would be two characters.
+					stringvalidator.RegexMatches(
+						regexp.MustCompile(`\A\S(?s:.*\S)?\z`),
+						"The description must not be empty or have leading or trailing whitespace",
+					),
 				},
 			},
 			"prod_numeric_grade": schema.Int64Attribute{
