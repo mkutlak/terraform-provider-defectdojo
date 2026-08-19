@@ -1,12 +1,17 @@
 package provider
 
 import (
+	"context"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"slices"
 	"sort"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
@@ -198,6 +203,83 @@ func TestClearedDdFieldsDetectsRemovedZeroValues(t *testing.T) {
 	if !slices.Equal(got, want) {
 		t.Errorf("clearedDdFields = %v, want %v: a zero is a value, so removing it from "+
 			"configuration still has to be cleared", got, want)
+	}
+}
+
+// TestApplyClearedFieldsNamesConfigurationAttributes pins the vocabulary of the
+// clearing diagnostics.
+//
+// The practitioner writes `product_manager_id` and `regulation_ids`; DefectDojo
+// calls the same two fields `product_manager` and `regulations`. Reporting the
+// wire names sent the reader looking for arguments this provider does not have:
+//
+//	Removing product_manager from the configuration requires DefectDojo to
+//	accept an explicit null for those fields, but it answered 400.
+//
+// So the attribute list is spelled the way the configuration spells it. The
+// echoed request body keeps the wire names, which is the point of dumping it.
+func TestApplyClearedFieldsNamesConfigurationAttributes(t *testing.T) {
+	t.Parallel()
+
+	for _, tc := range []struct {
+		name         string
+		plan, state  *productResourceData
+		wantAttrList string
+		wantWireName string
+	}{
+		{
+			name:         "a scalar attribute",
+			plan:         &productResourceData{ProductManagerId: types.Int64Null()},
+			state:        &productResourceData{ProductManagerId: types.Int64Value(3)},
+			wantAttrList: "Removing product_manager_id from the configuration",
+			wantWireName: `"product_manager"`,
+		},
+		{
+			name:  "a set attribute",
+			plan:  &productResourceData{RegulationIds: types.SetNull(types.Int64Type)},
+			state: &productResourceData{RegulationIds: types.SetValueMust(types.Int64Type, []attr.Value{types.Int64Value(1)})},
+
+			wantAttrList: "Removing regulation_ids from the configuration",
+			wantWireName: `"regulations"`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = w.Write([]byte(`{"detail":"this field may not be null."}`))
+			}))
+			defer srv.Close()
+
+			client, err := dd.NewClientWithResponses(srv.URL)
+			if err != nil {
+				t.Fatalf("NewClientWithResponses: %v", err)
+			}
+
+			ddResource := tc.plan.defectdojoResource()
+			targets := clearedDdFields(tc.plan, tc.state, ddResource)
+			if len(targets) != 1 {
+				t.Fatalf("clearedDdFields = %v, want exactly one target", targets)
+			}
+
+			var diags diag.Diagnostics
+			applyClearedFields(context.Background(), &diags, client, "defectdojo_product", 7, ddResource, targets)
+
+			if !diags.HasError() {
+				t.Fatal("applyClearedFields reported no error although the API answered 400")
+			}
+			detail := diags.Errors()[0].Detail()
+			if !strings.Contains(detail, tc.wantAttrList) {
+				t.Errorf("the diagnostic must name the argument the practitioner wrote.\n"+
+					"want substring: %q\ngot:\n%s", tc.wantAttrList, detail)
+			}
+			if !strings.Contains(detail, tc.wantWireName) {
+				t.Errorf("the echoed request body must stay as the server saw it.\n"+
+					"want substring: %q\ngot:\n%s", tc.wantWireName, detail)
+			}
+		})
 	}
 }
 
