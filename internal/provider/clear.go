@@ -56,7 +56,14 @@ type nullClearer interface {
 
 // clearTarget is one attribute the practitioner removed from configuration,
 // resolved down to the wire field that has to be cleared.
+//
+// tfsdkName is carried alongside jsonName because the two frequently disagree -
+// `product_manager_id` is `product_manager` on the wire, `regulation_ids` is
+// `regulations` - and a diagnostic naming the wire field sends the reader
+// looking for an argument this provider does not have. Anything addressed to
+// the practitioner uses tfsdkName; the PATCH body stays as the server saw it.
 type clearTarget struct {
+	tfsdkName   string // the Terraform attribute name, as written in configuration
 	jsonName    string // the DefectDojo JSON field name
 	ddFieldName string // the ddclient Go field name, used to re-check after the update
 	isSlice     bool   // collections clear to [], scalars to null
@@ -182,7 +189,13 @@ func clearedDdFields(plan, state terraformResourceData, ddResource defectdojoRes
 			continue
 		}
 
+		tfsdkName := fieldDescriptor.Tag.Get("tfsdk")
+		if tfsdkName == "" {
+			tfsdkName = jsonName // nothing better to show; every field should have one
+		}
+
 		targets = append(targets, clearTarget{
+			tfsdkName:   tfsdkName,
 			jsonName:    jsonName,
 			ddFieldName: ddFieldName,
 			isSlice:     isSliceDdField(ddField.Type),
@@ -232,9 +245,11 @@ func applyClearedFields(
 	ddResource defectdojoResource,
 	targets []clearTarget,
 ) {
+	// Spelled the way the configuration spells them: the wire names below are
+	// for the request dump, not for the practitioner.
 	names := make([]string, 0, len(targets))
 	for _, t := range targets {
-		names = append(names, t.jsonName)
+		names = append(names, t.tfsdkName)
 	}
 	all := strings.Join(names, ", ")
 
@@ -264,7 +279,9 @@ func applyClearedFields(
 		diags.AddError(
 			"API Error Clearing Attributes on "+typeName,
 			fmt.Sprintf("Removing %s from the configuration requires DefectDojo to accept an "+
-				"explicit null for those fields, but it answered %d.\n\nrequest:\n\n%s\n\nbody:\n\n%s",
+				"explicit null for those fields, but it answered %d. Put them back in the "+
+				"configuration, or destroy and recreate the resource without them."+
+				"\n\nrequest:\n\n%s\n\nbody:\n\n%s",
 				all, statusCode, string(body), string(respBody)))
 		return
 	}
