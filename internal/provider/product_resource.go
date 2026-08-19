@@ -79,7 +79,9 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				MarkdownDescription: "Estimate the application's revenue. DefectDojo stores this as a decimal with two places and echoes it back in that form, but a shorter equivalent literal such as `\"100\"` is kept as written in state.",
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.RegexMatches(regexp.MustCompile(`\A-?\d{0,13}(?:\.\d{0,2})?\z`), `Must be a decimal number format, i.e. /^-?\d{0,13}(?:\.\d{0,2})?$/`),
+					// DecimalField(max_digits=15, decimal_places=2) server-side,
+					// so 13 digits before the point and 2 after.
+					decimalValidator{maxWholeDigits: 13, maxDecimalPlaces: 2},
 				},
 			},
 			"external_audience": schema.BoolAttribute{
