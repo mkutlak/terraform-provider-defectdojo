@@ -79,10 +79,16 @@ const ddFormatDecimal = "decimal"
 // See tags.go.
 const ddFormatTags = "tags"
 
+// ddFormatHost marks a types.String attribute holding a hostname or IP address.
+// DefectDojo case-folds every host it stores, so the read path keeps the
+// configured spelling when it differs from the server's only by case. See
+// host.go.
+const ddFormatHost = "host"
+
 // knownDdFormats is the set of `ddFormat` struct tag values populateResourceData
 // understands. TestDdFormatTagsAreKnown turns a typo into a `go test` failure
 // instead of an apply-time diagnostic nobody reads.
-var knownDdFormats = map[string]bool{ddFormatDecimal: true, ddFormatTags: true}
+var knownDdFormats = map[string]bool{ddFormatDecimal: true, ddFormatTags: true, ddFormatHost: true}
 
 // addUnsupportedMappingError reports a (Terraform type, ddclient type) pairing
 // the reflection engine cannot convert.
@@ -139,6 +145,8 @@ func renderStringValue(diags *diag.Diagnostics, tag reflect.StructTag, current t
 		return types.StringValue(server)
 	case ddFormatDecimal:
 		return preserveDecimalLiteral(current, server)
+	case ddFormatHost:
+		return preserveHostCase(current, server)
 	default:
 		diags.AddError("Unknown ddFormat Tag", fmt.Sprintf(
 			"Attribute %q carries ddFormat:%q, which populateResourceData does not understand "+
