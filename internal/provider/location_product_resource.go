@@ -38,21 +38,39 @@ func (t locationProductResource) Schema(ctx context.Context, req resource.Schema
 			// must be Computed to avoid a "provider produced inconsistent
 			// result" error when left unset, matching `status` below.
 			//
-			// The OneOf validator deliberately does not list "": validators run
-			// against config, never against the value the server writes into
-			// state.
+			// "" is listed in the OneOf because it is a real member of the enum
+			// rather than a spelling of null. Verified on 3.1.101: a create
+			// that omits the field answers 201 carrying "", POST and PUT with
+			// an explicit "" answer 201 and 200 and a GET confirms the blank
+			// stuck, while "bogus" is refused with `"bogus" is not a valid
+			// choice.`. Leaving "" out made the one value a create produces the
+			// one value a configuration could not contain, so a practitioner
+			// matching config to state was rejected at plan time and, since
+			// Computed attributes cannot be cleared by omission either, had no
+			// way back to the blank the provider itself had created.
+			//
+			// `status` keeps a two-value OneOf because its enum really has no
+			// blank member: the same request with "" is refused with `"" is not
+			// a valid choice.`, and DefectDojo fills the field with "Mitigated"
+			// when it is omitted.
 			"relationship": schema.StringAttribute{
-				MarkdownDescription: "The relationship between the location and the product. Valid values: 'owned_by', 'used_by'. DefectDojo stores an empty string when omitted.",
-				Optional:            true,
-				Computed:            true,
+				MarkdownDescription: "The relationship between the location and the product. Valid values: 'owned_by', 'used_by', and '' - " +
+					"the empty string is DefectDojo's own blank marker, and is what it stores when this attribute is omitted, so it is " +
+					"accepted here to let a configuration match the state a create leaves behind. Deleting the attribute from an existing " +
+					"configuration does not blank it: the value is computed, so Terraform reuses the one already in state and plans no " +
+					"change. Set `relationship = \"\"` to clear it.",
+				Optional: true,
+				Computed: true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("owned_by", "used_by"),
+					stringvalidator.OneOf("", "owned_by", "used_by"),
 				},
 			},
 			"status": schema.StringAttribute{
-				MarkdownDescription: "The status of the given Location. Valid values: 'Active', 'Mitigated'.",
-				Optional:            true,
-				Computed:            true,
+				MarkdownDescription: "The status of the given Location. Valid values: 'Active', 'Mitigated'. DefectDojo stores 'Mitigated' when this " +
+					"attribute is omitted. Deleting it from an existing configuration does not restore that default: the value is computed, so " +
+					"Terraform reuses the one already in state and plans no change. Set the value explicitly to change it.",
+				Optional: true,
+				Computed: true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("Active", "Mitigated"),
 				},

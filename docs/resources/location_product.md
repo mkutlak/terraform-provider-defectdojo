@@ -31,8 +31,8 @@ resource "defectdojo_location_product" "example" {
 
 ### Optional
 
-- `relationship` (String) The relationship between the location and the product. Valid values: 'owned_by', 'used_by'. DefectDojo stores an empty string when omitted.
-- `status` (String) The status of the given Location. Valid values: 'Active', 'Mitigated'.
+- `relationship` (String) The relationship between the location and the product. Valid values: 'owned_by', 'used_by', and '' - the empty string is DefectDojo's own blank marker, and is what it stores when this attribute is omitted, so it is accepted here to let a configuration match the state a create leaves behind. Deleting the attribute from an existing configuration does not blank it: the value is computed, so Terraform reuses the one already in state and plans no change. Set `relationship = ""` to clear it.
+- `status` (String) The status of the given Location. Valid values: 'Active', 'Mitigated'. DefectDojo stores 'Mitigated' when this attribute is omitted. Deleting it from an existing configuration does not restore that default: the value is computed, so Terraform reuses the one already in state and plans no change. Set the value explicitly to change it.
 
 ### Read-Only
 
