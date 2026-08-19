@@ -6,7 +6,11 @@ import (
 	"testing"
 
 	fwdatasource "github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	fwresource "github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Schema meta-tests. These walk every resource and data source the provider
@@ -43,6 +47,54 @@ func providerResourceSchemas(t *testing.T) map[string]fwresource.SchemaResponse 
 		out[md.TypeName] = resp
 	}
 	return out
+}
+
+// resourceStringAttribute returns one String attribute of a resource as the
+// provider actually registers it, so a test exercises the schema the
+// practitioner meets rather than a copy of it.
+func resourceStringAttribute(t *testing.T, tfTypeName, attrName string) schema.StringAttribute {
+	t.Helper()
+
+	resp, ok := providerResourceSchemas(t)[tfTypeName]
+	if !ok {
+		t.Fatalf("the provider registers no %s resource", tfTypeName)
+	}
+	attr, ok := resp.Schema.Attributes[attrName]
+	if !ok {
+		t.Fatalf("resource %s has no %q attribute", tfTypeName, attrName)
+	}
+	strAttr, ok := attr.(schema.StringAttribute)
+	if !ok {
+		t.Fatalf("resource %s: %q is %T, expected schema.StringAttribute", tfTypeName, attrName, attr)
+	}
+	return strAttr
+}
+
+// runStringValidators applies a String attribute's validators to one value and
+// reports whether they produced an error.
+//
+// It checks behaviour rather than comparing validator slices, for the reason
+// given on TestTagsAttributesRejectNonCanonicalValues: a
+// stringvalidator.RegexMatches holds a *regexp.Regexp, which does not compare
+// meaningfully with reflect.DeepEqual.
+func runStringValidators(t *testing.T, attrName string, attr schema.StringAttribute, value string) bool {
+	t.Helper()
+
+	ctx := context.Background()
+	req := validator.StringRequest{
+		Path:           path.Root(attrName),
+		PathExpression: path.MatchRoot(attrName),
+		ConfigValue:    types.StringValue(value),
+	}
+
+	for _, v := range attr.Validators {
+		resp := &validator.StringResponse{}
+		v.ValidateString(ctx, req, resp)
+		if resp.Diagnostics.HasError() {
+			return true
+		}
+	}
+	return false
 }
 
 func providerDataSourceSchemas(t *testing.T) map[string]fwdatasource.SchemaResponse {

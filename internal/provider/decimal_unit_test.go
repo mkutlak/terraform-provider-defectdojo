@@ -82,6 +82,116 @@ func TestNormalizeDecimalIsExactBeyondFloat64(t *testing.T) {
 	}
 }
 
+// revenueValidationCases mirrors what DefectDojo 3.1.101 actually does with
+// product.revenue. Every accepted value below was POSTed to /api/v2/products/
+// and read back; every rejected one either fails with a 400 or is stored as
+// something the configuration can never match.
+var revenueValidationCases = []struct {
+	revenue   string
+	wantError bool
+}{
+	// Accepted, stored in DRF's canonical two-place form, and folded back onto
+	// the configured literal by preserveDecimalLiteral.
+	{"100", false},              // -> "100.00"
+	{"100.00", false},           // -> "100.00"
+	{"1.5", false},              // -> "1.50"
+	{"-2.5", false},             // -> "-2.50"
+	{"0", false},                // -> "0.00"
+	{"-0", false},               // -> "-0.00"
+	{"+5", false},               // -> "5.00"
+	{".5", false},               // -> "0.50"
+	{"5.", false},               // -> "5.00"
+	{"000000000000005", false},  // -> "5.00"; DRF counts significant digits
+	{"1234567890123.45", false}, // the widest amount the column holds
+
+	// 201, with the column stored as null - so every apply fails with
+	// "Provider produced inconsistent result after apply: .revenue: was
+	// cty.StringVal(""), but now null". `revenue = var.x` with an unset
+	// variable is the ordinary way to reach it.
+	{"", true},
+
+	// 400 "Ensure that there are no more than 2 decimal places."
+	{"1.000", true},
+	{"12.3456", true},
+	// 400 "Ensure that there are no more than 13 digits before the decimal point."
+	{"12345678901234", true},
+
+	// Not decimal literals at all. normalizeDecimal cannot key them, so
+	// preserveDecimalLiteral could not protect them even where the server
+	// takes the write.
+	{"-", true},
+	{".", true},
+	{"-.", true},
+	{"+", true},
+	{"abc", true},
+	{"1e3", true},
+	{"1,000.00", true},
+	{" 100", true},
+	{"100 ", true},
+	{"1.2.3", true},
+}
+
+func TestProductRevenueValidator(t *testing.T) {
+	t.Parallel()
+
+	attr := resourceStringAttribute(t, "defectdojo_product", "revenue")
+	for _, tc := range revenueValidationCases {
+		got := runStringValidators(t, "revenue", attr, tc.revenue)
+		if got == tc.wantError {
+			continue
+		}
+		verb := "accepted"
+		if got {
+			verb = "rejected"
+		}
+		t.Errorf("revenue = %q was %s, but wantError=%v", tc.revenue, verb, tc.wantError)
+	}
+}
+
+// TestProductRevenueValidatorAcceptsOnlyNormalisableLiterals pins the property
+// the schema and the read path have to share: every literal the validator lets
+// through, normalizeDecimal must be able to key.
+//
+// Where they disagree the validator promises a value preserveDecimalLiteral
+// then declines to protect, and the apply fails after the object has already
+// been created. The containment is deliberately one-way - normalizeDecimal
+// keys "1.000", which the column's two decimal places refuse - so only this
+// direction is a defect.
+//
+// TestDecimalSpecPropertiesCarryDdFormat pins the analogous property for the
+// ddFormat tag.
+func TestProductRevenueValidatorAcceptsOnlyNormalisableLiterals(t *testing.T) {
+	t.Parallel()
+
+	attr := resourceStringAttribute(t, "defectdojo_product", "revenue")
+	checked := 0
+
+	// A systematic sweep of sign/integer/fraction shapes rather than a list,
+	// so a validator that admits some other degenerate spelling is caught too.
+	for _, sign := range []string{"", "-", "+", "--", "-+"} {
+		for _, intPart := range []string{"", "0", "5", "13", "0000000000000000"} {
+			for _, frac := range []string{"", ".", ".0", ".55", ".555"} {
+				literal := sign + intPart + frac
+				if runStringValidators(t, "revenue", attr, literal) {
+					continue
+				}
+				checked++
+				if _, ok := normalizeDecimal(literal); !ok {
+					t.Errorf("revenue = %q passes the schema validators, but normalizeDecimal "+
+						"reports it is not a decimal. preserveDecimalLiteral therefore stores "+
+						"whatever the server answered instead, and the apply fails with "+
+						"\"Provider produced inconsistent result after apply\".", literal)
+				}
+			}
+		}
+	}
+
+	if checked == 0 {
+		t.Fatal("the validators rejected every generated literal; this test would pass vacuously")
+	}
+	t.Logf("checked %d accepted literals against normalizeDecimal", checked)
+}
+
 func TestPreserveDecimalLiteral(t *testing.T) {
 	t.Parallel()
 
