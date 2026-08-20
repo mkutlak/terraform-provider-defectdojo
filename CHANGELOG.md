@@ -51,6 +51,60 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [1.1.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.0.1...v1.1.0) (2026-08-20)
+
+
+### Features
+
+* support clearing optional attributes removed from configuration ([e13db15](https://github.com/mkutlak/terraform-provider-defectdojo/commit/e13db1596c319fd1eb421b9a34bc3ee62b2ec639))
+
+
+### Bug Fixes
+
+* address review findings on tags, notifications and clearing ([25af402](https://github.com/mkutlak/terraform-provider-defectdojo/commit/25af402c778455983bf28e128b23ade4a4d1eede))
+* enforce the tag grammar on engagement, test and url ([8afc1b2](https://github.com/mkutlak/terraform-provider-defectdojo/commit/8afc1b255b205d395b33e89e2ee1c7b13461bc60))
+* **engagement_preset:** require title, default scope to an empty string ([1cd0b4c](https://github.com/mkutlak/terraform-provider-defectdojo/commit/1cd0b4c82cce81d3c7abbee60ecb311670cf8887))
+* **jira_instance:** stop overwriting the configured password on refresh ([34b72cf](https://github.com/mkutlak/terraform-provider-defectdojo/commit/34b72cffb87b9649cb0de48a235a0769b0bec80c))
+* **location_product:** accept the empty relationship DefectDojo stores ([0e276c2](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0e276c2d5f3ecd13a94d0513c6200f57fc7cc64e))
+* mark server-filled attributes as computed ([2a32792](https://github.com/mkutlak/terraform-provider-defectdojo/commit/2a32792f6e2e0ee8ba7e4c69e44339375095cdde))
+* name the configuration attribute in the clearing diagnostics ([7aea1da](https://github.com/mkutlak/terraform-provider-defectdojo/commit/7aea1dac4f3373e1922c75d271d6ab4d1e23eb9d))
+* **product:** accept single-character and multi-line descriptions ([8b47e2b](https://github.com/mkutlak/terraform-provider-defectdojo/commit/8b47e2b78b72c3d35eb42f2bfb960e780234e67d))
+* **product:** preserve the configured revenue literal ([6f6fdd1](https://github.com/mkutlak/terraform-provider-defectdojo/commit/6f6fdd1c451b7c2c6b6e8484f3b6265f12a24ee5))
+* **product:** reject revenue literals that are not decimal numbers ([986e45b](https://github.com/mkutlak/terraform-provider-defectdojo/commit/986e45b96f803f169697367e5ef400be3fef37eb))
+* send the clearing PATCH for attributes whose value was zero ([a132409](https://github.com/mkutlak/terraform-provider-defectdojo/commit/a1324096edae3520ae98af39809eb6f01cfd01e0))
+* **tags:** reject case-colliding tags and drop duplicates from the read ([22eedcb](https://github.com/mkutlak/terraform-provider-defectdojo/commit/22eedcbcb83897d01c5c256cee61639f3cb2b6cc))
+* **url:** preserve the configured host spelling ([8c0d75a](https://github.com/mkutlak/terraform-provider-defectdojo/commit/8c0d75aec2bbddfece1222131e84a0bce0cc6729))
+
+
+### Documentation
+
+* record that product tag inheritance breaks Terraform-managed children ([cb4d666](https://github.com/mkutlak/terraform-provider-defectdojo/commit/cb4d6668212398ed4303906eda66cbdd855b4686))
+* rewrite the schema descriptions in Simplified Technical English ([d5b4a33](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d5b4a3351bff291afc73b9c656509aafc09379d2))
+* **sla_configuration:** record that the day counts cannot be unset ([b365b74](https://github.com/mkutlak/terraform-provider-defectdojo/commit/b365b74fbd3e9dfd29d7d683be8b213a2b7d937c))
+* **tags:** document what the tags attribute actually enforces ([7cb20f9](https://github.com/mkutlak/terraform-provider-defectdojo/commit/7cb20f92f9bb9b68d46bd70d36e62cbe8eec0362))
+
+
+### CI/CD
+
+* collect the OpenAPI spec before the acceptance runs ([cd55049](https://github.com/mkutlak/terraform-provider-defectdojo/commit/cd550494e96ef0f1f03c8ccaae4254b3ec5acf44))
+
+
+### Code Refactoring
+
+* assert reflect values without boxing them first ([7dd4f0f](https://github.com/mkutlak/terraform-provider-defectdojo/commit/7dd4f0ffca3db43243d0de11b8eb3df100b6dcfd))
+* derive the clearing PATCH from the generated client ([d969118](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d969118a3968c6684c3c45163008a51722975714))
+* share one literal-preservation helper across the three formats ([3e4dc48](https://github.com/mkutlak/terraform-provider-defectdojo/commit/3e4dc48844a84459dc93dca707ffb84c2ecda950))
+* surface dropped values as diagnostics instead of log warnings ([ba45b71](https://github.com/mkutlak/terraform-provider-defectdojo/commit/ba45b71455f8b70a1ab56785205ad90149e380c0))
+* **tags:** cut the commentary back to what the server actually does ([72bef70](https://github.com/mkutlak/terraform-provider-defectdojo/commit/72bef707cafae10c07b062ed010eee3aad7bd203))
+
+
+### Tests
+
+* collapse the duplicated guardrail and validator scaffolding ([27dd653](https://github.com/mkutlak/terraform-provider-defectdojo/commit/27dd653f9290b6339faa6b28b1acb45c243e582f))
+* fold the standalone acceptance cases into their resource tests ([ec7fb02](https://github.com/mkutlak/terraform-provider-defectdojo/commit/ec7fb02da7deba99c46b4fccbc19824398f189fd))
+* guard the round-trip contract between schema flags and the API ([ec54666](https://github.com/mkutlak/terraform-provider-defectdojo/commit/ec546663e61b5a3d15e0f799cef96c1fa34197a1))
+* **jira_instance:** re-enable the acceptance tests ([680e0bc](https://github.com/mkutlak/terraform-provider-defectdojo/commit/680e0bcad696b00a08dff89ce6abdc3e72e4a022))
+
 ## [1.0.1](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.0.0...v1.0.1) (2026-08-06)
 
 
