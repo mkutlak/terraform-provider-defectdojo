@@ -136,10 +136,25 @@ type(scope): description
 
 ### How It Works
 
-1. Merge PRs to `master` using squash-merge (PR title = commit message)
+1. Merge PRs to `master` using **rebase-merge**
 2. release-please automatically opens/updates a Release PR with changelog + version bump
 3. Review and merge the Release PR to trigger a release
 4. GoReleaser (via GitHub Actions) builds, signs, and publishes to the Terraform Registry
+
+Rebase-merge replays **every** commit onto `master`, so release-please parses all of them
+and the PR title does not affect versioning (it is only validated by
+`.github/workflows/pr-title-check.yml`). So: every commit must be conventional and
+correctly typed, the highest bump in the branch wins, a single `!` or `BREAKING CHANGE:`
+footer anywhere cuts a major, and a commit that a later one in the same branch corrects
+still reaches the changelog and `git bisect` — squash such pairs before opening the PR.
+
+Commits are GPG-signed and carry `Signed-off-by`, so a rewrite must preserve both and
+needs `git push --force-with-lease`. Audit the whole branch, not just the title:
+
+```shell
+git log --format="%h %G? %s" master..HEAD      # every subject, and signing after a rewrite
+git log master..HEAD | grep "^BREAKING CHANGE" # every body
+```
 
 ### Configuration
 
