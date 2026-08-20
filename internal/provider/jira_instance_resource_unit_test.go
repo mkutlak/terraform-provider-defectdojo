@@ -120,17 +120,10 @@ func TestJiraInstanceResourcePreservesPasswordOnRefresh(t *testing.T) {
 
 	assert.Equal(t, diags.HasError(), false)
 	assert.Equal(t, resourceData.Password.ValueString(), "s3cret")
-}
 
-// TestJiraInstanceResourceOmitsUnsetPassword confirms an unset password is sent
-// as nil rather than as an empty string, so DefectDojo leaves it untouched.
-func TestJiraInstanceResourceOmitsUnsetPassword(t *testing.T) {
-	resourceData := jiraInstanceResourceData{
-		Url:      types.StringValue("https://jira.example.com"),
-		Username: types.StringValue("jirauser"),
-		Password: types.StringNull(),
-	}
-
-	ddResource := resourceData.defectdojoResource().(*jiraInstanceDefectdojoResource)
+	// An unset password goes out as nil rather than as an empty string, so
+	// DefectDojo leaves the stored credential untouched.
+	resourceData.Password = types.StringNull()
+	ddResource = resourceData.defectdojoResource().(*jiraInstanceDefectdojoResource)
 	assert.Assert(t, jiraInstanceToRequest(ddResource).Password == nil)
 }

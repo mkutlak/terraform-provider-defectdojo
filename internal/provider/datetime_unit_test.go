@@ -103,63 +103,22 @@ func TestParseDateRejectsDatetime(t *testing.T) {
 }
 
 func TestPreserveDateTimeLiteral(t *testing.T) {
-	tests := []struct {
-		name    string
-		current types.String
-		server  time.Time
-		want    string
-	}{
-		{
-			name:    "null current returns canonical",
-			current: types.StringNull(),
-			server:  time.Date(2026, 7, 28, 0, 0, 0, 0, time.UTC),
-			want:    "2026-07-28T00:00:00Z",
-		},
-		{
-			name:    "unknown current returns canonical",
-			current: types.StringUnknown(),
-			server:  time.Date(2026, 7, 28, 0, 0, 0, 0, time.UTC),
-			want:    "2026-07-28T00:00:00Z",
-		},
-		{
-			// Issue #23 round trip: config wrote a date-only literal, server
-			// echoes it back as midnight UTC - keep the practitioner's
-			// literal verbatim.
-			name:    "date-only literal round-trips (issue #23)",
-			current: types.StringValue("2026-07-28"),
-			server:  time.Date(2026, 7, 28, 0, 0, 0, 0, time.UTC),
-			want:    "2026-07-28",
-		},
-		{
-			// Same instant, different offset - the latent bug this also
-			// fixes.
-			name:    "same instant with non-UTC offset is preserved",
-			current: types.StringValue("2025-01-01T11:00:00+01:00"),
-			server:  time.Date(2025, 1, 1, 10, 0, 0, 0, time.UTC),
-			want:    "2025-01-01T11:00:00+01:00",
-		},
-		{
-			// Genuinely different instant - real drift is still reported.
-			name:    "different instant is not preserved",
-			current: types.StringValue("2026-07-28"),
-			server:  time.Date(2026, 7, 29, 0, 0, 0, 0, time.UTC),
-			want:    "2026-07-29T00:00:00Z",
-		},
-		{
-			name:    "unparsable literal returns canonical",
-			current: types.StringValue("garbage"),
-			server:  time.Date(2026, 7, 28, 0, 0, 0, 0, time.UTC),
-			want:    "2026-07-28T00:00:00Z",
-		},
-	}
+	t.Parallel()
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := preserveDateTimeLiteral(tt.current, tt.server)
-			assert.Equal(t, got.ValueString(), tt.want)
-			if tt.current.IsNull() || tt.current.IsUnknown() {
-				assert.Assert(t, !got.IsNull() && !got.IsUnknown())
-			}
-		})
-	}
+	// The server column is a time.Time; the table spells it as the RFC3339
+	// literal the API answers with so the rows stay readable.
+	runPreserveCases(t, func(current types.String, server string) types.String {
+		at, err := time.Parse(time.RFC3339, server)
+		assert.NilError(t, err)
+		return preserveDateTimeLiteral(current, at)
+	}, []preserveCase{
+		// Issue #23 round trip: config wrote a date-only literal, the server
+		// echoes it back as midnight UTC - keep the practitioner's literal.
+		{"date-only literal round-trips (issue #23)", types.StringValue("2026-07-28"), "2026-07-28T00:00:00Z", "2026-07-28"},
+		// Same instant, different offset - the latent bug this also fixes.
+		{"same instant with non-UTC offset is preserved", types.StringValue("2025-01-01T11:00:00+01:00"), "2025-01-01T10:00:00Z", "2025-01-01T11:00:00+01:00"},
+		// Genuinely different instant - real drift is still reported.
+		{"different instant is not preserved", types.StringValue("2026-07-28"), "2026-07-29T00:00:00Z", "2026-07-29T00:00:00Z"},
+		{"unparsable literal returns canonical", types.StringValue("garbage"), "2026-07-28T00:00:00Z", "2026-07-28T00:00:00Z"},
+	})
 }

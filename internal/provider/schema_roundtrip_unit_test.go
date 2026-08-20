@@ -7,7 +7,7 @@ package provider
 // them - a schema flag that is only correct if the ddclient field behind it can
 // represent the same set of values.
 //
-// The invariant both tests defend:
+// The invariant both guardrails defend:
 //
 //	An attribute that is Optional, not Computed, and has no Default plans as
 //	NULL when the practitioner omits it. If the value that comes back on the
@@ -16,13 +16,11 @@ package provider
 //	now ...". The practitioner cannot work around it, and the server has
 //	already been mutated by the time it fires.
 //
-// TestResourceOptionalAttributesCanBeNull checks that against the Go type
-// (always runnable). TestResourceOptionalAttributesAreNullableInSpec checks it
-// against DefectDojo's own OpenAPI document (runnable whenever a spec has been
-// collected). They are complementary, not redundant: the first catches a
-// non-pointer target, the second catches a pointer target that the server
-// nevertheless always populates - which is what every real defect in this class
-// has turned out to be.
+// Guardrail A checks that against the Go type (always runnable); Guardrail B
+// checks it against DefectDojo's own OpenAPI document (runnable whenever a spec
+// has been collected). They are complementary: the first catches a non-pointer
+// target, the second catches a pointer target that the server nevertheless
+// always populates - which is what every real defect in this class has been.
 
 import (
 	"cmp"
@@ -105,6 +103,41 @@ func resourceDdTargets(t *testing.T, tfTypeName string) (map[string]ddTarget, re
 	return out, ddStruct, true
 }
 
+// ddJoin is one Terraform attribute followed through to the generated client.
+type ddJoin struct {
+	tfTypeName string
+	ddStruct   reflect.Type
+	attrName   string
+	attribute  any
+	target     ddTarget
+}
+
+// forEachDdTarget calls fn for every schema attribute that carries a ddField tag
+// and resolves onto the generated client struct.
+//
+// All three guardrails below walk the same join, so they share this rather than
+// each restating the schema/target/lookup preamble.
+func forEachDdTarget(t *testing.T, fn func(j ddJoin)) {
+	t.Helper()
+
+	for tfTypeName, resp := range providerResourceSchemas(t) {
+		if resp.Diagnostics.HasError() {
+			continue // reported by TestSchemasValidateImplementation
+		}
+		targets, ddStruct, ok := resourceDdTargets(t, tfTypeName)
+		if !ok {
+			continue
+		}
+		for attrName, attribute := range resp.Schema.Attributes {
+			target, ok := targets[attrName]
+			if !ok {
+				continue // no ddField tag: the engine never writes it
+			}
+			fn(ddJoin{tfTypeName, ddStruct, attrName, attribute, target})
+		}
+	}
+}
+
 // schemaAttributeHasDefault reports whether a schema attribute declares a
 // Default. The framework's own AttributeWithXDefaultValue interfaces live under
 // internal/, but the accessor methods and their return types are public, so
@@ -168,12 +201,11 @@ func isSliceTarget(ddType reflect.Type) bool {
 // Terraform value for a ddclient field of the given type.
 //
 // Pointers get a nil check in every read branch. time.Time and
-// openapi_types.Date get an IsZero() check (resource.go:640, :658). Slices and
-// pointers-to-slices get the empty-collection branch (resource.go:739, :751,
-// :768, :783). Everything else - a bare string/bool/int/int32/int64/float32/
-// float64 - is read unconditionally, so the engine ALWAYS writes a known value
-// and an Optional-only attribute mapped to one can never survive an apply that
-// omits it.
+// openapi_types.Date get an IsZero() check. Slices and pointers-to-slices get
+// the empty-collection branch. Everything else - a bare string/bool/int/int32/
+// int64/float32/float64 - is read unconditionally, so the engine ALWAYS writes a
+// known value and an Optional-only attribute mapped to one can never survive an
+// apply that omits it.
 func ddTargetCanBeNull(ddType reflect.Type) bool {
 	switch {
 	case ddType.Kind() == reflect.Ptr,
@@ -187,8 +219,8 @@ func ddTargetCanBeNull(ddType reflect.Type) bool {
 
 // TestResourceOptionalAttributesCanBeNull fails when an attribute that plans as
 // null is backed by a ddclient field the engine always reads a concrete value
-// out of. This is the issue #23 bug class reduced to a property of the Go
-// types, so it needs no DefectDojo instance and no collected spec.
+// out of. This is the issue #23 bug class reduced to a property of the Go types,
+// so it needs no DefectDojo instance and no collected spec.
 //
 // It passes today. Its value is that it cannot stop passing quietly: a
 // `make regen-client` that turns a *string into a string, or a new resource
@@ -197,38 +229,25 @@ func TestResourceOptionalAttributesCanBeNull(t *testing.T) {
 	t.Parallel()
 
 	checked := 0
-	for tfTypeName, resp := range providerResourceSchemas(t) {
-		if resp.Diagnostics.HasError() {
-			continue // reported by TestSchemasValidateImplementation
+	forEachDdTarget(t, func(j ddJoin) {
+		if !planningAsNull(j.attribute) {
+			return
 		}
-		targets, ddStruct, ok := resourceDdTargets(t, tfTypeName)
-		if !ok {
-			continue
+		checked++
+		if ddTargetCanBeNull(j.target.ddType) {
+			return
 		}
-
-		for attrName, attr := range resp.Schema.Attributes {
-			if !planningAsNull(attr) {
-				continue
-			}
-			target, ok := targets[attrName]
-			if !ok {
-				continue // no ddField tag: the engine never writes it
-			}
-			checked++
-			if ddTargetCanBeNull(target.ddType) {
-				continue
-			}
-			t.Errorf("resource %s: attribute %q is Optional without Computed and without a "+
-				"Default, but its ddField target %s.%s has type %s, for which populateResourceData "+
-				"always writes a known value. Every apply that omits %q will fail with "+
-				"\"Provider produced inconsistent result after apply: .%s: was null, but now ...\".\n"+
-				"Fix by one of:\n"+
-				"  - Computed: true                     (DefectDojo picks the value)\n"+
-				"  - Computed: true plus a Default:     (the provider picks the value)\n"+
-				"  - make the ddclient field a pointer  (only if the API can really omit it)",
-				tfTypeName, attrName, ddStruct, target.ddFieldTag, target.ddType, attrName, attrName)
-		}
-	}
+		t.Errorf("resource %s: attribute %q is Optional without Computed and without a "+
+			"Default, but its ddField target %s.%s has type %s, for which populateResourceData "+
+			"always writes a known value. Every apply that omits %q will fail with "+
+			"\"Provider produced inconsistent result after apply: .%s: was null, but now ...\".\n"+
+			"Fix by one of:\n"+
+			"  - Computed: true                     (DefectDojo picks the value)\n"+
+			"  - Computed: true plus a Default:     (the provider picks the value)\n"+
+			"  - make the ddclient field a pointer  (only if the API can really omit it)",
+			j.tfTypeName, j.attrName, j.ddStruct, j.target.ddFieldTag, j.target.ddType,
+			j.attrName, j.attrName)
+	})
 
 	if checked == 0 {
 		t.Fatal("no Optional-without-Computed attributes were checked; the join is broken and " +
@@ -239,10 +258,9 @@ func TestResourceOptionalAttributesCanBeNull(t *testing.T) {
 
 // TestDdTargetCanBeNull pins the predicate the guardrail above depends on.
 //
-// It exists because the repo currently has zero non-pointer Optional targets,
-// so the usual sanity check - break the schema on purpose, watch the guardrail
-// go red - cannot be performed against real code. This table is the executable
-// proof that ddTargetCanBeNull means what its doc comment claims.
+// It exists because the repo currently has zero non-pointer Optional targets, so
+// the usual sanity check - break the schema on purpose, watch the guardrail go
+// red - cannot be performed against real code.
 func TestDdTargetCanBeNull(t *testing.T) {
 	t.Parallel()
 
@@ -253,22 +271,10 @@ func TestDdTargetCanBeNull(t *testing.T) {
 		{reflect.TypeFor[string](), false},
 		{reflect.TypeFor[bool](), false},
 		{reflect.TypeFor[int](), false},
-		{reflect.TypeFor[int32](), false},
-		{reflect.TypeFor[int64](), false},
-		{reflect.TypeFor[float32](), false},
-		{reflect.TypeFor[float64](), false},
 		{reflect.TypeFor[*string](), true},
-		{reflect.TypeFor[*bool](), true},
-		{reflect.TypeFor[*int](), true},
-		{reflect.TypeFor[*int32](), true},
-		{reflect.TypeFor[*float64](), true},
 		{reflect.TypeFor[time.Time](), true},
-		{reflect.TypeFor[*time.Time](), true},
 		{reflect.TypeFor[openapi_types.Date](), true},
-		{reflect.TypeFor[*openapi_types.Date](), true},
 		{reflect.TypeFor[[]string](), true},
-		{reflect.TypeFor[[]int](), true},
-		{reflect.TypeFor[*[]string](), true},
 		{reflect.TypeFor[*[]int](), true},
 	} {
 		if got := ddTargetCanBeNull(tc.typ); got != tc.want {
@@ -301,9 +307,9 @@ type specProperty struct {
 	ReadOnly bool   `json:"readOnly"`
 }
 
-// defaultDdSpecVersion mirrors DD_VERSION in GNUmakefile:3. The Makefile
-// exports it (GNUmakefile:4), so every `make test-unit` / `make testacc-local`
-// run supplies the real value; this constant only matters for a bare `go test`.
+// defaultDdSpecVersion mirrors DD_VERSION in GNUmakefile:3. The Makefile exports
+// it, so every `make test-unit` / `make testacc-local` run supplies the real
+// value; this constant only matters for a bare `go test`.
 const defaultDdSpecVersion = "3.1.101"
 
 // ddClientPkgPath is the import path of the generated client, used to pick the
@@ -313,8 +319,7 @@ const ddClientPkgPath = "github.com/mkutlak/terraform-provider-defectdojo/intern
 // loadOpenAPISpec reads the collected DefectDojo spec, or skips the test when
 // none has been collected.
 //
-// Tests run with the package directory as cwd (ddfield_audit_unit_test.go reads
-// "." the same way), so the spec is two levels up.
+// Tests run with the package directory as cwd, so the spec is two levels up.
 func loadOpenAPISpec(t *testing.T) (specDocument, string) {
 	t.Helper()
 
@@ -345,11 +350,10 @@ func loadOpenAPISpec(t *testing.T) (specDocument, string) {
 }
 
 // embeddedDdClientTypeName finds the generated ddclient struct a
-// defectdojoResource() wrapper embeds. Its Go name is also its OpenAPI
-// component name, because oapi-codegen names generated types after the
-// components they come from (dd.SLAConfiguration -> SLAConfiguration,
-// dd.EngagementPresets -> EngagementPresets, dd.LocationProductReference ->
-// LocationProductReference, ...).
+// defectdojoResource() wrapper embeds. Its Go name is also its OpenAPI component
+// name, because oapi-codegen names generated types after the components they
+// come from (dd.SLAConfiguration -> SLAConfiguration, dd.EngagementPresets ->
+// EngagementPresets, ...).
 //
 // Scanning for the embed rather than matching on the wrapper's own name is
 // deliberate: jira_instance and user wrappers carry an extra write-only shadow
@@ -371,13 +375,77 @@ func embeddedDdClientTypeName(wrapper reflect.Type) (string, bool) {
 }
 
 // specComponentUnavailable excuses resources whose wrapper embeds no generated
-// ddclient struct, so there is no component to join against. Anything not
-// listed here must resolve: silently skipping a whole resource is exactly the
-// failure mode this audit exists to prevent.
+// ddclient struct, so there is no component to join against. Anything not listed
+// here must resolve: silently skipping a whole resource is exactly the failure
+// mode this audit exists to prevent.
 var specComponentUnavailable = map[string]string{
 	"defectdojo_notifications": "wraps the hand-written notificationsModel rather than a dd.* type, " +
 		"because the live API returns an array for scan_added_empty where the spec declares a " +
 		"scalar enum (see the custom UnmarshalJSON in notifications_resource.go)",
+}
+
+// specJoin is a ddJoin carried through to its OpenAPI property.
+type specJoin struct {
+	ddJoin
+	component string
+	prop      specProperty
+	propFound bool
+	required  bool // the property is listed in the component's `required`
+}
+
+// forEachSpecProperty joins forEachDdTarget onto the collected OpenAPI document,
+// resolving each resource's component once. It skips the test when no spec has
+// been collected, and returns the spec path for use in diagnostics.
+func forEachSpecProperty(t *testing.T, fn func(j specJoin)) string {
+	t.Helper()
+
+	spec, specPath := loadOpenAPISpec(t)
+
+	type resolution struct {
+		component string
+		schemaDef specSchema
+		ok        bool
+	}
+	resolved := map[string]resolution{}
+
+	forEachDdTarget(t, func(j ddJoin) {
+		r, done := resolved[j.tfTypeName]
+		if !done {
+			r = resolution{}
+			component, ok := embeddedDdClientTypeName(j.ddStruct)
+			switch {
+			case !ok:
+				if specComponentUnavailable[j.tfTypeName] == "" {
+					t.Errorf("resource %s: defectdojoResource() embeds no %s struct, so its "+
+						"attributes cannot be audited against the OpenAPI spec. Either embed the "+
+						"generated type, or add an entry to specComponentUnavailable explaining "+
+						"why not.", j.tfTypeName, ddClientPkgPath)
+				}
+			default:
+				schemaDef, found := spec.Components.Schemas[component]
+				if !found {
+					t.Errorf("resource %s: OpenAPI component %q is missing from %s (spec drift "+
+						"after a DefectDojo upgrade?)", j.tfTypeName, component, specPath)
+					break
+				}
+				r = resolution{component: component, schemaDef: schemaDef, ok: true}
+			}
+			resolved[j.tfTypeName] = r
+		}
+		if !r.ok {
+			return
+		}
+		prop, propFound := r.schemaDef.Properties[j.target.jsonName]
+		fn(specJoin{
+			ddJoin:    j,
+			component: r.component,
+			prop:      prop,
+			propFound: propFound,
+			required:  slices.Contains(r.schemaDef.Required, j.target.jsonName),
+		})
+	})
+
+	return specPath
 }
 
 // TestResourceOptionalAttributesAreNullableInSpec is the audit that finds the
@@ -400,83 +468,49 @@ var specComponentUnavailable = map[string]string{
 func TestResourceOptionalAttributesAreNullableInSpec(t *testing.T) {
 	t.Parallel()
 
-	spec, specPath := loadOpenAPISpec(t)
 	checked := 0
+	specPath := forEachSpecProperty(t, func(j specJoin) {
+		if !planningAsNull(j.attribute) {
+			return
+		}
+		// Collections are exempt. The read path falls back to SetNull when the
+		// server sends an empty collection and the current value is null, so a
+		// server-returned [] against a null plan stays null. Scalars have no
+		// such branch.
+		//
+		// time.Time / openapi_types.Date are deliberately NOT exempt here,
+		// unlike in Guardrail A: their IsZero() fallback never fires for a
+		// non-nullable column the server always populates.
+		if isSliceTarget(j.target.ddType) {
+			return
+		}
+		if j.target.jsonName == "" {
+			t.Errorf("resource %s: attribute %q resolves to %s.%s, which carries no json tag, "+
+				"so it cannot be joined to the spec. A write-only shadow field must not carry "+
+				"a ddField tag - see user_resource.go for the pattern that avoids this.",
+				j.tfTypeName, j.attrName, j.ddStruct, j.target.ddFieldTag)
+			return
+		}
+		if !j.propFound {
+			t.Errorf("resource %s: %s.%s (json:%q) is not a property of OpenAPI component %s",
+				j.tfTypeName, j.ddStruct, j.target.ddFieldTag, j.target.jsonName, j.component)
+			return
+		}
+		checked++
 
-	for tfTypeName, resp := range providerResourceSchemas(t) {
-		if resp.Diagnostics.HasError() {
-			continue // reported by TestSchemasValidateImplementation
+		if j.prop.Nullable || j.prop.ReadOnly || j.required {
+			return
 		}
-		targets, ddStruct, ok := resourceDdTargets(t, tfTypeName)
-		if !ok {
-			continue
-		}
-
-		component, ok := embeddedDdClientTypeName(ddStruct)
-		if !ok {
-			if specComponentUnavailable[tfTypeName] == "" {
-				t.Errorf("resource %s: defectdojoResource() embeds no %s struct, so its attributes "+
-					"cannot be audited against the OpenAPI spec. Either embed the generated type, "+
-					"or add an entry to specComponentUnavailable explaining why not.",
-					tfTypeName, ddClientPkgPath)
-			}
-			continue
-		}
-		schemaDef, ok := spec.Components.Schemas[component]
-		if !ok {
-			t.Errorf("resource %s: OpenAPI component %q is missing from %s (spec drift after a "+
-				"DefectDojo upgrade?)", tfTypeName, component, specPath)
-			continue
-		}
-
-		for attrName, attr := range resp.Schema.Attributes {
-			if !planningAsNull(attr) {
-				continue
-			}
-			target, ok := targets[attrName]
-			if !ok {
-				continue // no ddField tag: the engine never writes it
-			}
-			// Collections are exempt. The read path falls back to SetNull when
-			// the server sends an empty collection and the current value is
-			// null (resource.go:739, :751, :768, :783), so a server-returned []
-			// against a null plan stays null. Scalars have no such branch.
-			//
-			// time.Time / openapi_types.Date are deliberately NOT exempt here,
-			// unlike in Guardrail A: their IsZero() fallback never fires for a
-			// non-nullable column the server always populates.
-			if isSliceTarget(target.ddType) {
-				continue
-			}
-			if target.jsonName == "" {
-				t.Errorf("resource %s: attribute %q resolves to %s.%s, which carries no json tag, "+
-					"so it cannot be joined to the spec. A write-only shadow field must not carry "+
-					"a ddField tag - see user_resource.go for the pattern that avoids this.",
-					tfTypeName, attrName, ddStruct, target.ddFieldTag)
-				continue
-			}
-			prop, ok := schemaDef.Properties[target.jsonName]
-			if !ok {
-				t.Errorf("resource %s: %s.%s (json:%q) is not a property of OpenAPI component %s",
-					tfTypeName, ddStruct, target.ddFieldTag, target.jsonName, component)
-				continue
-			}
-			checked++
-
-			if prop.Nullable || prop.ReadOnly || slices.Contains(schemaDef.Required, target.jsonName) {
-				continue
-			}
-			t.Errorf("resource %s: attribute %q is Optional without Computed and without a "+
-				"Default, but OpenAPI component %s.%s (reached via ddField:%q -> json:%q) is "+
-				"neither nullable, nor readOnly, nor required. DefectDojo therefore always "+
-				"answers with a concrete value, and every apply that omits %q fails with "+
-				"\"Provider produced inconsistent result after apply: .%s: was null, but now ...\".\n"+
-				"Fix by adding `Computed: true` (DefectDojo picks the value), or `Computed: true` "+
-				"plus a `Default:` (the provider picks it).\nSpec: %s",
-				tfTypeName, attrName, component, target.jsonName, target.ddFieldTag,
-				target.jsonName, attrName, attrName, specPath)
-		}
-	}
+		t.Errorf("resource %s: attribute %q is Optional without Computed and without a "+
+			"Default, but OpenAPI component %s.%s (reached via ddField:%q -> json:%q) is "+
+			"neither nullable, nor readOnly, nor required. DefectDojo therefore always "+
+			"answers with a concrete value, and every apply that omits %q fails with "+
+			"\"Provider produced inconsistent result after apply: .%s: was null, but now ...\".\n"+
+			"Fix by adding `Computed: true` (DefectDojo picks the value), or `Computed: true` "+
+			"plus a `Default:` (the provider picks it).",
+			j.tfTypeName, j.attrName, j.component, j.target.jsonName, j.target.ddFieldTag,
+			j.target.jsonName, j.attrName, j.attrName)
+	})
 
 	if checked == 0 {
 		t.Fatal("no attributes were checked against the spec; the join is broken and this test " +
@@ -485,73 +519,39 @@ func TestResourceOptionalAttributesAreNullableInSpec(t *testing.T) {
 	t.Logf("audited %d Optional-without-Computed attributes against %s", checked, specPath)
 }
 
-// TestDecimalSpecPropertiesCarryDdFormat pins the ddFormat:"decimal" tag to
-// exactly the set of string attributes whose OpenAPI property is
-// format: decimal.
+// TestDecimalSpecPropertiesCarryDdFormat fails when the spec declares a string
+// property as format: decimal and the attribute behind it carries no
+// ddFormat:"decimal" tag.
 //
-// Today that set has one member, product.revenue, which makes the ddFormat
-// mechanism a one-user abstraction. The point of this test is that it cannot
-// stay that way silently: a `make regen-client` against a newer DefectDojo that
-// adds a second decimal column would otherwise reintroduce the exact bug
-// ddFormat was built to fix, with nothing failing.
+// Today that set has one member, product.revenue. The point of this test is that
+// it cannot stay that way silently: a `make regen-client` against a newer
+// DefectDojo that adds a second decimal column would otherwise reintroduce the
+// exact bug ddFormat was built to fix, with nothing failing.
 //
-// Both directions are checked, so a tag on a non-decimal property is also an
-// error - a tag that does not correspond to real server behaviour is worse than
-// no tag at all.
+// The reverse direction - a tag on a non-decimal attribute - is covered by
+// TestDdFormatTagsAreKnown, which pins every ddFormat tag to a format the read
+// path implements and to a compatible target type.
 func TestDecimalSpecPropertiesCarryDdFormat(t *testing.T) {
 	t.Parallel()
 
-	spec, specPath := loadOpenAPISpec(t)
-	tagged, untagged := 0, 0
-
-	for tfTypeName := range providerResourceSchemas(t) {
-		targets, ddStruct, ok := resourceDdTargets(t, tfTypeName)
-		if !ok {
-			continue
+	tagged := 0
+	specPath := forEachSpecProperty(t, func(j specJoin) {
+		if j.target.tfType != typeOfTypesString || !j.propFound || j.prop.Format != "decimal" {
+			return
 		}
-		component, ok := embeddedDdClientTypeName(ddStruct)
-		if !ok {
-			continue // excused by specComponentUnavailable, reported above
+		if j.target.ddFormat == ddFormatDecimal {
+			tagged++
+			return
 		}
-		schemaDef, ok := spec.Components.Schemas[component]
-		if !ok {
-			continue // reported above
-		}
+		t.Errorf("resource %s: attribute %q maps to %s.%s, which the spec declares as "+
+			"format: decimal, but it carries no ddFormat:%q tag. DefectDojo renders decimals "+
+			"in one canonical form (\"100\" comes back as \"100.00\"), so without the tag any "+
+			"non-canonical configured value fails the apply with \"Provider produced "+
+			"inconsistent result after apply\".",
+			j.tfTypeName, j.target.tfsdkName, j.component, j.target.jsonName, ddFormatDecimal)
+	})
 
-		for _, target := range targets {
-			if target.tfType != typeOfTypesString || target.jsonName == "" {
-				continue
-			}
-			prop, ok := schemaDef.Properties[target.jsonName]
-			if !ok {
-				continue
-			}
-
-			isDecimal := prop.Format == "decimal"
-			hasTag := target.ddFormat == ddFormatDecimal
-
-			switch {
-			case isDecimal && !hasTag:
-				untagged++
-				t.Errorf("resource %s: attribute %q maps to %s.%s, which the spec declares as "+
-					"format: decimal, but it carries no ddFormat:%q tag. DefectDojo renders "+
-					"decimals in one canonical form (\"100\" comes back as \"100.00\"), so "+
-					"without the tag any non-canonical configured value fails the apply with "+
-					"\"Provider produced inconsistent result after apply\".\nSpec: %s",
-					tfTypeName, target.tfsdkName, component, target.jsonName, ddFormatDecimal, specPath)
-			case !isDecimal && hasTag:
-				t.Errorf("resource %s: attribute %q carries ddFormat:%q, but %s.%s is not "+
-					"format: decimal in the spec (it is %q). Remove the tag, or confirm the "+
-					"server really does canonicalise this field.\nSpec: %s",
-					tfTypeName, target.tfsdkName, ddFormatDecimal, component, target.jsonName,
-					prop.Format, specPath)
-			case isDecimal:
-				tagged++
-			}
-		}
-	}
-
-	if tagged == 0 && untagged == 0 {
+	if tagged == 0 {
 		t.Errorf("no format: decimal properties were found in %s at all. product.revenue is "+
 			"expected to be one, so either the join is broken or the spec changed shape.", specPath)
 	}

@@ -6,79 +6,73 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func TestNormalizeDecimal(t *testing.T) {
+func TestParseDecimal(t *testing.T) {
 	t.Parallel()
 
 	for _, tc := range []struct {
-		in   string
-		want string
+		in     string
+		wantOK bool
 	}{
-		{"100", "100"},
-		{"100.00", "100"}, // the DRF rendering of a configured "100"
-		{"100.0", "100"},
-		{"100.50", "100.5"},
-		{"0100.50", "100.5"},
-		{"+7", "7"},
-		{"-1.50", "-1.5"},
-		{"-1.05", "-1.05"},
-		{"0", "0"},
-		{"0.00", "0"},
-		{"-0", "0"},
-		{"-0.00", "0"},
-		{"+0.000", "0"},
-		{".5", "0.5"},
-		{"5.", "5"},
-		{"0000", "0"},
+		{"100", true},
+		{"100.00", true},
+		{"100.50", true},
+		{"0100.50", true},
+		{"+7", true},
+		{"-1.50", true},
+		{"0", true},
+		{"-0", true},
+		{"+0.000", true},
+		{".5", true},
+		{"5.", true},
+		{"0000", true},
+
+		// Rejected. big.Rat.SetString would read the exponent, ratio and hex
+		// forms, which DefectDojo does not accept; decimalPattern gates them.
+		{"", false},
+		{".", false},
+		{"+", false},
+		{"-", false},
+		{"1.2.3", false},
+		{"abc", false},
+		{"1e3", false},
+		{"1/2", false},
+		{"0x1p-2", false},
+		{" 100", false},
+		{"100 ", false},
+		{"1,000.00", false},
+		{"NaN", false},
 	} {
-		got, ok := normalizeDecimal(tc.in)
-		if !ok {
-			t.Errorf("normalizeDecimal(%q) reported not-a-decimal, want %q", tc.in, tc.want)
-			continue
-		}
-		if got != tc.want {
-			t.Errorf("normalizeDecimal(%q) = %q, want %q", tc.in, got, tc.want)
+		if _, ok := parseDecimal(tc.in); ok != tc.wantOK {
+			t.Errorf("parseDecimal(%q) ok = %v, want %v", tc.in, ok, tc.wantOK)
 		}
 	}
 }
 
-func TestNormalizeDecimalRejects(t *testing.T) {
+func TestDecimalsEqual(t *testing.T) {
 	t.Parallel()
 
-	for _, in := range []string{
-		"",
-		".",
-		"+",
-		"-",
-		"1.2.3",
-		"abc",
-		"1e3",
-		" 100",
-		"100 ",
-		"1,000.00",
-		"a lot of money",
-		"NaN",
+	for _, tc := range []struct {
+		a, b string
+		want bool
+	}{
+		{"100", "100.00", true}, // the DRF rendering of a configured "100"
+		{"1.5", "1.50", true},
+		{"-2.5", "-2.50", true},
+		{"0", "-0.00", true},
+		{".5", "0.50", true},
+		{"000000000000005", "5.00", true},
+		{"99", "100.00", false},
+		{"100", "not a number", false},
+		{"not a number", "100.00", false},
+
+		// DecimalField(max_digits=15, decimal_places=2) needs 15 significant
+		// digits, past the point where float64 can tell neighbours apart. big.Rat
+		// is exact, so these stay distinct.
+		{"1234567890123.45", "1234567890123.46", false},
 	} {
-		if got, ok := normalizeDecimal(in); ok {
-			t.Errorf("normalizeDecimal(%q) = %q, true; want not-a-decimal", in, got)
+		if got := decimalsEqual(tc.a, tc.b); got != tc.want {
+			t.Errorf("decimalsEqual(%q, %q) = %v, want %v", tc.a, tc.b, got, tc.want)
 		}
-	}
-}
-
-// TestNormalizeDecimalIsExactBeyondFloat64 is an executable record of why
-// normalizeDecimal compares strings rather than parsing to a float. DefectDojo's
-// revenue column is DecimalField(max_digits=15, decimal_places=2), which needs
-// 15 significant digits - past the point where float64 can tell neighbouring
-// values apart.
-func TestNormalizeDecimalIsExactBeyondFloat64(t *testing.T) {
-	t.Parallel()
-
-	a, aok := normalizeDecimal("1234567890123.45")
-	b, bok := normalizeDecimal("1234567890123.46")
-	if !aok || !bok {
-		t.Fatalf("both inputs should normalise: %q(%v), %q(%v)", a, aok, b, bok)
-	}
-	if a == b {
-		t.Errorf("normalizeDecimal collapsed two distinct 15-digit decimals onto %q", a)
 	}
 }
 
@@ -91,7 +85,7 @@ var revenueValidationCases = []struct {
 	wantError bool
 }{
 	// Accepted, stored in DRF's canonical two-place form, and folded back onto
-	// the configured literal by preserveDecimalLiteral.
+	// the configured literal on read.
 	{"100", false},              // -> "100.00"
 	{"100.00", false},           // -> "100.00"
 	{"1.5", false},              // -> "1.50"
@@ -116,19 +110,10 @@ var revenueValidationCases = []struct {
 	// 400 "Ensure that there are no more than 13 digits before the decimal point."
 	{"12345678901234", true},
 
-	// Not decimal literals at all. normalizeDecimal cannot key them, so
-	// preserveDecimalLiteral could not protect them even where the server
-	// takes the write.
-	{"-", true},
-	{".", true},
-	{"-.", true},
-	{"+", true},
+	// Not decimal literals at all; TestParseDecimal covers the grammar in full.
 	{"abc", true},
 	{"1e3", true},
 	{"1,000.00", true},
-	{" 100", true},
-	{"100 ", true},
-	{"1.2.3", true},
 }
 
 func TestProductRevenueValidator(t *testing.T) {
@@ -148,19 +133,16 @@ func TestProductRevenueValidator(t *testing.T) {
 	}
 }
 
-// TestProductRevenueValidatorAcceptsOnlyNormalisableLiterals pins the property
-// the schema and the read path have to share: every literal the validator lets
-// through, normalizeDecimal must be able to key.
+// TestProductRevenueValidatorAcceptsOnlyParseableLiterals pins the property the
+// schema and the read path have to share: every literal the validator lets
+// through, parseDecimal must be able to read.
 //
-// Where they disagree the validator promises a value preserveDecimalLiteral
-// then declines to protect, and the apply fails after the object has already
-// been created. The containment is deliberately one-way - normalizeDecimal
-// keys "1.000", which the column's two decimal places refuse - so only this
+// Where they disagree the validator promises a value the read path then
+// declines to protect, and the apply fails after the object has already been
+// created. The containment is deliberately one-way - parseDecimal reads
+// "1.000", which the column's two decimal places refuse - so only this
 // direction is a defect.
-//
-// TestDecimalSpecPropertiesCarryDdFormat pins the analogous property for the
-// ddFormat tag.
-func TestProductRevenueValidatorAcceptsOnlyNormalisableLiterals(t *testing.T) {
+func TestProductRevenueValidatorAcceptsOnlyParseableLiterals(t *testing.T) {
 	t.Parallel()
 
 	attr := resourceStringAttribute(t, "defectdojo_product", "revenue")
@@ -176,11 +158,11 @@ func TestProductRevenueValidatorAcceptsOnlyNormalisableLiterals(t *testing.T) {
 					continue
 				}
 				checked++
-				if _, ok := normalizeDecimal(literal); !ok {
-					t.Errorf("revenue = %q passes the schema validators, but normalizeDecimal "+
-						"reports it is not a decimal. preserveDecimalLiteral therefore stores "+
-						"whatever the server answered instead, and the apply fails with "+
-						"\"Provider produced inconsistent result after apply\".", literal)
+				if _, ok := parseDecimal(literal); !ok {
+					t.Errorf("revenue = %q passes the schema validators, but parseDecimal "+
+						"cannot read it. The read path therefore stores whatever the server "+
+						"answered instead, and the apply fails with \"Provider produced "+
+						"inconsistent result after apply\".", literal)
 				}
 			}
 		}
@@ -189,80 +171,22 @@ func TestProductRevenueValidatorAcceptsOnlyNormalisableLiterals(t *testing.T) {
 	if checked == 0 {
 		t.Fatal("the validators rejected every generated literal; this test would pass vacuously")
 	}
-	t.Logf("checked %d accepted literals against normalizeDecimal", checked)
+	t.Logf("checked %d accepted literals against parseDecimal", checked)
 }
 
 func TestPreserveDecimalLiteral(t *testing.T) {
 	t.Parallel()
 
-	for _, tc := range []struct {
-		name    string
-		current types.String
-		server  string
-		want    types.String
-	}{
-		{
-			// The issue this whole mechanism exists for.
-			name:    "configured short form survives DRF canonicalisation",
-			current: types.StringValue("100"),
-			server:  "100.00",
-			want:    types.StringValue("100"),
-		},
-		{
-			name:    "one decimal place survives",
-			current: types.StringValue("1.5"),
-			server:  "1.50",
-			want:    types.StringValue("1.5"),
-		},
-		{
-			name:    "already canonical is kept as-is",
-			current: types.StringValue("100.00"),
-			server:  "100.00",
-			want:    types.StringValue("100.00"),
-		},
-		{
-			name:    "negative short form survives",
-			current: types.StringValue("-2.5"),
-			server:  "-2.50",
-			want:    types.StringValue("-2.5"),
-		},
-		{
-			// Real drift must still be reported, or the mechanism would hide
-			// out-of-band changes.
-			name:    "different amount takes the server value",
-			current: types.StringValue("99"),
-			server:  "100.00",
-			want:    types.StringValue("100.00"),
-		},
-		{
-			name:    "null current takes the server value",
-			current: types.StringNull(),
-			server:  "100.00",
-			want:    types.StringValue("100.00"),
-		},
-		{
-			name:    "unknown current takes the server value",
-			current: types.StringUnknown(),
-			server:  "100.00",
-			want:    types.StringValue("100.00"),
-		},
-		{
-			name:    "unparseable current takes the server value",
-			current: types.StringValue("a lot of money"),
-			server:  "100.00",
-			want:    types.StringValue("100.00"),
-		},
-		{
-			name:    "unparseable server value is passed through verbatim",
-			current: types.StringValue("100"),
-			server:  "not a number",
-			want:    types.StringValue("not a number"),
-		},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			if got := preserveDecimalLiteral(tc.current, tc.server); !got.Equal(tc.want) {
-				t.Errorf("preserveDecimalLiteral(%v, %q) = %v, want %v", tc.current, tc.server, got, tc.want)
-			}
-		})
-	}
+	runPreserveCases(t, func(current types.String, server string) types.String {
+		return preserveLiteral(current, server, decimalsEqual)
+	}, []preserveCase{
+		// The issue this whole mechanism exists for.
+		{"configured short form survives DRF canonicalisation", types.StringValue("100"), "100.00", "100"},
+		{"already canonical is kept as-is", types.StringValue("100.00"), "100.00", "100.00"},
+		// Real drift must still be reported, or the mechanism would hide
+		// out-of-band changes.
+		{"different amount takes the server value", types.StringValue("99"), "100.00", "100.00"},
+		{"unparseable current takes the server value", types.StringValue("a lot of money"), "100.00", "100.00"},
+		{"unparseable server value is passed through verbatim", types.StringValue("100"), "not a number", "not a number"},
+	})
 }
