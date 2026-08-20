@@ -32,14 +32,9 @@ import (
 // too, since the message is identical and the round trip never happens.
 //
 // So the grammar below rejects exactly the four characters DefectDojo's own
-// error message names, and nothing else.
-//
-// It deliberately does NOT reject uppercase. product_resource.go carried a
-// `\A[a-z0-9][a-z0-9_-]*\z` pattern with the message "Tags must be lower case
-// values" from commit a54fb89 (2022), but that is not true of DefectDojo
-// 3.1.101: "Foo" round-trips as "Foo". Enforcing it rejected working
-// configurations - `env:prod`, `owasp:a01`, `v1.2.3` and `team/security` are
-// ordinary tag conventions that the server stores untouched.
+// error message names, and nothing else. In particular it does not reject
+// uppercase: "Foo" round-trips as "Foo", and `env:prod`, `owasp:a01`, `v1.2.3`
+// and `team/security` are ordinary tag conventions the server stores untouched.
 var tagPattern = regexp.MustCompile(`\A[^ ,'"]+\z`)
 
 const tagPatternMessage = `Tags must not be empty or contain spaces, commas, single quotes or double quotes. ` +
@@ -61,10 +56,8 @@ const tagPatternMessage = `Tags must not be empty or contain spaces, commas, sin
 // configuration asks for two elements, the server only ever reports one, and
 // every later plan proposes adding the missing spelling again, forever.
 //
-// This cannot live in tagPattern. Each element is a perfectly legal tag on its
-// own - "Foo" and "foo" both round-trip when they are the only spelling in
-// play - so only the set as a whole is contradictory, and only a set-level
-// validator can see that.
+// Each element is a legal tag on its own, so only the set as a whole is
+// contradictory - hence a set validator rather than an addition to tagPattern.
 type tagCaseCollisionValidator struct{}
 
 func (v tagCaseCollisionValidator) Description(_ context.Context) string {
@@ -114,17 +107,15 @@ func (v tagCaseCollisionValidator) ValidateSet(_ context.Context, req validator.
 // rejected it afterwards with a diagnostic that named neither DefectDojo nor
 // the cause.
 //
-// The comparison is exact rather than case-folded. Two spellings of one tag
-// never come back from a single object - the tag table resolves them to one row
-// before the response is rendered - so folding here would only ever discard a
-// genuine second tag, and it would have to invent a rule for which spelling
-// survives.
+// The comparison is exact rather than case-folded: a single object never
+// answers with two spellings of one tag, so folding would only discard a
+// genuine second tag.
 func dedupeTagElements(elems []attr.Value) []attr.Value {
 	out := make([]attr.Value, 0, len(elems))
 	seen := make(map[string]bool, len(elems))
 	for _, e := range elems {
 		s, ok := e.(types.String)
-		if !ok || s.IsNull() || s.IsUnknown() {
+		if !ok {
 			out = append(out, e)
 			continue
 		}
@@ -137,12 +128,8 @@ func dedupeTagElements(elems []attr.Value) []attr.Value {
 	return out
 }
 
-// tagsSharedDescription documents what this file wires in, as opposed to what
-// any one resource is for. It lives beside the code that enforces it, and is
-// appended to all four descriptions from here, because four copies of it in
-// four schemas could drift apart from each other and from the behaviour - the
-// same reason the validators and the case preservation are shared rather than
-// repeated per resource.
+// tagsSharedDescription documents what this file enforces, appended to all four
+// resource descriptions from here so the four cannot drift apart.
 const tagsSharedDescription = "Tags must not contain spaces, commas or quotes, and the configured " +
 	"spelling is kept when DefectDojo answers with a different letter case."
 
