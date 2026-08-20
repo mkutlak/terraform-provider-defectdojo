@@ -186,9 +186,26 @@ func TestAccProductResourceDeleteDrift(t *testing.T) {
 	})
 }
 
+// TestAccProductResourceInvalid collects the configurations the plan-time
+// validators must refuse. None of them reaches the server, so they share one
+// test case rather than paying for a lifecycle each.
+//
+// The tag collision is two spellings of one tag inside a SINGLE set.
+// preserveTagCase deliberately cannot help there: it reconciles a configured
+// spelling with the server's answer for the same set of tags, but this
+// configuration asks for two elements where DefectDojo only has one, so no
+// answer satisfies it. Before the set-level validator the apply succeeded and
+// left a resource that re-planned forever:
+//
+//	~ tags = [
+//	      "TfBackend",
+//	    + "tfbackend",
+//	  ]
+//	Plan: 1 to add, 1 to change, 0 to destroy.
 func TestAccProductResourceInvalid(t *testing.T) {
 	t.Parallel()
 	name := fmt.Sprintf("dox-invalid-%s", uniqueId())
+	suffix := uniqueId()
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -198,6 +215,18 @@ func TestAccProductResourceInvalid(t *testing.T) {
 			{
 				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute.*`),
 				Config:      testAccProductResourceInvalidConfig(name),
+			},
+			{
+				ExpectError: regexp.MustCompile(`Case-Colliding Tags`),
+				Config: fmt.Sprintf(`
+provider "defectdojo" {}
+resource "defectdojo_product" "collide" {
+  name            = "tagcollide-%[1]s"
+  description     = "two spellings of one tag"
+  product_type_id = 1
+  tags            = ["Zz-%[1]s", "zz-%[1]s"]
+}
+`, suffix),
 			},
 		},
 	})
@@ -230,17 +259,12 @@ func TestAccProductResourceRevenueLiteral(t *testing.T) {
 				PlanOnly: true,
 			},
 			// A single decimal place is canonicalised to two server-side too.
+			// The already-canonical spelling is covered by every other product
+			// config in this file, which hardcodes "100.00".
 			{
 				Config: testAccProductResourceRevenueConfig(name, "250.5"),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("250.5")),
-				},
-			},
-			// The canonical spelling must still round-trip untouched.
-			{
-				Config: testAccProductResourceRevenueConfig(name, "300.00"),
-				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue("defectdojo_product.test", tfjsonpath.New("revenue"), knownvalue.StringExact("300.00")),
 				},
 			},
 		},
@@ -482,47 +506,6 @@ func TestAccProductResourceTagCaseCollision(t *testing.T) {
 			{
 				Config:   testAccProductResourceTagCaseConfig(suffix, upper, lower),
 				PlanOnly: true,
-			},
-		},
-	})
-}
-
-// TestAccProductResourceTagCaseCollisionWithinSet is the other half of the tag
-// case story: two spellings of one tag inside a SINGLE set.
-//
-// preserveTagCase deliberately cannot help here. It reconciles a configured
-// spelling with the server's answer for the same set of tags, but this
-// configuration asks for two elements where DefectDojo only has one, so there
-// is no answer that satisfies it. Before the set-level validator the apply
-// succeeded and left a resource that re-planned forever:
-//
-//	~ tags = [
-//	      "TfBackend",
-//	    + "tfbackend",
-//	  ]
-//	Plan: 1 to add, 1 to change, 0 to destroy.
-//
-// It is rejected at plan time now, so nothing is created at all.
-func TestAccProductResourceTagCaseCollisionWithinSet(t *testing.T) {
-	t.Parallel()
-	suffix := uniqueId()
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		CheckDestroy:             testAccCheckDestroyed,
-		Steps: []resource.TestStep{
-			{
-				Config: fmt.Sprintf(`
-provider "defectdojo" {}
-resource "defectdojo_product" "collide" {
-  name            = "tagcollide-%[1]s"
-  description     = "two spellings of one tag"
-  product_type_id = 1
-  tags            = ["Zz-%[1]s", "zz-%[1]s"]
-}
-`, suffix),
-				ExpectError: regexp.MustCompile(`Case-Colliding Tags`),
 			},
 		},
 	})

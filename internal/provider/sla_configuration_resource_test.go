@@ -10,47 +10,17 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
+// TestAccSlaConfigurationResource opens on a config that omits every SLA day
+// count. DefectDojo fills them from its own model defaults and answers with
+// them, so before critical/high/medium/low were marked Computed this failed on
+// CREATE with "Provider produced inconsistent result after apply: .critical: was
+// null, but now cty.NumberIntVal(...)". Every other SLA config sets all four
+// explicitly, which is exactly why the defect went unnoticed - so the minimal
+// config has to come first, or it becomes an update and proves nothing.
 func TestAccSlaConfigurationResource(t *testing.T) {
 	t.Parallel()
 	name := fmt.Sprintf("test-%s", uniqueId())
 	updatedName := fmt.Sprintf("updated-%s", uniqueId())
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		CheckDestroy:             testAccCheckDestroyed,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccSlaConfigurationResourceConfig(name),
-				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
-				},
-			},
-			{
-				ResourceName:      "defectdojo_sla_configuration.test",
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-			{
-				Config: testAccSlaConfigurationResourceConfig(updatedName),
-				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
-				},
-			},
-		},
-	})
-}
-
-// TestAccSlaConfigurationResourceMinimal applies a config that omits every SLA
-// day count. DefectDojo fills them from its own model defaults and answers with
-// them, so before critical/high/medium/low were marked Computed this failed with
-// "Provider produced inconsistent result after apply: .critical: was null, but
-// now cty.NumberIntVal(...)".
-//
-// Every existing SLA test sets all four explicitly, which is exactly why the
-// defect went unnoticed.
-func TestAccSlaConfigurationResourceMinimal(t *testing.T) {
-	t.Parallel()
-	name := fmt.Sprintf("test-minimal-%s", uniqueId())
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
@@ -74,6 +44,24 @@ func TestAccSlaConfigurationResourceMinimal(t *testing.T) {
 			{
 				Config:   testAccSlaConfigurationResourceMinimalConfig(name),
 				PlanOnly: true,
+			},
+			{
+				ResourceName:      "defectdojo_sla_configuration.test",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				Config: testAccSlaConfigurationResourceConfig(name),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("name"), knownvalue.StringExact(name)),
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("critical"), knownvalue.Int64Exact(7)),
+				},
+			},
+			{
+				Config: testAccSlaConfigurationResourceConfig(updatedName),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_sla_configuration.test", tfjsonpath.New("name"), knownvalue.StringExact(updatedName)),
+				},
 			},
 		},
 	})

@@ -83,10 +83,17 @@ func TestAccUrlDataSource(t *testing.T) {
 	})
 }
 
-// TestAccUrlResourceInvalidTags asserts the tag grammar is enforced during
-// plan. A tag containing a space is rejected by DefectDojo with a 400, so
-// catching it at plan time turns an apply-time failure into a config error.
-func TestAccUrlResourceInvalidTags(t *testing.T) {
+// TestAccUrlResourceInvalid asserts the plan-time validators. Both the tag
+// grammar and the protocol set are things DefectDojo answers with a 400, so
+// catching them at plan time turns an apply-time failure into a config error.
+//
+// "HTTPS" is the interesting protocol spelling: it is the upper-case form of an
+// accepted value, which makes it the natural mistake to pair with an upper-case
+// host.
+//
+// These steps never reach the server, so they share one test case rather than
+// paying for a lifecycle each.
+func TestAccUrlResourceInvalid(t *testing.T) {
 	t.Parallel()
 	host := fmt.Sprintf("host-%s.example.com", uniqueId())
 	resource.Test(t, resource.TestCase{
@@ -97,6 +104,14 @@ func TestAccUrlResourceInvalidTags(t *testing.T) {
 			{
 				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute.*`),
 				Config:      testAccUrlResourceInvalidTagsConfig(host),
+			},
+			{
+				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute\s+Value\s+Match.*`),
+				Config:      testAccUrlResourceProtocolConfig(host, "HTTPS"),
+			},
+			{
+				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute\s+Value\s+Match.*`),
+				Config:      testAccUrlResourceProtocolConfig(host, "wss"),
 			},
 		},
 	})
@@ -142,31 +157,6 @@ func TestAccUrlResourceHostCase(t *testing.T) {
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue("defectdojo_url.test", tfjsonpath.New("host"), knownvalue.StringExact(strings.ToLower(host))),
 				},
-			},
-		},
-	})
-}
-
-// TestAccUrlResourceInvalidProtocol asserts the protocol set is enforced during
-// plan. DefectDojo answers an unsupported protocol with a 400, which would
-// otherwise only surface once the apply is already under way. "HTTPS" is the
-// interesting spelling: it is the upper-case form of an accepted value, which
-// makes it the natural mistake to pair with an upper-case host.
-func TestAccUrlResourceInvalidProtocol(t *testing.T) {
-	t.Parallel()
-	host := fmt.Sprintf("host-%s.example.com", uniqueId())
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		CheckDestroy:             testAccCheckDestroyed,
-		Steps: []resource.TestStep{
-			{
-				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute\s+Value\s+Match.*`),
-				Config:      testAccUrlResourceProtocolConfig(host, "HTTPS"),
-			},
-			{
-				ExpectError: regexp.MustCompile(`.*Invalid\s+Attribute\s+Value\s+Match.*`),
-				Config:      testAccUrlResourceProtocolConfig(host, "wss"),
 			},
 		},
 	})
