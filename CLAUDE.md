@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Terraform provider for [DefectDojo](https://www.defectdojo.org/) - a security vulnerability management tool. The provider uses the Terraform Plugin Framework (not the older SDKv2) and communicates with DefectDojo via an internally generated Go client at `internal/ddclient/` (generated with `oapi-codegen` from DefectDojo's OpenAPI spec).
 
+All prose - schema descriptions, diagnostics, comments, docs - follows [ASD-STE100](https://www.asd-ste100.org/): one idea per sentence, 25 words at most, active voice, one term per concept.
+
 ## Build & Test Commands
 
 ```shell
