@@ -85,8 +85,9 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				},
 			},
 			"revenue": schema.StringAttribute{
-				MarkdownDescription: "Estimate the application's revenue. DefectDojo stores this as a decimal with two places and echoes it back in that form, but a shorter equivalent literal such as `\"100\"` is kept as written in state.",
-				Optional:            true,
+				MarkdownDescription: "Estimate the application's revenue. DefectDojo stores a decimal with two places and answers with that form. " +
+					"A shorter literal for the same amount, such as `\"100\"`, stays as you wrote it in state.",
+				Optional: true,
 				Validators: []validator.String{
 					// DecimalField(max_digits=15, decimal_places=2) server-side,
 					// so 13 digits before the point and 2 after.
@@ -146,10 +147,10 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Default:             booldefault.StaticBool(false),
 			},
 			"enable_product_tag_inheritance": schema.BoolAttribute{
-				MarkdownDescription: "Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings. " +
-					"DefectDojo writes the inherited tags onto the child objects themselves and re-adds them if they are removed, so a Terraform-managed " +
-					"`defectdojo_engagement` or `defectdojo_test` under this product must repeat the product's tags in its own `tags`. One that does not " +
-					"fails to apply, because the server then reports tags the configuration never asked for.",
+				MarkdownDescription: "Enable product tag inheritance. DefectDojo copies each tag on this product to all its Engagements, Tests and Findings. " +
+					"It writes the tags onto the child objects, and it adds them again if you remove them. " +
+					"A Terraform-managed `defectdojo_engagement` or `defectdojo_test` under this product must therefore list the product's tags in its own `tags`. " +
+					"If it does not, the apply fails, because the server reports tags that the configuration did not ask for.",
 				Optional: true,
 				Computed: true,
 				Default:  booldefault.StaticBool(false),

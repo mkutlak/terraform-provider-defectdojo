@@ -54,11 +54,10 @@ func (t locationProductResource) Schema(ctx context.Context, req resource.Schema
 			// a valid choice.`, and DefectDojo fills the field with "Mitigated"
 			// when it is omitted.
 			"relationship": schema.StringAttribute{
-				MarkdownDescription: "The relationship between the location and the product. Valid values: 'owned_by', 'used_by', and '' - " +
-					"the empty string is DefectDojo's own blank marker, and is what it stores when this attribute is omitted, so it is " +
-					"accepted here to let a configuration match the state a create leaves behind. Deleting the attribute from an existing " +
-					"configuration does not blank it: the value is computed, so Terraform reuses the one already in state and plans no " +
-					"change. Set `relationship = \"\"` to clear it.",
+				MarkdownDescription: "The relationship between the location and the product. Valid values: `owned_by`, `used_by` and `\"\"`. " +
+					"DefectDojo stores `\"\"` when you omit this attribute. " +
+					"This attribute is computed. If you delete it from a configuration, Terraform keeps the value in state. " +
+					"Set `relationship = \"\"` to clear it.",
 				Optional: true,
 				Computed: true,
 				Validators: []validator.String{
@@ -66,9 +65,10 @@ func (t locationProductResource) Schema(ctx context.Context, req resource.Schema
 				},
 			},
 			"status": schema.StringAttribute{
-				MarkdownDescription: "The status of the given Location. Valid values: 'Active', 'Mitigated'. DefectDojo stores 'Mitigated' when this " +
-					"attribute is omitted. Deleting it from an existing configuration does not restore that default: the value is computed, so " +
-					"Terraform reuses the one already in state and plans no change. Set the value explicitly to change it.",
+				MarkdownDescription: "The status of the given Location. Valid values: `Active`, `Mitigated`. " +
+					"DefectDojo stores `Mitigated` when you omit this attribute. " +
+					"This attribute is computed. If you delete it from a configuration, Terraform keeps the value in state. " +
+					"Set the value explicitly to change it.",
 				Optional: true,
 				Computed: true,
 				Validators: []validator.String{

@@ -13,23 +13,21 @@ import (
 )
 
 // slaDayCountDescription builds the description shared by the four SLA day
-// counts, which differ only in the severity they name. The warning is long
-// enough that four copies would drift apart.
+// counts, which differ only in the severity they name.
 //
-// It has to be spelled out because the obvious reading of an Optional
-// attribute - delete the line, get the default back - is wrong here, and wrong
-// in a way that leaves the server holding a value nothing in the configuration
-// mentions any more.
+// The one-way behaviour has to be spelled out: the obvious reading of an
+// Optional attribute - delete the line, get the default back - is wrong here,
+// and the column is not nullable, so there is no way back to the default
+// without recreating the resource.
 func slaDayCountDescription(severity string) string {
-	return "The number of days to remediate a " + severity + " finding. Omitting this attribute when the SLA " +
-		"configuration is created lets DefectDojo apply its own default (which varies by version), and that value is " +
-		"read back into state. Removing it from an existing configuration does not put the default back: the attribute " +
-		"is computed, so Terraform reuses the value already in state, plans no change, and DefectDojo keeps what it " +
-		"holds. DefectDojo offers no way back either - the column is not nullable, so a request sending null is refused. " +
-		"To change the value, set it explicitly; to hand it back to DefectDojo, recreate the resource with " +
-		"`terraform apply -replace=...`, which restores the version default but assigns a new `id`, so every " +
-		"`defectdojo_product` whose `sla_configuration` points at it has to be updated to match. `terraform state rm` " +
-		"does not help: re-importing reads the stored value straight back."
+	return "The number of days to remediate a " + severity + " finding. " +
+		"If you omit this attribute on create, DefectDojo applies its own default and Terraform reads that value into state. " +
+		"The default varies by DefectDojo version. " +
+		"This attribute is computed. If you delete it from a configuration, Terraform keeps the value in state and plans no change. " +
+		"The column is not nullable, so DefectDojo also refuses a request that sends null. " +
+		"To change the value, set it explicitly. " +
+		"To return it to the DefectDojo default, run `terraform apply -replace=...`. " +
+		"That assigns a new `id`, so you must also update every `defectdojo_product` whose `sla_configuration` points at this resource."
 }
 
 func (t slaConfigurationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
