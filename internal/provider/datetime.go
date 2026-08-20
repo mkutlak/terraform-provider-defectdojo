@@ -63,27 +63,16 @@ func parseDate(s string) (time.Time, error) {
 	return t, nil
 }
 
-// preserveDateTimeLiteral picks the string to store in state for a
-// server-provided instant. When the attribute already holds a literal that
-// parses to exactly the same instant - the practitioner's configured value on
-// create/update, or the prior state value on refresh - that literal is kept
-// verbatim. Otherwise the canonical RFC3339 rendering is used.
+// preserveDateTimeLiteral keeps a configured date literal that denotes the same
+// instant as the one the server sent.
 //
 // This is what lets target_start = "2026-07-28" survive a round trip through
-// DefectDojo, which echoes it back as "2026-07-28T00:00:00Z" (issue #23).
-// Without it, state would disagree with config and Terraform would report
-// "Provider produced inconsistent result after apply". It also covers the
-// latent case of a configured non-UTC offset, e.g. "2025-01-01T11:00:00+01:00"
-// against a server that answers in UTC.
-//
-// A genuinely different instant is never preserved, so real drift is still
-// reported.
+// DefectDojo, which echoes it back as "2026-07-28T00:00:00Z" (issue #23). It
+// also covers a configured non-UTC offset, e.g. "2025-01-01T11:00:00+01:00"
+// against a server that answers in UTC. See preserveLiteral.
 func preserveDateTimeLiteral(current types.String, server time.Time) types.String {
-	if !current.IsNull() && !current.IsUnknown() {
-		if prior, err := parseDateTime(current.ValueString()); err == nil && prior.Equal(server) {
-			return current
-		}
-	}
-
-	return types.StringValue(server.Format(time.RFC3339))
+	return preserveLiteral(current, server.Format(time.RFC3339), func(current, _ string) bool {
+		prior, err := parseDateTime(current)
+		return err == nil && prior.Equal(server)
+	})
 }
