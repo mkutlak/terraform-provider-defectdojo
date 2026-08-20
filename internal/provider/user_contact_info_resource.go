@@ -1,9 +1,7 @@
 package provider
 
 import (
-	"bytes"
 	"context"
-	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -13,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
@@ -169,17 +166,10 @@ func (ddr *userContactInfoDefectdojoResource) deleteApiCall(ctx context.Context,
 	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
-// clearFieldsApiCall sends the explicit-null PATCH that clears attributes
-// removed from configuration. See clear.go: omitting a field from an update
-// request leaves it unchanged, so clearing needs its own request.
-func (ddr *userContactInfoDefectdojoResource) clearFieldsApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int, body []byte) (int, []byte, error) {
-	tflog.Info(ctx, "userContactInfoDefectdojoResource clearFieldsApiCall")
-	apiResp, err := client.UserContactInfosPartialUpdateWithBodyWithResponse(ctx, idNumber, "application/json", bytes.NewReader(body))
-	if err != nil {
-		return 0, nil, err
-	}
-	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	return apiResp.StatusCode(), apiResp.Body, nil
+// partialUpdateWithBody names the PATCH that clears attributes removed from
+// configuration. See clear.go.
+func (ddr *userContactInfoDefectdojoResource) partialUpdateWithBody(client *dd.ClientWithResponses) partialUpdateFunc {
+	return client.UserContactInfosPartialUpdateWithBody
 }
 
 type userContactInfoResource struct {
