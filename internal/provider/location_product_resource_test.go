@@ -10,6 +10,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
+// TestAccLocationProductResource opens on a config that omits relationship. The
+// DefectDojo API enum carries "" as its blank marker, so the server stores and
+// answers with an empty string; before relationship was marked Computed this
+// failed on CREATE with "Provider produced inconsistent result after apply:
+// .relationship: was null, but now cty.StringVal("")". The minimal config has to
+// come first, or it becomes an update and proves nothing.
 func TestAccLocationProductResource(t *testing.T) {
 	t.Parallel()
 	name := fmt.Sprintf("test-%s", uniqueId())
@@ -19,14 +25,19 @@ func TestAccLocationProductResource(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		CheckDestroy:             testAccCheckDestroyed,
 		Steps: []resource.TestStep{
-			// Create and Read testing
+			// Create with relationship omitted
 			{
-				Config: testAccLocationProductResourceConfig(name, host),
+				Config: testAccLocationProductResourceMinimalConfig(name, host),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("location"), knownvalue.NotNull()),
 					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("product"), knownvalue.NotNull()),
-					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("owned_by")),
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("")),
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("status"), knownvalue.NotNull()),
 				},
+			},
+			{
+				Config:   testAccLocationProductResourceMinimalConfig(name, host),
+				PlanOnly: true,
 			},
 			// ImportState testing
 			{
@@ -36,39 +47,16 @@ func TestAccLocationProductResource(t *testing.T) {
 			},
 			// Update and Read testing
 			{
+				Config: testAccLocationProductResourceConfig(name, host),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("owned_by")),
+				},
+			},
+			{
 				Config: testAccLocationProductResourceUpdatedConfig(name, host),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("used_by")),
 				},
-			},
-		},
-	})
-}
-
-// TestAccLocationProductResourceMinimal applies a config that omits
-// relationship. The DefectDojo API enum carries "" as its blank marker, so the
-// server stores and answers with an empty string; before relationship was
-// marked Computed this failed with "Provider produced inconsistent result after
-// apply: .relationship: was null, but now cty.StringVal("")".
-func TestAccLocationProductResourceMinimal(t *testing.T) {
-	t.Parallel()
-	name := fmt.Sprintf("test-minimal-%s", uniqueId())
-	host := fmt.Sprintf("%s.example.com", uniqueId())
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
-		CheckDestroy:             testAccCheckDestroyed,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccLocationProductResourceMinimalConfig(name, host),
-				ConfigStateChecks: []statecheck.StateCheck{
-					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("relationship"), knownvalue.StringExact("")),
-					statecheck.ExpectKnownValue("defectdojo_location_product.test", tfjsonpath.New("status"), knownvalue.NotNull()),
-				},
-			},
-			{
-				Config:   testAccLocationProductResourceMinimalConfig(name, host),
-				PlanOnly: true,
 			},
 		},
 	})
