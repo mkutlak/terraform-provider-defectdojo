@@ -38,7 +38,7 @@ resource "defectdojo_product" "example" {
 - `business_criticality` (String) The Business Criticality of the Product. Valid values are: 'very high', 'high', 'medium', 'low', 'very low', 'none'
 - `disable_sla_breach_notifications` (Boolean) Disable SLA breach notifications if configured in the global settings.
 - `enable_full_risk_acceptance` (Boolean) Allows full risk acceptance using a risk acceptance form, expiration date, uploaded proof, etc.
-- `enable_product_tag_inheritance` (Boolean) Enables product tag inheritance. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings. DefectDojo writes the inherited tags onto the child objects themselves and re-adds them if they are removed, so a Terraform-managed `defectdojo_engagement` or `defectdojo_test` under this product must repeat the product's tags in its own `tags`. One that does not fails to apply, because the server then reports tags the configuration never asked for.
+- `enable_product_tag_inheritance` (Boolean) Enable product tag inheritance. DefectDojo copies each tag on this product to all its Engagements, Tests and Findings. It writes the tags onto the child objects, and it adds them again if you remove them. A Terraform-managed `defectdojo_engagement` or `defectdojo_test` under this product must therefore list the product's tags in its own `tags`. If it does not, the apply fails, because the server reports tags that the configuration did not ask for.
 - `enable_skip_risk_acceptance` (Boolean) Allows simple risk acceptance by checking/unchecking a checkbox.
 - `external_audience` (Boolean) Specify if the application is used by people outside the organization.
 - `internet_accessible` (Boolean) Specify if the application is accessible from the public internet.
@@ -48,7 +48,7 @@ resource "defectdojo_product" "example" {
 - `prod_numeric_grade` (Number) The Numeric Grade of the Product
 - `product_manager_id` (Number) The ID of the user who is the PM for this product.
 - `regulation_ids` (Set of Number) The IDs of the Regulations which apply to this product.
-- `revenue` (String) Estimate the application's revenue. DefectDojo stores this as a decimal with two places and echoes it back in that form, but a shorter equivalent literal such as `"100"` is kept as written in state.
+- `revenue` (String) Estimate the application's revenue. DefectDojo stores a decimal with two places and answers with that form. A shorter literal for the same amount, such as `"100"`, stays as you wrote it in state.
 - `sla_configuration` (Number) The ID of the SLA configuration to apply to this product.
 - `tags` (Set of String) Tags to apply to the product. Tags must not contain spaces, commas or quotes, and the configured spelling is kept when DefectDojo answers with a different letter case.
 - `team_manager_id` (Number) The ID of the user who is the manager for this product.

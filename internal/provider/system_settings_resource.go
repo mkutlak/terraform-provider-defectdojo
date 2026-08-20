@@ -183,10 +183,10 @@ func (t systemSettingsResource) Schema(ctx context.Context, req resource.SchemaR
 				Computed:            true,
 			},
 			"enable_product_tag_inheritance": schema.BoolAttribute{
-				MarkdownDescription: "Enables product tag inheritance globally for all products. Any tags added on a product will automatically be added to all Engagements, Tests, and Findings. " +
-					"DefectDojo writes the inherited tags onto the child objects themselves and re-adds them if they are removed, so every Terraform-managed " +
-					"`defectdojo_engagement` and `defectdojo_test` on the instance must repeat its product's tags in its own `tags`. One that does not " +
-					"fails to apply, because the server then reports tags the configuration never asked for.",
+				MarkdownDescription: "Enable product tag inheritance for every product on the instance. DefectDojo copies each tag on a product to all its Engagements, Tests and Findings. " +
+					"It writes the tags onto the child objects, and it adds them again if you remove them. " +
+					"Every Terraform-managed `defectdojo_engagement` and `defectdojo_test` must therefore list its product's tags in its own `tags`. " +
+					"If one does not, the apply fails, because the server reports tags that the configuration did not ask for.",
 				Optional: true,
 				Computed: true,
 			},
