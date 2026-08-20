@@ -121,45 +121,43 @@ func TestUrlResourcePopulateNils(t *testing.T) {
 	assert.DeepEqual(t, urlResource.Tags, nilStringSet)
 }
 
-// TestUrlResourcePopulateHostPreservesCase drives the ddFormat mechanism
-// through the reflection engine itself, not just the helper.
+// TestUrlResourcePopulateHost drives the ddFormat:"host" mechanism through the
+// reflection engine itself, not just the helper underneath it.
 //
-// DefectDojo lower-cases every host it stores, so a configured
-// "API.Example.COM" is echoed back as "api.example.com". Before the
-// ddFormat:"host" tag, the read path wrote the server's spelling over the
-// practitioner's, state disagreed with config, and Terraform failed the apply
-// with "Provider produced inconsistent result after apply".
-func TestUrlResourcePopulateHostPreservesCase(t *testing.T) {
-	ddUrl := urlDefectdojoResource{
-		URL: dd.URL{Host: "api.example.com"},
+// DefectDojo lower-cases every host it stores, so a configured "API.Example.COM"
+// is echoed back as "api.example.com". Without the tag the read path wrote the
+// server's spelling over the practitioner's, state disagreed with config, and
+// Terraform failed the apply with "Provider produced inconsistent result after
+// apply". The drift row is the other half of that contract: preservation must
+// not hide an out-of-band change.
+//
+// clean_host() also punycodes an IDNA name and compresses an IPv6 address.
+// Those are not case-only differences, so they reach state as the server
+// spelled them.
+func TestUrlResourcePopulateHost(t *testing.T) {
+	for _, tc := range []struct {
+		name       string
+		configured string
+		server     string
+		want       string
+	}{
+		{"case-only difference keeps the configured spelling", "API.Example.COM", "api.example.com", "API.Example.COM"},
+		{"a different host is reported as drift", "API.Example.COM", "other.example.com", "other.example.com"},
+		{"IDNA punycoding reaches state verbatim", "Bücher.example", "xn--bcher-kva.example", "xn--bcher-kva.example"},
+		{"IPv6 compression reaches state verbatim", "2001:db8:0:0:0:0:0:1", "2001:db8::1", "2001:db8::1"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ddUrl := urlDefectdojoResource{URL: dd.URL{Host: tc.server}}
+			urlResource := urlResourceData{Host: types.StringValue(tc.configured)}
+			var terraformResource terraformResourceData = &urlResource
+
+			diags := diag.Diagnostics{}
+			populateResourceData(context.Background(), &diags, &terraformResource, &ddUrl)
+
+			assert.Equal(t, diags.HasError(), false)
+			assert.Equal(t, urlResource.Host.ValueString(), tc.want)
+		})
 	}
-
-	// The practitioner's configured value, as it sits in the plan.
-	urlResource := urlResourceData{Host: types.StringValue("API.Example.COM")}
-	var terraformResource terraformResourceData = &urlResource
-
-	diags := diag.Diagnostics{}
-	populateResourceData(context.Background(), &diags, &terraformResource, &ddUrl)
-
-	assert.Equal(t, diags.HasError(), false)
-	assert.Equal(t, urlResource.Host.ValueString(), "API.Example.COM")
-}
-
-// TestUrlResourcePopulateHostReportsRealDrift is the other half of the
-// contract: preservation must not hide an out-of-band change.
-func TestUrlResourcePopulateHostReportsRealDrift(t *testing.T) {
-	ddUrl := urlDefectdojoResource{
-		URL: dd.URL{Host: "other.example.com"},
-	}
-
-	urlResource := urlResourceData{Host: types.StringValue("API.Example.COM")}
-	var terraformResource terraformResourceData = &urlResource
-
-	diags := diag.Diagnostics{}
-	populateResourceData(context.Background(), &diags, &terraformResource, &ddUrl)
-
-	assert.Equal(t, diags.HasError(), false)
-	assert.Equal(t, urlResource.Host.ValueString(), "other.example.com")
 }
 
 func TestUrlResource__defectdojoResource(t *testing.T) {

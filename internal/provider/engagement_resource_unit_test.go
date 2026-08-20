@@ -177,14 +177,8 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 //	  -> 201, create response tags ['sprint-1', 'team-a', 'sprint-1']
 //	  -> GET returns ['sprint-1', 'team-a']
 //
-// A Terraform set cannot hold that. types.SetValue does not police duplicates,
-// so the value reached state intact and the framework rejected it afterwards
-// with a diagnostic that names neither DefectDojo nor tag inheritance:
-//
-//	Error: Duplicate Set Element
-//	  This attribute contains duplicate values of: tftypes.String<"sprint-1">
-//
-// so the server's list is deduplicated before the set is built.
+// A Terraform set cannot hold that, so the server's list is deduplicated before
+// the set is built. See dedupeTagElements in tags.go.
 func TestEngagementResourcePopulateDedupesServerTags(t *testing.T) {
 	serverTags := []string{"sprint-1", "team-a", "sprint-1"}
 	ddEngagement := engagementDefectdojoResource{

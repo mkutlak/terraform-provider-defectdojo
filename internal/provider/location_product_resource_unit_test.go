@@ -161,62 +161,51 @@ func TestLocationProductResource__defectdojoResource_Nulls(t *testing.T) {
 	assert.Equal(t, req.Status, nilReqStatus)
 }
 
-// TestLocationProductRelationshipAcceptsBlank pins the empty string as a value
-// a configuration may carry.
+// TestLocationProductEnumValidators pins the blank on relationship and its
+// absence on status. The two look like the same shape - Optional, Computed, a
+// OneOf - but only one enum has a blank member.
 //
 // A create that omits relationship stores and reads back "", so state holds a
 // value the OneOf used to reject at plan time:
 //
 //	Attribute relationship value must be one of: ["owned_by" "used_by"], got: ""
 //
-// That made the blank the provider itself produces unwritable, and since a
-// Computed attribute cannot be cleared by deleting it from configuration
-// either, there was no way back to it. "" is a genuine member of the enum -
-// dd.LocationProductReferenceRequestRelationshipEmpty - and DefectDojo 3.1.101
-// accepts it on create and update.
-func TestLocationProductRelationshipAcceptsBlank(t *testing.T) {
+// That made the blank the provider itself produces unwritable, and a Computed
+// attribute cannot be cleared by deleting it from configuration either, so there
+// was no way back to it. "" is a genuine member of that enum -
+// dd.LocationProductReferenceRequestRelationshipEmpty - and 3.1.101 accepts it.
+//
+// status has no such member: 3.1.101 answers a status of "" with `"" is not a
+// valid choice.` and fills the field with "Mitigated" when it is omitted. Both
+// halves are pinned here so that "fix the relationship validator" does not read
+// like an argument for loosening every enum on the resource.
+func TestLocationProductEnumValidators(t *testing.T) {
 	t.Parallel()
 
-	attr := resourceStringAttribute(t, "defectdojo_location_product", "relationship")
 	for _, tc := range []struct {
+		attrName  string
 		value     string
 		wantError bool
 	}{
-		{"", false},
-		{"owned_by", false},
-		{"used_by", false},
-		{"bogus", true},
-		{"Owned_By", true},
+		{"relationship", "", false},
+		{"relationship", "owned_by", false},
+		{"relationship", "used_by", false},
+		{"relationship", "bogus", true},
+		{"relationship", "Owned_By", true},
+
+		{"status", "", true},
+		{"status", "Active", false},
+		{"status", "Mitigated", false},
 	} {
-		got := runStringValidators(t, "relationship", attr, tc.value)
-		if got != tc.wantError {
-			verb := "accepted"
-			if got {
-				verb = "rejected"
-			}
-			t.Errorf("relationship = %q was %s, but wantError=%v", tc.value, verb, tc.wantError)
+		attr := resourceStringAttribute(t, "defectdojo_location_product", tc.attrName)
+		got := runStringValidators(t, tc.attrName, attr, tc.value)
+		if got == tc.wantError {
+			continue
 		}
-	}
-}
-
-// TestLocationProductStatusRejectsBlank is the other half of the pair above.
-//
-// status looks like the same shape - Optional, Computed, a OneOf - but its enum
-// has no blank member: DefectDojo 3.1.101 answers a status of "" with
-// `"" is not a valid choice.` and fills the field with "Mitigated" when it is
-// omitted, so there is no state value the validator has to be able to express.
-// Without this, "fix the relationship validator" reads like an argument for
-// loosening every enum on the resource.
-func TestLocationProductStatusRejectsBlank(t *testing.T) {
-	t.Parallel()
-
-	attr := resourceStringAttribute(t, "defectdojo_location_product", "status")
-	if !runStringValidators(t, "status", attr, "") {
-		t.Error(`status = "" was accepted, but DefectDojo rejects it as an invalid choice`)
-	}
-	for _, value := range []string{"Active", "Mitigated"} {
-		if runStringValidators(t, "status", attr, value) {
-			t.Errorf("status = %q was rejected, but it is a valid choice", value)
+		verb := "accepted"
+		if got {
+			verb = "rejected"
 		}
+		t.Errorf("%s = %q was %s, but wantError=%v", tc.attrName, tc.value, verb, tc.wantError)
 	}
 }

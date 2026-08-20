@@ -392,59 +392,50 @@ func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
 	assert.Equal(t, ddProduct.AuthorizedUsers, nilIntSlice)
 }
 
-// TestProductResourcePopulateRevenuePreservesLiteral drives the ddFormat
-// mechanism through the reflection engine itself, not just the helper.
+// TestProductResourcePopulateRevenue drives the ddFormat:"decimal" mechanism
+// through the reflection engine itself, not just the helper underneath it.
 //
 // DefectDojo stores revenue as DecimalField(decimal_places=2), so a configured
-// "100" is echoed back as "100.00". Before the ddFormat:"decimal" tag, the read
-// path wrote the server's spelling over the practitioner's, state disagreed
-// with config, and Terraform failed the apply with "Provider produced
-// inconsistent result after apply".
-func TestProductResourcePopulateRevenuePreservesLiteral(t *testing.T) {
-	serverRevenue := "100.00"
-	ddProduct := productDefectdojoResource{
-		Product: dd.Product{
-			Name:        "A Name",
-			Description: "A Description",
-			Revenue:     &serverRevenue,
-		},
+// "100" is echoed back as "100.00". Without the tag the read path wrote the
+// server's spelling over the practitioner's, state disagreed with config, and
+// Terraform failed the apply with "Provider produced inconsistent result after
+// apply". The drift row is the other half of that contract: preservation must
+// not hide an out-of-band change.
+func TestProductResourcePopulateRevenue(t *testing.T) {
+	for _, tc := range []struct {
+		name       string
+		configured string
+		server     string
+		want       string
+	}{
+		{"the canonical rendering of the configured amount is folded back", "100", "100.00", "100"},
+		{"a different amount is reported as drift", "100", "250.00", "250.00"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			serverRevenue := tc.server
+			ddProduct := productDefectdojoResource{
+				Product: dd.Product{
+					Name:        "A Name",
+					Description: "A Description",
+					Revenue:     &serverRevenue,
+				},
+			}
+
+			productResource := productResourceData{Revenue: types.StringValue(tc.configured)}
+			var terraformResource terraformResourceData = &productResource
+
+			diags := diag.Diagnostics{}
+			populateResourceData(context.Background(), &diags, &terraformResource, &ddProduct)
+
+			assert.Equal(t, diags.HasError(), false)
+			assert.Equal(t, productResource.Revenue.ValueString(), tc.want)
+
+			// Negative control: an untagged string attribute must still take
+			// the server's value verbatim, so the hook is not quietly applied
+			// everywhere.
+			assert.Equal(t, productResource.Description.ValueString(), "A Description")
+		})
 	}
-
-	// The practitioner's configured value, as it sits in the plan.
-	productResource := productResourceData{Revenue: types.StringValue("100")}
-	var terraformResource terraformResourceData = &productResource
-
-	diags := diag.Diagnostics{}
-	populateResourceData(context.Background(), &diags, &terraformResource, &ddProduct)
-
-	assert.Equal(t, diags.HasError(), false)
-	assert.Equal(t, productResource.Revenue.ValueString(), "100")
-
-	// Negative control: an untagged string attribute must still take the
-	// server's value verbatim, so the hook is not quietly applied everywhere.
-	assert.Equal(t, productResource.Description.ValueString(), "A Description")
-}
-
-// TestProductResourcePopulateRevenueReportsRealDrift is the other half of the
-// contract: preservation must not hide an out-of-band change.
-func TestProductResourcePopulateRevenueReportsRealDrift(t *testing.T) {
-	serverRevenue := "250.00"
-	ddProduct := productDefectdojoResource{
-		Product: dd.Product{
-			Name:        "A Name",
-			Description: "A Description",
-			Revenue:     &serverRevenue,
-		},
-	}
-
-	productResource := productResourceData{Revenue: types.StringValue("100")}
-	var terraformResource terraformResourceData = &productResource
-
-	diags := diag.Diagnostics{}
-	populateResourceData(context.Background(), &diags, &terraformResource, &ddProduct)
-
-	assert.Equal(t, diags.HasError(), false)
-	assert.Equal(t, productResource.Revenue.ValueString(), "250.00")
 }
 
 // TestProductDescriptionValidator mirrors what DefectDojo 3.1.101 does with
