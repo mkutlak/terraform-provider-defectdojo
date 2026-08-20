@@ -81,8 +81,18 @@ const ddFormatTags = "tags"
 
 // ddFormatHost marks a types.String attribute holding a hostname or IP address.
 // DefectDojo case-folds every host it stores, so the read path keeps the
-// configured spelling when it differs from the server's only by case. See
-// host.go.
+// configured spelling when it differs from the server's only by case.
+//
+// dojo/url/models.py clean_host() runs an IP through
+// ipaddress.ip_address().compressed and a name through idna.encode(uts46=True);
+// both answer in lower case, and the fallback for a name IDNA cannot encode is
+// a bare host.lower(). Verified on 3.1.101: POST /api/v2/url/
+// {"host": "API.Example.COM"} returns 201 carrying "host": "api.example.com".
+//
+// Only a case-insensitive match is preserved. The other rewrites clean_host()
+// performs - IDNA punycoding ("Bücher.example" -> "xn--bcher-kva.example") and
+// IPv6 compression ("2001:db8:0:0:0:0:0:1" -> "2001:db8::1") - still reach
+// state as the server spelled them.
 const ddFormatHost = "host"
 
 // knownDdFormats is the set of `ddFormat` struct tag values populateResourceData
@@ -120,6 +130,26 @@ func addUnhandledTerraformTypeError(diags *diag.Diagnostics, fn, tfsdkName strin
 		fn, tfType, tfsdkName, ddType))
 }
 
+// preserveLiteral keeps the practitioner's spelling of a server-provided value.
+//
+// DefectDojo re-renders several column types into one canonical form: decimals
+// gain trailing zeros, hosts are case-folded, datetimes become RFC3339. Storing
+// the server's spelling instead of the configured one fails the apply with
+// "Provider produced inconsistent result after apply", after the server has
+// already been mutated, and fails identically on every retry (issue #23).
+//
+// So when the attribute already holds a value that equiv says denotes the same
+// thing - the configured value on create and update, the prior state value on
+// refresh - that spelling is kept. Otherwise the server's rendering wins, which
+// is what keeps real drift visible and what an import stores.
+func preserveLiteral(current types.String, server string, equiv func(current, server string) bool) types.String {
+	if !current.IsNull() && !current.IsUnknown() && equiv(current.ValueString(), server) {
+		return current
+	}
+
+	return types.StringValue(server)
+}
+
 // renderStringSet builds the value to store in state from the list of strings
 // the server sent, honouring the optional `ddFormat` struct tag.
 //
@@ -154,9 +184,9 @@ func renderStringValue(diags *diag.Diagnostics, tag reflect.StructTag, current t
 	case "":
 		return types.StringValue(server)
 	case ddFormatDecimal:
-		return preserveDecimalLiteral(current, server)
+		return preserveLiteral(current, server, decimalsEqual)
 	case ddFormatHost:
-		return preserveHostCase(current, server)
+		return preserveLiteral(current, server, strings.EqualFold)
 	default:
 		diags.AddError("Unknown ddFormat Tag", fmt.Sprintf(
 			"Attribute %q carries ddFormat:%q, which populateResourceData does not understand "+
