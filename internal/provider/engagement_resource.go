@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"strings"
@@ -281,17 +280,10 @@ func (ddr *engagementDefectdojoResource) deleteApiCall(ctx context.Context, clie
 	return apiResp.StatusCode(), apiResp.Body, nil
 }
 
-// clearFieldsApiCall sends the explicit-null PATCH that clears attributes
-// removed from configuration. See clear.go: omitting a field from an update
-// request leaves it unchanged, so clearing needs its own request.
-func (ddr *engagementDefectdojoResource) clearFieldsApiCall(ctx context.Context, client *dd.ClientWithResponses, idNumber int, body []byte) (int, []byte, error) {
-	tflog.Info(ctx, "engagementDefectdojoResource clearFieldsApiCall")
-	apiResp, err := client.EngagementsPartialUpdateWithBodyWithResponse(ctx, idNumber, "application/json", bytes.NewReader(body))
-	if err != nil {
-		return 0, nil, err
-	}
-	tflog.Info(ctx, fmt.Sprintf("response %s: %s", apiResp.Status(), apiResp.Body))
-	return apiResp.StatusCode(), apiResp.Body, nil
+// partialUpdateWithBody names the PATCH that clears attributes removed from
+// configuration. See clear.go.
+func (ddr *engagementDefectdojoResource) partialUpdateWithBody(client *dd.ClientWithResponses) partialUpdateFunc {
+	return client.EngagementsPartialUpdateWithBody
 }
 
 type engagementResource struct {
