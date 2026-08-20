@@ -161,11 +161,11 @@ func clearedDdFields(plan, state terraformResourceData, ddResource defectdojoRes
 			continue
 		}
 
-		planAttr, ok := planVal.Field(i).Interface().(attr.Value)
+		planAttr, ok := reflect.TypeAssert[attr.Value](planVal.Field(i))
 		if !ok {
 			continue
 		}
-		stateAttr, ok := stateVal.Field(i).Interface().(attr.Value)
+		stateAttr, ok := reflect.TypeAssert[attr.Value](stateVal.Field(i))
 		if !ok {
 			continue
 		}
