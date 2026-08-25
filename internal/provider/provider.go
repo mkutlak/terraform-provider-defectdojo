@@ -195,6 +195,7 @@ func (p *DefectDojoProvider) Resources(ctx context.Context) []func() resource.Re
 		NewAnnouncementResource,
 		NewNotificationsResource,
 		NewSystemSettingsResource,
+		NewCicdInfrastructureResource,
 	}
 }
 
@@ -232,6 +233,7 @@ func (p *DefectDojoProvider) DataSources(ctx context.Context) []func() datasourc
 		NewTestTypeDataSource,
 		NewConfigurationPermissionDataSource,
 		NewNotificationsDataSource,
+		NewCicdInfrastructureDataSource,
 	}
 }
 

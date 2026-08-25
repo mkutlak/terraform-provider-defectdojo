@@ -78,6 +78,7 @@ resource "defectdojo_engagement" "security_assessment" {
 | ------------------------------------ | ------------------------------------ |
 | `defectdojo_development_environment` | `defectdojo_development_environment` |
 | `defectdojo_regulation`              | `defectdojo_regulation`              |
+| `defectdojo_cicd_infrastructure`     | `defectdojo_cicd_infrastructure`     |
 | `defectdojo_tool_type`               | `defectdojo_tool_type`               |
 | `defectdojo_tool_configuration`      | `defectdojo_tool_configuration`      |
 | `defectdojo_sla_configuration`       | `defectdojo_sla_configuration`       |
