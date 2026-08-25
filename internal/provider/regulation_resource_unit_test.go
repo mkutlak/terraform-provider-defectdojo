@@ -20,6 +20,12 @@ func TestRegulationResourcePopulate(t *testing.T) {
 	expectedDescription := "A test regulation"
 	expectedReference := "https://example.com"
 
+	// Reference is an oapi-codegen oneOf-string wrapper as of DefectDojo 3.2
+	// (see isOapiUnionStringType in resource.go); it cannot be built with a
+	// plain &string literal.
+	reference := &dd.Regulation_Reference{}
+	assert.NilError(t, reference.FromRegulationReference0(expectedReference))
+
 	ddObj := regulationDefectdojoResource{
 		Regulation: dd.Regulation{
 			Id:           &expectedId,
@@ -28,7 +34,7 @@ func TestRegulationResourcePopulate(t *testing.T) {
 			Category:     dd.RegulationCategory(expectedCategory),
 			Jurisdiction: expectedJurisdiction,
 			Description:  &expectedDescription,
-			Reference:    &expectedReference,
+			Reference:    reference,
 		},
 	}
 
@@ -50,12 +56,14 @@ func TestRegulationResource_defectdojoResource(t *testing.T) {
 	expectedAcronym := "TST"
 	expectedCategory := "other"
 	expectedJurisdiction := "US"
+	expectedReference := "https://example.com"
 
 	resourceData := regulationResourceData{
 		Name:         types.StringValue(expectedName),
 		Acronym:      types.StringValue(expectedAcronym),
 		Category:     types.StringValue(expectedCategory),
 		Jurisdiction: types.StringValue(expectedJurisdiction),
+		Reference:    types.StringValue(expectedReference),
 	}
 
 	ddResource := resourceData.defectdojoResource()
@@ -67,4 +75,17 @@ func TestRegulationResource_defectdojoResource(t *testing.T) {
 	assert.Equal(t, ddObj.Acronym, expectedAcronym)
 	assert.Equal(t, string(ddObj.Category), expectedCategory)
 	assert.Equal(t, ddObj.Jurisdiction, expectedJurisdiction)
+
+	// Reference is an oapi-codegen oneOf-string wrapper as of DefectDojo 3.2
+	// (see isOapiUnionStringType in resource.go); confirm the write path sets
+	// it correctly, then confirm regulationToRequest can carry it across to
+	// the distinct RegulationRequest_Reference wrapper type.
+	gotReference, err := ddObj.Reference.AsRegulationReference0()
+	assert.NilError(t, err)
+	assert.Equal(t, gotReference, expectedReference)
+
+	req := regulationToRequest(ddObj.Regulation)
+	gotReqReference, err := req.Reference.AsRegulationRequestReference0()
+	assert.NilError(t, err)
+	assert.Equal(t, gotReqReference, expectedReference)
 }

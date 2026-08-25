@@ -136,8 +136,13 @@ func ddFieldPairingSupported(tfType, ddType reflect.Type) (bool, string) {
 			return true, ""
 		case isPtrTo(ddType, func(e reflect.Type) bool { return e == auditTypeDate }):
 			return true, ""
+		// oapi-codegen oneOf-string wrappers (e.g. Engagement_Tracker): the
+		// engine round-trips these through their own MarshalJSON/UnmarshalJSON,
+		// see isOapiUnionStringType in resource.go.
+		case isPtrTo(ddType, isOapiUnionStringType):
+			return true, ""
 		}
-		return false, "types.String maps only to string, *string (defined string types ok), int, *int, time.Time, *time.Time, openapi_types.Date, *openapi_types.Date"
+		return false, "types.String maps only to string, *string (defined string types ok), int, *int, time.Time, *time.Time, openapi_types.Date, *openapi_types.Date, or a pointer to an oapi-codegen oneOf-string wrapper"
 
 	case typeOfTypesBool:
 		switch {

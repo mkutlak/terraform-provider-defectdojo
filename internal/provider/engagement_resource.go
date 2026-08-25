@@ -204,19 +204,24 @@ func engagementToRequest(e dd.Engagement) dd.EngagementRequest {
 		BranchTag:                 e.BranchTag,
 		CommitHash:                e.CommitHash,
 		BuildId:                   e.BuildId,
-		Tracker:                   e.Tracker,
-		TestStrategy:              e.TestStrategy,
 		ThreatModel:               e.ThreatModel,
 		ApiTest:                   e.ApiTest,
 		PenTest:                   e.PenTest,
 		CheckList:                 e.CheckList,
 		DeduplicationOnEngagement: e.DeduplicationOnEngagement,
 		FirstContacted:            e.FirstContacted,
-		SourceCodeManagementUri:   e.SourceCodeManagementUri,
 		Preset:                    e.Preset,
 		ReportType:                e.ReportType,
 		Requester:                 e.Requester,
 		Tags:                      e.Tags,
+		// Tracker, TestStrategy and SourceCodeManagementUri are
+		// oapi-codegen oneOf-string wrappers (see isOapiUnionStringType in
+		// resource.go). Engagement and EngagementRequest use distinct named
+		// wrapper types with identical underlying types, so a direct field
+		// copy does not compile; convert explicitly.
+		Tracker:                 (*dd.EngagementRequest_Tracker)(e.Tracker),
+		TestStrategy:            (*dd.EngagementRequest_TestStrategy)(e.TestStrategy),
+		SourceCodeManagementUri: (*dd.EngagementRequest_SourceCodeManagementUri)(e.SourceCodeManagementUri),
 	}
 	if e.EngagementType != nil && *e.EngagementType != "" {
 		v := dd.EngagementRequestEngagementType(*e.EngagementType)

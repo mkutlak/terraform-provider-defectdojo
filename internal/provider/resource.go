@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"maps"
 	"reflect"
@@ -64,6 +65,23 @@ var typeOfTypesBool = reflect.TypeFor[types.Bool]()
 var typeOfTypesInt64 = reflect.TypeFor[types.Int64]()
 var typeOfTypesFloat64 = reflect.TypeFor[types.Float64]()
 var typeOfTypesSet = reflect.TypeFor[types.Set]()
+var typeOfJSONRawMessage = reflect.TypeFor[json.RawMessage]()
+
+// isOapiUnionStringType reports whether t is an oapi-codegen "oneOf" wrapper
+// struct: a single unexported `union json.RawMessage` field with generated
+// MarshalJSON/UnmarshalJSON methods. DefectDojo 3.2 started emitting
+// `oneOf: [{format: uri}, {maxLength: 0}]` for every blank-allowed
+// CharField/URLField, which turns what used to be a plain *string field (e.g.
+// Engagement.Tracker) into this wrapper. Every such oneOf DefectDojo emits
+// resolves both variants to Go's string, so the engine treats the wrapper as
+// an ordinary string by round-tripping through its own JSON methods.
+func isOapiUnionStringType(t reflect.Type) bool {
+	if t.Kind() != reflect.Struct || t.NumField() != 1 {
+		return false
+	}
+	f := t.Field(0)
+	return f.Name == "union" && f.Type == typeOfJSONRawMessage
+}
 
 // ddFormatDecimal marks a types.String attribute whose DefectDojo column is a
 // Django DecimalField. The server answers in one canonical form, so the read
@@ -615,6 +633,24 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					}
 					d := openapi_types.Date{Time: t}
 					ddFieldValue.Set(reflect.ValueOf(&d))
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
+					// the destination field is a pointer to an oapi-codegen
+					// oneOf-string wrapper (see isOapiUnionStringType); marshal the
+					// configured string as a JSON string literal and hand it to the
+					// wrapper's own UnmarshalJSON.
+					str := fieldValue.MethodByName("ValueString").Call(nil)[0].Interface().(string)
+					b, err := json.Marshal(str)
+					if err != nil {
+						diags.AddError("Error converting value", fmt.Sprintf("Could not marshal string value %q for %s: %s", str, tag.Get("tfsdk"), err))
+						continue
+					}
+					destVal := reflect.New(ddFieldDescriptor.Type.Elem())
+					errResult := destVal.MethodByName("UnmarshalJSON").Call([]reflect.Value{reflect.ValueOf(b)})[0]
+					if !errResult.IsNil() {
+						diags.AddError("Error converting value", fmt.Sprintf("Could not set union value for %s: %s", tag.Get("tfsdk"), errResult.Interface().(error)))
+						continue
+					}
+					ddFieldValue.Set(destVal)
 				} else {
 					addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 				}
@@ -830,6 +866,27 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					if !ddFieldValue.IsNil() {
 						d := ddFieldValue.Elem().Interface().(openapi_types.Date)
 						fieldValue.Set(reflect.ValueOf(types.StringValue(d.Format("2006-01-02"))))
+					} else {
+						fieldValue.Set(reflect.ValueOf(types.StringNull()))
+					}
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
+					// the source field is a pointer to an oapi-codegen
+					// oneOf-string wrapper (see isOapiUnionStringType); read the
+					// bare JSON string out through the wrapper's own MarshalJSON.
+					if !ddFieldValue.IsNil() {
+						marshalResult := ddFieldValue.MethodByName("MarshalJSON").Call(nil)
+						if !marshalResult[1].IsNil() {
+							diags.AddError("Error converting value", fmt.Sprintf("Could not read union value for %s: %s", tag.Get("tfsdk"), marshalResult[1].Interface().(error)))
+							continue
+						}
+						b := marshalResult[0].Interface().([]byte)
+						var s string
+						if err := json.Unmarshal(b, &s); err != nil {
+							diags.AddError("Error converting value", fmt.Sprintf("Could not decode union value for %s: %s", tag.Get("tfsdk"), err))
+							continue
+						}
+						current := fieldValue.Interface().(types.String)
+						fieldValue.Set(reflect.ValueOf(renderStringValue(diags, tag, current, s)))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}

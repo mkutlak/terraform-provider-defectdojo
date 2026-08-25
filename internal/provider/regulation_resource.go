@@ -74,7 +74,12 @@ func regulationToRequest(obj dd.Regulation) dd.RegulationRequest {
 		Category:     dd.RegulationRequestCategory(obj.Category),
 		Jurisdiction: obj.Jurisdiction,
 		Description:  obj.Description,
-		Reference:    obj.Reference,
+		// Reference is an oapi-codegen oneOf-string wrapper (see
+		// isOapiUnionStringType in resource.go). Regulation and
+		// RegulationRequest use distinct named wrapper types with identical
+		// underlying types, so a direct field copy does not compile;
+		// convert explicitly.
+		Reference: (*dd.RegulationRequest_Reference)(obj.Reference),
 	}
 }
 

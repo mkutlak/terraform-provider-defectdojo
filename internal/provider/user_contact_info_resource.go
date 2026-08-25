@@ -104,14 +104,19 @@ func userContactInfoToRequest(u dd.UserContactInfo) dd.UserContactInfoRequest {
 	req := dd.UserContactInfoRequest{
 		User:               u.User,
 		Title:              u.Title,
-		PhoneNumber:        u.PhoneNumber,
-		CellNumber:         u.CellNumber,
 		TwitterUsername:    u.TwitterUsername,
 		GithubUsername:     u.GithubUsername,
 		SlackUsername:      u.SlackUsername,
 		SlackUserId:        u.SlackUserId,
 		BlockExecution:     u.BlockExecution,
 		ForcePasswordReset: u.ForcePasswordReset,
+		// PhoneNumber and CellNumber are oapi-codegen oneOf-string wrappers
+		// (see isOapiUnionStringType in resource.go). UserContactInfo and
+		// UserContactInfoRequest use distinct named wrapper types with
+		// identical underlying types, so a direct field copy does not
+		// compile; convert explicitly.
+		PhoneNumber: (*dd.UserContactInfoRequest_PhoneNumber)(u.PhoneNumber),
+		CellNumber:  (*dd.UserContactInfoRequest_CellNumber)(u.CellNumber),
 	}
 	// DeduplicationExecutionMode: UserContactInfo and UserContactInfoRequest use
 	// distinct named string types with identical underlying values, so a
