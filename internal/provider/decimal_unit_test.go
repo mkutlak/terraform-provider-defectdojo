@@ -76,7 +76,7 @@ func TestDecimalsEqual(t *testing.T) {
 	}
 }
 
-// revenueValidationCases mirrors what DefectDojo 3.1.101 actually does with
+// revenueValidationCases mirrors what DefectDojo 3.2.300 actually does with
 // product.revenue. Every accepted value below was POSTed to /api/v2/products/
 // and read back; every rejected one either fails with a 400 or is stored as
 // something the configuration can never match.

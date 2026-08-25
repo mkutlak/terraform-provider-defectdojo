@@ -3,12 +3,12 @@
 page_title: "defectdojo_metadata Resource - terraform-provider-defectdojo"
 subcategory: ""
 description: |-
-  DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of product or finding must be set. DefectDojo 3.1.101 does not support location- or endpoint-attached metadata via the API (the location parent is silently ignored and the endpoint parent is rejected), so only product and finding are exposed.
+  DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of product or finding must be set. This provider does not expose location or endpoint parents. DefectDojo remaps or silently drops both before they reach the database.
 ---
 
 # defectdojo_metadata (Resource)
 
-DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of `product` or `finding` must be set. DefectDojo 3.1.101 does not support location- or endpoint-attached metadata via the API (the location parent is silently ignored and the endpoint parent is rejected), so only product and finding are exposed.
+DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of `product` or `finding` must be set. This provider does not expose `location` or `endpoint` parents. DefectDojo remaps or silently drops both before they reach the database.
 
 ## Example Usage
 
@@ -39,7 +39,7 @@ resource "defectdojo_metadata" "example" {
 ### Optional
 
 - `finding` (Number) The ID of the Finding this metadata is attached to. Findings are import-managed; attaching metadata couples state to scan artifacts.
-- `product` (Number) The ID of the Product this metadata is attached to. This is the recommended parent object for metadata. (Location- and endpoint-attached metadata are not supported: the DefectDojo 3.1.101 API ignores or rejects those parents despite advertising them.)
+- `product` (Number) The ID of the Product this metadata is attached to. This is the recommended parent object for metadata. (Location- and endpoint-attached metadata are not supported: the API remaps or drops those parents instead of storing them as configured.)
 
 ### Read-Only
 

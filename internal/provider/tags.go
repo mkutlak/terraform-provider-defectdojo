@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// DefectDojo accepts almost anything as a tag. Verified against 3.1.101 by
+// DefectDojo accepts almost anything as a tag. Verified against 3.2.300 by
 // creating a product per input and reading it back:
 //
 //	"env:prod", "v1.2.3", "team/security", "tag#1", "_internal", "-legacy",
@@ -46,7 +46,7 @@ const tagPatternMessage = `Tags must not be empty or contain spaces, commas, sin
 //
 // Every tag table keys its rows on a lower-cased slug, so names are matched
 // case-insensitively and `tags = ["Foo","foo"]` is one tag by the time it
-// reaches the database. Verified on 3.1.101:
+// reaches the database. Verified on 3.2.300:
 //
 //	POST /api/v2/products/ {"tags":["Backend","backend"]}
 //	  -> 201, create response ['Backend', 'Backend']   (one spelling, twice)
@@ -159,7 +159,7 @@ func tagsSetAttribute(markdownDescription string) schema.SetAttribute {
 // on a lower-cased slug beside the name it was created with. Names are
 // therefore matched case-insensitively, and the server answers with whichever
 // spelling was registered FIRST in that type's table, by any object of that
-// type on the instance. Verified on 3.1.101: with "Foo" already present,
+// type on the instance. Verified on 3.2.300: with "Foo" already present,
 // creating a product with tags ["foo","bar"] returns ["Foo","bar"]; with
 // "ZZTOP" present, submitting "zztop" returns "ZZTOP".
 //

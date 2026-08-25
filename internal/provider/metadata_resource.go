@@ -16,9 +16,31 @@ import (
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
+// This resource does not expose `location` or `endpoint` as a metadata
+// parent. Both are writable in dd.MetaRequest, but neither behaves as
+// configured.
+//
+// Verified against DefectDojo 3.2.300, with a location id (1) and an
+// endpoint (1) that belongs to it:
+//
+//	POST /api/v2/metadata/ {"location": 1}
+//	  -> 400 "Metadata entries need either a product, endpoint, location or a
+//	     finding"                                    (location never counts)
+//	POST /api/v2/metadata/ {"location": 1, "product": 1}
+//	  -> 201, "location": null                       (silently dropped)
+//	POST /api/v2/metadata/ {"endpoint": 1}
+//	  -> 201, "location": 1                          (remapped, and it persists)
+//	POST /api/v2/metadata/ {"endpoint": 1, "product": 1}
+//	  -> 400 "Metadata entries may not have more than one relation, ..."
+//
+// Cause: upstream PR #15495 (DefectDojo's locations feature) made the
+// serializer remap `endpoint` to `location` and drop a standalone `location`
+// value. `Meta` also gained a read-only `location_product` field from the
+// same change; it is absent from MetaRequest and PatchedMetaRequest, so it
+// needs no schema attribute either.
 func (t metadataResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of `product` or `finding` must be set. DefectDojo 3.1.101 does not support location- or endpoint-attached metadata via the API (the location parent is silently ignored and the endpoint parent is rejected), so only product and finding are exposed.",
+		MarkdownDescription: "DefectDojo Metadata: a custom key/value field attached to exactly one parent object. Exactly one of `product` or `finding` must be set. This provider does not expose `location` or `endpoint` parents. DefectDojo remaps or silently drops both before they reach the database.",
 
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
@@ -30,7 +52,7 @@ func (t metadataResource) Schema(ctx context.Context, req resource.SchemaRequest
 				Required:            true,
 			},
 			"product": schema.Int64Attribute{
-				MarkdownDescription: "The ID of the Product this metadata is attached to. This is the recommended parent object for metadata. (Location- and endpoint-attached metadata are not supported: the DefectDojo 3.1.101 API ignores or rejects those parents despite advertising them.)",
+				MarkdownDescription: "The ID of the Product this metadata is attached to. This is the recommended parent object for metadata. (Location- and endpoint-attached metadata are not supported: the API remaps or drops those parents instead of storing them as configured.)",
 				Optional:            true,
 			},
 			"finding": schema.Int64Attribute{

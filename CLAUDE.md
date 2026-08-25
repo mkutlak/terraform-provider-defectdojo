@@ -110,7 +110,7 @@ The following DefectDojo API objects are **not** implemented as Terraform resour
 | jira_configurations / jira_projects routes | Legacy aliases of jira_instances / jira_product_configurations. |
 | import-scan / reimport-scan / endpoint_meta_import and other RPC-style endpoints | Actions and artifacts, not resources. |
 | TestType (as resource)   | API has no DELETE and update cannot rename; destroy would leave permanent server-side leftovers. Data source available. |
-| Metadata location/endpoint parents | Broken upstream in 3.1.101: location parent silently ignored, endpoint parent rejected. Only product/finding parents exposed. |
+| Metadata location/endpoint parents | On 3.2.300, the API remaps `endpoint` to a location write and always drops `location`. Only product/finding parents exposed. |
 
 ## Release Process
 

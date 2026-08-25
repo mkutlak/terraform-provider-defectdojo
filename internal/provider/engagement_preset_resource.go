@@ -30,7 +30,7 @@ func (r engagementPresetResource) Schema(ctx context.Context, req resource.Schem
 			// serializer rejects a blank value, so it is mandatory in practice
 			// even though the OpenAPI schema omits it from `required`:
 			// leaving it out returns 500 (IntegrityError) and sending "" returns
-			// 400 ("This field may not be blank"). Verified against 3.1.101.
+			// 400 ("This field may not be blank"). Verified against 3.2.300.
 			"title": schema.StringAttribute{
 				MarkdownDescription: "Brief description of preset.",
 				Required:            true,

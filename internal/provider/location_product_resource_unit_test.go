@@ -173,9 +173,9 @@ func TestLocationProductResource__defectdojoResource_Nulls(t *testing.T) {
 // That made the blank the provider itself produces unwritable, and a Computed
 // attribute cannot be cleared by deleting it from configuration either, so there
 // was no way back to it. "" is a genuine member of that enum -
-// dd.LocationProductReferenceRequestRelationshipEmpty - and 3.1.101 accepts it.
+// dd.LocationProductReferenceRequestRelationshipEmpty - and 3.2.300 accepts it.
 //
-// status has no such member: 3.1.101 answers a status of "" with `"" is not a
+// status has no such member: 3.2.300 answers a status of "" with `"" is not a
 // valid choice.` and fills the field with "Mitigated" when it is omitted. Both
 // halves are pinned here so that "fix the relationship validator" does not read
 // like an argument for loosening every enum on the resource.
