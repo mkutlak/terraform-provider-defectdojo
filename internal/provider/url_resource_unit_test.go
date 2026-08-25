@@ -257,3 +257,41 @@ func TestUrlResource__defectdojoResource_Nulls(t *testing.T) {
 	// Null TF values are skipped, so pointer fields remain nil
 	assert.Equal(t, ddUrl.Tags, nilStringSlice)
 }
+
+// TestUrlProtocolValidator pins the four protocols DefectDojo 3.2.300 added to
+// DEFAULT_PORTS - "icmp", "ipp", "snmp" and "udp" - as accepted, and a sample
+// of still-rejected spellings as rejected. See the comment on urlProtocols in
+// url_resource.go for the full live-verified list.
+func TestUrlProtocolValidator(t *testing.T) {
+	t.Parallel()
+
+	attr := resourceStringAttribute(t, "defectdojo_url", "protocol")
+	for _, tc := range []struct {
+		protocol  string
+		wantError bool
+	}{
+		// Added in DefectDojo 3.2.300; "udp" POSTed 400 on 3.1.101.
+		{"icmp", false},
+		{"ipp", false},
+		{"snmp", false},
+		{"udp", false},
+
+		{"https", false},
+		{"tcp", false},
+		{"", false},
+
+		{"HTTPS", true},
+		{"ws", true},
+		{"grpc", true},
+	} {
+		got := runStringValidators(t, "protocol", attr, tc.protocol)
+		if got == tc.wantError {
+			continue
+		}
+		verb := "accepted"
+		if got {
+			verb = "rejected"
+		}
+		t.Errorf("protocol = %q was %s, but wantError=%v", tc.protocol, verb, tc.wantError)
+	}
+}

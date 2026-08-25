@@ -27,16 +27,21 @@ import (
 // both accepted.
 //
 // The OpenAPI spec types protocol as a plain string with maxLength 10 and
-// documents none of this, so the list was read off DEFAULT_PORTS in DefectDojo
-// 3.1.101 and confirmed over the API: every entry below POSTs 201, while
-// "HTTPS", "Https", "FTP", "ws", "wss", "file", "gopher", "mysql", "grpc" and
-// "udp" all POST 400. The empty string is a member - it is how DefectDojo
-// spells "no protocol", and it leaves the port unset.
+// documents none of this. The list is therefore empirical, not spec-derived,
+// and must be re-probed against DEFAULT_PORTS on every DefectDojo bump.
+//
+// Last re-verified on DefectDojo 3.2.300: every entry below still POSTs 201,
+// and "HTTPS", "Https", "FTP", "ws", "wss", "file", "gopher", "mysql" and
+// "grpc" still POST 400. 3.2.300 also added four protocols DEFAULT_PORTS
+// lacked on 3.1.101 - "icmp", "ipp", "snmp" and "udp" - each confirmed with a
+// live 201; "udp" in particular used to POST 400 and now does not. The empty
+// string is a member - it is how DefectDojo spells "no protocol", and it
+// leaves the port unset.
 var urlProtocols = []string{
-	"", "ftp", "ftps", "ftps-data", "http", "https", "imap", "imaps", "irc",
-	"ldap", "ldaps", "mqtt", "mqtts", "nntp", "nntps", "openvpn", "pop3",
-	"pop3s", "rdp", "rtsp", "sftp", "sip", "sips", "smb", "smtp", "smtps",
-	"ssh", "submission", "tcp", "telnet", "tftp", "vnc",
+	"", "ftp", "ftps", "ftps-data", "http", "https", "icmp", "imap", "imaps",
+	"ipp", "irc", "ldap", "ldaps", "mqtt", "mqtts", "nntp", "nntps", "openvpn",
+	"pop3", "pop3s", "rdp", "rtsp", "sftp", "sip", "sips", "smb", "smtp",
+	"smtps", "snmp", "ssh", "submission", "tcp", "telnet", "tftp", "udp", "vnc",
 }
 
 func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -51,9 +56,9 @@ func (t urlResource) Schema(ctx context.Context, req resource.SchemaRequest, res
 			"protocol": schema.StringAttribute{
 				MarkdownDescription: "The protocol of the URL. DefectDojo only accepts a protocol it knows a " +
 					"default port for, and only in lower case. Valid values are: 'ftp', 'ftps', 'ftps-data', " +
-					"'http', 'https', 'imap', 'imaps', 'irc', 'ldap', 'ldaps', 'mqtt', 'mqtts', 'nntp', 'nntps', " +
-					"'openvpn', 'pop3', 'pop3s', 'rdp', 'rtsp', 'sftp', 'sip', 'sips', 'smb', 'smtp', 'smtps', " +
-					"'ssh', 'submission', 'tcp', 'telnet', 'tftp', 'vnc'",
+					"'http', 'https', 'icmp', 'imap', 'imaps', 'ipp', 'irc', 'ldap', 'ldaps', 'mqtt', 'mqtts', " +
+					"'nntp', 'nntps', 'openvpn', 'pop3', 'pop3s', 'rdp', 'rtsp', 'sftp', 'sip', 'sips', 'smb', " +
+					"'smtp', 'smtps', 'snmp', 'ssh', 'submission', 'tcp', 'telnet', 'tftp', 'udp', 'vnc'",
 				Optional: true,
 				Computed: true,
 				Validators: []validator.String{
