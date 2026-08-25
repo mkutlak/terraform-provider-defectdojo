@@ -156,7 +156,7 @@ type notificationsResourceData struct {
 }
 
 // notificationsScanAddedEmpty is the wire representation of scan_added_empty.
-// The live 3.1.101 API is asymmetric for this one field: GET/LIST (and
+// The live 3.2.300 API is asymmetric for this one field: GET/LIST (and
 // create/update responses when the field was left unset in the request)
 // always return it as a JSON array of 0 or 1 strings (e.g. `[]` or
 // `["alert"]`), while the write path (POST/PUT/PATCH) only accepts - and
@@ -186,7 +186,7 @@ func (v *notificationsScanAddedEmpty) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// notificationsModel mirrors the 3.1.101 /api/v2/notifications/ JSON. The
+// notificationsModel mirrors the 3.2.300 /api/v2/notifications/ JSON. The
 // generated dd.Notifications/dd.NotificationsRequest cannot be used here: the
 // spec types scan_added_empty as a scalar enum, but the live API returns it as
 // an array on every read path (see notificationsScanAddedEmpty above), so the

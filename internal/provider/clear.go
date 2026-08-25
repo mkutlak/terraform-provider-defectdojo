@@ -21,7 +21,7 @@ import (
 // therefore never clears a value.
 //
 // The only way to clear a column through this API is a PATCH carrying an
-// explicit JSON null. Verified against DefectDojo 3.1.101: PUT with the field
+// explicit JSON null. Verified against DefectDojo 3.2.300: PUT with the field
 // omitted leaves it unchanged, PATCH {"branch_tag": null} clears it. So Update
 // diffs the plan against the prior state, and any attribute that held a value
 // and is now null gets an explicit null in a follow-up PATCH (issue #30).
@@ -118,7 +118,7 @@ func stillSetAfterUpdate(ddResource defectdojoResource, targets []clearTarget) [
 // ddFieldIsEmpty reports whether a ddclient field currently holds no value.
 //
 // "No value" means nil, never zero. DefectDojo stores 0, false and "" verbatim
-// rather than coercing them to null - verified on 3.1.101, where
+// rather than coercing them to null - verified on 3.2.300, where
 // PATCH {"percent_complete": 0, "branch_tag": ""} reads back as 0 and "" - so a
 // non-nil pointer to a zero value is a value the server chose to send, and the
 // clear target has to survive.

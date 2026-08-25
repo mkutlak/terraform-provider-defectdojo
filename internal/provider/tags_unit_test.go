@@ -90,7 +90,7 @@ func forEachTagsAttribute(t *testing.T, fn func(tfTypeName string, tagsAttr sche
 // force_lowercase reaches only the slug, so the name keeps the spelling it was
 // submitted with and "Foo" round-trips unchanged.
 //
-// Each accepted value below was created through the API on 3.1.101 and read back
+// Each accepted value below was created through the API on 3.2.300 and read back
 // verbatim; each rejected value either returns 400 or is silently split. See the
 // table in tags.go.
 func TestTagsAttributesRejectNonCanonicalValues(t *testing.T) {
@@ -113,7 +113,7 @@ func TestTagsAttributesRejectNonCanonicalValues(t *testing.T) {
 		{"_internal", false},
 		{"-legacy", false},
 		{"café", false},
-		// Uppercase round-trips unchanged on 3.1.101; rejecting it broke working
+		// Uppercase round-trips unchanged on 3.2.300; rejecting it broke working
 		// configurations. See the note in tags.go.
 		{"Foo", false},
 		{"MixedCase", false},

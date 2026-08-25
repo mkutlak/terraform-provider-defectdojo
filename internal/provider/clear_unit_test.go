@@ -296,7 +296,7 @@ func TestClearPatchBody(t *testing.T) {
 // Some DefectDojo serializers declare a field default, so the full update
 // already cleared the value; re-sending an explicit null is wasted at best, and
 // defectdojo_metadata rejects a lone {"product": null} with "Metadata entries
-// need either a product, endpoint, location or a finding" (verified on 3.1.101)
+// need either a product, endpoint, location or a finding" (verified on 3.2.300)
 // even though the row is already correct.
 //
 // The zero-value rows pin the difference between "the server dropped the value"

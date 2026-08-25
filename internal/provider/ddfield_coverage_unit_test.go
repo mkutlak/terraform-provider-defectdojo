@@ -87,8 +87,8 @@ var ddFieldKnownUnmapped = map[string]map[string]string{ // model -> DD field ->
 		"Updated":          "server-managed timestamp",
 	},
 	"metadataResourceData": {
-		"Endpoint":        "writable in MetaRequest, but the DefectDojo 3.1.101 API rejects this parent when set; intentionally not exposed (see metadata_resource.go schema description)",
-		"Location":        "writable in MetaRequest, but the DefectDojo 3.1.101 API silently ignores this parent when set; intentionally not exposed (see metadata_resource.go schema description)",
+		"Endpoint":        "writable in MetaRequest, but DefectDojo 3.2.300 silently remaps it to the endpoint's own location instead of storing the endpoint itself; intentionally not exposed (see metadata_resource.go schema description)",
+		"Location":        "writable in MetaRequest, but DefectDojo 3.2.300 never persists it: every write silently drops the value; intentionally not exposed (see metadata_resource.go schema description)",
 		"LocationProduct": "read-only server-computed field added in DefectDojo 3.2, absent from MetaRequest and PatchedMetaRequest",
 	},
 	"notificationWebhookResourceData": {

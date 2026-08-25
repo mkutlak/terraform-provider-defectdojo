@@ -438,7 +438,7 @@ func TestProductResourcePopulateRevenue(t *testing.T) {
 	}
 }
 
-// TestProductDescriptionValidator mirrors what DefectDojo 3.1.101 does with
+// TestProductDescriptionValidator mirrors what DefectDojo 3.2.300 does with
 // product.description. Every accepted value below was POSTed to
 // /api/v2/products/ and read back unchanged; every rejected one is either a
 // 400 or comes back rewritten.

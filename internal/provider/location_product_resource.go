@@ -39,7 +39,7 @@ func (t locationProductResource) Schema(ctx context.Context, req resource.Schema
 			// result" error when left unset, matching `status` below.
 			//
 			// "" is listed in the OneOf because it is a real member of the enum
-			// rather than a spelling of null. Verified on 3.1.101: a create
+			// rather than a spelling of null. Verified on 3.2.300: a create
 			// that omits the field answers 201 carrying "", POST and PUT with
 			// an explicit "" answer 201 and 200 and a GET confirms the blank
 			// stuck, while "bogus" is refused with `"bogus" is not a valid
