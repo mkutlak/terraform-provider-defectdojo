@@ -66,21 +66,35 @@ var typeOfTypesInt64 = reflect.TypeFor[types.Int64]()
 var typeOfTypesFloat64 = reflect.TypeFor[types.Float64]()
 var typeOfTypesSet = reflect.TypeFor[types.Set]()
 var typeOfJSONRawMessage = reflect.TypeFor[json.RawMessage]()
+var typeOfJSONMarshaler = reflect.TypeFor[json.Marshaler]()
+var typeOfJSONUnmarshaler = reflect.TypeFor[json.Unmarshaler]()
 
 // isOapiUnionStringType reports whether t is an oapi-codegen "oneOf" wrapper
-// struct: a single unexported `union json.RawMessage` field with generated
-// MarshalJSON/UnmarshalJSON methods. DefectDojo 3.2 started emitting
-// `oneOf: [{format: uri}, {maxLength: 0}]` for every blank-allowed
-// CharField/URLField, which turns what used to be a plain *string field (e.g.
-// Engagement.Tracker) into this wrapper. Every such oneOf DefectDojo emits
-// resolves both variants to Go's string, so the engine treats the wrapper as
-// an ordinary string by round-tripping through its own JSON methods.
+// struct. The struct holds one unexported `union json.RawMessage` field.
+// DefectDojo 3.2 emits `oneOf: [{format: uri}, {maxLength: 0}]` for every
+// blank-allowed CharField and URLField. oapi-codegen turns each such field
+// into this wrapper instead of a plain *string field, for example
+// Engagement.Tracker. Every such oneOf DefectDojo emits resolves both
+// variants to Go's string. So the engine treats the wrapper as an ordinary
+// string, and round-trips the value through the wrapper's own JSON methods.
+//
+// The shape check alone does not prove the wrapper works. A struct can
+// match the shape without carrying MarshalJSON or UnmarshalJSON methods.
+// isOapiUnionStringType also confirms t implements json.Marshaler, and
+// confirms a pointer to t implements json.Unmarshaler. Both engine branches
+// call these methods through reflect.Value.MethodByName. A missing method
+// makes MethodByName return the zero reflect.Value, and calling that zero
+// Value panics. This capability check turns that panic into a normal
+// addUnsupportedMappingError diagnostic instead.
 func isOapiUnionStringType(t reflect.Type) bool {
 	if t.Kind() != reflect.Struct || t.NumField() != 1 {
 		return false
 	}
 	f := t.Field(0)
-	return f.Name == "union" && f.Type == typeOfJSONRawMessage
+	if f.Name != "union" || f.Type != typeOfJSONRawMessage {
+		return false
+	}
+	return t.Implements(typeOfJSONMarshaler) && reflect.PointerTo(t).Implements(typeOfJSONUnmarshaler)
 }
 
 // ddFormatDecimal marks a types.String attribute whose DefectDojo column is a
@@ -104,7 +118,7 @@ const ddFormatTags = "tags"
 // dojo/url/models.py clean_host() runs an IP through
 // ipaddress.ip_address().compressed and a name through idna.encode(uts46=True);
 // both answer in lower case, and the fallback for a name IDNA cannot encode is
-// a bare host.lower(). Verified on 3.1.101: POST /api/v2/url/
+// a bare host.lower(). Verified on 3.2.300: POST /api/v2/url/
 // {"host": "API.Example.COM"} returns 201 carrying "host": "api.example.com".
 //
 // Only a case-insensitive match is preserved. The other rewrites clean_host()
@@ -634,10 +648,10 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					d := openapi_types.Date{Time: t}
 					ddFieldValue.Set(reflect.ValueOf(&d))
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
-					// the destination field is a pointer to an oapi-codegen
-					// oneOf-string wrapper (see isOapiUnionStringType); marshal the
-					// configured string as a JSON string literal and hand it to the
-					// wrapper's own UnmarshalJSON.
+					// The destination field is a pointer to an oapi-codegen
+					// oneOf-string wrapper (see isOapiUnionStringType). Marshal the
+					// configured string as a JSON string literal. Hand that literal
+					// to the wrapper's own UnmarshalJSON.
 					str := fieldValue.MethodByName("ValueString").Call(nil)[0].Interface().(string)
 					b, err := json.Marshal(str)
 					if err != nil {
@@ -870,8 +884,8 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
-					// the source field is a pointer to an oapi-codegen
-					// oneOf-string wrapper (see isOapiUnionStringType); read the
+					// The source field is a pointer to an oapi-codegen
+					// oneOf-string wrapper (see isOapiUnionStringType). Read the
 					// bare JSON string out through the wrapper's own MarshalJSON.
 					if !ddFieldValue.IsNil() {
 						marshalResult := ddFieldValue.MethodByName("MarshalJSON").Call(nil)
