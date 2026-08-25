@@ -25,13 +25,21 @@ func TestUserContactInfoResourcePopulate(t *testing.T) {
 	expectedForcePasswordReset := false
 	expectedDeduplicationExecutionMode := dd.UserContactInfoDeduplicationExecutionMode("async_wait")
 
+	// PhoneNumber and CellNumber are oapi-codegen oneOf-string wrappers as of
+	// DefectDojo 3.2 (see isOapiUnionStringType in resource.go); they cannot
+	// be built with a plain &string literal.
+	phoneNumber := &dd.UserContactInfo_PhoneNumber{}
+	assert.NilError(t, phoneNumber.FromUserContactInfoPhoneNumber0(expectedPhoneNumber))
+	cellNumber := &dd.UserContactInfo_CellNumber{}
+	assert.NilError(t, cellNumber.FromUserContactInfoCellNumber0(expectedCellNumber))
+
 	ddResource := userContactInfoDefectdojoResource{
 		UserContactInfo: dd.UserContactInfo{
 			Id:                         &expectedId,
 			User:                       expectedUser,
 			Title:                      &expectedTitle,
-			PhoneNumber:                &expectedPhoneNumber,
-			CellNumber:                 &expectedCellNumber,
+			PhoneNumber:                phoneNumber,
+			CellNumber:                 cellNumber,
 			TwitterUsername:            &expectedTwitterUsername,
 			GithubUsername:             &expectedGithubUsername,
 			SlackUsername:              &expectedSlackUsername,
@@ -80,6 +88,18 @@ func TestUserContactInfoResource__defectdojoResource(t *testing.T) {
 
 	assert.Equal(t, ddUserContactInfo.User, expectedUser)
 	assert.Equal(t, *ddUserContactInfo.Title, expectedTitle)
-	assert.Equal(t, *ddUserContactInfo.PhoneNumber, expectedPhoneNumber)
 	assert.Equal(t, string(*ddUserContactInfo.DeduplicationExecutionMode), expectedDeduplicationExecutionMode)
+
+	// PhoneNumber is an oapi-codegen oneOf-string wrapper as of DefectDojo 3.2
+	// (see isOapiUnionStringType in resource.go); confirm the write path sets
+	// it correctly, then confirm userContactInfoToRequest can carry it across
+	// to the distinct UserContactInfoRequest_PhoneNumber wrapper type.
+	gotPhoneNumber, err := ddUserContactInfo.PhoneNumber.AsUserContactInfoPhoneNumber0()
+	assert.NilError(t, err)
+	assert.Equal(t, gotPhoneNumber, expectedPhoneNumber)
+
+	req := userContactInfoToRequest(ddUserContactInfo.UserContactInfo)
+	gotReqPhoneNumber, err := req.PhoneNumber.AsUserContactInfoRequestPhoneNumber0()
+	assert.NilError(t, err)
+	assert.Equal(t, gotReqPhoneNumber, expectedPhoneNumber)
 }

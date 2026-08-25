@@ -43,6 +43,16 @@ func TestEngagementResourcePopulate(t *testing.T) {
 	targetEndTime := time.Date(2025, 12, 31, 0, 0, 0, 0, time.UTC)
 	firstContactedTime := time.Date(2024, 6, 15, 0, 0, 0, 0, time.UTC)
 
+	// Tracker, TestStrategy and SourceCodeManagementUri are oapi-codegen
+	// oneOf-string wrappers as of DefectDojo 3.2 (see isOapiUnionStringType
+	// in resource.go); they cannot be built with a plain &string literal.
+	tracker := &dd.Engagement_Tracker{}
+	assert.NilError(t, tracker.FromEngagementTracker0(expectedTracker))
+	testStrategy := &dd.Engagement_TestStrategy{}
+	assert.NilError(t, testStrategy.FromEngagementTestStrategy0(expectedTestStrategy))
+	sourceCodeManagementUri := &dd.Engagement_SourceCodeManagementUri{}
+	assert.NilError(t, sourceCodeManagementUri.FromEngagementSourceCodeManagementUri0(expectedSourceCodeManagementUri))
+
 	ddResource := engagementDefectdojoResource{
 		Engagement: dd.Engagement{
 			Id:                        &expectedId,
@@ -59,15 +69,15 @@ func TestEngagementResourcePopulate(t *testing.T) {
 			BranchTag:                 &expectedBranchTag,
 			CommitHash:                &expectedCommitHash,
 			BuildId:                   &expectedBuildId,
-			Tracker:                   &expectedTracker,
-			TestStrategy:              &expectedTestStrategy,
+			Tracker:                   tracker,
+			TestStrategy:              testStrategy,
 			ThreatModel:               &expectedThreatModel,
 			ApiTest:                   &expectedApiTest,
 			PenTest:                   &expectedPenTest,
 			CheckList:                 &expectedCheckList,
 			DeduplicationOnEngagement: &expectedDeduplicationOnEngagement,
 			FirstContacted:            &openapi_types.Date{Time: firstContactedTime},
-			SourceCodeManagementUri:   &expectedSourceCodeManagementUri,
+			SourceCodeManagementUri:   sourceCodeManagementUri,
 			Preset:                    &expectedPreset,
 			ReportType:                &expectedReportType,
 			Requester:                 &expectedRequester,
@@ -143,6 +153,7 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 	expectedName := "Test Engagement"
 	expectedVersion := "v1.0"
 	expectedThreatModel := true
+	expectedTracker := "https://jira.example.com/browse/PROJ-1"
 
 	resourceData := engagementResourceData{
 		Product:     types.Int64Value(int64(expectedProduct)),
@@ -151,6 +162,7 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 		TargetEnd:   types.StringValue("2025-12-31"),
 		Version:     types.StringValue(expectedVersion),
 		ThreatModel: types.BoolValue(expectedThreatModel),
+		Tracker:     types.StringValue(expectedTracker),
 	}
 
 	ddRes := resourceData.defectdojoResource()
@@ -164,6 +176,19 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 	assert.Equal(t, ddEng.TargetEnd.Format("2006-01-02"), "2025-12-31")
 	assert.Equal(t, *ddEng.Version, expectedVersion)
 	assert.Equal(t, *ddEng.ThreatModel, expectedThreatModel)
+
+	// Tracker is an oapi-codegen oneOf-string wrapper as of DefectDojo 3.2
+	// (see isOapiUnionStringType in resource.go); confirm the write path sets
+	// it correctly, then confirm engagementToRequest can carry it across to
+	// the distinct EngagementRequest_Tracker wrapper type.
+	gotTracker, err := ddEng.Tracker.AsEngagementTracker0()
+	assert.NilError(t, err)
+	assert.Equal(t, gotTracker, expectedTracker)
+
+	req := engagementToRequest(ddEng.Engagement)
+	gotReqTracker, err := req.Tracker.AsEngagementRequestTracker0()
+	assert.NilError(t, err)
+	assert.Equal(t, gotReqTracker, expectedTracker)
 }
 
 // TestEngagementResourcePopulateDedupesServerTags covers the create response
