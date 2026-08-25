@@ -37,7 +37,7 @@ resource "defectdojo_url" "example" {
 - `fragment` (String) The fragment identifier of the URL (optional)
 - `path` (String) The path of the URL, without a leading slash — DefectDojo stores paths with the leading slash stripped (optional)
 - `port` (Number) The port number of the URL (optional)
-- `protocol` (String) The protocol of the URL. DefectDojo only accepts a protocol it knows a default port for, and only in lower case. Valid values are: 'ftp', 'ftps', 'ftps-data', 'http', 'https', 'imap', 'imaps', 'irc', 'ldap', 'ldaps', 'mqtt', 'mqtts', 'nntp', 'nntps', 'openvpn', 'pop3', 'pop3s', 'rdp', 'rtsp', 'sftp', 'sip', 'sips', 'smb', 'smtp', 'smtps', 'ssh', 'submission', 'tcp', 'telnet', 'tftp', 'vnc'
+- `protocol` (String) The protocol of the URL. DefectDojo only accepts a protocol it knows a default port for, and only in lower case. Valid values are: 'ftp', 'ftps', 'ftps-data', 'http', 'https', 'icmp', 'imap', 'imaps', 'ipp', 'irc', 'ldap', 'ldaps', 'mqtt', 'mqtts', 'nntp', 'nntps', 'openvpn', 'pop3', 'pop3s', 'rdp', 'rtsp', 'sftp', 'sip', 'sips', 'smb', 'smtp', 'smtps', 'snmp', 'ssh', 'submission', 'tcp', 'telnet', 'tftp', 'udp', 'vnc'
 - `query` (String) The query string of the URL (optional)
 - `tags` (Set of String) Tags to apply to the URL. Tags must not contain spaces, commas or quotes, and the configured spelling is kept when DefectDojo answers with a different letter case.
 - `user_info` (String) Connection details for a given user
