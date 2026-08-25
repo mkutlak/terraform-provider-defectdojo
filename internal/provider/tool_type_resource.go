@@ -14,9 +14,17 @@ import (
 	dd "github.com/mkutlak/terraform-provider-defectdojo/internal/ddclient"
 )
 
+// DefectDojo 3.2.0 deprecated the Tool Type, Tool Configuration, and Product
+// API Scan Configuration APIs in upstream PR #15353. The upstream viewsets'
+// finalize_response adds the X-Deprecated and X-End-Of-Life-Date response
+// headers; the OpenAPI document never carries `deprecated: true`, so
+// `make regen-client` cannot reproduce this warning. Do not remove the
+// DeprecationMessage/MarkdownDescription pair below expecting the generator
+// to regenerate it - it is hand-maintained.
 func (t toolTypeResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "DefectDojo Tool Type",
+		MarkdownDescription: "DefectDojo Tool Type. **Deprecated:** DefectDojo removes the `tool_type` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.",
+		DeprecationMessage:  "DefectDojo deprecated the tool_type API in version 3.2.0. DefectDojo removes the API in version 3.5.0, on 2026-11-01. This resource then fails.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the Tool Type",

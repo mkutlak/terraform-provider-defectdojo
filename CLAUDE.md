@@ -65,7 +65,7 @@ The `ddField` tag value must match the exact Go field name in the corresponding 
 
 ### Resources & Data Sources
 
-The provider implements 28 resources and 32 data sources. See `provider.go` `Resources()` and `DataSources()` for the full list. Notable special cases: `endpoint` is data-source-only and deprecated (use `url`/`location`); `location`, `user_profile`, `test_type`, and `configuration_permission` are data-source-only; `system_settings` is a singleton resource (adopt-on-create via the engine's `singletonAdopter` interface, destroy = state-remove-only); `announcement` is limited to one instance server-side.
+The provider implements 28 resources and 32 data sources. See `provider.go` `Resources()` and `DataSources()` for the full list. Notable special cases: `endpoint` is data-source-only and deprecated (use `url`/`location`); `location`, `user_profile`, `test_type`, and `configuration_permission` are data-source-only; `system_settings` is a singleton resource (adopt-on-create via the engine's `singletonAdopter` interface, destroy = state-remove-only); `announcement` is limited to one instance server-side. DefectDojo 3.2.0 deprecated the Tool Type, Tool Configuration, and Product API Scan Configuration APIs (upstream PR #15353). DefectDojo removes them in version 3.5.0, on 2026-11-01.
 
 ### Notable Files
 

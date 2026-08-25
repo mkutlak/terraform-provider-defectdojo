@@ -13,7 +13,8 @@ type toolConfigurationDataSource struct {
 
 func (t toolConfigurationDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for Defect Dojo Tool Configuration",
+		MarkdownDescription: "Data source for Defect Dojo Tool Configuration. **Deprecated:** DefectDojo removes the `tool_configuration` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.",
+		DeprecationMessage:  "DefectDojo deprecated the tool_configuration API in version 3.2.0. DefectDojo removes the API in version 3.5.0, on 2026-11-01. This data source then fails.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",

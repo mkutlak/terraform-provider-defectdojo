@@ -3,12 +3,12 @@
 page_title: "defectdojo_tool_type Resource - terraform-provider-defectdojo"
 subcategory: ""
 description: |-
-  DefectDojo Tool Type
+  DefectDojo Tool Type. Deprecated: DefectDojo removes the tool_type API in version 3.5.0, on 2026-11-01. The server adds X-Deprecated and X-End-Of-Life-Date headers to each response.
 ---
 
 # defectdojo_tool_type (Resource)
 
-DefectDojo Tool Type
+DefectDojo Tool Type. **Deprecated:** DefectDojo removes the `tool_type` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.
 
 ## Example Usage
 

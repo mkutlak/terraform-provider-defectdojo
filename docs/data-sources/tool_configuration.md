@@ -3,12 +3,12 @@
 page_title: "defectdojo_tool_configuration Data Source - terraform-provider-defectdojo"
 subcategory: ""
 description: |-
-  Data source for Defect Dojo Tool Configuration
+  Data source for Defect Dojo Tool Configuration. Deprecated: DefectDojo removes the tool_configuration API in version 3.5.0, on 2026-11-01. The server adds X-Deprecated and X-End-Of-Life-Date headers to each response.
 ---
 
 # defectdojo_tool_configuration (Data Source)
 
-Data source for Defect Dojo Tool Configuration
+Data source for Defect Dojo Tool Configuration. **Deprecated:** DefectDojo removes the `tool_configuration` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.
 
 ## Example Usage
 

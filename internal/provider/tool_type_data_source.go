@@ -13,7 +13,8 @@ type toolTypeDataSource struct {
 
 func (t toolTypeDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Data source for Defect Dojo Tool Type. You can specify either the `id` or the `name` to look up the Tool Type.",
+		MarkdownDescription: "Data source for Defect Dojo Tool Type. You can specify either the `id` or the `name` to look up the Tool Type. **Deprecated:** DefectDojo removes the `tool_type` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.",
+		DeprecationMessage:  "DefectDojo deprecated the tool_type API in version 3.2.0. DefectDojo removes the API in version 3.5.0, on 2026-11-01. This data source then fails.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				MarkdownDescription: "Identifier",
