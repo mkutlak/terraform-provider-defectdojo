@@ -146,6 +146,106 @@ func TestEngagementResourcePopulateNils(t *testing.T) {
 	assert.Equal(t, resourceData.ThreatModel.IsNull(), true)
 	assert.Equal(t, resourceData.Preset.IsNull(), true)
 	assert.Equal(t, resourceData.FirstContacted.IsNull(), true)
+	// Tracker, TestStrategy and SourceCodeManagementUri are oapi-codegen
+	// oneOf-string wrappers (see isOapiUnionStringType in resource.go). A
+	// zero-value dd.Engagement leaves their pointers nil, so state must be
+	// null, not a wrapper holding an empty string.
+	assert.Equal(t, resourceData.Tracker.IsNull(), true)
+	assert.Equal(t, resourceData.TestStrategy.IsNull(), true)
+	assert.Equal(t, resourceData.SourceCodeManagementUri.IsNull(), true)
+}
+
+// TestEngagementResourcePopulate_UnionFieldsEmpty exercises the read path for
+// the oneOf's second arm (maxLength: 0), which DefectDojo sends when Tracker,
+// TestStrategy or SourceCodeManagementUri is blank. Empty-string coverage was
+// flagged as the top gap in the isOapiUnionStringType engine (resource.go).
+func TestEngagementResourcePopulate_UnionFieldsEmpty(t *testing.T) {
+	tracker := &dd.Engagement_Tracker{}
+	assert.NilError(t, tracker.FromEngagementTracker1(""))
+	testStrategy := &dd.Engagement_TestStrategy{}
+	assert.NilError(t, testStrategy.FromEngagementTestStrategy1(""))
+	sourceCodeManagementUri := &dd.Engagement_SourceCodeManagementUri{}
+	assert.NilError(t, sourceCodeManagementUri.FromEngagementSourceCodeManagementUri1(""))
+
+	ddResource := engagementDefectdojoResource{
+		Engagement: dd.Engagement{
+			Product:                 5,
+			Tracker:                 tracker,
+			TestStrategy:            testStrategy,
+			SourceCodeManagementUri: sourceCodeManagementUri,
+		},
+	}
+
+	resourceData := engagementResourceData{}
+	var tfResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &tfResource, &ddResource)
+
+	assert.Equal(t, resourceData.Tracker.IsNull(), false)
+	assert.Equal(t, resourceData.Tracker.ValueString(), "")
+	assert.Equal(t, resourceData.TestStrategy.IsNull(), false)
+	assert.Equal(t, resourceData.TestStrategy.ValueString(), "")
+	assert.Equal(t, resourceData.SourceCodeManagementUri.IsNull(), false)
+	assert.Equal(t, resourceData.SourceCodeManagementUri.ValueString(), "")
+}
+
+// TestEngagementResource_defectdojoResource_UnionFieldsEmpty exercises the
+// write path when Tracker, TestStrategy or SourceCodeManagementUri is
+// configured as an explicit empty string, the other arm of the union a null
+// round-trip does not cover.
+func TestEngagementResource_defectdojoResource_UnionFieldsEmpty(t *testing.T) {
+	resourceData := engagementResourceData{
+		Product:                 types.Int64Value(5),
+		TargetStart:             types.StringValue("2025-01-01"),
+		TargetEnd:               types.StringValue("2025-12-31"),
+		Tracker:                 types.StringValue(""),
+		TestStrategy:            types.StringValue(""),
+		SourceCodeManagementUri: types.StringValue(""),
+	}
+
+	ddRes := resourceData.defectdojoResource()
+	var tfResource terraformResourceData = &resourceData
+	populateDefectdojoResource(context.Background(), &diag.Diagnostics{}, tfResource, &ddRes)
+
+	ddEng := ddRes.(*engagementDefectdojoResource)
+	assert.Assert(t, ddEng.Tracker != nil)
+	assert.Assert(t, ddEng.TestStrategy != nil)
+	assert.Assert(t, ddEng.SourceCodeManagementUri != nil)
+
+	trackerRaw, err := ddEng.Tracker.MarshalJSON()
+	assert.NilError(t, err)
+	assert.Equal(t, string(trackerRaw), `""`)
+
+	testStrategyRaw, err := ddEng.TestStrategy.MarshalJSON()
+	assert.NilError(t, err)
+	assert.Equal(t, string(testStrategyRaw), `""`)
+
+	sourceCodeManagementUriRaw, err := ddEng.SourceCodeManagementUri.MarshalJSON()
+	assert.NilError(t, err)
+	assert.Equal(t, string(sourceCodeManagementUriRaw), `""`)
+}
+
+// TestEngagementResource_defectdojoResource_UnionFieldsNull exercises the
+// write path when Tracker, TestStrategy and SourceCodeManagementUri are left
+// null in configuration: the wrapper pointers must stay nil, or the request
+// would send a value the practitioner never configured.
+func TestEngagementResource_defectdojoResource_UnionFieldsNull(t *testing.T) {
+	resourceData := engagementResourceData{
+		Product:                 types.Int64Value(5),
+		TargetStart:             types.StringValue("2025-01-01"),
+		TargetEnd:               types.StringValue("2025-12-31"),
+		Tracker:                 types.StringNull(),
+		TestStrategy:            types.StringNull(),
+		SourceCodeManagementUri: types.StringNull(),
+	}
+
+	ddRes := resourceData.defectdojoResource()
+	var tfResource terraformResourceData = &resourceData
+	populateDefectdojoResource(context.Background(), &diag.Diagnostics{}, tfResource, &ddRes)
+
+	ddEng := ddRes.(*engagementDefectdojoResource)
+	assert.Assert(t, ddEng.Tracker == nil)
+	assert.Assert(t, ddEng.TestStrategy == nil)
+	assert.Assert(t, ddEng.SourceCodeManagementUri == nil)
 }
 
 func TestEngagementResource__defectdojoResource(t *testing.T) {
@@ -195,7 +295,7 @@ func TestEngagementResource__defectdojoResource(t *testing.T) {
 // DefectDojo sends for a child of a product with tag inheritance enabled.
 //
 // The inheritance signal merges the product's tags into the child and the
-// serializer then renders the child's OWN tag twice. Verified on 3.1.101 with a
+// serializer then renders the child's OWN tag twice. Verified on 3.2.300 with a
 // product carrying tags ['team-a'] and enable_product_tag_inheritance = true:
 //
 //	POST /api/v2/engagements/ {"tags":["sprint-1"]}

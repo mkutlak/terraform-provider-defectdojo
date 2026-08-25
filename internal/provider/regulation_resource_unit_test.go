@@ -51,6 +51,90 @@ func TestRegulationResourcePopulate(t *testing.T) {
 	assert.Equal(t, resourceData.Reference.ValueString(), expectedReference)
 }
 
+// TestRegulationResourcePopulateNils covers the read path when Reference is
+// absent server-side, so its wrapper pointer is nil. Reference is an
+// oapi-codegen oneOf-string wrapper (see isOapiUnionStringType in
+// resource.go).
+func TestRegulationResourcePopulateNils(t *testing.T) {
+	ddObj := regulationDefectdojoResource{
+		Regulation: dd.Regulation{
+			Category:     dd.RegulationCategory("other"),
+			Jurisdiction: "US",
+		},
+	}
+
+	resourceData := regulationResourceData{}
+	var tfResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &tfResource, &ddObj)
+
+	assert.Equal(t, resourceData.Reference.IsNull(), true)
+}
+
+// TestRegulationResourcePopulate_ReferenceEmpty exercises the read path for
+// the oneOf's second arm (maxLength: 0), which DefectDojo sends when
+// Reference is blank. Empty-string coverage was flagged as the top gap in
+// the isOapiUnionStringType engine (resource.go).
+func TestRegulationResourcePopulate_ReferenceEmpty(t *testing.T) {
+	reference := &dd.Regulation_Reference{}
+	assert.NilError(t, reference.FromRegulationReference1(""))
+
+	ddObj := regulationDefectdojoResource{
+		Regulation: dd.Regulation{
+			Category:     dd.RegulationCategory("other"),
+			Jurisdiction: "US",
+			Reference:    reference,
+		},
+	}
+
+	resourceData := regulationResourceData{}
+	var tfResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &tfResource, &ddObj)
+
+	assert.Equal(t, resourceData.Reference.IsNull(), false)
+	assert.Equal(t, resourceData.Reference.ValueString(), "")
+}
+
+// TestRegulationResource_defectdojoResource_ReferenceEmpty exercises the
+// write path when Reference is configured as an explicit empty string, the
+// other arm of the union a null round-trip does not cover.
+func TestRegulationResource_defectdojoResource_ReferenceEmpty(t *testing.T) {
+	resourceData := regulationResourceData{
+		Category:     types.StringValue("other"),
+		Jurisdiction: types.StringValue("US"),
+		Reference:    types.StringValue(""),
+	}
+
+	ddResource := resourceData.defectdojoResource()
+	var tfResource terraformResourceData = &resourceData
+	populateDefectdojoResource(context.Background(), &diag.Diagnostics{}, tfResource, &ddResource)
+
+	ddObj := ddResource.(*regulationDefectdojoResource)
+	assert.Assert(t, ddObj.Reference != nil)
+
+	raw, err := ddObj.Reference.MarshalJSON()
+	assert.NilError(t, err)
+	assert.Equal(t, string(raw), `""`)
+}
+
+// TestRegulationResource_defectdojoResource_ReferenceNull exercises the write
+// path when Reference is left null in configuration: the wrapper pointer
+// must stay nil, or the request would send a value the practitioner never
+// configured.
+func TestRegulationResource_defectdojoResource_ReferenceNull(t *testing.T) {
+	resourceData := regulationResourceData{
+		Category:     types.StringValue("other"),
+		Jurisdiction: types.StringValue("US"),
+		Reference:    types.StringNull(),
+	}
+
+	ddResource := resourceData.defectdojoResource()
+	var tfResource terraformResourceData = &resourceData
+	populateDefectdojoResource(context.Background(), &diag.Diagnostics{}, tfResource, &ddResource)
+
+	ddObj := ddResource.(*regulationDefectdojoResource)
+	assert.Assert(t, ddObj.Reference == nil)
+}
+
 func TestRegulationResource_defectdojoResource(t *testing.T) {
 	expectedName := "Test Regulation"
 	expectedAcronym := "TST"

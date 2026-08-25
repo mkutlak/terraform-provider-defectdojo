@@ -68,6 +68,98 @@ func TestUserContactInfoResourcePopulate(t *testing.T) {
 	assert.Equal(t, resourceData.DeduplicationExecutionMode.ValueString(), string(expectedDeduplicationExecutionMode))
 }
 
+// TestUserContactInfoResourcePopulateNils covers the read path when
+// PhoneNumber and CellNumber are absent server-side, so their wrapper
+// pointers are nil. Both are oapi-codegen oneOf-string wrappers (see
+// isOapiUnionStringType in resource.go).
+func TestUserContactInfoResourcePopulateNils(t *testing.T) {
+	ddResource := userContactInfoDefectdojoResource{
+		UserContactInfo: dd.UserContactInfo{User: 99},
+	}
+
+	resourceData := userContactInfoResourceData{}
+	var terraformResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &terraformResource, &ddResource)
+
+	assert.Equal(t, resourceData.PhoneNumber.IsNull(), true)
+	assert.Equal(t, resourceData.CellNumber.IsNull(), true)
+}
+
+// TestUserContactInfoResourcePopulate_NumbersEmpty exercises the read path
+// for the oneOf's second arm (maxLength: 0), which DefectDojo sends when
+// PhoneNumber or CellNumber is blank. Empty-string coverage was flagged as
+// the top gap in the isOapiUnionStringType engine (resource.go).
+func TestUserContactInfoResourcePopulate_NumbersEmpty(t *testing.T) {
+	phoneNumber := &dd.UserContactInfo_PhoneNumber{}
+	assert.NilError(t, phoneNumber.FromUserContactInfoPhoneNumber1(""))
+	cellNumber := &dd.UserContactInfo_CellNumber{}
+	assert.NilError(t, cellNumber.FromUserContactInfoCellNumber1(""))
+
+	ddResource := userContactInfoDefectdojoResource{
+		UserContactInfo: dd.UserContactInfo{
+			User:        99,
+			PhoneNumber: phoneNumber,
+			CellNumber:  cellNumber,
+		},
+	}
+
+	resourceData := userContactInfoResourceData{}
+	var terraformResource terraformResourceData = &resourceData
+	populateResourceData(context.Background(), &diag.Diagnostics{}, &terraformResource, &ddResource)
+
+	assert.Equal(t, resourceData.PhoneNumber.IsNull(), false)
+	assert.Equal(t, resourceData.PhoneNumber.ValueString(), "")
+	assert.Equal(t, resourceData.CellNumber.IsNull(), false)
+	assert.Equal(t, resourceData.CellNumber.ValueString(), "")
+}
+
+// TestUserContactInfoResource_defectdojoResource_NumbersEmpty exercises the
+// write path when PhoneNumber and CellNumber are configured as an explicit
+// empty string, the other arm of the union a null round-trip does not cover.
+func TestUserContactInfoResource_defectdojoResource_NumbersEmpty(t *testing.T) {
+	resourceData := userContactInfoResourceData{
+		User:        types.Int64Value(99),
+		PhoneNumber: types.StringValue(""),
+		CellNumber:  types.StringValue(""),
+	}
+
+	ddRes := resourceData.defectdojoResource()
+	var terraformResource terraformResourceData = &resourceData
+	populateDefectdojoResource(context.Background(), &diag.Diagnostics{}, terraformResource, &ddRes)
+
+	ddUserContactInfo := ddRes.(*userContactInfoDefectdojoResource)
+	assert.Assert(t, ddUserContactInfo.PhoneNumber != nil)
+	assert.Assert(t, ddUserContactInfo.CellNumber != nil)
+
+	phoneRaw, err := ddUserContactInfo.PhoneNumber.MarshalJSON()
+	assert.NilError(t, err)
+	assert.Equal(t, string(phoneRaw), `""`)
+
+	cellRaw, err := ddUserContactInfo.CellNumber.MarshalJSON()
+	assert.NilError(t, err)
+	assert.Equal(t, string(cellRaw), `""`)
+}
+
+// TestUserContactInfoResource_defectdojoResource_NumbersNull exercises the
+// write path when PhoneNumber and CellNumber are left null in configuration:
+// the wrapper pointers must stay nil, or the request would send a value the
+// practitioner never configured.
+func TestUserContactInfoResource_defectdojoResource_NumbersNull(t *testing.T) {
+	resourceData := userContactInfoResourceData{
+		User:        types.Int64Value(99),
+		PhoneNumber: types.StringNull(),
+		CellNumber:  types.StringNull(),
+	}
+
+	ddRes := resourceData.defectdojoResource()
+	var terraformResource terraformResourceData = &resourceData
+	populateDefectdojoResource(context.Background(), &diag.Diagnostics{}, terraformResource, &ddRes)
+
+	ddUserContactInfo := ddRes.(*userContactInfoDefectdojoResource)
+	assert.Assert(t, ddUserContactInfo.PhoneNumber == nil)
+	assert.Assert(t, ddUserContactInfo.CellNumber == nil)
+}
+
 func TestUserContactInfoResource__defectdojoResource(t *testing.T) {
 	expectedUser := 99
 	expectedTitle := "Dr."
