@@ -332,6 +332,48 @@ func (e AssetRequestPlatform) Valid() bool {
 	}
 }
 
+// Defines values for CICDInfrastructureInfrastructureType.
+const (
+	CICDInfrastructureInfrastructureTypeBuildServer   CICDInfrastructureInfrastructureType = "build_server"
+	CICDInfrastructureInfrastructureTypeOrchestration CICDInfrastructureInfrastructureType = "orchestration"
+	CICDInfrastructureInfrastructureTypeScmServer     CICDInfrastructureInfrastructureType = "scm_server"
+)
+
+// Valid indicates whether the value is a known member of the CICDInfrastructureInfrastructureType enum.
+func (e CICDInfrastructureInfrastructureType) Valid() bool {
+	switch e {
+	case CICDInfrastructureInfrastructureTypeBuildServer:
+		return true
+	case CICDInfrastructureInfrastructureTypeOrchestration:
+		return true
+	case CICDInfrastructureInfrastructureTypeScmServer:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CICDInfrastructureRequestInfrastructureType.
+const (
+	CICDInfrastructureRequestInfrastructureTypeBuildServer   CICDInfrastructureRequestInfrastructureType = "build_server"
+	CICDInfrastructureRequestInfrastructureTypeOrchestration CICDInfrastructureRequestInfrastructureType = "orchestration"
+	CICDInfrastructureRequestInfrastructureTypeScmServer     CICDInfrastructureRequestInfrastructureType = "scm_server"
+)
+
+// Valid indicates whether the value is a known member of the CICDInfrastructureRequestInfrastructureType enum.
+func (e CICDInfrastructureRequestInfrastructureType) Valid() bool {
+	switch e {
+	case CICDInfrastructureRequestInfrastructureTypeBuildServer:
+		return true
+	case CICDInfrastructureRequestInfrastructureTypeOrchestration:
+		return true
+	case CICDInfrastructureRequestInfrastructureTypeScmServer:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for EngagementEngagementType.
 const (
 	EngagementEngagementTypeCICD        EngagementEngagementType = "CI/CD"
@@ -553,6 +595,8 @@ func (e ImportScanMinimumSeverity) Valid() bool {
 
 // Defines values for ImportScanScanType.
 const (
+	ImportScanScanTypeAIDEScan                                       ImportScanScanType = "AIDE Scan"
+	ImportScanScanTypeAPKLeaksScan                                   ImportScanScanType = "APKLeaks Scan"
 	ImportScanScanTypeAWSInspector2Scan                              ImportScanScanType = "AWS Inspector2 Scan"
 	ImportScanScanTypeAWSProwlerScan                                 ImportScanScanType = "AWS Prowler Scan"
 	ImportScanScanTypeAWSProwlerV3                                   ImportScanScanType = "AWS Prowler V3"
@@ -588,7 +632,10 @@ const (
 	ImportScanScanTypeBurpRESTAPI                                    ImportScanScanType = "Burp REST API"
 	ImportScanScanTypeBurpScan                                       ImportScanScanType = "Burp Scan"
 	ImportScanScanTypeBurpSuiteDASTScan                              ImportScanScanType = "Burp Suite DAST Scan"
+	ImportScanScanTypeCSAFScan                                       ImportScanScanType = "CSAF Scan"
 	ImportScanScanTypeCargoAuditScan                                 ImportScanScanType = "CargoAudit Scan"
+	ImportScanScanTypeCfnLintScan                                    ImportScanScanType = "cfn-lint Scan"
+	ImportScanScanTypeCfnNagScan                                     ImportScanScanType = "cfn-nag Scan"
 	ImportScanScanTypeCheckmarxCxFlowSAST                            ImportScanScanType = "Checkmarx CxFlow SAST"
 	ImportScanScanTypeCheckmarxOSA                                   ImportScanScanType = "Checkmarx OSA"
 	ImportScanScanTypeCheckmarxOneScan                               ImportScanScanType = "Checkmarx One Scan"
@@ -596,20 +643,26 @@ const (
 	ImportScanScanTypeCheckmarxScanDetailed                          ImportScanScanType = "Checkmarx Scan detailed"
 	ImportScanScanTypeCheckovScan                                    ImportScanScanType = "Checkov Scan"
 	ImportScanScanTypeChefInspectLog                                 ImportScanScanType = "Chef Inspect Log"
+	ImportScanScanTypeChkrootkitScan                                 ImportScanScanType = "chkrootkit Scan"
 	ImportScanScanTypeChoctawHogScan                                 ImportScanScanType = "Choctaw Hog Scan"
 	ImportScanScanTypeClairScan                                      ImportScanScanType = "Clair Scan"
+	ImportScanScanTypeClamAVScan                                     ImportScanScanType = "ClamAV Scan"
 	ImportScanScanTypeCloudflareInsights                             ImportScanScanType = "Cloudflare Insights"
 	ImportScanScanTypeCloudsploitScan                                ImportScanScanType = "Cloudsploit Scan"
 	ImportScanScanTypeCobaltIoAPIImport                              ImportScanScanType = "Cobalt.io API Import"
 	ImportScanScanTypeCobaltIoScan                                   ImportScanScanType = "Cobalt.io Scan"
 	ImportScanScanTypeCodecheckerReportNative                        ImportScanScanType = "Codechecker Report native"
+	ImportScanScanTypeComposerAuditScan                              ImportScanScanType = "Composer Audit Scan"
+	ImportScanScanTypeConftestScan                                   ImportScanScanType = "Conftest Scan"
 	ImportScanScanTypeContrastScan                                   ImportScanScanType = "Contrast Scan"
 	ImportScanScanTypeCoverityAPI                                    ImportScanScanType = "Coverity API"
 	ImportScanScanTypeCoverityScanJSONReport                         ImportScanScanType = "Coverity Scan JSON Report"
+	ImportScanScanTypeCppcheckScan                                   ImportScanScanType = "Cppcheck Scan"
 	ImportScanScanTypeCrashtestSecurityJSONFile                      ImportScanScanType = "Crashtest Security JSON File"
 	ImportScanScanTypeCrashtestSecurityXMLFile                       ImportScanScanType = "Crashtest Security XML File"
 	ImportScanScanTypeCredScanScan                                   ImportScanScanType = "CredScan Scan"
 	ImportScanScanTypeCrunch42Scan                                   ImportScanScanType = "Crunch42 Scan"
+	ImportScanScanTypeCweCheckerScan                                 ImportScanScanType = "cwe_checker Scan"
 	ImportScanScanTypeCyberwatchScanGaleax                           ImportScanScanType = "Cyberwatch scan (Galeax)"
 	ImportScanScanTypeCycloneDXScan                                  ImportScanScanType = "CycloneDX Scan"
 	ImportScanScanTypeCycognitoScan                                  ImportScanScanType = "Cycognito Scan"
@@ -619,14 +672,21 @@ const (
 	ImportScanScanTypeDependencyCheckScan                            ImportScanScanType = "Dependency Check Scan"
 	ImportScanScanTypeDependencyTrackFindingPackagingFormatFPFExport ImportScanScanType = "Dependency Track Finding Packaging Format (FPF) Export"
 	ImportScanScanTypeDetectSecretsScan                              ImportScanScanType = "Detect-secrets Scan"
+	ImportScanScanTypeDevSkimScan                                    ImportScanScanType = "DevSkim Scan"
+	ImportScanScanTypeDirsearchScan                                  ImportScanScanType = "Dirsearch Scan"
 	ImportScanScanTypeDockerBenchSecurityScan                        ImportScanScanType = "docker-bench-security Scan"
 	ImportScanScanTypeDockleScan                                     ImportScanScanType = "Dockle Scan"
+	ImportScanScanTypeDotnetVulnerablePackagesScan                   ImportScanScanType = "Dotnet Vulnerable Packages Scan"
 	ImportScanScanTypeDrHeaderJSONImporter                           ImportScanScanType = "DrHeader JSON Importer"
 	ImportScanScanTypeDurocHogScan                                   ImportScanScanType = "Duroc Hog Scan"
 	ImportScanScanTypeESLintScan                                     ImportScanScanType = "ESLint Scan"
 	ImportScanScanTypeEdgescanScan                                   ImportScanScanType = "Edgescan Scan"
 	ImportScanScanTypeEssexHogScan                                   ImportScanScanType = "Essex Hog Scan"
+	ImportScanScanTypeFfufScan                                       ImportScanScanType = "ffuf Scan"
+	ImportScanScanTypeFirmwalkerScan                                 ImportScanScanType = "Firmwalker Scan"
+	ImportScanScanTypeFlawfinderScan                                 ImportScanScanType = "Flawfinder Scan"
 	ImportScanScanTypeFortifyScan                                    ImportScanScanType = "Fortify Scan"
+	ImportScanScanTypeFortifyScanV2                                  ImportScanScanType = "Fortify Scan v2"
 	ImportScanScanTypeGarakScan                                      ImportScanScanType = "Garak Scan"
 	ImportScanScanTypeGenericFindingsImport                          ImportScanScanType = "Generic Findings Import"
 	ImportScanScanTypeGgshieldScan                                   ImportScanScanType = "Ggshield Scan"
@@ -640,6 +700,7 @@ const (
 	ImportScanScanTypeGithubSecretsDetectionReportScan               ImportScanScanType = "Github Secrets Detection Report Scan"
 	ImportScanScanTypeGithubVulnerabilityScan                        ImportScanScanType = "Github Vulnerability Scan"
 	ImportScanScanTypeGitleaksScan                                   ImportScanScanType = "Gitleaks Scan"
+	ImportScanScanTypeGobusterScan                                   ImportScanScanType = "Gobuster Scan"
 	ImportScanScanTypeGoogleCloudArtifactVulnerabilityScan           ImportScanScanType = "Google Cloud Artifact Vulnerability Scan"
 	ImportScanScanTypeGosecScanner                                   ImportScanScanType = "Gosec Scanner"
 	ImportScanScanTypeGottingenHogScan                               ImportScanScanType = "Gottingen Hog Scan"
@@ -651,11 +712,13 @@ const (
 	ImportScanScanTypeHadolintDockerfileCheck                        ImportScanScanType = "Hadolint Dockerfile check"
 	ImportScanScanTypeHarborVulnerabilityScan                        ImportScanScanType = "Harbor Vulnerability Scan"
 	ImportScanScanTypeHorusecScan                                    ImportScanScanType = "Horusec Scan"
+	ImportScanScanTypeHttpxScan                                      ImportScanScanType = "httpx Scan"
 	ImportScanScanTypeHumbleJsonImporter                             ImportScanScanType = "Humble Json Importer"
 	ImportScanScanTypeHuskyCIReport                                  ImportScanScanType = "HuskyCI Report"
 	ImportScanScanTypeHydraScan                                      ImportScanScanType = "Hydra Scan"
 	ImportScanScanTypeIBMAppScanDAST                                 ImportScanScanType = "IBM AppScan DAST"
 	ImportScanScanTypeImmuniwebScan                                  ImportScanScanType = "Immuniweb Scan"
+	ImportScanScanTypeInferScan                                      ImportScanScanType = "Infer Scan"
 	ImportScanScanTypeIntSightsReport                                ImportScanScanType = "IntSights Report"
 	ImportScanScanTypeInvictiScan                                    ImportScanScanType = "Invicti Scan"
 	ImportScanScanTypeIriusRiskThreatsScan                           ImportScanScanType = "IriusRisk Threats Scan"
@@ -669,14 +732,18 @@ const (
 	ImportScanScanTypeKrakenDAuditScan                               ImportScanScanType = "KrakenD Audit Scan"
 	ImportScanScanTypeKubeBenchScan                                  ImportScanScanType = "kube-bench Scan"
 	ImportScanScanTypeKubeHunterScan                                 ImportScanScanType = "KubeHunter Scan"
+	ImportScanScanTypeKubeLinterScan                                 ImportScanScanType = "KubeLinter Scan"
 	ImportScanScanTypeKubeauditScan                                  ImportScanScanType = "Kubeaudit Scan"
 	ImportScanScanTypeKubescapeJSONImporter                          ImportScanScanType = "Kubescape JSON Importer"
 	ImportScanScanTypeLegitifyScan                                   ImportScanScanType = "Legitify Scan"
+	ImportScanScanTypeLynisScan                                      ImportScanScanType = "Lynis Scan"
 	ImportScanScanTypeMSDefenderParser                               ImportScanScanType = "MSDefender Parser"
+	ImportScanScanTypeMasscanScan                                    ImportScanScanType = "Masscan Scan"
 	ImportScanScanTypeMayhemSARIFReport                              ImportScanScanType = "Mayhem SARIF Report"
 	ImportScanScanTypeMendScan                                       ImportScanScanType = "Mend Scan"
 	ImportScanScanTypeMeterianScan                                   ImportScanScanType = "Meterian Scan"
 	ImportScanScanTypeMicrofocusWebinspectScan                       ImportScanScanType = "Microfocus Webinspect Scan"
+	ImportScanScanTypeMixAuditScan                                   ImportScanScanType = "Mix Audit Scan"
 	ImportScanScanTypeMobSFScan                                      ImportScanScanType = "MobSF Scan"
 	ImportScanScanTypeMobSFScorecardScan                             ImportScanScanType = "MobSF Scorecard Scan"
 	ImportScanScanTypeMobsfscanScan                                  ImportScanScanType = "Mobsfscan Scan"
@@ -684,12 +751,15 @@ const (
 	ImportScanScanTypeN0s1Scanner                                    ImportScanScanType = "n0s1 Scanner"
 	ImportScanScanTypeNPMAuditScan                                   ImportScanScanType = "NPM Audit Scan"
 	ImportScanScanTypeNPMAuditV7Scan                                 ImportScanScanType = "NPM Audit v7+ Scan"
+	ImportScanScanTypeNaabuScan                                      ImportScanScanType = "Naabu Scan"
 	ImportScanScanTypeNancyScan                                      ImportScanScanType = "Nancy Scan"
 	ImportScanScanTypeNetsparkerScan                                 ImportScanScanType = "Netsparker Scan"
+	ImportScanScanTypeNettackerScan                                  ImportScanScanType = "Nettacker Scan"
 	ImportScanScanTypeNeuVectorCompliance                            ImportScanScanType = "NeuVector (compliance)"
 	ImportScanScanTypeNeuVectorREST                                  ImportScanScanType = "NeuVector (REST)"
 	ImportScanScanTypeNexposeScan                                    ImportScanScanType = "Nexpose Scan"
 	ImportScanScanTypeNiktoScan                                      ImportScanScanType = "Nikto Scan"
+	ImportScanScanTypeNjsscanScan                                    ImportScanScanType = "njsscan Scan"
 	ImportScanScanTypeNmapScan                                       ImportScanScanType = "Nmap Scan"
 	ImportScanScanTypeNodeSecurityPlatformScan                       ImportScanScanType = "Node Security Platform Scan"
 	ImportScanScanTypeNoseyParkerScan                                ImportScanScanType = "Nosey Parker Scan"
@@ -699,6 +769,7 @@ const (
 	ImportScanScanTypeOpenReports                                    ImportScanScanType = "OpenReports"
 	ImportScanScanTypeOpenVASParser                                  ImportScanScanType = "OpenVAS Parser"
 	ImportScanScanTypeOpenVASParserV2                                ImportScanScanType = "OpenVAS Parser v2"
+	ImportScanScanTypeOpenVEXScan                                    ImportScanScanType = "OpenVEX Scan"
 	ImportScanScanTypeOpenscapVulnerabilityScan                      ImportScanScanType = "Openscap Vulnerability Scan"
 	ImportScanScanTypeOrcaSecurityAlerts                             ImportScanScanType = "Orca Security Alerts"
 	ImportScanScanTypeOssIndexDevauditSCAScanImporter                ImportScanScanType = "OssIndex Devaudit SCA Scan Importer"
@@ -711,9 +782,13 @@ const (
 	ImportScanScanTypePWNSAST                                        ImportScanScanType = "PWN SAST"
 	ImportScanScanTypePingCastle                                     ImportScanScanType = "PingCastle"
 	ImportScanScanTypePipAuditScan                                   ImportScanScanType = "pip-audit Scan"
+	ImportScanScanTypePnpmAuditScan                                  ImportScanScanType = "pnpm Audit Scan"
+	ImportScanScanTypePolarisScan                                    ImportScanScanType = "Polaris Scan"
 	ImportScanScanTypePopeyeScan                                     ImportScanScanType = "Popeye Scan"
 	ImportScanScanTypeProgpilotScan                                  ImportScanScanType = "Progpilot Scan"
+	ImportScanScanTypePromptfooScan                                  ImportScanScanType = "Promptfoo Scan"
 	ImportScanScanTypeProwlerScan                                    ImportScanScanType = "Prowler Scan"
+	ImportScanScanTypeQARKScan                                       ImportScanScanType = "QARK Scan"
 	ImportScanScanTypeQualysHackerGuardianScan                       ImportScanScanType = "Qualys Hacker Guardian Scan"
 	ImportScanScanTypeQualysInfrastructureScanWebGUIXML              ImportScanScanType = "Qualys Infrastructure Scan (WebGUI XML)"
 	ImportScanScanTypeQualysScan                                     ImportScanScanType = "Qualys Scan"
@@ -724,15 +799,18 @@ const (
 	ImportScanScanTypeRetireJsScan                                   ImportScanScanType = "Retire.js Scan"
 	ImportScanScanTypeReversingLabsSpectraAssure                     ImportScanScanType = "ReversingLabs Spectra Assure"
 	ImportScanScanTypeRiskReconAPIImporter                           ImportScanScanType = "Risk Recon API Importer"
+	ImportScanScanTypeRkhunterScan                                   ImportScanScanType = "rkhunter Scan"
 	ImportScanScanTypeRubocopScan                                    ImportScanScanType = "Rubocop Scan"
 	ImportScanScanTypeRustyHogScan                                   ImportScanScanType = "Rusty Hog Scan"
 	ImportScanScanTypeSARIF                                          ImportScanScanType = "SARIF"
 	ImportScanScanTypeSKFScan                                        ImportScanScanType = "SKF Scan"
+	ImportScanScanTypeSPDXScan                                       ImportScanScanType = "SPDX Scan"
 	ImportScanScanTypeSSHAuditImporter                               ImportScanScanType = "SSH Audit Importer"
 	ImportScanScanTypeSSLLabsScan                                    ImportScanScanType = "SSL Labs Scan"
 	ImportScanScanTypeSSLyzeScanJSON                                 ImportScanScanType = "SSLyze Scan (JSON)"
 	ImportScanScanTypeScantistScan                                   ImportScanScanType = "Scantist Scan"
 	ImportScanScanTypeScoutSuiteScan                                 ImportScanScanType = "Scout Suite Scan"
+	ImportScanScanTypeSecretlintScan                                 ImportScanScanType = "Secretlint Scan"
 	ImportScanScanTypeSemgrepJSONReport                              ImportScanScanType = "Semgrep JSON Report"
 	ImportScanScanTypeSemgrepProJSONReport                           ImportScanScanType = "Semgrep Pro JSON Report"
 	ImportScanScanTypeSnykCodeScan                                   ImportScanScanType = "Snyk Code Scan"
@@ -744,6 +822,7 @@ const (
 	ImportScanScanTypeSonarQubeScanDetailed                          ImportScanScanType = "SonarQube Scan detailed"
 	ImportScanScanTypeSonatypeApplicationScan                        ImportScanScanType = "Sonatype Application Scan"
 	ImportScanScanTypeSpotBugsScan                                   ImportScanScanType = "SpotBugs Scan"
+	ImportScanScanTypeSqlmapScan                                     ImportScanScanType = "Sqlmap Scan"
 	ImportScanScanTypeSslscan                                        ImportScanScanType = "Sslscan"
 	ImportScanScanTypeSslyzeScan                                     ImportScanScanType = "Sslyze Scan"
 	ImportScanScanTypeStackHawkHawkScan                              ImportScanScanType = "StackHawk HawkScan"
@@ -770,6 +849,7 @@ const (
 	ImportScanScanTypeWFuzzJSONReport                                ImportScanScanType = "WFuzz JSON report"
 	ImportScanScanTypeWapitiScan                                     ImportScanScanType = "Wapiti Scan"
 	ImportScanScanTypeWazuh                                          ImportScanScanType = "Wazuh"
+	ImportScanScanTypeWhatWebScan                                    ImportScanScanType = "WhatWeb Scan"
 	ImportScanScanTypeWhispersScan                                   ImportScanScanType = "Whispers Scan"
 	ImportScanScanTypeWhiteHatSentinel                               ImportScanScanType = "WhiteHat Sentinel"
 	ImportScanScanTypeWizScan                                        ImportScanScanType = "Wiz Scan"
@@ -782,6 +862,7 @@ const (
 	ImportScanScanTypeXygeniSASTScan                                 ImportScanScanType = "Xygeni SAST Scan"
 	ImportScanScanTypeXygeniSCAScan                                  ImportScanScanType = "Xygeni SCA Scan"
 	ImportScanScanTypeXygeniSecretsScan                              ImportScanScanType = "Xygeni Secrets Scan"
+	ImportScanScanTypeYARAScan                                       ImportScanScanType = "YARA Scan"
 	ImportScanScanTypeYarnAuditScan                                  ImportScanScanType = "Yarn Audit Scan"
 	ImportScanScanTypeZAPScan                                        ImportScanScanType = "ZAP Scan"
 	ImportScanScanTypeZoraParser                                     ImportScanScanType = "Zora Parser"
@@ -790,6 +871,10 @@ const (
 // Valid indicates whether the value is a known member of the ImportScanScanType enum.
 func (e ImportScanScanType) Valid() bool {
 	switch e {
+	case ImportScanScanTypeAIDEScan:
+		return true
+	case ImportScanScanTypeAPKLeaksScan:
+		return true
 	case ImportScanScanTypeAWSInspector2Scan:
 		return true
 	case ImportScanScanTypeAWSProwlerScan:
@@ -860,7 +945,13 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeBurpSuiteDASTScan:
 		return true
+	case ImportScanScanTypeCSAFScan:
+		return true
 	case ImportScanScanTypeCargoAuditScan:
+		return true
+	case ImportScanScanTypeCfnLintScan:
+		return true
+	case ImportScanScanTypeCfnNagScan:
 		return true
 	case ImportScanScanTypeCheckmarxCxFlowSAST:
 		return true
@@ -876,9 +967,13 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeChefInspectLog:
 		return true
+	case ImportScanScanTypeChkrootkitScan:
+		return true
 	case ImportScanScanTypeChoctawHogScan:
 		return true
 	case ImportScanScanTypeClairScan:
+		return true
+	case ImportScanScanTypeClamAVScan:
 		return true
 	case ImportScanScanTypeCloudflareInsights:
 		return true
@@ -890,11 +985,17 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeCodecheckerReportNative:
 		return true
+	case ImportScanScanTypeComposerAuditScan:
+		return true
+	case ImportScanScanTypeConftestScan:
+		return true
 	case ImportScanScanTypeContrastScan:
 		return true
 	case ImportScanScanTypeCoverityAPI:
 		return true
 	case ImportScanScanTypeCoverityScanJSONReport:
+		return true
+	case ImportScanScanTypeCppcheckScan:
 		return true
 	case ImportScanScanTypeCrashtestSecurityJSONFile:
 		return true
@@ -903,6 +1004,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeCredScanScan:
 		return true
 	case ImportScanScanTypeCrunch42Scan:
+		return true
+	case ImportScanScanTypeCweCheckerScan:
 		return true
 	case ImportScanScanTypeCyberwatchScanGaleax:
 		return true
@@ -922,9 +1025,15 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeDetectSecretsScan:
 		return true
+	case ImportScanScanTypeDevSkimScan:
+		return true
+	case ImportScanScanTypeDirsearchScan:
+		return true
 	case ImportScanScanTypeDockerBenchSecurityScan:
 		return true
 	case ImportScanScanTypeDockleScan:
+		return true
+	case ImportScanScanTypeDotnetVulnerablePackagesScan:
 		return true
 	case ImportScanScanTypeDrHeaderJSONImporter:
 		return true
@@ -936,7 +1045,15 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeEssexHogScan:
 		return true
+	case ImportScanScanTypeFfufScan:
+		return true
+	case ImportScanScanTypeFirmwalkerScan:
+		return true
+	case ImportScanScanTypeFlawfinderScan:
+		return true
 	case ImportScanScanTypeFortifyScan:
+		return true
+	case ImportScanScanTypeFortifyScanV2:
 		return true
 	case ImportScanScanTypeGarakScan:
 		return true
@@ -964,6 +1081,8 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeGitleaksScan:
 		return true
+	case ImportScanScanTypeGobusterScan:
+		return true
 	case ImportScanScanTypeGoogleCloudArtifactVulnerabilityScan:
 		return true
 	case ImportScanScanTypeGosecScanner:
@@ -986,6 +1105,8 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeHorusecScan:
 		return true
+	case ImportScanScanTypeHttpxScan:
+		return true
 	case ImportScanScanTypeHumbleJsonImporter:
 		return true
 	case ImportScanScanTypeHuskyCIReport:
@@ -995,6 +1116,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeIBMAppScanDAST:
 		return true
 	case ImportScanScanTypeImmuniwebScan:
+		return true
+	case ImportScanScanTypeInferScan:
 		return true
 	case ImportScanScanTypeIntSightsReport:
 		return true
@@ -1022,13 +1145,19 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeKubeHunterScan:
 		return true
+	case ImportScanScanTypeKubeLinterScan:
+		return true
 	case ImportScanScanTypeKubeauditScan:
 		return true
 	case ImportScanScanTypeKubescapeJSONImporter:
 		return true
 	case ImportScanScanTypeLegitifyScan:
 		return true
+	case ImportScanScanTypeLynisScan:
+		return true
 	case ImportScanScanTypeMSDefenderParser:
+		return true
+	case ImportScanScanTypeMasscanScan:
 		return true
 	case ImportScanScanTypeMayhemSARIFReport:
 		return true
@@ -1037,6 +1166,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeMeterianScan:
 		return true
 	case ImportScanScanTypeMicrofocusWebinspectScan:
+		return true
+	case ImportScanScanTypeMixAuditScan:
 		return true
 	case ImportScanScanTypeMobSFScan:
 		return true
@@ -1052,9 +1183,13 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeNPMAuditV7Scan:
 		return true
+	case ImportScanScanTypeNaabuScan:
+		return true
 	case ImportScanScanTypeNancyScan:
 		return true
 	case ImportScanScanTypeNetsparkerScan:
+		return true
+	case ImportScanScanTypeNettackerScan:
 		return true
 	case ImportScanScanTypeNeuVectorCompliance:
 		return true
@@ -1063,6 +1198,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeNexposeScan:
 		return true
 	case ImportScanScanTypeNiktoScan:
+		return true
+	case ImportScanScanTypeNjsscanScan:
 		return true
 	case ImportScanScanTypeNmapScan:
 		return true
@@ -1081,6 +1218,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeOpenVASParser:
 		return true
 	case ImportScanScanTypeOpenVASParserV2:
+		return true
+	case ImportScanScanTypeOpenVEXScan:
 		return true
 	case ImportScanScanTypeOpenscapVulnerabilityScan:
 		return true
@@ -1106,11 +1245,19 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypePipAuditScan:
 		return true
+	case ImportScanScanTypePnpmAuditScan:
+		return true
+	case ImportScanScanTypePolarisScan:
+		return true
 	case ImportScanScanTypePopeyeScan:
 		return true
 	case ImportScanScanTypeProgpilotScan:
 		return true
+	case ImportScanScanTypePromptfooScan:
+		return true
 	case ImportScanScanTypeProwlerScan:
+		return true
+	case ImportScanScanTypeQARKScan:
 		return true
 	case ImportScanScanTypeQualysHackerGuardianScan:
 		return true
@@ -1132,6 +1279,8 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeRiskReconAPIImporter:
 		return true
+	case ImportScanScanTypeRkhunterScan:
+		return true
 	case ImportScanScanTypeRubocopScan:
 		return true
 	case ImportScanScanTypeRustyHogScan:
@@ -1139,6 +1288,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeSARIF:
 		return true
 	case ImportScanScanTypeSKFScan:
+		return true
+	case ImportScanScanTypeSPDXScan:
 		return true
 	case ImportScanScanTypeSSHAuditImporter:
 		return true
@@ -1149,6 +1300,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeScantistScan:
 		return true
 	case ImportScanScanTypeScoutSuiteScan:
+		return true
+	case ImportScanScanTypeSecretlintScan:
 		return true
 	case ImportScanScanTypeSemgrepJSONReport:
 		return true
@@ -1171,6 +1324,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeSonatypeApplicationScan:
 		return true
 	case ImportScanScanTypeSpotBugsScan:
+		return true
+	case ImportScanScanTypeSqlmapScan:
 		return true
 	case ImportScanScanTypeSslscan:
 		return true
@@ -1224,6 +1379,8 @@ func (e ImportScanScanType) Valid() bool {
 		return true
 	case ImportScanScanTypeWazuh:
 		return true
+	case ImportScanScanTypeWhatWebScan:
+		return true
 	case ImportScanScanTypeWhispersScan:
 		return true
 	case ImportScanScanTypeWhiteHatSentinel:
@@ -1247,6 +1404,8 @@ func (e ImportScanScanType) Valid() bool {
 	case ImportScanScanTypeXygeniSCAScan:
 		return true
 	case ImportScanScanTypeXygeniSecretsScan:
+		return true
+	case ImportScanScanTypeYARAScan:
 		return true
 	case ImportScanScanTypeYarnAuditScan:
 		return true
@@ -1339,6 +1498,8 @@ func (e ImportScanRequestMinimumSeverity) Valid() bool {
 
 // Defines values for ImportScanRequestScanType.
 const (
+	ImportScanRequestScanTypeAIDEScan                                       ImportScanRequestScanType = "AIDE Scan"
+	ImportScanRequestScanTypeAPKLeaksScan                                   ImportScanRequestScanType = "APKLeaks Scan"
 	ImportScanRequestScanTypeAWSInspector2Scan                              ImportScanRequestScanType = "AWS Inspector2 Scan"
 	ImportScanRequestScanTypeAWSProwlerScan                                 ImportScanRequestScanType = "AWS Prowler Scan"
 	ImportScanRequestScanTypeAWSProwlerV3                                   ImportScanRequestScanType = "AWS Prowler V3"
@@ -1374,7 +1535,10 @@ const (
 	ImportScanRequestScanTypeBurpRESTAPI                                    ImportScanRequestScanType = "Burp REST API"
 	ImportScanRequestScanTypeBurpScan                                       ImportScanRequestScanType = "Burp Scan"
 	ImportScanRequestScanTypeBurpSuiteDASTScan                              ImportScanRequestScanType = "Burp Suite DAST Scan"
+	ImportScanRequestScanTypeCSAFScan                                       ImportScanRequestScanType = "CSAF Scan"
 	ImportScanRequestScanTypeCargoAuditScan                                 ImportScanRequestScanType = "CargoAudit Scan"
+	ImportScanRequestScanTypeCfnLintScan                                    ImportScanRequestScanType = "cfn-lint Scan"
+	ImportScanRequestScanTypeCfnNagScan                                     ImportScanRequestScanType = "cfn-nag Scan"
 	ImportScanRequestScanTypeCheckmarxCxFlowSAST                            ImportScanRequestScanType = "Checkmarx CxFlow SAST"
 	ImportScanRequestScanTypeCheckmarxOSA                                   ImportScanRequestScanType = "Checkmarx OSA"
 	ImportScanRequestScanTypeCheckmarxOneScan                               ImportScanRequestScanType = "Checkmarx One Scan"
@@ -1382,20 +1546,26 @@ const (
 	ImportScanRequestScanTypeCheckmarxScanDetailed                          ImportScanRequestScanType = "Checkmarx Scan detailed"
 	ImportScanRequestScanTypeCheckovScan                                    ImportScanRequestScanType = "Checkov Scan"
 	ImportScanRequestScanTypeChefInspectLog                                 ImportScanRequestScanType = "Chef Inspect Log"
+	ImportScanRequestScanTypeChkrootkitScan                                 ImportScanRequestScanType = "chkrootkit Scan"
 	ImportScanRequestScanTypeChoctawHogScan                                 ImportScanRequestScanType = "Choctaw Hog Scan"
 	ImportScanRequestScanTypeClairScan                                      ImportScanRequestScanType = "Clair Scan"
+	ImportScanRequestScanTypeClamAVScan                                     ImportScanRequestScanType = "ClamAV Scan"
 	ImportScanRequestScanTypeCloudflareInsights                             ImportScanRequestScanType = "Cloudflare Insights"
 	ImportScanRequestScanTypeCloudsploitScan                                ImportScanRequestScanType = "Cloudsploit Scan"
 	ImportScanRequestScanTypeCobaltIoAPIImport                              ImportScanRequestScanType = "Cobalt.io API Import"
 	ImportScanRequestScanTypeCobaltIoScan                                   ImportScanRequestScanType = "Cobalt.io Scan"
 	ImportScanRequestScanTypeCodecheckerReportNative                        ImportScanRequestScanType = "Codechecker Report native"
+	ImportScanRequestScanTypeComposerAuditScan                              ImportScanRequestScanType = "Composer Audit Scan"
+	ImportScanRequestScanTypeConftestScan                                   ImportScanRequestScanType = "Conftest Scan"
 	ImportScanRequestScanTypeContrastScan                                   ImportScanRequestScanType = "Contrast Scan"
 	ImportScanRequestScanTypeCoverityAPI                                    ImportScanRequestScanType = "Coverity API"
 	ImportScanRequestScanTypeCoverityScanJSONReport                         ImportScanRequestScanType = "Coverity Scan JSON Report"
+	ImportScanRequestScanTypeCppcheckScan                                   ImportScanRequestScanType = "Cppcheck Scan"
 	ImportScanRequestScanTypeCrashtestSecurityJSONFile                      ImportScanRequestScanType = "Crashtest Security JSON File"
 	ImportScanRequestScanTypeCrashtestSecurityXMLFile                       ImportScanRequestScanType = "Crashtest Security XML File"
 	ImportScanRequestScanTypeCredScanScan                                   ImportScanRequestScanType = "CredScan Scan"
 	ImportScanRequestScanTypeCrunch42Scan                                   ImportScanRequestScanType = "Crunch42 Scan"
+	ImportScanRequestScanTypeCweCheckerScan                                 ImportScanRequestScanType = "cwe_checker Scan"
 	ImportScanRequestScanTypeCyberwatchScanGaleax                           ImportScanRequestScanType = "Cyberwatch scan (Galeax)"
 	ImportScanRequestScanTypeCycloneDXScan                                  ImportScanRequestScanType = "CycloneDX Scan"
 	ImportScanRequestScanTypeCycognitoScan                                  ImportScanRequestScanType = "Cycognito Scan"
@@ -1405,14 +1575,21 @@ const (
 	ImportScanRequestScanTypeDependencyCheckScan                            ImportScanRequestScanType = "Dependency Check Scan"
 	ImportScanRequestScanTypeDependencyTrackFindingPackagingFormatFPFExport ImportScanRequestScanType = "Dependency Track Finding Packaging Format (FPF) Export"
 	ImportScanRequestScanTypeDetectSecretsScan                              ImportScanRequestScanType = "Detect-secrets Scan"
+	ImportScanRequestScanTypeDevSkimScan                                    ImportScanRequestScanType = "DevSkim Scan"
+	ImportScanRequestScanTypeDirsearchScan                                  ImportScanRequestScanType = "Dirsearch Scan"
 	ImportScanRequestScanTypeDockerBenchSecurityScan                        ImportScanRequestScanType = "docker-bench-security Scan"
 	ImportScanRequestScanTypeDockleScan                                     ImportScanRequestScanType = "Dockle Scan"
+	ImportScanRequestScanTypeDotnetVulnerablePackagesScan                   ImportScanRequestScanType = "Dotnet Vulnerable Packages Scan"
 	ImportScanRequestScanTypeDrHeaderJSONImporter                           ImportScanRequestScanType = "DrHeader JSON Importer"
 	ImportScanRequestScanTypeDurocHogScan                                   ImportScanRequestScanType = "Duroc Hog Scan"
 	ImportScanRequestScanTypeESLintScan                                     ImportScanRequestScanType = "ESLint Scan"
 	ImportScanRequestScanTypeEdgescanScan                                   ImportScanRequestScanType = "Edgescan Scan"
 	ImportScanRequestScanTypeEssexHogScan                                   ImportScanRequestScanType = "Essex Hog Scan"
+	ImportScanRequestScanTypeFfufScan                                       ImportScanRequestScanType = "ffuf Scan"
+	ImportScanRequestScanTypeFirmwalkerScan                                 ImportScanRequestScanType = "Firmwalker Scan"
+	ImportScanRequestScanTypeFlawfinderScan                                 ImportScanRequestScanType = "Flawfinder Scan"
 	ImportScanRequestScanTypeFortifyScan                                    ImportScanRequestScanType = "Fortify Scan"
+	ImportScanRequestScanTypeFortifyScanV2                                  ImportScanRequestScanType = "Fortify Scan v2"
 	ImportScanRequestScanTypeGarakScan                                      ImportScanRequestScanType = "Garak Scan"
 	ImportScanRequestScanTypeGenericFindingsImport                          ImportScanRequestScanType = "Generic Findings Import"
 	ImportScanRequestScanTypeGgshieldScan                                   ImportScanRequestScanType = "Ggshield Scan"
@@ -1426,6 +1603,7 @@ const (
 	ImportScanRequestScanTypeGithubSecretsDetectionReportScan               ImportScanRequestScanType = "Github Secrets Detection Report Scan"
 	ImportScanRequestScanTypeGithubVulnerabilityScan                        ImportScanRequestScanType = "Github Vulnerability Scan"
 	ImportScanRequestScanTypeGitleaksScan                                   ImportScanRequestScanType = "Gitleaks Scan"
+	ImportScanRequestScanTypeGobusterScan                                   ImportScanRequestScanType = "Gobuster Scan"
 	ImportScanRequestScanTypeGoogleCloudArtifactVulnerabilityScan           ImportScanRequestScanType = "Google Cloud Artifact Vulnerability Scan"
 	ImportScanRequestScanTypeGosecScanner                                   ImportScanRequestScanType = "Gosec Scanner"
 	ImportScanRequestScanTypeGottingenHogScan                               ImportScanRequestScanType = "Gottingen Hog Scan"
@@ -1437,11 +1615,13 @@ const (
 	ImportScanRequestScanTypeHadolintDockerfileCheck                        ImportScanRequestScanType = "Hadolint Dockerfile check"
 	ImportScanRequestScanTypeHarborVulnerabilityScan                        ImportScanRequestScanType = "Harbor Vulnerability Scan"
 	ImportScanRequestScanTypeHorusecScan                                    ImportScanRequestScanType = "Horusec Scan"
+	ImportScanRequestScanTypeHttpxScan                                      ImportScanRequestScanType = "httpx Scan"
 	ImportScanRequestScanTypeHumbleJsonImporter                             ImportScanRequestScanType = "Humble Json Importer"
 	ImportScanRequestScanTypeHuskyCIReport                                  ImportScanRequestScanType = "HuskyCI Report"
 	ImportScanRequestScanTypeHydraScan                                      ImportScanRequestScanType = "Hydra Scan"
 	ImportScanRequestScanTypeIBMAppScanDAST                                 ImportScanRequestScanType = "IBM AppScan DAST"
 	ImportScanRequestScanTypeImmuniwebScan                                  ImportScanRequestScanType = "Immuniweb Scan"
+	ImportScanRequestScanTypeInferScan                                      ImportScanRequestScanType = "Infer Scan"
 	ImportScanRequestScanTypeIntSightsReport                                ImportScanRequestScanType = "IntSights Report"
 	ImportScanRequestScanTypeInvictiScan                                    ImportScanRequestScanType = "Invicti Scan"
 	ImportScanRequestScanTypeIriusRiskThreatsScan                           ImportScanRequestScanType = "IriusRisk Threats Scan"
@@ -1455,14 +1635,18 @@ const (
 	ImportScanRequestScanTypeKrakenDAuditScan                               ImportScanRequestScanType = "KrakenD Audit Scan"
 	ImportScanRequestScanTypeKubeBenchScan                                  ImportScanRequestScanType = "kube-bench Scan"
 	ImportScanRequestScanTypeKubeHunterScan                                 ImportScanRequestScanType = "KubeHunter Scan"
+	ImportScanRequestScanTypeKubeLinterScan                                 ImportScanRequestScanType = "KubeLinter Scan"
 	ImportScanRequestScanTypeKubeauditScan                                  ImportScanRequestScanType = "Kubeaudit Scan"
 	ImportScanRequestScanTypeKubescapeJSONImporter                          ImportScanRequestScanType = "Kubescape JSON Importer"
 	ImportScanRequestScanTypeLegitifyScan                                   ImportScanRequestScanType = "Legitify Scan"
+	ImportScanRequestScanTypeLynisScan                                      ImportScanRequestScanType = "Lynis Scan"
 	ImportScanRequestScanTypeMSDefenderParser                               ImportScanRequestScanType = "MSDefender Parser"
+	ImportScanRequestScanTypeMasscanScan                                    ImportScanRequestScanType = "Masscan Scan"
 	ImportScanRequestScanTypeMayhemSARIFReport                              ImportScanRequestScanType = "Mayhem SARIF Report"
 	ImportScanRequestScanTypeMendScan                                       ImportScanRequestScanType = "Mend Scan"
 	ImportScanRequestScanTypeMeterianScan                                   ImportScanRequestScanType = "Meterian Scan"
 	ImportScanRequestScanTypeMicrofocusWebinspectScan                       ImportScanRequestScanType = "Microfocus Webinspect Scan"
+	ImportScanRequestScanTypeMixAuditScan                                   ImportScanRequestScanType = "Mix Audit Scan"
 	ImportScanRequestScanTypeMobSFScan                                      ImportScanRequestScanType = "MobSF Scan"
 	ImportScanRequestScanTypeMobSFScorecardScan                             ImportScanRequestScanType = "MobSF Scorecard Scan"
 	ImportScanRequestScanTypeMobsfscanScan                                  ImportScanRequestScanType = "Mobsfscan Scan"
@@ -1470,12 +1654,15 @@ const (
 	ImportScanRequestScanTypeN0s1Scanner                                    ImportScanRequestScanType = "n0s1 Scanner"
 	ImportScanRequestScanTypeNPMAuditScan                                   ImportScanRequestScanType = "NPM Audit Scan"
 	ImportScanRequestScanTypeNPMAuditV7Scan                                 ImportScanRequestScanType = "NPM Audit v7+ Scan"
+	ImportScanRequestScanTypeNaabuScan                                      ImportScanRequestScanType = "Naabu Scan"
 	ImportScanRequestScanTypeNancyScan                                      ImportScanRequestScanType = "Nancy Scan"
 	ImportScanRequestScanTypeNetsparkerScan                                 ImportScanRequestScanType = "Netsparker Scan"
+	ImportScanRequestScanTypeNettackerScan                                  ImportScanRequestScanType = "Nettacker Scan"
 	ImportScanRequestScanTypeNeuVectorCompliance                            ImportScanRequestScanType = "NeuVector (compliance)"
 	ImportScanRequestScanTypeNeuVectorREST                                  ImportScanRequestScanType = "NeuVector (REST)"
 	ImportScanRequestScanTypeNexposeScan                                    ImportScanRequestScanType = "Nexpose Scan"
 	ImportScanRequestScanTypeNiktoScan                                      ImportScanRequestScanType = "Nikto Scan"
+	ImportScanRequestScanTypeNjsscanScan                                    ImportScanRequestScanType = "njsscan Scan"
 	ImportScanRequestScanTypeNmapScan                                       ImportScanRequestScanType = "Nmap Scan"
 	ImportScanRequestScanTypeNodeSecurityPlatformScan                       ImportScanRequestScanType = "Node Security Platform Scan"
 	ImportScanRequestScanTypeNoseyParkerScan                                ImportScanRequestScanType = "Nosey Parker Scan"
@@ -1485,6 +1672,7 @@ const (
 	ImportScanRequestScanTypeOpenReports                                    ImportScanRequestScanType = "OpenReports"
 	ImportScanRequestScanTypeOpenVASParser                                  ImportScanRequestScanType = "OpenVAS Parser"
 	ImportScanRequestScanTypeOpenVASParserV2                                ImportScanRequestScanType = "OpenVAS Parser v2"
+	ImportScanRequestScanTypeOpenVEXScan                                    ImportScanRequestScanType = "OpenVEX Scan"
 	ImportScanRequestScanTypeOpenscapVulnerabilityScan                      ImportScanRequestScanType = "Openscap Vulnerability Scan"
 	ImportScanRequestScanTypeOrcaSecurityAlerts                             ImportScanRequestScanType = "Orca Security Alerts"
 	ImportScanRequestScanTypeOssIndexDevauditSCAScanImporter                ImportScanRequestScanType = "OssIndex Devaudit SCA Scan Importer"
@@ -1497,9 +1685,13 @@ const (
 	ImportScanRequestScanTypePWNSAST                                        ImportScanRequestScanType = "PWN SAST"
 	ImportScanRequestScanTypePingCastle                                     ImportScanRequestScanType = "PingCastle"
 	ImportScanRequestScanTypePipAuditScan                                   ImportScanRequestScanType = "pip-audit Scan"
+	ImportScanRequestScanTypePnpmAuditScan                                  ImportScanRequestScanType = "pnpm Audit Scan"
+	ImportScanRequestScanTypePolarisScan                                    ImportScanRequestScanType = "Polaris Scan"
 	ImportScanRequestScanTypePopeyeScan                                     ImportScanRequestScanType = "Popeye Scan"
 	ImportScanRequestScanTypeProgpilotScan                                  ImportScanRequestScanType = "Progpilot Scan"
+	ImportScanRequestScanTypePromptfooScan                                  ImportScanRequestScanType = "Promptfoo Scan"
 	ImportScanRequestScanTypeProwlerScan                                    ImportScanRequestScanType = "Prowler Scan"
+	ImportScanRequestScanTypeQARKScan                                       ImportScanRequestScanType = "QARK Scan"
 	ImportScanRequestScanTypeQualysHackerGuardianScan                       ImportScanRequestScanType = "Qualys Hacker Guardian Scan"
 	ImportScanRequestScanTypeQualysInfrastructureScanWebGUIXML              ImportScanRequestScanType = "Qualys Infrastructure Scan (WebGUI XML)"
 	ImportScanRequestScanTypeQualysScan                                     ImportScanRequestScanType = "Qualys Scan"
@@ -1510,15 +1702,18 @@ const (
 	ImportScanRequestScanTypeRetireJsScan                                   ImportScanRequestScanType = "Retire.js Scan"
 	ImportScanRequestScanTypeReversingLabsSpectraAssure                     ImportScanRequestScanType = "ReversingLabs Spectra Assure"
 	ImportScanRequestScanTypeRiskReconAPIImporter                           ImportScanRequestScanType = "Risk Recon API Importer"
+	ImportScanRequestScanTypeRkhunterScan                                   ImportScanRequestScanType = "rkhunter Scan"
 	ImportScanRequestScanTypeRubocopScan                                    ImportScanRequestScanType = "Rubocop Scan"
 	ImportScanRequestScanTypeRustyHogScan                                   ImportScanRequestScanType = "Rusty Hog Scan"
 	ImportScanRequestScanTypeSARIF                                          ImportScanRequestScanType = "SARIF"
 	ImportScanRequestScanTypeSKFScan                                        ImportScanRequestScanType = "SKF Scan"
+	ImportScanRequestScanTypeSPDXScan                                       ImportScanRequestScanType = "SPDX Scan"
 	ImportScanRequestScanTypeSSHAuditImporter                               ImportScanRequestScanType = "SSH Audit Importer"
 	ImportScanRequestScanTypeSSLLabsScan                                    ImportScanRequestScanType = "SSL Labs Scan"
 	ImportScanRequestScanTypeSSLyzeScanJSON                                 ImportScanRequestScanType = "SSLyze Scan (JSON)"
 	ImportScanRequestScanTypeScantistScan                                   ImportScanRequestScanType = "Scantist Scan"
 	ImportScanRequestScanTypeScoutSuiteScan                                 ImportScanRequestScanType = "Scout Suite Scan"
+	ImportScanRequestScanTypeSecretlintScan                                 ImportScanRequestScanType = "Secretlint Scan"
 	ImportScanRequestScanTypeSemgrepJSONReport                              ImportScanRequestScanType = "Semgrep JSON Report"
 	ImportScanRequestScanTypeSemgrepProJSONReport                           ImportScanRequestScanType = "Semgrep Pro JSON Report"
 	ImportScanRequestScanTypeSnykCodeScan                                   ImportScanRequestScanType = "Snyk Code Scan"
@@ -1530,6 +1725,7 @@ const (
 	ImportScanRequestScanTypeSonarQubeScanDetailed                          ImportScanRequestScanType = "SonarQube Scan detailed"
 	ImportScanRequestScanTypeSonatypeApplicationScan                        ImportScanRequestScanType = "Sonatype Application Scan"
 	ImportScanRequestScanTypeSpotBugsScan                                   ImportScanRequestScanType = "SpotBugs Scan"
+	ImportScanRequestScanTypeSqlmapScan                                     ImportScanRequestScanType = "Sqlmap Scan"
 	ImportScanRequestScanTypeSslscan                                        ImportScanRequestScanType = "Sslscan"
 	ImportScanRequestScanTypeSslyzeScan                                     ImportScanRequestScanType = "Sslyze Scan"
 	ImportScanRequestScanTypeStackHawkHawkScan                              ImportScanRequestScanType = "StackHawk HawkScan"
@@ -1556,6 +1752,7 @@ const (
 	ImportScanRequestScanTypeWFuzzJSONReport                                ImportScanRequestScanType = "WFuzz JSON report"
 	ImportScanRequestScanTypeWapitiScan                                     ImportScanRequestScanType = "Wapiti Scan"
 	ImportScanRequestScanTypeWazuh                                          ImportScanRequestScanType = "Wazuh"
+	ImportScanRequestScanTypeWhatWebScan                                    ImportScanRequestScanType = "WhatWeb Scan"
 	ImportScanRequestScanTypeWhispersScan                                   ImportScanRequestScanType = "Whispers Scan"
 	ImportScanRequestScanTypeWhiteHatSentinel                               ImportScanRequestScanType = "WhiteHat Sentinel"
 	ImportScanRequestScanTypeWizScan                                        ImportScanRequestScanType = "Wiz Scan"
@@ -1568,6 +1765,7 @@ const (
 	ImportScanRequestScanTypeXygeniSASTScan                                 ImportScanRequestScanType = "Xygeni SAST Scan"
 	ImportScanRequestScanTypeXygeniSCAScan                                  ImportScanRequestScanType = "Xygeni SCA Scan"
 	ImportScanRequestScanTypeXygeniSecretsScan                              ImportScanRequestScanType = "Xygeni Secrets Scan"
+	ImportScanRequestScanTypeYARAScan                                       ImportScanRequestScanType = "YARA Scan"
 	ImportScanRequestScanTypeYarnAuditScan                                  ImportScanRequestScanType = "Yarn Audit Scan"
 	ImportScanRequestScanTypeZAPScan                                        ImportScanRequestScanType = "ZAP Scan"
 	ImportScanRequestScanTypeZoraParser                                     ImportScanRequestScanType = "Zora Parser"
@@ -1576,6 +1774,10 @@ const (
 // Valid indicates whether the value is a known member of the ImportScanRequestScanType enum.
 func (e ImportScanRequestScanType) Valid() bool {
 	switch e {
+	case ImportScanRequestScanTypeAIDEScan:
+		return true
+	case ImportScanRequestScanTypeAPKLeaksScan:
+		return true
 	case ImportScanRequestScanTypeAWSInspector2Scan:
 		return true
 	case ImportScanRequestScanTypeAWSProwlerScan:
@@ -1646,7 +1848,13 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeBurpSuiteDASTScan:
 		return true
+	case ImportScanRequestScanTypeCSAFScan:
+		return true
 	case ImportScanRequestScanTypeCargoAuditScan:
+		return true
+	case ImportScanRequestScanTypeCfnLintScan:
+		return true
+	case ImportScanRequestScanTypeCfnNagScan:
 		return true
 	case ImportScanRequestScanTypeCheckmarxCxFlowSAST:
 		return true
@@ -1662,9 +1870,13 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeChefInspectLog:
 		return true
+	case ImportScanRequestScanTypeChkrootkitScan:
+		return true
 	case ImportScanRequestScanTypeChoctawHogScan:
 		return true
 	case ImportScanRequestScanTypeClairScan:
+		return true
+	case ImportScanRequestScanTypeClamAVScan:
 		return true
 	case ImportScanRequestScanTypeCloudflareInsights:
 		return true
@@ -1676,11 +1888,17 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeCodecheckerReportNative:
 		return true
+	case ImportScanRequestScanTypeComposerAuditScan:
+		return true
+	case ImportScanRequestScanTypeConftestScan:
+		return true
 	case ImportScanRequestScanTypeContrastScan:
 		return true
 	case ImportScanRequestScanTypeCoverityAPI:
 		return true
 	case ImportScanRequestScanTypeCoverityScanJSONReport:
+		return true
+	case ImportScanRequestScanTypeCppcheckScan:
 		return true
 	case ImportScanRequestScanTypeCrashtestSecurityJSONFile:
 		return true
@@ -1689,6 +1907,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeCredScanScan:
 		return true
 	case ImportScanRequestScanTypeCrunch42Scan:
+		return true
+	case ImportScanRequestScanTypeCweCheckerScan:
 		return true
 	case ImportScanRequestScanTypeCyberwatchScanGaleax:
 		return true
@@ -1708,9 +1928,15 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeDetectSecretsScan:
 		return true
+	case ImportScanRequestScanTypeDevSkimScan:
+		return true
+	case ImportScanRequestScanTypeDirsearchScan:
+		return true
 	case ImportScanRequestScanTypeDockerBenchSecurityScan:
 		return true
 	case ImportScanRequestScanTypeDockleScan:
+		return true
+	case ImportScanRequestScanTypeDotnetVulnerablePackagesScan:
 		return true
 	case ImportScanRequestScanTypeDrHeaderJSONImporter:
 		return true
@@ -1722,7 +1948,15 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeEssexHogScan:
 		return true
+	case ImportScanRequestScanTypeFfufScan:
+		return true
+	case ImportScanRequestScanTypeFirmwalkerScan:
+		return true
+	case ImportScanRequestScanTypeFlawfinderScan:
+		return true
 	case ImportScanRequestScanTypeFortifyScan:
+		return true
+	case ImportScanRequestScanTypeFortifyScanV2:
 		return true
 	case ImportScanRequestScanTypeGarakScan:
 		return true
@@ -1750,6 +1984,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeGitleaksScan:
 		return true
+	case ImportScanRequestScanTypeGobusterScan:
+		return true
 	case ImportScanRequestScanTypeGoogleCloudArtifactVulnerabilityScan:
 		return true
 	case ImportScanRequestScanTypeGosecScanner:
@@ -1772,6 +2008,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeHorusecScan:
 		return true
+	case ImportScanRequestScanTypeHttpxScan:
+		return true
 	case ImportScanRequestScanTypeHumbleJsonImporter:
 		return true
 	case ImportScanRequestScanTypeHuskyCIReport:
@@ -1781,6 +2019,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeIBMAppScanDAST:
 		return true
 	case ImportScanRequestScanTypeImmuniwebScan:
+		return true
+	case ImportScanRequestScanTypeInferScan:
 		return true
 	case ImportScanRequestScanTypeIntSightsReport:
 		return true
@@ -1808,13 +2048,19 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeKubeHunterScan:
 		return true
+	case ImportScanRequestScanTypeKubeLinterScan:
+		return true
 	case ImportScanRequestScanTypeKubeauditScan:
 		return true
 	case ImportScanRequestScanTypeKubescapeJSONImporter:
 		return true
 	case ImportScanRequestScanTypeLegitifyScan:
 		return true
+	case ImportScanRequestScanTypeLynisScan:
+		return true
 	case ImportScanRequestScanTypeMSDefenderParser:
+		return true
+	case ImportScanRequestScanTypeMasscanScan:
 		return true
 	case ImportScanRequestScanTypeMayhemSARIFReport:
 		return true
@@ -1823,6 +2069,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeMeterianScan:
 		return true
 	case ImportScanRequestScanTypeMicrofocusWebinspectScan:
+		return true
+	case ImportScanRequestScanTypeMixAuditScan:
 		return true
 	case ImportScanRequestScanTypeMobSFScan:
 		return true
@@ -1838,9 +2086,13 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeNPMAuditV7Scan:
 		return true
+	case ImportScanRequestScanTypeNaabuScan:
+		return true
 	case ImportScanRequestScanTypeNancyScan:
 		return true
 	case ImportScanRequestScanTypeNetsparkerScan:
+		return true
+	case ImportScanRequestScanTypeNettackerScan:
 		return true
 	case ImportScanRequestScanTypeNeuVectorCompliance:
 		return true
@@ -1849,6 +2101,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeNexposeScan:
 		return true
 	case ImportScanRequestScanTypeNiktoScan:
+		return true
+	case ImportScanRequestScanTypeNjsscanScan:
 		return true
 	case ImportScanRequestScanTypeNmapScan:
 		return true
@@ -1867,6 +2121,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeOpenVASParser:
 		return true
 	case ImportScanRequestScanTypeOpenVASParserV2:
+		return true
+	case ImportScanRequestScanTypeOpenVEXScan:
 		return true
 	case ImportScanRequestScanTypeOpenscapVulnerabilityScan:
 		return true
@@ -1892,11 +2148,19 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypePipAuditScan:
 		return true
+	case ImportScanRequestScanTypePnpmAuditScan:
+		return true
+	case ImportScanRequestScanTypePolarisScan:
+		return true
 	case ImportScanRequestScanTypePopeyeScan:
 		return true
 	case ImportScanRequestScanTypeProgpilotScan:
 		return true
+	case ImportScanRequestScanTypePromptfooScan:
+		return true
 	case ImportScanRequestScanTypeProwlerScan:
+		return true
+	case ImportScanRequestScanTypeQARKScan:
 		return true
 	case ImportScanRequestScanTypeQualysHackerGuardianScan:
 		return true
@@ -1918,6 +2182,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeRiskReconAPIImporter:
 		return true
+	case ImportScanRequestScanTypeRkhunterScan:
+		return true
 	case ImportScanRequestScanTypeRubocopScan:
 		return true
 	case ImportScanRequestScanTypeRustyHogScan:
@@ -1925,6 +2191,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeSARIF:
 		return true
 	case ImportScanRequestScanTypeSKFScan:
+		return true
+	case ImportScanRequestScanTypeSPDXScan:
 		return true
 	case ImportScanRequestScanTypeSSHAuditImporter:
 		return true
@@ -1935,6 +2203,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeScantistScan:
 		return true
 	case ImportScanRequestScanTypeScoutSuiteScan:
+		return true
+	case ImportScanRequestScanTypeSecretlintScan:
 		return true
 	case ImportScanRequestScanTypeSemgrepJSONReport:
 		return true
@@ -1957,6 +2227,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeSonatypeApplicationScan:
 		return true
 	case ImportScanRequestScanTypeSpotBugsScan:
+		return true
+	case ImportScanRequestScanTypeSqlmapScan:
 		return true
 	case ImportScanRequestScanTypeSslscan:
 		return true
@@ -2010,6 +2282,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 		return true
 	case ImportScanRequestScanTypeWazuh:
 		return true
+	case ImportScanRequestScanTypeWhatWebScan:
+		return true
 	case ImportScanRequestScanTypeWhispersScan:
 		return true
 	case ImportScanRequestScanTypeWhiteHatSentinel:
@@ -2033,6 +2307,8 @@ func (e ImportScanRequestScanType) Valid() bool {
 	case ImportScanRequestScanTypeXygeniSCAScan:
 		return true
 	case ImportScanRequestScanTypeXygeniSecretsScan:
+		return true
+	case ImportScanRequestScanTypeYARAScan:
 		return true
 	case ImportScanRequestScanTypeYarnAuditScan:
 		return true
@@ -3413,6 +3689,27 @@ func (e PatchedAssetRequestPlatform) Valid() bool {
 	}
 }
 
+// Defines values for PatchedCICDInfrastructureRequestInfrastructureType.
+const (
+	PatchedCICDInfrastructureRequestInfrastructureTypeBuildServer   PatchedCICDInfrastructureRequestInfrastructureType = "build_server"
+	PatchedCICDInfrastructureRequestInfrastructureTypeOrchestration PatchedCICDInfrastructureRequestInfrastructureType = "orchestration"
+	PatchedCICDInfrastructureRequestInfrastructureTypeScmServer     PatchedCICDInfrastructureRequestInfrastructureType = "scm_server"
+)
+
+// Valid indicates whether the value is a known member of the PatchedCICDInfrastructureRequestInfrastructureType enum.
+func (e PatchedCICDInfrastructureRequestInfrastructureType) Valid() bool {
+	switch e {
+	case PatchedCICDInfrastructureRequestInfrastructureTypeBuildServer:
+		return true
+	case PatchedCICDInfrastructureRequestInfrastructureTypeOrchestration:
+		return true
+	case PatchedCICDInfrastructureRequestInfrastructureTypeScmServer:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for PatchedEngagementRequestEngagementType.
 const (
 	PatchedEngagementRequestEngagementTypeCICD        PatchedEngagementRequestEngagementType = "CI/CD"
@@ -4732,6 +5029,8 @@ func (e ReImportScanMinimumSeverity) Valid() bool {
 
 // Defines values for ReImportScanScanType.
 const (
+	ReImportScanScanTypeAIDEScan                                       ReImportScanScanType = "AIDE Scan"
+	ReImportScanScanTypeAPKLeaksScan                                   ReImportScanScanType = "APKLeaks Scan"
 	ReImportScanScanTypeAWSInspector2Scan                              ReImportScanScanType = "AWS Inspector2 Scan"
 	ReImportScanScanTypeAWSProwlerScan                                 ReImportScanScanType = "AWS Prowler Scan"
 	ReImportScanScanTypeAWSProwlerV3                                   ReImportScanScanType = "AWS Prowler V3"
@@ -4767,7 +5066,10 @@ const (
 	ReImportScanScanTypeBurpRESTAPI                                    ReImportScanScanType = "Burp REST API"
 	ReImportScanScanTypeBurpScan                                       ReImportScanScanType = "Burp Scan"
 	ReImportScanScanTypeBurpSuiteDASTScan                              ReImportScanScanType = "Burp Suite DAST Scan"
+	ReImportScanScanTypeCSAFScan                                       ReImportScanScanType = "CSAF Scan"
 	ReImportScanScanTypeCargoAuditScan                                 ReImportScanScanType = "CargoAudit Scan"
+	ReImportScanScanTypeCfnLintScan                                    ReImportScanScanType = "cfn-lint Scan"
+	ReImportScanScanTypeCfnNagScan                                     ReImportScanScanType = "cfn-nag Scan"
 	ReImportScanScanTypeCheckmarxCxFlowSAST                            ReImportScanScanType = "Checkmarx CxFlow SAST"
 	ReImportScanScanTypeCheckmarxOSA                                   ReImportScanScanType = "Checkmarx OSA"
 	ReImportScanScanTypeCheckmarxOneScan                               ReImportScanScanType = "Checkmarx One Scan"
@@ -4775,20 +5077,26 @@ const (
 	ReImportScanScanTypeCheckmarxScanDetailed                          ReImportScanScanType = "Checkmarx Scan detailed"
 	ReImportScanScanTypeCheckovScan                                    ReImportScanScanType = "Checkov Scan"
 	ReImportScanScanTypeChefInspectLog                                 ReImportScanScanType = "Chef Inspect Log"
+	ReImportScanScanTypeChkrootkitScan                                 ReImportScanScanType = "chkrootkit Scan"
 	ReImportScanScanTypeChoctawHogScan                                 ReImportScanScanType = "Choctaw Hog Scan"
 	ReImportScanScanTypeClairScan                                      ReImportScanScanType = "Clair Scan"
+	ReImportScanScanTypeClamAVScan                                     ReImportScanScanType = "ClamAV Scan"
 	ReImportScanScanTypeCloudflareInsights                             ReImportScanScanType = "Cloudflare Insights"
 	ReImportScanScanTypeCloudsploitScan                                ReImportScanScanType = "Cloudsploit Scan"
 	ReImportScanScanTypeCobaltIoAPIImport                              ReImportScanScanType = "Cobalt.io API Import"
 	ReImportScanScanTypeCobaltIoScan                                   ReImportScanScanType = "Cobalt.io Scan"
 	ReImportScanScanTypeCodecheckerReportNative                        ReImportScanScanType = "Codechecker Report native"
+	ReImportScanScanTypeComposerAuditScan                              ReImportScanScanType = "Composer Audit Scan"
+	ReImportScanScanTypeConftestScan                                   ReImportScanScanType = "Conftest Scan"
 	ReImportScanScanTypeContrastScan                                   ReImportScanScanType = "Contrast Scan"
 	ReImportScanScanTypeCoverityAPI                                    ReImportScanScanType = "Coverity API"
 	ReImportScanScanTypeCoverityScanJSONReport                         ReImportScanScanType = "Coverity Scan JSON Report"
+	ReImportScanScanTypeCppcheckScan                                   ReImportScanScanType = "Cppcheck Scan"
 	ReImportScanScanTypeCrashtestSecurityJSONFile                      ReImportScanScanType = "Crashtest Security JSON File"
 	ReImportScanScanTypeCrashtestSecurityXMLFile                       ReImportScanScanType = "Crashtest Security XML File"
 	ReImportScanScanTypeCredScanScan                                   ReImportScanScanType = "CredScan Scan"
 	ReImportScanScanTypeCrunch42Scan                                   ReImportScanScanType = "Crunch42 Scan"
+	ReImportScanScanTypeCweCheckerScan                                 ReImportScanScanType = "cwe_checker Scan"
 	ReImportScanScanTypeCyberwatchScanGaleax                           ReImportScanScanType = "Cyberwatch scan (Galeax)"
 	ReImportScanScanTypeCycloneDXScan                                  ReImportScanScanType = "CycloneDX Scan"
 	ReImportScanScanTypeCycognitoScan                                  ReImportScanScanType = "Cycognito Scan"
@@ -4798,14 +5106,21 @@ const (
 	ReImportScanScanTypeDependencyCheckScan                            ReImportScanScanType = "Dependency Check Scan"
 	ReImportScanScanTypeDependencyTrackFindingPackagingFormatFPFExport ReImportScanScanType = "Dependency Track Finding Packaging Format (FPF) Export"
 	ReImportScanScanTypeDetectSecretsScan                              ReImportScanScanType = "Detect-secrets Scan"
+	ReImportScanScanTypeDevSkimScan                                    ReImportScanScanType = "DevSkim Scan"
+	ReImportScanScanTypeDirsearchScan                                  ReImportScanScanType = "Dirsearch Scan"
 	ReImportScanScanTypeDockerBenchSecurityScan                        ReImportScanScanType = "docker-bench-security Scan"
 	ReImportScanScanTypeDockleScan                                     ReImportScanScanType = "Dockle Scan"
+	ReImportScanScanTypeDotnetVulnerablePackagesScan                   ReImportScanScanType = "Dotnet Vulnerable Packages Scan"
 	ReImportScanScanTypeDrHeaderJSONImporter                           ReImportScanScanType = "DrHeader JSON Importer"
 	ReImportScanScanTypeDurocHogScan                                   ReImportScanScanType = "Duroc Hog Scan"
 	ReImportScanScanTypeESLintScan                                     ReImportScanScanType = "ESLint Scan"
 	ReImportScanScanTypeEdgescanScan                                   ReImportScanScanType = "Edgescan Scan"
 	ReImportScanScanTypeEssexHogScan                                   ReImportScanScanType = "Essex Hog Scan"
+	ReImportScanScanTypeFfufScan                                       ReImportScanScanType = "ffuf Scan"
+	ReImportScanScanTypeFirmwalkerScan                                 ReImportScanScanType = "Firmwalker Scan"
+	ReImportScanScanTypeFlawfinderScan                                 ReImportScanScanType = "Flawfinder Scan"
 	ReImportScanScanTypeFortifyScan                                    ReImportScanScanType = "Fortify Scan"
+	ReImportScanScanTypeFortifyScanV2                                  ReImportScanScanType = "Fortify Scan v2"
 	ReImportScanScanTypeGarakScan                                      ReImportScanScanType = "Garak Scan"
 	ReImportScanScanTypeGenericFindingsImport                          ReImportScanScanType = "Generic Findings Import"
 	ReImportScanScanTypeGgshieldScan                                   ReImportScanScanType = "Ggshield Scan"
@@ -4819,6 +5134,7 @@ const (
 	ReImportScanScanTypeGithubSecretsDetectionReportScan               ReImportScanScanType = "Github Secrets Detection Report Scan"
 	ReImportScanScanTypeGithubVulnerabilityScan                        ReImportScanScanType = "Github Vulnerability Scan"
 	ReImportScanScanTypeGitleaksScan                                   ReImportScanScanType = "Gitleaks Scan"
+	ReImportScanScanTypeGobusterScan                                   ReImportScanScanType = "Gobuster Scan"
 	ReImportScanScanTypeGoogleCloudArtifactVulnerabilityScan           ReImportScanScanType = "Google Cloud Artifact Vulnerability Scan"
 	ReImportScanScanTypeGosecScanner                                   ReImportScanScanType = "Gosec Scanner"
 	ReImportScanScanTypeGottingenHogScan                               ReImportScanScanType = "Gottingen Hog Scan"
@@ -4830,11 +5146,13 @@ const (
 	ReImportScanScanTypeHadolintDockerfileCheck                        ReImportScanScanType = "Hadolint Dockerfile check"
 	ReImportScanScanTypeHarborVulnerabilityScan                        ReImportScanScanType = "Harbor Vulnerability Scan"
 	ReImportScanScanTypeHorusecScan                                    ReImportScanScanType = "Horusec Scan"
+	ReImportScanScanTypeHttpxScan                                      ReImportScanScanType = "httpx Scan"
 	ReImportScanScanTypeHumbleJsonImporter                             ReImportScanScanType = "Humble Json Importer"
 	ReImportScanScanTypeHuskyCIReport                                  ReImportScanScanType = "HuskyCI Report"
 	ReImportScanScanTypeHydraScan                                      ReImportScanScanType = "Hydra Scan"
 	ReImportScanScanTypeIBMAppScanDAST                                 ReImportScanScanType = "IBM AppScan DAST"
 	ReImportScanScanTypeImmuniwebScan                                  ReImportScanScanType = "Immuniweb Scan"
+	ReImportScanScanTypeInferScan                                      ReImportScanScanType = "Infer Scan"
 	ReImportScanScanTypeIntSightsReport                                ReImportScanScanType = "IntSights Report"
 	ReImportScanScanTypeInvictiScan                                    ReImportScanScanType = "Invicti Scan"
 	ReImportScanScanTypeIriusRiskThreatsScan                           ReImportScanScanType = "IriusRisk Threats Scan"
@@ -4848,14 +5166,18 @@ const (
 	ReImportScanScanTypeKrakenDAuditScan                               ReImportScanScanType = "KrakenD Audit Scan"
 	ReImportScanScanTypeKubeBenchScan                                  ReImportScanScanType = "kube-bench Scan"
 	ReImportScanScanTypeKubeHunterScan                                 ReImportScanScanType = "KubeHunter Scan"
+	ReImportScanScanTypeKubeLinterScan                                 ReImportScanScanType = "KubeLinter Scan"
 	ReImportScanScanTypeKubeauditScan                                  ReImportScanScanType = "Kubeaudit Scan"
 	ReImportScanScanTypeKubescapeJSONImporter                          ReImportScanScanType = "Kubescape JSON Importer"
 	ReImportScanScanTypeLegitifyScan                                   ReImportScanScanType = "Legitify Scan"
+	ReImportScanScanTypeLynisScan                                      ReImportScanScanType = "Lynis Scan"
 	ReImportScanScanTypeMSDefenderParser                               ReImportScanScanType = "MSDefender Parser"
+	ReImportScanScanTypeMasscanScan                                    ReImportScanScanType = "Masscan Scan"
 	ReImportScanScanTypeMayhemSARIFReport                              ReImportScanScanType = "Mayhem SARIF Report"
 	ReImportScanScanTypeMendScan                                       ReImportScanScanType = "Mend Scan"
 	ReImportScanScanTypeMeterianScan                                   ReImportScanScanType = "Meterian Scan"
 	ReImportScanScanTypeMicrofocusWebinspectScan                       ReImportScanScanType = "Microfocus Webinspect Scan"
+	ReImportScanScanTypeMixAuditScan                                   ReImportScanScanType = "Mix Audit Scan"
 	ReImportScanScanTypeMobSFScan                                      ReImportScanScanType = "MobSF Scan"
 	ReImportScanScanTypeMobSFScorecardScan                             ReImportScanScanType = "MobSF Scorecard Scan"
 	ReImportScanScanTypeMobsfscanScan                                  ReImportScanScanType = "Mobsfscan Scan"
@@ -4863,12 +5185,15 @@ const (
 	ReImportScanScanTypeN0s1Scanner                                    ReImportScanScanType = "n0s1 Scanner"
 	ReImportScanScanTypeNPMAuditScan                                   ReImportScanScanType = "NPM Audit Scan"
 	ReImportScanScanTypeNPMAuditV7Scan                                 ReImportScanScanType = "NPM Audit v7+ Scan"
+	ReImportScanScanTypeNaabuScan                                      ReImportScanScanType = "Naabu Scan"
 	ReImportScanScanTypeNancyScan                                      ReImportScanScanType = "Nancy Scan"
 	ReImportScanScanTypeNetsparkerScan                                 ReImportScanScanType = "Netsparker Scan"
+	ReImportScanScanTypeNettackerScan                                  ReImportScanScanType = "Nettacker Scan"
 	ReImportScanScanTypeNeuVectorCompliance                            ReImportScanScanType = "NeuVector (compliance)"
 	ReImportScanScanTypeNeuVectorREST                                  ReImportScanScanType = "NeuVector (REST)"
 	ReImportScanScanTypeNexposeScan                                    ReImportScanScanType = "Nexpose Scan"
 	ReImportScanScanTypeNiktoScan                                      ReImportScanScanType = "Nikto Scan"
+	ReImportScanScanTypeNjsscanScan                                    ReImportScanScanType = "njsscan Scan"
 	ReImportScanScanTypeNmapScan                                       ReImportScanScanType = "Nmap Scan"
 	ReImportScanScanTypeNodeSecurityPlatformScan                       ReImportScanScanType = "Node Security Platform Scan"
 	ReImportScanScanTypeNoseyParkerScan                                ReImportScanScanType = "Nosey Parker Scan"
@@ -4878,6 +5203,7 @@ const (
 	ReImportScanScanTypeOpenReports                                    ReImportScanScanType = "OpenReports"
 	ReImportScanScanTypeOpenVASParser                                  ReImportScanScanType = "OpenVAS Parser"
 	ReImportScanScanTypeOpenVASParserV2                                ReImportScanScanType = "OpenVAS Parser v2"
+	ReImportScanScanTypeOpenVEXScan                                    ReImportScanScanType = "OpenVEX Scan"
 	ReImportScanScanTypeOpenscapVulnerabilityScan                      ReImportScanScanType = "Openscap Vulnerability Scan"
 	ReImportScanScanTypeOrcaSecurityAlerts                             ReImportScanScanType = "Orca Security Alerts"
 	ReImportScanScanTypeOssIndexDevauditSCAScanImporter                ReImportScanScanType = "OssIndex Devaudit SCA Scan Importer"
@@ -4890,9 +5216,13 @@ const (
 	ReImportScanScanTypePWNSAST                                        ReImportScanScanType = "PWN SAST"
 	ReImportScanScanTypePingCastle                                     ReImportScanScanType = "PingCastle"
 	ReImportScanScanTypePipAuditScan                                   ReImportScanScanType = "pip-audit Scan"
+	ReImportScanScanTypePnpmAuditScan                                  ReImportScanScanType = "pnpm Audit Scan"
+	ReImportScanScanTypePolarisScan                                    ReImportScanScanType = "Polaris Scan"
 	ReImportScanScanTypePopeyeScan                                     ReImportScanScanType = "Popeye Scan"
 	ReImportScanScanTypeProgpilotScan                                  ReImportScanScanType = "Progpilot Scan"
+	ReImportScanScanTypePromptfooScan                                  ReImportScanScanType = "Promptfoo Scan"
 	ReImportScanScanTypeProwlerScan                                    ReImportScanScanType = "Prowler Scan"
+	ReImportScanScanTypeQARKScan                                       ReImportScanScanType = "QARK Scan"
 	ReImportScanScanTypeQualysHackerGuardianScan                       ReImportScanScanType = "Qualys Hacker Guardian Scan"
 	ReImportScanScanTypeQualysInfrastructureScanWebGUIXML              ReImportScanScanType = "Qualys Infrastructure Scan (WebGUI XML)"
 	ReImportScanScanTypeQualysScan                                     ReImportScanScanType = "Qualys Scan"
@@ -4903,15 +5233,18 @@ const (
 	ReImportScanScanTypeRetireJsScan                                   ReImportScanScanType = "Retire.js Scan"
 	ReImportScanScanTypeReversingLabsSpectraAssure                     ReImportScanScanType = "ReversingLabs Spectra Assure"
 	ReImportScanScanTypeRiskReconAPIImporter                           ReImportScanScanType = "Risk Recon API Importer"
+	ReImportScanScanTypeRkhunterScan                                   ReImportScanScanType = "rkhunter Scan"
 	ReImportScanScanTypeRubocopScan                                    ReImportScanScanType = "Rubocop Scan"
 	ReImportScanScanTypeRustyHogScan                                   ReImportScanScanType = "Rusty Hog Scan"
 	ReImportScanScanTypeSARIF                                          ReImportScanScanType = "SARIF"
 	ReImportScanScanTypeSKFScan                                        ReImportScanScanType = "SKF Scan"
+	ReImportScanScanTypeSPDXScan                                       ReImportScanScanType = "SPDX Scan"
 	ReImportScanScanTypeSSHAuditImporter                               ReImportScanScanType = "SSH Audit Importer"
 	ReImportScanScanTypeSSLLabsScan                                    ReImportScanScanType = "SSL Labs Scan"
 	ReImportScanScanTypeSSLyzeScanJSON                                 ReImportScanScanType = "SSLyze Scan (JSON)"
 	ReImportScanScanTypeScantistScan                                   ReImportScanScanType = "Scantist Scan"
 	ReImportScanScanTypeScoutSuiteScan                                 ReImportScanScanType = "Scout Suite Scan"
+	ReImportScanScanTypeSecretlintScan                                 ReImportScanScanType = "Secretlint Scan"
 	ReImportScanScanTypeSemgrepJSONReport                              ReImportScanScanType = "Semgrep JSON Report"
 	ReImportScanScanTypeSemgrepProJSONReport                           ReImportScanScanType = "Semgrep Pro JSON Report"
 	ReImportScanScanTypeSnykCodeScan                                   ReImportScanScanType = "Snyk Code Scan"
@@ -4923,6 +5256,7 @@ const (
 	ReImportScanScanTypeSonarQubeScanDetailed                          ReImportScanScanType = "SonarQube Scan detailed"
 	ReImportScanScanTypeSonatypeApplicationScan                        ReImportScanScanType = "Sonatype Application Scan"
 	ReImportScanScanTypeSpotBugsScan                                   ReImportScanScanType = "SpotBugs Scan"
+	ReImportScanScanTypeSqlmapScan                                     ReImportScanScanType = "Sqlmap Scan"
 	ReImportScanScanTypeSslscan                                        ReImportScanScanType = "Sslscan"
 	ReImportScanScanTypeSslyzeScan                                     ReImportScanScanType = "Sslyze Scan"
 	ReImportScanScanTypeStackHawkHawkScan                              ReImportScanScanType = "StackHawk HawkScan"
@@ -4949,6 +5283,7 @@ const (
 	ReImportScanScanTypeWFuzzJSONReport                                ReImportScanScanType = "WFuzz JSON report"
 	ReImportScanScanTypeWapitiScan                                     ReImportScanScanType = "Wapiti Scan"
 	ReImportScanScanTypeWazuh                                          ReImportScanScanType = "Wazuh"
+	ReImportScanScanTypeWhatWebScan                                    ReImportScanScanType = "WhatWeb Scan"
 	ReImportScanScanTypeWhispersScan                                   ReImportScanScanType = "Whispers Scan"
 	ReImportScanScanTypeWhiteHatSentinel                               ReImportScanScanType = "WhiteHat Sentinel"
 	ReImportScanScanTypeWizScan                                        ReImportScanScanType = "Wiz Scan"
@@ -4961,6 +5296,7 @@ const (
 	ReImportScanScanTypeXygeniSASTScan                                 ReImportScanScanType = "Xygeni SAST Scan"
 	ReImportScanScanTypeXygeniSCAScan                                  ReImportScanScanType = "Xygeni SCA Scan"
 	ReImportScanScanTypeXygeniSecretsScan                              ReImportScanScanType = "Xygeni Secrets Scan"
+	ReImportScanScanTypeYARAScan                                       ReImportScanScanType = "YARA Scan"
 	ReImportScanScanTypeYarnAuditScan                                  ReImportScanScanType = "Yarn Audit Scan"
 	ReImportScanScanTypeZAPScan                                        ReImportScanScanType = "ZAP Scan"
 	ReImportScanScanTypeZoraParser                                     ReImportScanScanType = "Zora Parser"
@@ -4969,6 +5305,10 @@ const (
 // Valid indicates whether the value is a known member of the ReImportScanScanType enum.
 func (e ReImportScanScanType) Valid() bool {
 	switch e {
+	case ReImportScanScanTypeAIDEScan:
+		return true
+	case ReImportScanScanTypeAPKLeaksScan:
+		return true
 	case ReImportScanScanTypeAWSInspector2Scan:
 		return true
 	case ReImportScanScanTypeAWSProwlerScan:
@@ -5039,7 +5379,13 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeBurpSuiteDASTScan:
 		return true
+	case ReImportScanScanTypeCSAFScan:
+		return true
 	case ReImportScanScanTypeCargoAuditScan:
+		return true
+	case ReImportScanScanTypeCfnLintScan:
+		return true
+	case ReImportScanScanTypeCfnNagScan:
 		return true
 	case ReImportScanScanTypeCheckmarxCxFlowSAST:
 		return true
@@ -5055,9 +5401,13 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeChefInspectLog:
 		return true
+	case ReImportScanScanTypeChkrootkitScan:
+		return true
 	case ReImportScanScanTypeChoctawHogScan:
 		return true
 	case ReImportScanScanTypeClairScan:
+		return true
+	case ReImportScanScanTypeClamAVScan:
 		return true
 	case ReImportScanScanTypeCloudflareInsights:
 		return true
@@ -5069,11 +5419,17 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeCodecheckerReportNative:
 		return true
+	case ReImportScanScanTypeComposerAuditScan:
+		return true
+	case ReImportScanScanTypeConftestScan:
+		return true
 	case ReImportScanScanTypeContrastScan:
 		return true
 	case ReImportScanScanTypeCoverityAPI:
 		return true
 	case ReImportScanScanTypeCoverityScanJSONReport:
+		return true
+	case ReImportScanScanTypeCppcheckScan:
 		return true
 	case ReImportScanScanTypeCrashtestSecurityJSONFile:
 		return true
@@ -5082,6 +5438,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeCredScanScan:
 		return true
 	case ReImportScanScanTypeCrunch42Scan:
+		return true
+	case ReImportScanScanTypeCweCheckerScan:
 		return true
 	case ReImportScanScanTypeCyberwatchScanGaleax:
 		return true
@@ -5101,9 +5459,15 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeDetectSecretsScan:
 		return true
+	case ReImportScanScanTypeDevSkimScan:
+		return true
+	case ReImportScanScanTypeDirsearchScan:
+		return true
 	case ReImportScanScanTypeDockerBenchSecurityScan:
 		return true
 	case ReImportScanScanTypeDockleScan:
+		return true
+	case ReImportScanScanTypeDotnetVulnerablePackagesScan:
 		return true
 	case ReImportScanScanTypeDrHeaderJSONImporter:
 		return true
@@ -5115,7 +5479,15 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeEssexHogScan:
 		return true
+	case ReImportScanScanTypeFfufScan:
+		return true
+	case ReImportScanScanTypeFirmwalkerScan:
+		return true
+	case ReImportScanScanTypeFlawfinderScan:
+		return true
 	case ReImportScanScanTypeFortifyScan:
+		return true
+	case ReImportScanScanTypeFortifyScanV2:
 		return true
 	case ReImportScanScanTypeGarakScan:
 		return true
@@ -5143,6 +5515,8 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeGitleaksScan:
 		return true
+	case ReImportScanScanTypeGobusterScan:
+		return true
 	case ReImportScanScanTypeGoogleCloudArtifactVulnerabilityScan:
 		return true
 	case ReImportScanScanTypeGosecScanner:
@@ -5165,6 +5539,8 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeHorusecScan:
 		return true
+	case ReImportScanScanTypeHttpxScan:
+		return true
 	case ReImportScanScanTypeHumbleJsonImporter:
 		return true
 	case ReImportScanScanTypeHuskyCIReport:
@@ -5174,6 +5550,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeIBMAppScanDAST:
 		return true
 	case ReImportScanScanTypeImmuniwebScan:
+		return true
+	case ReImportScanScanTypeInferScan:
 		return true
 	case ReImportScanScanTypeIntSightsReport:
 		return true
@@ -5201,13 +5579,19 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeKubeHunterScan:
 		return true
+	case ReImportScanScanTypeKubeLinterScan:
+		return true
 	case ReImportScanScanTypeKubeauditScan:
 		return true
 	case ReImportScanScanTypeKubescapeJSONImporter:
 		return true
 	case ReImportScanScanTypeLegitifyScan:
 		return true
+	case ReImportScanScanTypeLynisScan:
+		return true
 	case ReImportScanScanTypeMSDefenderParser:
+		return true
+	case ReImportScanScanTypeMasscanScan:
 		return true
 	case ReImportScanScanTypeMayhemSARIFReport:
 		return true
@@ -5216,6 +5600,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeMeterianScan:
 		return true
 	case ReImportScanScanTypeMicrofocusWebinspectScan:
+		return true
+	case ReImportScanScanTypeMixAuditScan:
 		return true
 	case ReImportScanScanTypeMobSFScan:
 		return true
@@ -5231,9 +5617,13 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeNPMAuditV7Scan:
 		return true
+	case ReImportScanScanTypeNaabuScan:
+		return true
 	case ReImportScanScanTypeNancyScan:
 		return true
 	case ReImportScanScanTypeNetsparkerScan:
+		return true
+	case ReImportScanScanTypeNettackerScan:
 		return true
 	case ReImportScanScanTypeNeuVectorCompliance:
 		return true
@@ -5242,6 +5632,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeNexposeScan:
 		return true
 	case ReImportScanScanTypeNiktoScan:
+		return true
+	case ReImportScanScanTypeNjsscanScan:
 		return true
 	case ReImportScanScanTypeNmapScan:
 		return true
@@ -5260,6 +5652,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeOpenVASParser:
 		return true
 	case ReImportScanScanTypeOpenVASParserV2:
+		return true
+	case ReImportScanScanTypeOpenVEXScan:
 		return true
 	case ReImportScanScanTypeOpenscapVulnerabilityScan:
 		return true
@@ -5285,11 +5679,19 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypePipAuditScan:
 		return true
+	case ReImportScanScanTypePnpmAuditScan:
+		return true
+	case ReImportScanScanTypePolarisScan:
+		return true
 	case ReImportScanScanTypePopeyeScan:
 		return true
 	case ReImportScanScanTypeProgpilotScan:
 		return true
+	case ReImportScanScanTypePromptfooScan:
+		return true
 	case ReImportScanScanTypeProwlerScan:
+		return true
+	case ReImportScanScanTypeQARKScan:
 		return true
 	case ReImportScanScanTypeQualysHackerGuardianScan:
 		return true
@@ -5311,6 +5713,8 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeRiskReconAPIImporter:
 		return true
+	case ReImportScanScanTypeRkhunterScan:
+		return true
 	case ReImportScanScanTypeRubocopScan:
 		return true
 	case ReImportScanScanTypeRustyHogScan:
@@ -5318,6 +5722,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeSARIF:
 		return true
 	case ReImportScanScanTypeSKFScan:
+		return true
+	case ReImportScanScanTypeSPDXScan:
 		return true
 	case ReImportScanScanTypeSSHAuditImporter:
 		return true
@@ -5328,6 +5734,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeScantistScan:
 		return true
 	case ReImportScanScanTypeScoutSuiteScan:
+		return true
+	case ReImportScanScanTypeSecretlintScan:
 		return true
 	case ReImportScanScanTypeSemgrepJSONReport:
 		return true
@@ -5350,6 +5758,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeSonatypeApplicationScan:
 		return true
 	case ReImportScanScanTypeSpotBugsScan:
+		return true
+	case ReImportScanScanTypeSqlmapScan:
 		return true
 	case ReImportScanScanTypeSslscan:
 		return true
@@ -5403,6 +5813,8 @@ func (e ReImportScanScanType) Valid() bool {
 		return true
 	case ReImportScanScanTypeWazuh:
 		return true
+	case ReImportScanScanTypeWhatWebScan:
+		return true
 	case ReImportScanScanTypeWhispersScan:
 		return true
 	case ReImportScanScanTypeWhiteHatSentinel:
@@ -5426,6 +5838,8 @@ func (e ReImportScanScanType) Valid() bool {
 	case ReImportScanScanTypeXygeniSCAScan:
 		return true
 	case ReImportScanScanTypeXygeniSecretsScan:
+		return true
+	case ReImportScanScanTypeYARAScan:
 		return true
 	case ReImportScanScanTypeYarnAuditScan:
 		return true
@@ -5518,6 +5932,8 @@ func (e ReImportScanRequestMinimumSeverity) Valid() bool {
 
 // Defines values for ReImportScanRequestScanType.
 const (
+	ReImportScanRequestScanTypeAIDEScan                                       ReImportScanRequestScanType = "AIDE Scan"
+	ReImportScanRequestScanTypeAPKLeaksScan                                   ReImportScanRequestScanType = "APKLeaks Scan"
 	ReImportScanRequestScanTypeAWSInspector2Scan                              ReImportScanRequestScanType = "AWS Inspector2 Scan"
 	ReImportScanRequestScanTypeAWSProwlerScan                                 ReImportScanRequestScanType = "AWS Prowler Scan"
 	ReImportScanRequestScanTypeAWSProwlerV3                                   ReImportScanRequestScanType = "AWS Prowler V3"
@@ -5553,7 +5969,10 @@ const (
 	ReImportScanRequestScanTypeBurpRESTAPI                                    ReImportScanRequestScanType = "Burp REST API"
 	ReImportScanRequestScanTypeBurpScan                                       ReImportScanRequestScanType = "Burp Scan"
 	ReImportScanRequestScanTypeBurpSuiteDASTScan                              ReImportScanRequestScanType = "Burp Suite DAST Scan"
+	ReImportScanRequestScanTypeCSAFScan                                       ReImportScanRequestScanType = "CSAF Scan"
 	ReImportScanRequestScanTypeCargoAuditScan                                 ReImportScanRequestScanType = "CargoAudit Scan"
+	ReImportScanRequestScanTypeCfnLintScan                                    ReImportScanRequestScanType = "cfn-lint Scan"
+	ReImportScanRequestScanTypeCfnNagScan                                     ReImportScanRequestScanType = "cfn-nag Scan"
 	ReImportScanRequestScanTypeCheckmarxCxFlowSAST                            ReImportScanRequestScanType = "Checkmarx CxFlow SAST"
 	ReImportScanRequestScanTypeCheckmarxOSA                                   ReImportScanRequestScanType = "Checkmarx OSA"
 	ReImportScanRequestScanTypeCheckmarxOneScan                               ReImportScanRequestScanType = "Checkmarx One Scan"
@@ -5561,20 +5980,26 @@ const (
 	ReImportScanRequestScanTypeCheckmarxScanDetailed                          ReImportScanRequestScanType = "Checkmarx Scan detailed"
 	ReImportScanRequestScanTypeCheckovScan                                    ReImportScanRequestScanType = "Checkov Scan"
 	ReImportScanRequestScanTypeChefInspectLog                                 ReImportScanRequestScanType = "Chef Inspect Log"
+	ReImportScanRequestScanTypeChkrootkitScan                                 ReImportScanRequestScanType = "chkrootkit Scan"
 	ReImportScanRequestScanTypeChoctawHogScan                                 ReImportScanRequestScanType = "Choctaw Hog Scan"
 	ReImportScanRequestScanTypeClairScan                                      ReImportScanRequestScanType = "Clair Scan"
+	ReImportScanRequestScanTypeClamAVScan                                     ReImportScanRequestScanType = "ClamAV Scan"
 	ReImportScanRequestScanTypeCloudflareInsights                             ReImportScanRequestScanType = "Cloudflare Insights"
 	ReImportScanRequestScanTypeCloudsploitScan                                ReImportScanRequestScanType = "Cloudsploit Scan"
 	ReImportScanRequestScanTypeCobaltIoAPIImport                              ReImportScanRequestScanType = "Cobalt.io API Import"
 	ReImportScanRequestScanTypeCobaltIoScan                                   ReImportScanRequestScanType = "Cobalt.io Scan"
 	ReImportScanRequestScanTypeCodecheckerReportNative                        ReImportScanRequestScanType = "Codechecker Report native"
+	ReImportScanRequestScanTypeComposerAuditScan                              ReImportScanRequestScanType = "Composer Audit Scan"
+	ReImportScanRequestScanTypeConftestScan                                   ReImportScanRequestScanType = "Conftest Scan"
 	ReImportScanRequestScanTypeContrastScan                                   ReImportScanRequestScanType = "Contrast Scan"
 	ReImportScanRequestScanTypeCoverityAPI                                    ReImportScanRequestScanType = "Coverity API"
 	ReImportScanRequestScanTypeCoverityScanJSONReport                         ReImportScanRequestScanType = "Coverity Scan JSON Report"
+	ReImportScanRequestScanTypeCppcheckScan                                   ReImportScanRequestScanType = "Cppcheck Scan"
 	ReImportScanRequestScanTypeCrashtestSecurityJSONFile                      ReImportScanRequestScanType = "Crashtest Security JSON File"
 	ReImportScanRequestScanTypeCrashtestSecurityXMLFile                       ReImportScanRequestScanType = "Crashtest Security XML File"
 	ReImportScanRequestScanTypeCredScanScan                                   ReImportScanRequestScanType = "CredScan Scan"
 	ReImportScanRequestScanTypeCrunch42Scan                                   ReImportScanRequestScanType = "Crunch42 Scan"
+	ReImportScanRequestScanTypeCweCheckerScan                                 ReImportScanRequestScanType = "cwe_checker Scan"
 	ReImportScanRequestScanTypeCyberwatchScanGaleax                           ReImportScanRequestScanType = "Cyberwatch scan (Galeax)"
 	ReImportScanRequestScanTypeCycloneDXScan                                  ReImportScanRequestScanType = "CycloneDX Scan"
 	ReImportScanRequestScanTypeCycognitoScan                                  ReImportScanRequestScanType = "Cycognito Scan"
@@ -5584,14 +6009,21 @@ const (
 	ReImportScanRequestScanTypeDependencyCheckScan                            ReImportScanRequestScanType = "Dependency Check Scan"
 	ReImportScanRequestScanTypeDependencyTrackFindingPackagingFormatFPFExport ReImportScanRequestScanType = "Dependency Track Finding Packaging Format (FPF) Export"
 	ReImportScanRequestScanTypeDetectSecretsScan                              ReImportScanRequestScanType = "Detect-secrets Scan"
+	ReImportScanRequestScanTypeDevSkimScan                                    ReImportScanRequestScanType = "DevSkim Scan"
+	ReImportScanRequestScanTypeDirsearchScan                                  ReImportScanRequestScanType = "Dirsearch Scan"
 	ReImportScanRequestScanTypeDockerBenchSecurityScan                        ReImportScanRequestScanType = "docker-bench-security Scan"
 	ReImportScanRequestScanTypeDockleScan                                     ReImportScanRequestScanType = "Dockle Scan"
+	ReImportScanRequestScanTypeDotnetVulnerablePackagesScan                   ReImportScanRequestScanType = "Dotnet Vulnerable Packages Scan"
 	ReImportScanRequestScanTypeDrHeaderJSONImporter                           ReImportScanRequestScanType = "DrHeader JSON Importer"
 	ReImportScanRequestScanTypeDurocHogScan                                   ReImportScanRequestScanType = "Duroc Hog Scan"
 	ReImportScanRequestScanTypeESLintScan                                     ReImportScanRequestScanType = "ESLint Scan"
 	ReImportScanRequestScanTypeEdgescanScan                                   ReImportScanRequestScanType = "Edgescan Scan"
 	ReImportScanRequestScanTypeEssexHogScan                                   ReImportScanRequestScanType = "Essex Hog Scan"
+	ReImportScanRequestScanTypeFfufScan                                       ReImportScanRequestScanType = "ffuf Scan"
+	ReImportScanRequestScanTypeFirmwalkerScan                                 ReImportScanRequestScanType = "Firmwalker Scan"
+	ReImportScanRequestScanTypeFlawfinderScan                                 ReImportScanRequestScanType = "Flawfinder Scan"
 	ReImportScanRequestScanTypeFortifyScan                                    ReImportScanRequestScanType = "Fortify Scan"
+	ReImportScanRequestScanTypeFortifyScanV2                                  ReImportScanRequestScanType = "Fortify Scan v2"
 	ReImportScanRequestScanTypeGarakScan                                      ReImportScanRequestScanType = "Garak Scan"
 	ReImportScanRequestScanTypeGenericFindingsImport                          ReImportScanRequestScanType = "Generic Findings Import"
 	ReImportScanRequestScanTypeGgshieldScan                                   ReImportScanRequestScanType = "Ggshield Scan"
@@ -5605,6 +6037,7 @@ const (
 	ReImportScanRequestScanTypeGithubSecretsDetectionReportScan               ReImportScanRequestScanType = "Github Secrets Detection Report Scan"
 	ReImportScanRequestScanTypeGithubVulnerabilityScan                        ReImportScanRequestScanType = "Github Vulnerability Scan"
 	ReImportScanRequestScanTypeGitleaksScan                                   ReImportScanRequestScanType = "Gitleaks Scan"
+	ReImportScanRequestScanTypeGobusterScan                                   ReImportScanRequestScanType = "Gobuster Scan"
 	ReImportScanRequestScanTypeGoogleCloudArtifactVulnerabilityScan           ReImportScanRequestScanType = "Google Cloud Artifact Vulnerability Scan"
 	ReImportScanRequestScanTypeGosecScanner                                   ReImportScanRequestScanType = "Gosec Scanner"
 	ReImportScanRequestScanTypeGottingenHogScan                               ReImportScanRequestScanType = "Gottingen Hog Scan"
@@ -5616,11 +6049,13 @@ const (
 	ReImportScanRequestScanTypeHadolintDockerfileCheck                        ReImportScanRequestScanType = "Hadolint Dockerfile check"
 	ReImportScanRequestScanTypeHarborVulnerabilityScan                        ReImportScanRequestScanType = "Harbor Vulnerability Scan"
 	ReImportScanRequestScanTypeHorusecScan                                    ReImportScanRequestScanType = "Horusec Scan"
+	ReImportScanRequestScanTypeHttpxScan                                      ReImportScanRequestScanType = "httpx Scan"
 	ReImportScanRequestScanTypeHumbleJsonImporter                             ReImportScanRequestScanType = "Humble Json Importer"
 	ReImportScanRequestScanTypeHuskyCIReport                                  ReImportScanRequestScanType = "HuskyCI Report"
 	ReImportScanRequestScanTypeHydraScan                                      ReImportScanRequestScanType = "Hydra Scan"
 	ReImportScanRequestScanTypeIBMAppScanDAST                                 ReImportScanRequestScanType = "IBM AppScan DAST"
 	ReImportScanRequestScanTypeImmuniwebScan                                  ReImportScanRequestScanType = "Immuniweb Scan"
+	ReImportScanRequestScanTypeInferScan                                      ReImportScanRequestScanType = "Infer Scan"
 	ReImportScanRequestScanTypeIntSightsReport                                ReImportScanRequestScanType = "IntSights Report"
 	ReImportScanRequestScanTypeInvictiScan                                    ReImportScanRequestScanType = "Invicti Scan"
 	ReImportScanRequestScanTypeIriusRiskThreatsScan                           ReImportScanRequestScanType = "IriusRisk Threats Scan"
@@ -5634,14 +6069,18 @@ const (
 	ReImportScanRequestScanTypeKrakenDAuditScan                               ReImportScanRequestScanType = "KrakenD Audit Scan"
 	ReImportScanRequestScanTypeKubeBenchScan                                  ReImportScanRequestScanType = "kube-bench Scan"
 	ReImportScanRequestScanTypeKubeHunterScan                                 ReImportScanRequestScanType = "KubeHunter Scan"
+	ReImportScanRequestScanTypeKubeLinterScan                                 ReImportScanRequestScanType = "KubeLinter Scan"
 	ReImportScanRequestScanTypeKubeauditScan                                  ReImportScanRequestScanType = "Kubeaudit Scan"
 	ReImportScanRequestScanTypeKubescapeJSONImporter                          ReImportScanRequestScanType = "Kubescape JSON Importer"
 	ReImportScanRequestScanTypeLegitifyScan                                   ReImportScanRequestScanType = "Legitify Scan"
+	ReImportScanRequestScanTypeLynisScan                                      ReImportScanRequestScanType = "Lynis Scan"
 	ReImportScanRequestScanTypeMSDefenderParser                               ReImportScanRequestScanType = "MSDefender Parser"
+	ReImportScanRequestScanTypeMasscanScan                                    ReImportScanRequestScanType = "Masscan Scan"
 	ReImportScanRequestScanTypeMayhemSARIFReport                              ReImportScanRequestScanType = "Mayhem SARIF Report"
 	ReImportScanRequestScanTypeMendScan                                       ReImportScanRequestScanType = "Mend Scan"
 	ReImportScanRequestScanTypeMeterianScan                                   ReImportScanRequestScanType = "Meterian Scan"
 	ReImportScanRequestScanTypeMicrofocusWebinspectScan                       ReImportScanRequestScanType = "Microfocus Webinspect Scan"
+	ReImportScanRequestScanTypeMixAuditScan                                   ReImportScanRequestScanType = "Mix Audit Scan"
 	ReImportScanRequestScanTypeMobSFScan                                      ReImportScanRequestScanType = "MobSF Scan"
 	ReImportScanRequestScanTypeMobSFScorecardScan                             ReImportScanRequestScanType = "MobSF Scorecard Scan"
 	ReImportScanRequestScanTypeMobsfscanScan                                  ReImportScanRequestScanType = "Mobsfscan Scan"
@@ -5649,12 +6088,15 @@ const (
 	ReImportScanRequestScanTypeN0s1Scanner                                    ReImportScanRequestScanType = "n0s1 Scanner"
 	ReImportScanRequestScanTypeNPMAuditScan                                   ReImportScanRequestScanType = "NPM Audit Scan"
 	ReImportScanRequestScanTypeNPMAuditV7Scan                                 ReImportScanRequestScanType = "NPM Audit v7+ Scan"
+	ReImportScanRequestScanTypeNaabuScan                                      ReImportScanRequestScanType = "Naabu Scan"
 	ReImportScanRequestScanTypeNancyScan                                      ReImportScanRequestScanType = "Nancy Scan"
 	ReImportScanRequestScanTypeNetsparkerScan                                 ReImportScanRequestScanType = "Netsparker Scan"
+	ReImportScanRequestScanTypeNettackerScan                                  ReImportScanRequestScanType = "Nettacker Scan"
 	ReImportScanRequestScanTypeNeuVectorCompliance                            ReImportScanRequestScanType = "NeuVector (compliance)"
 	ReImportScanRequestScanTypeNeuVectorREST                                  ReImportScanRequestScanType = "NeuVector (REST)"
 	ReImportScanRequestScanTypeNexposeScan                                    ReImportScanRequestScanType = "Nexpose Scan"
 	ReImportScanRequestScanTypeNiktoScan                                      ReImportScanRequestScanType = "Nikto Scan"
+	ReImportScanRequestScanTypeNjsscanScan                                    ReImportScanRequestScanType = "njsscan Scan"
 	ReImportScanRequestScanTypeNmapScan                                       ReImportScanRequestScanType = "Nmap Scan"
 	ReImportScanRequestScanTypeNodeSecurityPlatformScan                       ReImportScanRequestScanType = "Node Security Platform Scan"
 	ReImportScanRequestScanTypeNoseyParkerScan                                ReImportScanRequestScanType = "Nosey Parker Scan"
@@ -5664,6 +6106,7 @@ const (
 	ReImportScanRequestScanTypeOpenReports                                    ReImportScanRequestScanType = "OpenReports"
 	ReImportScanRequestScanTypeOpenVASParser                                  ReImportScanRequestScanType = "OpenVAS Parser"
 	ReImportScanRequestScanTypeOpenVASParserV2                                ReImportScanRequestScanType = "OpenVAS Parser v2"
+	ReImportScanRequestScanTypeOpenVEXScan                                    ReImportScanRequestScanType = "OpenVEX Scan"
 	ReImportScanRequestScanTypeOpenscapVulnerabilityScan                      ReImportScanRequestScanType = "Openscap Vulnerability Scan"
 	ReImportScanRequestScanTypeOrcaSecurityAlerts                             ReImportScanRequestScanType = "Orca Security Alerts"
 	ReImportScanRequestScanTypeOssIndexDevauditSCAScanImporter                ReImportScanRequestScanType = "OssIndex Devaudit SCA Scan Importer"
@@ -5676,9 +6119,13 @@ const (
 	ReImportScanRequestScanTypePWNSAST                                        ReImportScanRequestScanType = "PWN SAST"
 	ReImportScanRequestScanTypePingCastle                                     ReImportScanRequestScanType = "PingCastle"
 	ReImportScanRequestScanTypePipAuditScan                                   ReImportScanRequestScanType = "pip-audit Scan"
+	ReImportScanRequestScanTypePnpmAuditScan                                  ReImportScanRequestScanType = "pnpm Audit Scan"
+	ReImportScanRequestScanTypePolarisScan                                    ReImportScanRequestScanType = "Polaris Scan"
 	ReImportScanRequestScanTypePopeyeScan                                     ReImportScanRequestScanType = "Popeye Scan"
 	ReImportScanRequestScanTypeProgpilotScan                                  ReImportScanRequestScanType = "Progpilot Scan"
+	ReImportScanRequestScanTypePromptfooScan                                  ReImportScanRequestScanType = "Promptfoo Scan"
 	ReImportScanRequestScanTypeProwlerScan                                    ReImportScanRequestScanType = "Prowler Scan"
+	ReImportScanRequestScanTypeQARKScan                                       ReImportScanRequestScanType = "QARK Scan"
 	ReImportScanRequestScanTypeQualysHackerGuardianScan                       ReImportScanRequestScanType = "Qualys Hacker Guardian Scan"
 	ReImportScanRequestScanTypeQualysInfrastructureScanWebGUIXML              ReImportScanRequestScanType = "Qualys Infrastructure Scan (WebGUI XML)"
 	ReImportScanRequestScanTypeQualysScan                                     ReImportScanRequestScanType = "Qualys Scan"
@@ -5689,15 +6136,18 @@ const (
 	ReImportScanRequestScanTypeRetireJsScan                                   ReImportScanRequestScanType = "Retire.js Scan"
 	ReImportScanRequestScanTypeReversingLabsSpectraAssure                     ReImportScanRequestScanType = "ReversingLabs Spectra Assure"
 	ReImportScanRequestScanTypeRiskReconAPIImporter                           ReImportScanRequestScanType = "Risk Recon API Importer"
+	ReImportScanRequestScanTypeRkhunterScan                                   ReImportScanRequestScanType = "rkhunter Scan"
 	ReImportScanRequestScanTypeRubocopScan                                    ReImportScanRequestScanType = "Rubocop Scan"
 	ReImportScanRequestScanTypeRustyHogScan                                   ReImportScanRequestScanType = "Rusty Hog Scan"
 	ReImportScanRequestScanTypeSARIF                                          ReImportScanRequestScanType = "SARIF"
 	ReImportScanRequestScanTypeSKFScan                                        ReImportScanRequestScanType = "SKF Scan"
+	ReImportScanRequestScanTypeSPDXScan                                       ReImportScanRequestScanType = "SPDX Scan"
 	ReImportScanRequestScanTypeSSHAuditImporter                               ReImportScanRequestScanType = "SSH Audit Importer"
 	ReImportScanRequestScanTypeSSLLabsScan                                    ReImportScanRequestScanType = "SSL Labs Scan"
 	ReImportScanRequestScanTypeSSLyzeScanJSON                                 ReImportScanRequestScanType = "SSLyze Scan (JSON)"
 	ReImportScanRequestScanTypeScantistScan                                   ReImportScanRequestScanType = "Scantist Scan"
 	ReImportScanRequestScanTypeScoutSuiteScan                                 ReImportScanRequestScanType = "Scout Suite Scan"
+	ReImportScanRequestScanTypeSecretlintScan                                 ReImportScanRequestScanType = "Secretlint Scan"
 	ReImportScanRequestScanTypeSemgrepJSONReport                              ReImportScanRequestScanType = "Semgrep JSON Report"
 	ReImportScanRequestScanTypeSemgrepProJSONReport                           ReImportScanRequestScanType = "Semgrep Pro JSON Report"
 	ReImportScanRequestScanTypeSnykCodeScan                                   ReImportScanRequestScanType = "Snyk Code Scan"
@@ -5709,6 +6159,7 @@ const (
 	ReImportScanRequestScanTypeSonarQubeScanDetailed                          ReImportScanRequestScanType = "SonarQube Scan detailed"
 	ReImportScanRequestScanTypeSonatypeApplicationScan                        ReImportScanRequestScanType = "Sonatype Application Scan"
 	ReImportScanRequestScanTypeSpotBugsScan                                   ReImportScanRequestScanType = "SpotBugs Scan"
+	ReImportScanRequestScanTypeSqlmapScan                                     ReImportScanRequestScanType = "Sqlmap Scan"
 	ReImportScanRequestScanTypeSslscan                                        ReImportScanRequestScanType = "Sslscan"
 	ReImportScanRequestScanTypeSslyzeScan                                     ReImportScanRequestScanType = "Sslyze Scan"
 	ReImportScanRequestScanTypeStackHawkHawkScan                              ReImportScanRequestScanType = "StackHawk HawkScan"
@@ -5735,6 +6186,7 @@ const (
 	ReImportScanRequestScanTypeWFuzzJSONReport                                ReImportScanRequestScanType = "WFuzz JSON report"
 	ReImportScanRequestScanTypeWapitiScan                                     ReImportScanRequestScanType = "Wapiti Scan"
 	ReImportScanRequestScanTypeWazuh                                          ReImportScanRequestScanType = "Wazuh"
+	ReImportScanRequestScanTypeWhatWebScan                                    ReImportScanRequestScanType = "WhatWeb Scan"
 	ReImportScanRequestScanTypeWhispersScan                                   ReImportScanRequestScanType = "Whispers Scan"
 	ReImportScanRequestScanTypeWhiteHatSentinel                               ReImportScanRequestScanType = "WhiteHat Sentinel"
 	ReImportScanRequestScanTypeWizScan                                        ReImportScanRequestScanType = "Wiz Scan"
@@ -5747,6 +6199,7 @@ const (
 	ReImportScanRequestScanTypeXygeniSASTScan                                 ReImportScanRequestScanType = "Xygeni SAST Scan"
 	ReImportScanRequestScanTypeXygeniSCAScan                                  ReImportScanRequestScanType = "Xygeni SCA Scan"
 	ReImportScanRequestScanTypeXygeniSecretsScan                              ReImportScanRequestScanType = "Xygeni Secrets Scan"
+	ReImportScanRequestScanTypeYARAScan                                       ReImportScanRequestScanType = "YARA Scan"
 	ReImportScanRequestScanTypeYarnAuditScan                                  ReImportScanRequestScanType = "Yarn Audit Scan"
 	ReImportScanRequestScanTypeZAPScan                                        ReImportScanRequestScanType = "ZAP Scan"
 	ReImportScanRequestScanTypeZoraParser                                     ReImportScanRequestScanType = "Zora Parser"
@@ -5755,6 +6208,10 @@ const (
 // Valid indicates whether the value is a known member of the ReImportScanRequestScanType enum.
 func (e ReImportScanRequestScanType) Valid() bool {
 	switch e {
+	case ReImportScanRequestScanTypeAIDEScan:
+		return true
+	case ReImportScanRequestScanTypeAPKLeaksScan:
+		return true
 	case ReImportScanRequestScanTypeAWSInspector2Scan:
 		return true
 	case ReImportScanRequestScanTypeAWSProwlerScan:
@@ -5825,7 +6282,13 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeBurpSuiteDASTScan:
 		return true
+	case ReImportScanRequestScanTypeCSAFScan:
+		return true
 	case ReImportScanRequestScanTypeCargoAuditScan:
+		return true
+	case ReImportScanRequestScanTypeCfnLintScan:
+		return true
+	case ReImportScanRequestScanTypeCfnNagScan:
 		return true
 	case ReImportScanRequestScanTypeCheckmarxCxFlowSAST:
 		return true
@@ -5841,9 +6304,13 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeChefInspectLog:
 		return true
+	case ReImportScanRequestScanTypeChkrootkitScan:
+		return true
 	case ReImportScanRequestScanTypeChoctawHogScan:
 		return true
 	case ReImportScanRequestScanTypeClairScan:
+		return true
+	case ReImportScanRequestScanTypeClamAVScan:
 		return true
 	case ReImportScanRequestScanTypeCloudflareInsights:
 		return true
@@ -5855,11 +6322,17 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeCodecheckerReportNative:
 		return true
+	case ReImportScanRequestScanTypeComposerAuditScan:
+		return true
+	case ReImportScanRequestScanTypeConftestScan:
+		return true
 	case ReImportScanRequestScanTypeContrastScan:
 		return true
 	case ReImportScanRequestScanTypeCoverityAPI:
 		return true
 	case ReImportScanRequestScanTypeCoverityScanJSONReport:
+		return true
+	case ReImportScanRequestScanTypeCppcheckScan:
 		return true
 	case ReImportScanRequestScanTypeCrashtestSecurityJSONFile:
 		return true
@@ -5868,6 +6341,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeCredScanScan:
 		return true
 	case ReImportScanRequestScanTypeCrunch42Scan:
+		return true
+	case ReImportScanRequestScanTypeCweCheckerScan:
 		return true
 	case ReImportScanRequestScanTypeCyberwatchScanGaleax:
 		return true
@@ -5887,9 +6362,15 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeDetectSecretsScan:
 		return true
+	case ReImportScanRequestScanTypeDevSkimScan:
+		return true
+	case ReImportScanRequestScanTypeDirsearchScan:
+		return true
 	case ReImportScanRequestScanTypeDockerBenchSecurityScan:
 		return true
 	case ReImportScanRequestScanTypeDockleScan:
+		return true
+	case ReImportScanRequestScanTypeDotnetVulnerablePackagesScan:
 		return true
 	case ReImportScanRequestScanTypeDrHeaderJSONImporter:
 		return true
@@ -5901,7 +6382,15 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeEssexHogScan:
 		return true
+	case ReImportScanRequestScanTypeFfufScan:
+		return true
+	case ReImportScanRequestScanTypeFirmwalkerScan:
+		return true
+	case ReImportScanRequestScanTypeFlawfinderScan:
+		return true
 	case ReImportScanRequestScanTypeFortifyScan:
+		return true
+	case ReImportScanRequestScanTypeFortifyScanV2:
 		return true
 	case ReImportScanRequestScanTypeGarakScan:
 		return true
@@ -5929,6 +6418,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeGitleaksScan:
 		return true
+	case ReImportScanRequestScanTypeGobusterScan:
+		return true
 	case ReImportScanRequestScanTypeGoogleCloudArtifactVulnerabilityScan:
 		return true
 	case ReImportScanRequestScanTypeGosecScanner:
@@ -5951,6 +6442,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeHorusecScan:
 		return true
+	case ReImportScanRequestScanTypeHttpxScan:
+		return true
 	case ReImportScanRequestScanTypeHumbleJsonImporter:
 		return true
 	case ReImportScanRequestScanTypeHuskyCIReport:
@@ -5960,6 +6453,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeIBMAppScanDAST:
 		return true
 	case ReImportScanRequestScanTypeImmuniwebScan:
+		return true
+	case ReImportScanRequestScanTypeInferScan:
 		return true
 	case ReImportScanRequestScanTypeIntSightsReport:
 		return true
@@ -5987,13 +6482,19 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeKubeHunterScan:
 		return true
+	case ReImportScanRequestScanTypeKubeLinterScan:
+		return true
 	case ReImportScanRequestScanTypeKubeauditScan:
 		return true
 	case ReImportScanRequestScanTypeKubescapeJSONImporter:
 		return true
 	case ReImportScanRequestScanTypeLegitifyScan:
 		return true
+	case ReImportScanRequestScanTypeLynisScan:
+		return true
 	case ReImportScanRequestScanTypeMSDefenderParser:
+		return true
+	case ReImportScanRequestScanTypeMasscanScan:
 		return true
 	case ReImportScanRequestScanTypeMayhemSARIFReport:
 		return true
@@ -6002,6 +6503,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeMeterianScan:
 		return true
 	case ReImportScanRequestScanTypeMicrofocusWebinspectScan:
+		return true
+	case ReImportScanRequestScanTypeMixAuditScan:
 		return true
 	case ReImportScanRequestScanTypeMobSFScan:
 		return true
@@ -6017,9 +6520,13 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeNPMAuditV7Scan:
 		return true
+	case ReImportScanRequestScanTypeNaabuScan:
+		return true
 	case ReImportScanRequestScanTypeNancyScan:
 		return true
 	case ReImportScanRequestScanTypeNetsparkerScan:
+		return true
+	case ReImportScanRequestScanTypeNettackerScan:
 		return true
 	case ReImportScanRequestScanTypeNeuVectorCompliance:
 		return true
@@ -6028,6 +6535,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeNexposeScan:
 		return true
 	case ReImportScanRequestScanTypeNiktoScan:
+		return true
+	case ReImportScanRequestScanTypeNjsscanScan:
 		return true
 	case ReImportScanRequestScanTypeNmapScan:
 		return true
@@ -6046,6 +6555,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeOpenVASParser:
 		return true
 	case ReImportScanRequestScanTypeOpenVASParserV2:
+		return true
+	case ReImportScanRequestScanTypeOpenVEXScan:
 		return true
 	case ReImportScanRequestScanTypeOpenscapVulnerabilityScan:
 		return true
@@ -6071,11 +6582,19 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypePipAuditScan:
 		return true
+	case ReImportScanRequestScanTypePnpmAuditScan:
+		return true
+	case ReImportScanRequestScanTypePolarisScan:
+		return true
 	case ReImportScanRequestScanTypePopeyeScan:
 		return true
 	case ReImportScanRequestScanTypeProgpilotScan:
 		return true
+	case ReImportScanRequestScanTypePromptfooScan:
+		return true
 	case ReImportScanRequestScanTypeProwlerScan:
+		return true
+	case ReImportScanRequestScanTypeQARKScan:
 		return true
 	case ReImportScanRequestScanTypeQualysHackerGuardianScan:
 		return true
@@ -6097,6 +6616,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeRiskReconAPIImporter:
 		return true
+	case ReImportScanRequestScanTypeRkhunterScan:
+		return true
 	case ReImportScanRequestScanTypeRubocopScan:
 		return true
 	case ReImportScanRequestScanTypeRustyHogScan:
@@ -6104,6 +6625,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeSARIF:
 		return true
 	case ReImportScanRequestScanTypeSKFScan:
+		return true
+	case ReImportScanRequestScanTypeSPDXScan:
 		return true
 	case ReImportScanRequestScanTypeSSHAuditImporter:
 		return true
@@ -6114,6 +6637,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeScantistScan:
 		return true
 	case ReImportScanRequestScanTypeScoutSuiteScan:
+		return true
+	case ReImportScanRequestScanTypeSecretlintScan:
 		return true
 	case ReImportScanRequestScanTypeSemgrepJSONReport:
 		return true
@@ -6136,6 +6661,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeSonatypeApplicationScan:
 		return true
 	case ReImportScanRequestScanTypeSpotBugsScan:
+		return true
+	case ReImportScanRequestScanTypeSqlmapScan:
 		return true
 	case ReImportScanRequestScanTypeSslscan:
 		return true
@@ -6189,6 +6716,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 		return true
 	case ReImportScanRequestScanTypeWazuh:
 		return true
+	case ReImportScanRequestScanTypeWhatWebScan:
+		return true
 	case ReImportScanRequestScanTypeWhispersScan:
 		return true
 	case ReImportScanRequestScanTypeWhiteHatSentinel:
@@ -6212,6 +6741,8 @@ func (e ReImportScanRequestScanType) Valid() bool {
 	case ReImportScanRequestScanTypeXygeniSCAScan:
 		return true
 	case ReImportScanRequestScanTypeXygeniSecretsScan:
+		return true
+	case ReImportScanRequestScanTypeYARAScan:
 		return true
 	case ReImportScanRequestScanTypeYarnAuditScan:
 		return true
@@ -6290,6 +6821,30 @@ func (e RegulationRequestCategory) Valid() bool {
 	case RegulationRequestCategoryPrivacy:
 		return true
 	case RegulationRequestCategorySecurity:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ReportGenerateOptionRequestReportType.
+const (
+	CSV   ReportGenerateOptionRequestReportType = "CSV"
+	Excel ReportGenerateOptionRequestReportType = "Excel"
+	HTML  ReportGenerateOptionRequestReportType = "HTML"
+	JSON  ReportGenerateOptionRequestReportType = "JSON"
+)
+
+// Valid indicates whether the value is a known member of the ReportGenerateOptionRequestReportType enum.
+func (e ReportGenerateOptionRequestReportType) Valid() bool {
+	switch e {
+	case CSV:
+		return true
+	case Excel:
+		return true
+	case HTML:
+		return true
+	case JSON:
 		return true
 	default:
 		return false
@@ -7085,6 +7640,27 @@ func (e AssetsRetrieveParamsPrefetch) Valid() bool {
 	case AssetsRetrieveParamsPrefetchTeamManager:
 		return true
 	case AssetsRetrieveParamsPrefetchTechnicalContact:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for CicdInfrastructureListParamsInfrastructureType.
+const (
+	CicdInfrastructureListParamsInfrastructureTypeBuildServer   CicdInfrastructureListParamsInfrastructureType = "build_server"
+	CicdInfrastructureListParamsInfrastructureTypeOrchestration CicdInfrastructureListParamsInfrastructureType = "orchestration"
+	CicdInfrastructureListParamsInfrastructureTypeScmServer     CicdInfrastructureListParamsInfrastructureType = "scm_server"
+)
+
+// Valid indicates whether the value is a known member of the CicdInfrastructureListParamsInfrastructureType enum.
+func (e CicdInfrastructureListParamsInfrastructureType) Valid() bool {
+	switch e {
+	case CicdInfrastructureListParamsInfrastructureTypeBuildServer:
+		return true
+	case CicdInfrastructureListParamsInfrastructureTypeOrchestration:
+		return true
+	case CicdInfrastructureListParamsInfrastructureTypeScmServer:
 		return true
 	default:
 		return false
@@ -9537,7 +10113,9 @@ type AddNewFileOptionRequest struct {
 type AddNewNoteOptionRequest struct {
 	Entry    string `json:"entry"`
 	NoteType *int   `json:"note_type,omitempty"`
-	Private  *bool  `json:"private,omitempty"`
+
+	// Private Only you and superusers can see this note. It is also left out of reports and issue-tracker sync.
+	Private *bool `json:"private,omitempty"`
 }
 
 // Announcement defines model for Announcement.
@@ -9602,28 +10180,92 @@ type AppAnalysis struct {
 		Product *map[string]Product  `json:"product,omitempty"`
 		User    *map[string]UserStub `json:"user,omitempty"`
 	} `json:"prefetch,omitempty"`
-	Product      int       `json:"product"`
-	Tags         *[]string `json:"tags,omitempty"`
-	User         int       `json:"user"`
-	Version      *string   `json:"version,omitempty"`
-	Website      *string   `json:"website,omitempty"`
-	WebsiteFound *string   `json:"website_found,omitempty"`
+	Product      int                       `json:"product"`
+	Tags         *[]string                 `json:"tags,omitempty"`
+	User         int                       `json:"user"`
+	Version      *string                   `json:"version,omitempty"`
+	Website      *AppAnalysis_Website      `json:"website,omitempty"`
+	WebsiteFound *AppAnalysis_WebsiteFound `json:"website_found,omitempty"`
+}
+
+// AppAnalysisWebsite0 defines model for AppAnalysis.Website.0.
+type AppAnalysisWebsite0 = string
+
+// AppAnalysisWebsite1 defines model for AppAnalysis.Website.1.
+type AppAnalysisWebsite1 = string
+
+// AppAnalysis_Website defines model for AppAnalysis.Website.
+type AppAnalysis_Website struct {
+	union json.RawMessage
+}
+
+// AppAnalysisWebsiteFound0 defines model for AppAnalysis.WebsiteFound.0.
+type AppAnalysisWebsiteFound0 = string
+
+// AppAnalysisWebsiteFound1 defines model for AppAnalysis.WebsiteFound.1.
+type AppAnalysisWebsiteFound1 = string
+
+// AppAnalysis_WebsiteFound defines model for AppAnalysis.WebsiteFound.
+type AppAnalysis_WebsiteFound struct {
+	union json.RawMessage
 }
 
 // AppAnalysisRequest defines model for AppAnalysisRequest.
 type AppAnalysisRequest struct {
-	Confidence   *int      `json:"confidence,omitempty"`
-	Icon         *string   `json:"icon,omitempty"`
-	Name         string    `json:"name"`
-	Product      int       `json:"product"`
-	Tags         *[]string `json:"tags,omitempty"`
-	User         int       `json:"user"`
-	Version      *string   `json:"version,omitempty"`
-	Website      *string   `json:"website,omitempty"`
-	WebsiteFound *string   `json:"website_found,omitempty"`
+	Confidence   *int                             `json:"confidence,omitempty"`
+	Icon         *string                          `json:"icon,omitempty"`
+	Name         string                           `json:"name"`
+	Product      int                              `json:"product"`
+	Tags         *[]string                        `json:"tags,omitempty"`
+	User         int                              `json:"user"`
+	Version      *string                          `json:"version,omitempty"`
+	Website      *AppAnalysisRequest_Website      `json:"website,omitempty"`
+	WebsiteFound *AppAnalysisRequest_WebsiteFound `json:"website_found,omitempty"`
 }
 
-// Asset defines model for Asset.
+// AppAnalysisRequestWebsite0 defines model for AppAnalysisRequest.Website.0.
+type AppAnalysisRequestWebsite0 = string
+
+// AppAnalysisRequestWebsite1 defines model for AppAnalysisRequest.Website.1.
+type AppAnalysisRequestWebsite1 = string
+
+// AppAnalysisRequest_Website defines model for AppAnalysisRequest.Website.
+type AppAnalysisRequest_Website struct {
+	union json.RawMessage
+}
+
+// AppAnalysisRequestWebsiteFound0 defines model for AppAnalysisRequest.WebsiteFound.0.
+type AppAnalysisRequestWebsiteFound0 = string
+
+// AppAnalysisRequestWebsiteFound1 defines model for AppAnalysisRequest.WebsiteFound.1.
+type AppAnalysisRequestWebsiteFound1 = string
+
+// AppAnalysisRequest_WebsiteFound defines model for AppAnalysisRequest.WebsiteFound.
+type AppAnalysisRequest_WebsiteFound struct {
+	union json.RawMessage
+}
+
+// Asset Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type Asset struct {
 	AssetManagers     *int           `json:"asset_managers,omitempty"`
 	AssetMeta         *[]ProductMeta `json:"asset_meta,omitempty"`
@@ -9732,7 +10374,23 @@ type AssetOrigin string
 // * `web` - Web
 type AssetPlatform string
 
-// AssetAPIScanConfiguration defines model for AssetAPIScanConfiguration.
+// AssetAPIScanConfiguration Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type AssetAPIScanConfiguration struct {
 	Asset    int  `json:"asset"`
 	Id       *int `json:"id,omitempty"`
@@ -9746,7 +10404,23 @@ type AssetAPIScanConfiguration struct {
 	ToolConfiguration int     `json:"tool_configuration"`
 }
 
-// AssetAPIScanConfigurationRequest defines model for AssetAPIScanConfigurationRequest.
+// AssetAPIScanConfigurationRequest Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type AssetAPIScanConfigurationRequest struct {
 	Asset             int     `json:"asset"`
 	ServiceKey1       *string `json:"service_key_1,omitempty"`
@@ -9755,7 +10429,27 @@ type AssetAPIScanConfigurationRequest struct {
 	ToolConfiguration int     `json:"tool_configuration"`
 }
 
-// AssetRequest defines model for AssetRequest.
+// AssetRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type AssetRequest struct {
 	AssetManagers     *int   `json:"asset_managers,omitempty"`
 	AssetNumericGrade *int   `json:"asset_numeric_grade,omitempty"`
@@ -9884,6 +10578,67 @@ type BurpRawRequestResponseRequest struct {
 	ReqResp []map[string]string `json:"req_resp"`
 }
 
+// CICDInfrastructure defines model for CICDInfrastructure.
+type CICDInfrastructure struct {
+	Description *string `json:"description,omitempty"`
+	Id          *int    `json:"id,omitempty"`
+
+	// InfrastructureType * `scm_server` - SCM Server
+	// * `build_server` - Build Server
+	// * `orchestration` - Orchestration Engine
+	InfrastructureType CICDInfrastructureInfrastructureType `json:"infrastructure_type"`
+	Name               string                               `json:"name"`
+
+	// Url Public URL of the tool (e.g., https://jenkins.company.com)
+	Url *CICDInfrastructure_Url `json:"url,omitempty"`
+}
+
+// CICDInfrastructureInfrastructureType * `scm_server` - SCM Server
+// * `build_server` - Build Server
+// * `orchestration` - Orchestration Engine
+type CICDInfrastructureInfrastructureType string
+
+// CICDInfrastructureUrl0 defines model for CICDInfrastructure.Url.0.
+type CICDInfrastructureUrl0 = string
+
+// CICDInfrastructureUrl1 defines model for CICDInfrastructure.Url.1.
+type CICDInfrastructureUrl1 = string
+
+// CICDInfrastructure_Url Public URL of the tool (e.g., https://jenkins.company.com)
+type CICDInfrastructure_Url struct {
+	union json.RawMessage
+}
+
+// CICDInfrastructureRequest defines model for CICDInfrastructureRequest.
+type CICDInfrastructureRequest struct {
+	Description *string `json:"description,omitempty"`
+
+	// InfrastructureType * `scm_server` - SCM Server
+	// * `build_server` - Build Server
+	// * `orchestration` - Orchestration Engine
+	InfrastructureType CICDInfrastructureRequestInfrastructureType `json:"infrastructure_type"`
+	Name               string                                      `json:"name"`
+
+	// Url Public URL of the tool (e.g., https://jenkins.company.com)
+	Url *CICDInfrastructureRequest_Url `json:"url,omitempty"`
+}
+
+// CICDInfrastructureRequestInfrastructureType * `scm_server` - SCM Server
+// * `build_server` - Build Server
+// * `orchestration` - Orchestration Engine
+type CICDInfrastructureRequestInfrastructureType string
+
+// CICDInfrastructureRequestUrl0 defines model for CICDInfrastructureRequest.Url.0.
+type CICDInfrastructureRequestUrl0 = string
+
+// CICDInfrastructureRequestUrl1 defines model for CICDInfrastructureRequest.Url.1.
+type CICDInfrastructureRequestUrl1 = string
+
+// CICDInfrastructureRequest_Url Public URL of the tool (e.g., https://jenkins.company.com)
+type CICDInfrastructureRequest_Url struct {
+	union json.RawMessage
+}
+
 // CeleryQueueTaskDetail defines model for CeleryQueueTaskDetail.
 type CeleryQueueTaskDetail struct {
 	Count           *int    `json:"count,omitempty"`
@@ -10000,11 +10755,17 @@ type Engagement struct {
 	BranchTag *string `json:"branch_tag,omitempty"`
 
 	// BuildId Build ID of the product the engagement tested.
-	BuildId *string `json:"build_id,omitempty"`
+	BuildId   *string `json:"build_id,omitempty"`
+	CheckList *bool   `json:"check_list,omitempty"`
 
-	// BuildServer Build server responsible for CI/CD test
-	BuildServer *int  `json:"build_server,omitempty"`
-	CheckList   *bool `json:"check_list,omitempty"`
+	// CicdBuildServer Build server used for this CI/CD engagement
+	CicdBuildServer *int `json:"cicd_build_server,omitempty"`
+
+	// CicdOrchestrationEngine Orchestration engine used for this CI/CD engagement
+	CicdOrchestrationEngine *int `json:"cicd_orchestration_engine,omitempty"`
+
+	// CicdScmServer Source code management server used for this CI/CD engagement
+	CicdScmServer *int `json:"cicd_scm_server,omitempty"`
 
 	// CommitHash Commit hash from repo
 	CommitHash *string `json:"commit_hash,omitempty"`
@@ -10026,10 +10787,7 @@ type Engagement struct {
 	Lead           *int                      `json:"lead,omitempty"`
 	Name           *string                   `json:"name,omitempty"`
 	Notes          *[]Note                   `json:"notes,omitempty"`
-
-	// OrchestrationEngine Orchestration service responsible for CI/CD test
-	OrchestrationEngine *int  `json:"orchestration_engine,omitempty"`
-	PenTest             *bool `json:"pen_test,omitempty"`
+	PenTest        *bool                     `json:"pen_test,omitempty"`
 
 	// Preset Settings and notes for performing this engagement.
 	Preset         *int    `json:"preset,omitempty"`
@@ -10040,11 +10798,8 @@ type Engagement struct {
 	Requester      *int    `json:"requester,omitempty"`
 	RiskAcceptance *[]int  `json:"risk_acceptance,omitempty"`
 
-	// SourceCodeManagementServer Source code server for CI/CD test
-	SourceCodeManagementServer *int `json:"source_code_management_server,omitempty"`
-
 	// SourceCodeManagementUri Resource link to source code
-	SourceCodeManagementUri *string `json:"source_code_management_uri,omitempty"`
+	SourceCodeManagementUri *Engagement_SourceCodeManagementUri `json:"source_code_management_uri,omitempty"`
 
 	// Status * `Not Started` - Not Started
 	// * `Blocked` - Blocked
@@ -10054,16 +10809,16 @@ type Engagement struct {
 	// * `On Hold` - On Hold
 	// * `Scheduled` - Scheduled
 	// * `Waiting for Resource` - Waiting for Resource
-	Status       *EngagementStatus  `json:"status,omitempty"`
-	Tags         *[]string          `json:"tags,omitempty"`
-	TargetEnd    openapi_types.Date `json:"target_end"`
-	TargetStart  openapi_types.Date `json:"target_start"`
-	TestStrategy *string            `json:"test_strategy,omitempty"`
-	ThreatModel  *bool              `json:"threat_model,omitempty"`
-	TmodelPath   *string            `json:"tmodel_path,omitempty"`
+	Status       *EngagementStatus        `json:"status,omitempty"`
+	Tags         *[]string                `json:"tags,omitempty"`
+	TargetEnd    openapi_types.Date       `json:"target_end"`
+	TargetStart  openapi_types.Date       `json:"target_start"`
+	TestStrategy *Engagement_TestStrategy `json:"test_strategy,omitempty"`
+	ThreatModel  *bool                    `json:"threat_model,omitempty"`
+	TmodelPath   *string                  `json:"tmodel_path,omitempty"`
 
 	// Tracker Link to epic or ticket system with changes to version.
-	Tracker *string `json:"tracker,omitempty"`
+	Tracker *Engagement_Tracker `json:"tracker,omitempty"`
 
 	// Updated Time that the object was most recently saved to the database
 	Updated *time.Time `json:"updated,omitempty"`
@@ -10076,6 +10831,17 @@ type Engagement struct {
 // * `CI/CD` - CI/CD
 type EngagementEngagementType string
 
+// EngagementSourceCodeManagementUri0 defines model for Engagement.SourceCodeManagementUri.0.
+type EngagementSourceCodeManagementUri0 = string
+
+// EngagementSourceCodeManagementUri1 defines model for Engagement.SourceCodeManagementUri.1.
+type EngagementSourceCodeManagementUri1 = string
+
+// Engagement_SourceCodeManagementUri Resource link to source code
+type Engagement_SourceCodeManagementUri struct {
+	union json.RawMessage
+}
+
 // EngagementStatus * `Not Started` - Not Started
 // * `Blocked` - Blocked
 // * `Cancelled` - Cancelled
@@ -10085,6 +10851,28 @@ type EngagementEngagementType string
 // * `Scheduled` - Scheduled
 // * `Waiting for Resource` - Waiting for Resource
 type EngagementStatus string
+
+// EngagementTestStrategy0 defines model for Engagement.TestStrategy.0.
+type EngagementTestStrategy0 = string
+
+// EngagementTestStrategy1 defines model for Engagement.TestStrategy.1.
+type EngagementTestStrategy1 = string
+
+// Engagement_TestStrategy defines model for Engagement.TestStrategy.
+type Engagement_TestStrategy struct {
+	union json.RawMessage
+}
+
+// EngagementTracker0 defines model for Engagement.Tracker.0.
+type EngagementTracker0 = string
+
+// EngagementTracker1 defines model for Engagement.Tracker.1.
+type EngagementTracker1 = string
+
+// Engagement_Tracker Link to epic or ticket system with changes to version.
+type Engagement_Tracker struct {
+	union json.RawMessage
+}
 
 // EngagementCheckList defines model for EngagementCheckList.
 type EngagementCheckList struct {
@@ -10175,11 +10963,17 @@ type EngagementRequest struct {
 	BranchTag *string `json:"branch_tag,omitempty"`
 
 	// BuildId Build ID of the product the engagement tested.
-	BuildId *string `json:"build_id,omitempty"`
+	BuildId   *string `json:"build_id,omitempty"`
+	CheckList *bool   `json:"check_list,omitempty"`
 
-	// BuildServer Build server responsible for CI/CD test
-	BuildServer *int  `json:"build_server,omitempty"`
-	CheckList   *bool `json:"check_list,omitempty"`
+	// CicdBuildServer Build server used for this CI/CD engagement
+	CicdBuildServer *int `json:"cicd_build_server,omitempty"`
+
+	// CicdOrchestrationEngine Orchestration engine used for this CI/CD engagement
+	CicdOrchestrationEngine *int `json:"cicd_orchestration_engine,omitempty"`
+
+	// CicdScmServer Source code management server used for this CI/CD engagement
+	CicdScmServer *int `json:"cicd_scm_server,omitempty"`
 
 	// CommitHash Commit hash from repo
 	CommitHash *string `json:"commit_hash,omitempty"`
@@ -10194,10 +10988,7 @@ type EngagementRequest struct {
 	FirstContacted *openapi_types.Date              `json:"first_contacted,omitempty"`
 	Lead           *int                             `json:"lead,omitempty"`
 	Name           *string                          `json:"name,omitempty"`
-
-	// OrchestrationEngine Orchestration service responsible for CI/CD test
-	OrchestrationEngine *int  `json:"orchestration_engine,omitempty"`
-	PenTest             *bool `json:"pen_test,omitempty"`
+	PenTest        *bool                            `json:"pen_test,omitempty"`
 
 	// Preset Settings and notes for performing this engagement.
 	Preset     *int    `json:"preset,omitempty"`
@@ -10206,11 +10997,8 @@ type EngagementRequest struct {
 	ReportType *int    `json:"report_type,omitempty"`
 	Requester  *int    `json:"requester,omitempty"`
 
-	// SourceCodeManagementServer Source code server for CI/CD test
-	SourceCodeManagementServer *int `json:"source_code_management_server,omitempty"`
-
 	// SourceCodeManagementUri Resource link to source code
-	SourceCodeManagementUri *string `json:"source_code_management_uri,omitempty"`
+	SourceCodeManagementUri *EngagementRequest_SourceCodeManagementUri `json:"source_code_management_uri,omitempty"`
 
 	// Status * `Not Started` - Not Started
 	// * `Blocked` - Blocked
@@ -10220,15 +11008,15 @@ type EngagementRequest struct {
 	// * `On Hold` - On Hold
 	// * `Scheduled` - Scheduled
 	// * `Waiting for Resource` - Waiting for Resource
-	Status       *EngagementRequestStatus `json:"status,omitempty"`
-	Tags         *[]string                `json:"tags,omitempty"`
-	TargetEnd    openapi_types.Date       `json:"target_end"`
-	TargetStart  openapi_types.Date       `json:"target_start"`
-	TestStrategy *string                  `json:"test_strategy,omitempty"`
-	ThreatModel  *bool                    `json:"threat_model,omitempty"`
+	Status       *EngagementRequestStatus        `json:"status,omitempty"`
+	Tags         *[]string                       `json:"tags,omitempty"`
+	TargetEnd    openapi_types.Date              `json:"target_end"`
+	TargetStart  openapi_types.Date              `json:"target_start"`
+	TestStrategy *EngagementRequest_TestStrategy `json:"test_strategy,omitempty"`
+	ThreatModel  *bool                           `json:"threat_model,omitempty"`
 
 	// Tracker Link to epic or ticket system with changes to version.
-	Tracker *string `json:"tracker,omitempty"`
+	Tracker *EngagementRequest_Tracker `json:"tracker,omitempty"`
 
 	// Version Version of the product the engagement tested.
 	Version *string `json:"version,omitempty"`
@@ -10237,6 +11025,17 @@ type EngagementRequest struct {
 // EngagementRequestEngagementType * `Interactive` - Interactive
 // * `CI/CD` - CI/CD
 type EngagementRequestEngagementType string
+
+// EngagementRequestSourceCodeManagementUri0 defines model for EngagementRequest.SourceCodeManagementUri.0.
+type EngagementRequestSourceCodeManagementUri0 = string
+
+// EngagementRequestSourceCodeManagementUri1 defines model for EngagementRequest.SourceCodeManagementUri.1.
+type EngagementRequestSourceCodeManagementUri1 = string
+
+// EngagementRequest_SourceCodeManagementUri Resource link to source code
+type EngagementRequest_SourceCodeManagementUri struct {
+	union json.RawMessage
+}
 
 // EngagementRequestStatus * `Not Started` - Not Started
 // * `Blocked` - Blocked
@@ -10247,6 +11046,28 @@ type EngagementRequestEngagementType string
 // * `Scheduled` - Scheduled
 // * `Waiting for Resource` - Waiting for Resource
 type EngagementRequestStatus string
+
+// EngagementRequestTestStrategy0 defines model for EngagementRequest.TestStrategy.0.
+type EngagementRequestTestStrategy0 = string
+
+// EngagementRequestTestStrategy1 defines model for EngagementRequest.TestStrategy.1.
+type EngagementRequestTestStrategy1 = string
+
+// EngagementRequest_TestStrategy defines model for EngagementRequest.TestStrategy.
+type EngagementRequest_TestStrategy struct {
+	union json.RawMessage
+}
+
+// EngagementRequestTracker0 defines model for EngagementRequest.Tracker.0.
+type EngagementRequestTracker0 = string
+
+// EngagementRequestTracker1 defines model for EngagementRequest.Tracker.1.
+type EngagementRequestTracker1 = string
+
+// EngagementRequest_Tracker Link to epic or ticket system with changes to version.
+type EngagementRequest_Tracker struct {
+	union json.RawMessage
+}
 
 // EngagementToFiles defines model for EngagementToFiles.
 type EngagementToFiles struct {
@@ -10274,15 +11095,26 @@ type EngagementUpdateJiraEpicRequest struct {
 
 // ExecutiveSummary defines model for ExecutiveSummary.
 type ExecutiveSummary struct {
-	EngagementName        string             `json:"engagement_name"`
-	EngagementTargetEnd   openapi_types.Date `json:"engagement_target_end"`
-	EngagementTargetStart openapi_types.Date `json:"engagement_target_start"`
-	TestEnvironmentName   string             `json:"test_environment_name"`
-	TestStrategyRef       string             `json:"test_strategy_ref"`
-	TestTargetEnd         time.Time          `json:"test_target_end"`
-	TestTargetStart       time.Time          `json:"test_target_start"`
-	TestTypeName          string             `json:"test_type_name"`
-	TotalFindings         int                `json:"total_findings"`
+	EngagementName        string                           `json:"engagement_name"`
+	EngagementTargetEnd   openapi_types.Date               `json:"engagement_target_end"`
+	EngagementTargetStart openapi_types.Date               `json:"engagement_target_start"`
+	TestEnvironmentName   string                           `json:"test_environment_name"`
+	TestStrategyRef       ExecutiveSummary_TestStrategyRef `json:"test_strategy_ref"`
+	TestTargetEnd         time.Time                        `json:"test_target_end"`
+	TestTargetStart       time.Time                        `json:"test_target_start"`
+	TestTypeName          string                           `json:"test_type_name"`
+	TotalFindings         int                              `json:"total_findings"`
+}
+
+// ExecutiveSummaryTestStrategyRef0 defines model for ExecutiveSummary.TestStrategyRef.0.
+type ExecutiveSummaryTestStrategyRef0 = string
+
+// ExecutiveSummaryTestStrategyRef1 defines model for ExecutiveSummary.TestStrategyRef.1.
+type ExecutiveSummaryTestStrategyRef1 = string
+
+// ExecutiveSummary_TestStrategyRef defines model for ExecutiveSummary.TestStrategyRef.
+type ExecutiveSummary_TestStrategyRef struct {
+	union json.RawMessage
 }
 
 // File defines model for File.
@@ -10322,7 +11154,8 @@ type Finding struct {
 	Cvssv4Score *float64 `json:"cvssv4_score,omitempty"`
 
 	// Cwe The CWE number associated with this flaw.
-	Cwe *int `json:"cwe,omitempty"`
+	Cwe  *int          `json:"cwe,omitempty"`
+	Cwes *[]FindingCwe `json:"cwes,omitempty"`
 
 	// Date The date the flaw was discovered.
 	Date *openapi_types.Date `json:"date,omitempty"`
@@ -10518,8 +11351,9 @@ type Finding struct {
 	Tags             *[]string `json:"tags,omitempty"`
 
 	// Test The test that is associated with this flaw.
-	Test     *int `json:"test,omitempty"`
-	ThreadId *int `json:"thread_id,omitempty"`
+	Test         *int    `json:"test,omitempty"`
+	TestTypeName *string `json:"test_type_name,omitempty"`
+	ThreadId     *int    `json:"thread_id,omitempty"`
 
 	// Title A short description of the flaw.
 	Title string `json:"title"`
@@ -10598,7 +11432,8 @@ type FindingCreate struct {
 	Cvssv4Score *float64 `json:"cvssv4_score,omitempty"`
 
 	// Cwe The CWE number associated with this flaw.
-	Cwe *int `json:"cwe,omitempty"`
+	Cwe  *int          `json:"cwe,omitempty"`
+	Cwes *[]FindingCwe `json:"cwes,omitempty"`
 
 	// Date The date the flaw was discovered.
 	Date *openapi_types.Date `json:"date,omitempty"`
@@ -10811,7 +11646,8 @@ type FindingCreateRequest struct {
 	Cvssv4Score *float64 `json:"cvssv4_score,omitempty"`
 
 	// Cwe The CWE number associated with this flaw.
-	Cwe *int `json:"cwe,omitempty"`
+	Cwe  *int                 `json:"cwe,omitempty"`
+	Cwes *[]FindingCweRequest `json:"cwes,omitempty"`
 
 	// Date The date the flaw was discovered.
 	Date *openapi_types.Date `json:"date,omitempty"`
@@ -10965,6 +11801,16 @@ type FindingCreateRequest struct {
 	VulnerabilityIds *[]VulnerabilityIdRequest `json:"vulnerability_ids,omitempty"`
 }
 
+// FindingCwe defines model for FindingCwe.
+type FindingCwe struct {
+	Cwe string `json:"cwe"`
+}
+
+// FindingCweRequest defines model for FindingCweRequest.
+type FindingCweRequest struct {
+	Cwe string `json:"cwe"`
+}
+
 // FindingEngagement defines model for FindingEngagement.
 type FindingEngagement struct {
 	// BranchTag Tag or branch of the product the engagement tested.
@@ -11069,7 +11915,8 @@ type FindingRequest struct {
 	Cvssv4Score *float64 `json:"cvssv4_score,omitempty"`
 
 	// Cwe The CWE number associated with this flaw.
-	Cwe *int `json:"cwe,omitempty"`
+	Cwe  *int                 `json:"cwe,omitempty"`
+	Cwes *[]FindingCweRequest `json:"cwes,omitempty"`
 
 	// Date The date the flaw was discovered.
 	Date *openapi_types.Date `json:"date,omitempty"`
@@ -11476,6 +12323,7 @@ type ImportScan struct {
 	ScanDate *openapi_types.Date `json:"scan_date,omitempty"`
 
 	// ScanType * `Acunetix Scan` - Acunetix Scanner
+	// * `AIDE Scan` - AIDE Scan
 	// * `Alert Logic Scan` - Alert Logic Scan
 	// * `Anchore Engine Scan` - Anchore Engine Scan
 	// * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -11483,6 +12331,7 @@ type ImportScan struct {
 	// * `Anchore Grype detailed` - Anchore Grype detailed
 	// * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 	// * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+	// * `APKLeaks Scan` - APKLeaks Scan
 	// * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 	// * `AppSpider Scan` - AppSpider Scan
 	// * `Aqua Scan` - Aqua Scan
@@ -11511,6 +12360,8 @@ type ImportScan struct {
 	// * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 	// * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 	// * `CargoAudit Scan` - CargoAudit Scan
+	// * `cfn-lint Scan` - cfn-lint Scan
+	// * `cfn-nag Scan` - cfn-nag Scan
 	// * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 	// * `Checkmarx One Scan` - Checkmarx One Scan
 	// * `Checkmarx OSA` - Checkmarx OSA
@@ -11518,20 +12369,27 @@ type ImportScan struct {
 	// * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 	// * `Checkov Scan` - Checkov Scan
 	// * `Chef Inspect Log` - Chef Inspect Log
+	// * `chkrootkit Scan` - chkrootkit Scan
 	// * `Choctaw Hog Scan` - Choctaw Hog Scan
 	// * `Clair Scan` - Clair Scan
+	// * `ClamAV Scan` - ClamAV Scan
 	// * `Cloudflare Insights` - Cloudflare Insights
 	// * `Cloudsploit Scan` - Cloudsploit Scan
 	// * `Cobalt.io API Import` - Cobalt.io API Import
 	// * `Cobalt.io Scan` - Cobalt.io Scan
 	// * `Codechecker Report native` - Codechecker Report native
+	// * `Composer Audit Scan` - Composer Audit Scan
+	// * `Conftest Scan` - Conftest Scan
 	// * `Contrast Scan` - Contrast Scan
 	// * `Coverity API` - Coverity API
 	// * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+	// * `Cppcheck Scan` - Cppcheck Scan
 	// * `Crashtest Security JSON File` - Crashtest Security JSON File
 	// * `Crashtest Security XML File` - Crashtest Security XML File
 	// * `CredScan Scan` - CredScan Scan
 	// * `Crunch42 Scan` - Crunch42 Scan
+	// * `CSAF Scan` - CSAF Scan
+	// * `cwe_checker Scan` - cwe_checker Scan
 	// * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 	// * `CycloneDX Scan` - CycloneDX Scan
 	// * `Cycognito Scan` - Cycognito Scan
@@ -11540,15 +12398,22 @@ type ImportScan struct {
 	// * `Dependency Check Scan` - Dependency Check Scan
 	// * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 	// * `Detect-secrets Scan` - Detect-secrets Scan
+	// * `DevSkim Scan` - DevSkim Scan
+	// * `Dirsearch Scan` - Dirsearch Scan
 	// * `docker-bench-security Scan` - docker-bench-security Scan
 	// * `Dockle Scan` - Dockle Scan
+	// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 	// * `DrHeader JSON Importer` - DrHeader JSON Importer
 	// * `DSOP Scan` - DSOP Scan
 	// * `Duroc Hog Scan` - Duroc Hog Scan
 	// * `Edgescan Scan` - Edgescan Scan
 	// * `ESLint Scan` - ESLint Scan
 	// * `Essex Hog Scan` - Essex Hog Scan
+	// * `ffuf Scan` - ffuf Scan
+	// * `Firmwalker Scan` - Firmwalker Scan
+	// * `Flawfinder Scan` - Flawfinder Scan
 	// * `Fortify Scan` - Fortify Scan
+	// * `Fortify Scan v2` - Fortify Scan v2
 	// * `Garak Scan` - Garak Scan
 	// * `Generic Findings Import` - Generic Findings Import
 	// * `Ggshield Scan` - Ggshield Scan
@@ -11562,6 +12427,7 @@ type ImportScan struct {
 	// * `GitLab SAST Report` - GitLab SAST Report
 	// * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 	// * `Gitleaks Scan` - Gitleaks Scan
+	// * `Gobuster Scan` - Gobuster Scan
 	// * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 	// * `Gosec Scanner` - Gosec Scanner
 	// * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -11573,11 +12439,13 @@ type ImportScan struct {
 	// * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 	// * `HCLAppScan XML` - HCLAppScan XML
 	// * `Horusec Scan` - Horusec Scan
+	// * `httpx Scan` - httpx Scan
 	// * `Humble Json Importer` - Humble Json Importer
 	// * `HuskyCI Report` - HuskyCI Report
 	// * `Hydra Scan` - Hydra Scan
 	// * `IBM AppScan DAST` - IBM AppScan DAST
 	// * `Immuniweb Scan` - Immuniweb Scan
+	// * `Infer Scan` - Infer Scan
 	// * `IntSights Report` - IntSights Report
 	// * `Invicti Scan` - Invicti Scan
 	// * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -11592,24 +12460,31 @@ type ImportScan struct {
 	// * `kube-bench Scan` - kube-bench Scan
 	// * `Kubeaudit Scan` - Kubeaudit Scan
 	// * `KubeHunter Scan` - KubeHunter Scan
+	// * `KubeLinter Scan` - KubeLinter Scan
 	// * `Kubescape JSON Importer` - Kubescape JSON Importer
 	// * `Legitify Scan` - Legitify Scan
+	// * `Lynis Scan` - Lynis Scan
+	// * `Masscan Scan` - Masscan Scan
 	// * `Mayhem SARIF Report` - Mayhem SARIF Report
 	// * `Mend Scan` - Mend Scan
 	// * `Meterian Scan` - Meterian Scan
 	// * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+	// * `Mix Audit Scan` - Mix Audit Scan
 	// * `MobSF Scan` - MobSF Scan
 	// * `Mobsfscan Scan` - MobSF Scan
 	// * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 	// * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 	// * `MSDefender Parser` - MSDefender Parser
 	// * `n0s1 Scanner` - n0s1 Scanner
+	// * `Naabu Scan` - Naabu Scan
 	// * `Nancy Scan` - Nancy Scan
 	// * `Netsparker Scan` - Netsparker Scan
+	// * `Nettacker Scan` - Nettacker Scan
 	// * `NeuVector (compliance)` - NeuVector (compliance)
 	// * `NeuVector (REST)` - NeuVector (REST)
 	// * `Nexpose Scan` - Nexpose Scan
 	// * `Nikto Scan` - Nikto Scan
+	// * `njsscan Scan` - njsscan Scan
 	// * `Nmap Scan` - Nmap Scan
 	// * `Node Security Platform Scan` - Node Security Platform Scan
 	// * `Nosey Parker Scan` - Nosey Parker Scan
@@ -11620,6 +12495,7 @@ type ImportScan struct {
 	// * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 	// * `OpenVAS Parser` - OpenVAS Parser
 	// * `OpenVAS Parser v2` - OpenVAS Parser v2
+	// * `OpenVEX Scan` - OpenVEX Scan
 	// * `Orca Security Alerts` - Orca Security Alerts
 	// * `ORT evaluated model Importer` - ORT evaluated model Importer
 	// * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -11631,11 +12507,15 @@ type ImportScan struct {
 	// * `PingCastle` - PingCastle
 	// * `pip-audit Scan` - pip-audit Scan
 	// * `PMD Scan` - PMD Scan
+	// * `pnpm Audit Scan` - pnpm Audit Scan
+	// * `Polaris Scan` - Polaris Scan
 	// * `Popeye Scan` - Popeye Scan
 	// * `Progpilot Scan` - Progpilot Scan
+	// * `Promptfoo Scan` - Promptfoo Scan
 	// * `Prowler Scan` - Prowler Scan
 	// * `PTART Report` - PTART Report
 	// * `PWN SAST` - PWN SAST
+	// * `QARK Scan` - QARK Scan
 	// * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 	// * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 	// * `Qualys Scan` - Qualys Scan
@@ -11646,11 +12526,13 @@ type ImportScan struct {
 	// * `Retire.js Scan` - Retire.js Scan
 	// * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 	// * `Risk Recon API Importer` - Risk Recon API Importer
+	// * `rkhunter Scan` - rkhunter Scan
 	// * `Rubocop Scan` - Rubocop Scan
 	// * `Rusty Hog Scan` - Rusty Hog Scan
 	// * `SARIF` - SARIF
 	// * `Scantist Scan` - Scantist Scan
 	// * `Scout Suite Scan` - Scout Suite Scan
+	// * `Secretlint Scan` - Secretlint Scan
 	// * `Semgrep JSON Report` - Semgrep JSON Report
 	// * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 	// * `SKF Scan` - SKF Scan
@@ -11662,7 +12544,9 @@ type ImportScan struct {
 	// * `SonarQube Scan` - SonarQube Scan
 	// * `SonarQube Scan detailed` - SonarQube Scan detailed
 	// * `Sonatype Application Scan` - Sonatype Application Scan
+	// * `SPDX Scan` - SPDX Scan
 	// * `SpotBugs Scan` - SpotBugs Scan
+	// * `Sqlmap Scan` - Sqlmap Scan
 	// * `SSH Audit Importer` - SSH Audit Importer
 	// * `SSL Labs Scan` - SSL Labs Scan
 	// * `Sslscan` - Sslscan
@@ -11692,6 +12576,7 @@ type ImportScan struct {
 	// * `Wapiti Scan` - Wapiti Scan
 	// * `Wazuh` - Wazuh
 	// * `WFuzz JSON report` - WFuzz JSON report
+	// * `WhatWeb Scan` - WhatWeb Scan
 	// * `Whispers Scan` - Whispers Scan
 	// * `WhiteHat Sentinel` - WhiteHat Sentinel
 	// * `Wiz Scan` - Wiz Scan
@@ -11704,6 +12589,7 @@ type ImportScan struct {
 	// * `Xygeni SAST Scan` - Xygeni SAST Scan
 	// * `Xygeni SCA Scan` - Xygeni SCA Scan
 	// * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+	// * `YARA Scan` - YARA Scan
 	// * `Yarn Audit Scan` - Yarn Audit Scan
 	// * `ZAP Scan` - ZAP Scan
 	// * `Zora Parser` - Zora Parser
@@ -11755,6 +12641,7 @@ type ImportScanGroupBy string
 type ImportScanMinimumSeverity string
 
 // ImportScanScanType * `Acunetix Scan` - Acunetix Scanner
+// * `AIDE Scan` - AIDE Scan
 // * `Alert Logic Scan` - Alert Logic Scan
 // * `Anchore Engine Scan` - Anchore Engine Scan
 // * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -11762,6 +12649,7 @@ type ImportScanMinimumSeverity string
 // * `Anchore Grype detailed` - Anchore Grype detailed
 // * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 // * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+// * `APKLeaks Scan` - APKLeaks Scan
 // * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 // * `AppSpider Scan` - AppSpider Scan
 // * `Aqua Scan` - Aqua Scan
@@ -11790,6 +12678,8 @@ type ImportScanMinimumSeverity string
 // * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 // * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 // * `CargoAudit Scan` - CargoAudit Scan
+// * `cfn-lint Scan` - cfn-lint Scan
+// * `cfn-nag Scan` - cfn-nag Scan
 // * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 // * `Checkmarx One Scan` - Checkmarx One Scan
 // * `Checkmarx OSA` - Checkmarx OSA
@@ -11797,20 +12687,27 @@ type ImportScanMinimumSeverity string
 // * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 // * `Checkov Scan` - Checkov Scan
 // * `Chef Inspect Log` - Chef Inspect Log
+// * `chkrootkit Scan` - chkrootkit Scan
 // * `Choctaw Hog Scan` - Choctaw Hog Scan
 // * `Clair Scan` - Clair Scan
+// * `ClamAV Scan` - ClamAV Scan
 // * `Cloudflare Insights` - Cloudflare Insights
 // * `Cloudsploit Scan` - Cloudsploit Scan
 // * `Cobalt.io API Import` - Cobalt.io API Import
 // * `Cobalt.io Scan` - Cobalt.io Scan
 // * `Codechecker Report native` - Codechecker Report native
+// * `Composer Audit Scan` - Composer Audit Scan
+// * `Conftest Scan` - Conftest Scan
 // * `Contrast Scan` - Contrast Scan
 // * `Coverity API` - Coverity API
 // * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+// * `Cppcheck Scan` - Cppcheck Scan
 // * `Crashtest Security JSON File` - Crashtest Security JSON File
 // * `Crashtest Security XML File` - Crashtest Security XML File
 // * `CredScan Scan` - CredScan Scan
 // * `Crunch42 Scan` - Crunch42 Scan
+// * `CSAF Scan` - CSAF Scan
+// * `cwe_checker Scan` - cwe_checker Scan
 // * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 // * `CycloneDX Scan` - CycloneDX Scan
 // * `Cycognito Scan` - Cycognito Scan
@@ -11819,15 +12716,22 @@ type ImportScanMinimumSeverity string
 // * `Dependency Check Scan` - Dependency Check Scan
 // * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 // * `Detect-secrets Scan` - Detect-secrets Scan
+// * `DevSkim Scan` - DevSkim Scan
+// * `Dirsearch Scan` - Dirsearch Scan
 // * `docker-bench-security Scan` - docker-bench-security Scan
 // * `Dockle Scan` - Dockle Scan
+// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 // * `DrHeader JSON Importer` - DrHeader JSON Importer
 // * `DSOP Scan` - DSOP Scan
 // * `Duroc Hog Scan` - Duroc Hog Scan
 // * `Edgescan Scan` - Edgescan Scan
 // * `ESLint Scan` - ESLint Scan
 // * `Essex Hog Scan` - Essex Hog Scan
+// * `ffuf Scan` - ffuf Scan
+// * `Firmwalker Scan` - Firmwalker Scan
+// * `Flawfinder Scan` - Flawfinder Scan
 // * `Fortify Scan` - Fortify Scan
+// * `Fortify Scan v2` - Fortify Scan v2
 // * `Garak Scan` - Garak Scan
 // * `Generic Findings Import` - Generic Findings Import
 // * `Ggshield Scan` - Ggshield Scan
@@ -11841,6 +12745,7 @@ type ImportScanMinimumSeverity string
 // * `GitLab SAST Report` - GitLab SAST Report
 // * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 // * `Gitleaks Scan` - Gitleaks Scan
+// * `Gobuster Scan` - Gobuster Scan
 // * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 // * `Gosec Scanner` - Gosec Scanner
 // * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -11852,11 +12757,13 @@ type ImportScanMinimumSeverity string
 // * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 // * `HCLAppScan XML` - HCLAppScan XML
 // * `Horusec Scan` - Horusec Scan
+// * `httpx Scan` - httpx Scan
 // * `Humble Json Importer` - Humble Json Importer
 // * `HuskyCI Report` - HuskyCI Report
 // * `Hydra Scan` - Hydra Scan
 // * `IBM AppScan DAST` - IBM AppScan DAST
 // * `Immuniweb Scan` - Immuniweb Scan
+// * `Infer Scan` - Infer Scan
 // * `IntSights Report` - IntSights Report
 // * `Invicti Scan` - Invicti Scan
 // * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -11871,24 +12778,31 @@ type ImportScanMinimumSeverity string
 // * `kube-bench Scan` - kube-bench Scan
 // * `Kubeaudit Scan` - Kubeaudit Scan
 // * `KubeHunter Scan` - KubeHunter Scan
+// * `KubeLinter Scan` - KubeLinter Scan
 // * `Kubescape JSON Importer` - Kubescape JSON Importer
 // * `Legitify Scan` - Legitify Scan
+// * `Lynis Scan` - Lynis Scan
+// * `Masscan Scan` - Masscan Scan
 // * `Mayhem SARIF Report` - Mayhem SARIF Report
 // * `Mend Scan` - Mend Scan
 // * `Meterian Scan` - Meterian Scan
 // * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+// * `Mix Audit Scan` - Mix Audit Scan
 // * `MobSF Scan` - MobSF Scan
 // * `Mobsfscan Scan` - MobSF Scan
 // * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 // * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 // * `MSDefender Parser` - MSDefender Parser
 // * `n0s1 Scanner` - n0s1 Scanner
+// * `Naabu Scan` - Naabu Scan
 // * `Nancy Scan` - Nancy Scan
 // * `Netsparker Scan` - Netsparker Scan
+// * `Nettacker Scan` - Nettacker Scan
 // * `NeuVector (compliance)` - NeuVector (compliance)
 // * `NeuVector (REST)` - NeuVector (REST)
 // * `Nexpose Scan` - Nexpose Scan
 // * `Nikto Scan` - Nikto Scan
+// * `njsscan Scan` - njsscan Scan
 // * `Nmap Scan` - Nmap Scan
 // * `Node Security Platform Scan` - Node Security Platform Scan
 // * `Nosey Parker Scan` - Nosey Parker Scan
@@ -11899,6 +12813,7 @@ type ImportScanMinimumSeverity string
 // * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 // * `OpenVAS Parser` - OpenVAS Parser
 // * `OpenVAS Parser v2` - OpenVAS Parser v2
+// * `OpenVEX Scan` - OpenVEX Scan
 // * `Orca Security Alerts` - Orca Security Alerts
 // * `ORT evaluated model Importer` - ORT evaluated model Importer
 // * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -11910,11 +12825,15 @@ type ImportScanMinimumSeverity string
 // * `PingCastle` - PingCastle
 // * `pip-audit Scan` - pip-audit Scan
 // * `PMD Scan` - PMD Scan
+// * `pnpm Audit Scan` - pnpm Audit Scan
+// * `Polaris Scan` - Polaris Scan
 // * `Popeye Scan` - Popeye Scan
 // * `Progpilot Scan` - Progpilot Scan
+// * `Promptfoo Scan` - Promptfoo Scan
 // * `Prowler Scan` - Prowler Scan
 // * `PTART Report` - PTART Report
 // * `PWN SAST` - PWN SAST
+// * `QARK Scan` - QARK Scan
 // * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 // * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 // * `Qualys Scan` - Qualys Scan
@@ -11925,11 +12844,13 @@ type ImportScanMinimumSeverity string
 // * `Retire.js Scan` - Retire.js Scan
 // * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 // * `Risk Recon API Importer` - Risk Recon API Importer
+// * `rkhunter Scan` - rkhunter Scan
 // * `Rubocop Scan` - Rubocop Scan
 // * `Rusty Hog Scan` - Rusty Hog Scan
 // * `SARIF` - SARIF
 // * `Scantist Scan` - Scantist Scan
 // * `Scout Suite Scan` - Scout Suite Scan
+// * `Secretlint Scan` - Secretlint Scan
 // * `Semgrep JSON Report` - Semgrep JSON Report
 // * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 // * `SKF Scan` - SKF Scan
@@ -11941,7 +12862,9 @@ type ImportScanMinimumSeverity string
 // * `SonarQube Scan` - SonarQube Scan
 // * `SonarQube Scan detailed` - SonarQube Scan detailed
 // * `Sonatype Application Scan` - Sonatype Application Scan
+// * `SPDX Scan` - SPDX Scan
 // * `SpotBugs Scan` - SpotBugs Scan
+// * `Sqlmap Scan` - Sqlmap Scan
 // * `SSH Audit Importer` - SSH Audit Importer
 // * `SSL Labs Scan` - SSL Labs Scan
 // * `Sslscan` - Sslscan
@@ -11971,6 +12894,7 @@ type ImportScanMinimumSeverity string
 // * `Wapiti Scan` - Wapiti Scan
 // * `Wazuh` - Wazuh
 // * `WFuzz JSON report` - WFuzz JSON report
+// * `WhatWeb Scan` - WhatWeb Scan
 // * `Whispers Scan` - Whispers Scan
 // * `WhiteHat Sentinel` - WhiteHat Sentinel
 // * `Wiz Scan` - Wiz Scan
@@ -11983,6 +12907,7 @@ type ImportScanMinimumSeverity string
 // * `Xygeni SAST Scan` - Xygeni SAST Scan
 // * `Xygeni SCA Scan` - Xygeni SCA Scan
 // * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+// * `YARA Scan` - YARA Scan
 // * `Yarn Audit Scan` - Yarn Audit Scan
 // * `ZAP Scan` - ZAP Scan
 // * `Zora Parser` - Zora Parser
@@ -12067,6 +12992,7 @@ type ImportScanRequest struct {
 	ScanDate *openapi_types.Date `json:"scan_date,omitempty"`
 
 	// ScanType * `Acunetix Scan` - Acunetix Scanner
+	// * `AIDE Scan` - AIDE Scan
 	// * `Alert Logic Scan` - Alert Logic Scan
 	// * `Anchore Engine Scan` - Anchore Engine Scan
 	// * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -12074,6 +13000,7 @@ type ImportScanRequest struct {
 	// * `Anchore Grype detailed` - Anchore Grype detailed
 	// * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 	// * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+	// * `APKLeaks Scan` - APKLeaks Scan
 	// * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 	// * `AppSpider Scan` - AppSpider Scan
 	// * `Aqua Scan` - Aqua Scan
@@ -12102,6 +13029,8 @@ type ImportScanRequest struct {
 	// * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 	// * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 	// * `CargoAudit Scan` - CargoAudit Scan
+	// * `cfn-lint Scan` - cfn-lint Scan
+	// * `cfn-nag Scan` - cfn-nag Scan
 	// * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 	// * `Checkmarx One Scan` - Checkmarx One Scan
 	// * `Checkmarx OSA` - Checkmarx OSA
@@ -12109,20 +13038,27 @@ type ImportScanRequest struct {
 	// * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 	// * `Checkov Scan` - Checkov Scan
 	// * `Chef Inspect Log` - Chef Inspect Log
+	// * `chkrootkit Scan` - chkrootkit Scan
 	// * `Choctaw Hog Scan` - Choctaw Hog Scan
 	// * `Clair Scan` - Clair Scan
+	// * `ClamAV Scan` - ClamAV Scan
 	// * `Cloudflare Insights` - Cloudflare Insights
 	// * `Cloudsploit Scan` - Cloudsploit Scan
 	// * `Cobalt.io API Import` - Cobalt.io API Import
 	// * `Cobalt.io Scan` - Cobalt.io Scan
 	// * `Codechecker Report native` - Codechecker Report native
+	// * `Composer Audit Scan` - Composer Audit Scan
+	// * `Conftest Scan` - Conftest Scan
 	// * `Contrast Scan` - Contrast Scan
 	// * `Coverity API` - Coverity API
 	// * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+	// * `Cppcheck Scan` - Cppcheck Scan
 	// * `Crashtest Security JSON File` - Crashtest Security JSON File
 	// * `Crashtest Security XML File` - Crashtest Security XML File
 	// * `CredScan Scan` - CredScan Scan
 	// * `Crunch42 Scan` - Crunch42 Scan
+	// * `CSAF Scan` - CSAF Scan
+	// * `cwe_checker Scan` - cwe_checker Scan
 	// * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 	// * `CycloneDX Scan` - CycloneDX Scan
 	// * `Cycognito Scan` - Cycognito Scan
@@ -12131,15 +13067,22 @@ type ImportScanRequest struct {
 	// * `Dependency Check Scan` - Dependency Check Scan
 	// * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 	// * `Detect-secrets Scan` - Detect-secrets Scan
+	// * `DevSkim Scan` - DevSkim Scan
+	// * `Dirsearch Scan` - Dirsearch Scan
 	// * `docker-bench-security Scan` - docker-bench-security Scan
 	// * `Dockle Scan` - Dockle Scan
+	// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 	// * `DrHeader JSON Importer` - DrHeader JSON Importer
 	// * `DSOP Scan` - DSOP Scan
 	// * `Duroc Hog Scan` - Duroc Hog Scan
 	// * `Edgescan Scan` - Edgescan Scan
 	// * `ESLint Scan` - ESLint Scan
 	// * `Essex Hog Scan` - Essex Hog Scan
+	// * `ffuf Scan` - ffuf Scan
+	// * `Firmwalker Scan` - Firmwalker Scan
+	// * `Flawfinder Scan` - Flawfinder Scan
 	// * `Fortify Scan` - Fortify Scan
+	// * `Fortify Scan v2` - Fortify Scan v2
 	// * `Garak Scan` - Garak Scan
 	// * `Generic Findings Import` - Generic Findings Import
 	// * `Ggshield Scan` - Ggshield Scan
@@ -12153,6 +13096,7 @@ type ImportScanRequest struct {
 	// * `GitLab SAST Report` - GitLab SAST Report
 	// * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 	// * `Gitleaks Scan` - Gitleaks Scan
+	// * `Gobuster Scan` - Gobuster Scan
 	// * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 	// * `Gosec Scanner` - Gosec Scanner
 	// * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -12164,11 +13108,13 @@ type ImportScanRequest struct {
 	// * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 	// * `HCLAppScan XML` - HCLAppScan XML
 	// * `Horusec Scan` - Horusec Scan
+	// * `httpx Scan` - httpx Scan
 	// * `Humble Json Importer` - Humble Json Importer
 	// * `HuskyCI Report` - HuskyCI Report
 	// * `Hydra Scan` - Hydra Scan
 	// * `IBM AppScan DAST` - IBM AppScan DAST
 	// * `Immuniweb Scan` - Immuniweb Scan
+	// * `Infer Scan` - Infer Scan
 	// * `IntSights Report` - IntSights Report
 	// * `Invicti Scan` - Invicti Scan
 	// * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -12183,24 +13129,31 @@ type ImportScanRequest struct {
 	// * `kube-bench Scan` - kube-bench Scan
 	// * `Kubeaudit Scan` - Kubeaudit Scan
 	// * `KubeHunter Scan` - KubeHunter Scan
+	// * `KubeLinter Scan` - KubeLinter Scan
 	// * `Kubescape JSON Importer` - Kubescape JSON Importer
 	// * `Legitify Scan` - Legitify Scan
+	// * `Lynis Scan` - Lynis Scan
+	// * `Masscan Scan` - Masscan Scan
 	// * `Mayhem SARIF Report` - Mayhem SARIF Report
 	// * `Mend Scan` - Mend Scan
 	// * `Meterian Scan` - Meterian Scan
 	// * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+	// * `Mix Audit Scan` - Mix Audit Scan
 	// * `MobSF Scan` - MobSF Scan
 	// * `Mobsfscan Scan` - MobSF Scan
 	// * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 	// * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 	// * `MSDefender Parser` - MSDefender Parser
 	// * `n0s1 Scanner` - n0s1 Scanner
+	// * `Naabu Scan` - Naabu Scan
 	// * `Nancy Scan` - Nancy Scan
 	// * `Netsparker Scan` - Netsparker Scan
+	// * `Nettacker Scan` - Nettacker Scan
 	// * `NeuVector (compliance)` - NeuVector (compliance)
 	// * `NeuVector (REST)` - NeuVector (REST)
 	// * `Nexpose Scan` - Nexpose Scan
 	// * `Nikto Scan` - Nikto Scan
+	// * `njsscan Scan` - njsscan Scan
 	// * `Nmap Scan` - Nmap Scan
 	// * `Node Security Platform Scan` - Node Security Platform Scan
 	// * `Nosey Parker Scan` - Nosey Parker Scan
@@ -12211,6 +13164,7 @@ type ImportScanRequest struct {
 	// * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 	// * `OpenVAS Parser` - OpenVAS Parser
 	// * `OpenVAS Parser v2` - OpenVAS Parser v2
+	// * `OpenVEX Scan` - OpenVEX Scan
 	// * `Orca Security Alerts` - Orca Security Alerts
 	// * `ORT evaluated model Importer` - ORT evaluated model Importer
 	// * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -12222,11 +13176,15 @@ type ImportScanRequest struct {
 	// * `PingCastle` - PingCastle
 	// * `pip-audit Scan` - pip-audit Scan
 	// * `PMD Scan` - PMD Scan
+	// * `pnpm Audit Scan` - pnpm Audit Scan
+	// * `Polaris Scan` - Polaris Scan
 	// * `Popeye Scan` - Popeye Scan
 	// * `Progpilot Scan` - Progpilot Scan
+	// * `Promptfoo Scan` - Promptfoo Scan
 	// * `Prowler Scan` - Prowler Scan
 	// * `PTART Report` - PTART Report
 	// * `PWN SAST` - PWN SAST
+	// * `QARK Scan` - QARK Scan
 	// * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 	// * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 	// * `Qualys Scan` - Qualys Scan
@@ -12237,11 +13195,13 @@ type ImportScanRequest struct {
 	// * `Retire.js Scan` - Retire.js Scan
 	// * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 	// * `Risk Recon API Importer` - Risk Recon API Importer
+	// * `rkhunter Scan` - rkhunter Scan
 	// * `Rubocop Scan` - Rubocop Scan
 	// * `Rusty Hog Scan` - Rusty Hog Scan
 	// * `SARIF` - SARIF
 	// * `Scantist Scan` - Scantist Scan
 	// * `Scout Suite Scan` - Scout Suite Scan
+	// * `Secretlint Scan` - Secretlint Scan
 	// * `Semgrep JSON Report` - Semgrep JSON Report
 	// * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 	// * `SKF Scan` - SKF Scan
@@ -12253,7 +13213,9 @@ type ImportScanRequest struct {
 	// * `SonarQube Scan` - SonarQube Scan
 	// * `SonarQube Scan detailed` - SonarQube Scan detailed
 	// * `Sonatype Application Scan` - Sonatype Application Scan
+	// * `SPDX Scan` - SPDX Scan
 	// * `SpotBugs Scan` - SpotBugs Scan
+	// * `Sqlmap Scan` - Sqlmap Scan
 	// * `SSH Audit Importer` - SSH Audit Importer
 	// * `SSL Labs Scan` - SSL Labs Scan
 	// * `Sslscan` - Sslscan
@@ -12283,6 +13245,7 @@ type ImportScanRequest struct {
 	// * `Wapiti Scan` - Wapiti Scan
 	// * `Wazuh` - Wazuh
 	// * `WFuzz JSON report` - WFuzz JSON report
+	// * `WhatWeb Scan` - WhatWeb Scan
 	// * `Whispers Scan` - Whispers Scan
 	// * `WhiteHat Sentinel` - WhiteHat Sentinel
 	// * `Wiz Scan` - Wiz Scan
@@ -12295,6 +13258,7 @@ type ImportScanRequest struct {
 	// * `Xygeni SAST Scan` - Xygeni SAST Scan
 	// * `Xygeni SCA Scan` - Xygeni SCA Scan
 	// * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+	// * `YARA Scan` - YARA Scan
 	// * `Yarn Audit Scan` - Yarn Audit Scan
 	// * `ZAP Scan` - ZAP Scan
 	// * `Zora Parser` - Zora Parser
@@ -12343,6 +13307,7 @@ type ImportScanRequestGroupBy string
 type ImportScanRequestMinimumSeverity string
 
 // ImportScanRequestScanType * `Acunetix Scan` - Acunetix Scanner
+// * `AIDE Scan` - AIDE Scan
 // * `Alert Logic Scan` - Alert Logic Scan
 // * `Anchore Engine Scan` - Anchore Engine Scan
 // * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -12350,6 +13315,7 @@ type ImportScanRequestMinimumSeverity string
 // * `Anchore Grype detailed` - Anchore Grype detailed
 // * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 // * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+// * `APKLeaks Scan` - APKLeaks Scan
 // * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 // * `AppSpider Scan` - AppSpider Scan
 // * `Aqua Scan` - Aqua Scan
@@ -12378,6 +13344,8 @@ type ImportScanRequestMinimumSeverity string
 // * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 // * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 // * `CargoAudit Scan` - CargoAudit Scan
+// * `cfn-lint Scan` - cfn-lint Scan
+// * `cfn-nag Scan` - cfn-nag Scan
 // * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 // * `Checkmarx One Scan` - Checkmarx One Scan
 // * `Checkmarx OSA` - Checkmarx OSA
@@ -12385,20 +13353,27 @@ type ImportScanRequestMinimumSeverity string
 // * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 // * `Checkov Scan` - Checkov Scan
 // * `Chef Inspect Log` - Chef Inspect Log
+// * `chkrootkit Scan` - chkrootkit Scan
 // * `Choctaw Hog Scan` - Choctaw Hog Scan
 // * `Clair Scan` - Clair Scan
+// * `ClamAV Scan` - ClamAV Scan
 // * `Cloudflare Insights` - Cloudflare Insights
 // * `Cloudsploit Scan` - Cloudsploit Scan
 // * `Cobalt.io API Import` - Cobalt.io API Import
 // * `Cobalt.io Scan` - Cobalt.io Scan
 // * `Codechecker Report native` - Codechecker Report native
+// * `Composer Audit Scan` - Composer Audit Scan
+// * `Conftest Scan` - Conftest Scan
 // * `Contrast Scan` - Contrast Scan
 // * `Coverity API` - Coverity API
 // * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+// * `Cppcheck Scan` - Cppcheck Scan
 // * `Crashtest Security JSON File` - Crashtest Security JSON File
 // * `Crashtest Security XML File` - Crashtest Security XML File
 // * `CredScan Scan` - CredScan Scan
 // * `Crunch42 Scan` - Crunch42 Scan
+// * `CSAF Scan` - CSAF Scan
+// * `cwe_checker Scan` - cwe_checker Scan
 // * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 // * `CycloneDX Scan` - CycloneDX Scan
 // * `Cycognito Scan` - Cycognito Scan
@@ -12407,15 +13382,22 @@ type ImportScanRequestMinimumSeverity string
 // * `Dependency Check Scan` - Dependency Check Scan
 // * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 // * `Detect-secrets Scan` - Detect-secrets Scan
+// * `DevSkim Scan` - DevSkim Scan
+// * `Dirsearch Scan` - Dirsearch Scan
 // * `docker-bench-security Scan` - docker-bench-security Scan
 // * `Dockle Scan` - Dockle Scan
+// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 // * `DrHeader JSON Importer` - DrHeader JSON Importer
 // * `DSOP Scan` - DSOP Scan
 // * `Duroc Hog Scan` - Duroc Hog Scan
 // * `Edgescan Scan` - Edgescan Scan
 // * `ESLint Scan` - ESLint Scan
 // * `Essex Hog Scan` - Essex Hog Scan
+// * `ffuf Scan` - ffuf Scan
+// * `Firmwalker Scan` - Firmwalker Scan
+// * `Flawfinder Scan` - Flawfinder Scan
 // * `Fortify Scan` - Fortify Scan
+// * `Fortify Scan v2` - Fortify Scan v2
 // * `Garak Scan` - Garak Scan
 // * `Generic Findings Import` - Generic Findings Import
 // * `Ggshield Scan` - Ggshield Scan
@@ -12429,6 +13411,7 @@ type ImportScanRequestMinimumSeverity string
 // * `GitLab SAST Report` - GitLab SAST Report
 // * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 // * `Gitleaks Scan` - Gitleaks Scan
+// * `Gobuster Scan` - Gobuster Scan
 // * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 // * `Gosec Scanner` - Gosec Scanner
 // * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -12440,11 +13423,13 @@ type ImportScanRequestMinimumSeverity string
 // * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 // * `HCLAppScan XML` - HCLAppScan XML
 // * `Horusec Scan` - Horusec Scan
+// * `httpx Scan` - httpx Scan
 // * `Humble Json Importer` - Humble Json Importer
 // * `HuskyCI Report` - HuskyCI Report
 // * `Hydra Scan` - Hydra Scan
 // * `IBM AppScan DAST` - IBM AppScan DAST
 // * `Immuniweb Scan` - Immuniweb Scan
+// * `Infer Scan` - Infer Scan
 // * `IntSights Report` - IntSights Report
 // * `Invicti Scan` - Invicti Scan
 // * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -12459,24 +13444,31 @@ type ImportScanRequestMinimumSeverity string
 // * `kube-bench Scan` - kube-bench Scan
 // * `Kubeaudit Scan` - Kubeaudit Scan
 // * `KubeHunter Scan` - KubeHunter Scan
+// * `KubeLinter Scan` - KubeLinter Scan
 // * `Kubescape JSON Importer` - Kubescape JSON Importer
 // * `Legitify Scan` - Legitify Scan
+// * `Lynis Scan` - Lynis Scan
+// * `Masscan Scan` - Masscan Scan
 // * `Mayhem SARIF Report` - Mayhem SARIF Report
 // * `Mend Scan` - Mend Scan
 // * `Meterian Scan` - Meterian Scan
 // * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+// * `Mix Audit Scan` - Mix Audit Scan
 // * `MobSF Scan` - MobSF Scan
 // * `Mobsfscan Scan` - MobSF Scan
 // * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 // * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 // * `MSDefender Parser` - MSDefender Parser
 // * `n0s1 Scanner` - n0s1 Scanner
+// * `Naabu Scan` - Naabu Scan
 // * `Nancy Scan` - Nancy Scan
 // * `Netsparker Scan` - Netsparker Scan
+// * `Nettacker Scan` - Nettacker Scan
 // * `NeuVector (compliance)` - NeuVector (compliance)
 // * `NeuVector (REST)` - NeuVector (REST)
 // * `Nexpose Scan` - Nexpose Scan
 // * `Nikto Scan` - Nikto Scan
+// * `njsscan Scan` - njsscan Scan
 // * `Nmap Scan` - Nmap Scan
 // * `Node Security Platform Scan` - Node Security Platform Scan
 // * `Nosey Parker Scan` - Nosey Parker Scan
@@ -12487,6 +13479,7 @@ type ImportScanRequestMinimumSeverity string
 // * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 // * `OpenVAS Parser` - OpenVAS Parser
 // * `OpenVAS Parser v2` - OpenVAS Parser v2
+// * `OpenVEX Scan` - OpenVEX Scan
 // * `Orca Security Alerts` - Orca Security Alerts
 // * `ORT evaluated model Importer` - ORT evaluated model Importer
 // * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -12498,11 +13491,15 @@ type ImportScanRequestMinimumSeverity string
 // * `PingCastle` - PingCastle
 // * `pip-audit Scan` - pip-audit Scan
 // * `PMD Scan` - PMD Scan
+// * `pnpm Audit Scan` - pnpm Audit Scan
+// * `Polaris Scan` - Polaris Scan
 // * `Popeye Scan` - Popeye Scan
 // * `Progpilot Scan` - Progpilot Scan
+// * `Promptfoo Scan` - Promptfoo Scan
 // * `Prowler Scan` - Prowler Scan
 // * `PTART Report` - PTART Report
 // * `PWN SAST` - PWN SAST
+// * `QARK Scan` - QARK Scan
 // * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 // * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 // * `Qualys Scan` - Qualys Scan
@@ -12513,11 +13510,13 @@ type ImportScanRequestMinimumSeverity string
 // * `Retire.js Scan` - Retire.js Scan
 // * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 // * `Risk Recon API Importer` - Risk Recon API Importer
+// * `rkhunter Scan` - rkhunter Scan
 // * `Rubocop Scan` - Rubocop Scan
 // * `Rusty Hog Scan` - Rusty Hog Scan
 // * `SARIF` - SARIF
 // * `Scantist Scan` - Scantist Scan
 // * `Scout Suite Scan` - Scout Suite Scan
+// * `Secretlint Scan` - Secretlint Scan
 // * `Semgrep JSON Report` - Semgrep JSON Report
 // * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 // * `SKF Scan` - SKF Scan
@@ -12529,7 +13528,9 @@ type ImportScanRequestMinimumSeverity string
 // * `SonarQube Scan` - SonarQube Scan
 // * `SonarQube Scan detailed` - SonarQube Scan detailed
 // * `Sonatype Application Scan` - Sonatype Application Scan
+// * `SPDX Scan` - SPDX Scan
 // * `SpotBugs Scan` - SpotBugs Scan
+// * `Sqlmap Scan` - Sqlmap Scan
 // * `SSH Audit Importer` - SSH Audit Importer
 // * `SSL Labs Scan` - SSL Labs Scan
 // * `Sslscan` - Sslscan
@@ -12559,6 +13560,7 @@ type ImportScanRequestMinimumSeverity string
 // * `Wapiti Scan` - Wapiti Scan
 // * `Wazuh` - Wazuh
 // * `WFuzz JSON report` - WFuzz JSON report
+// * `WhatWeb Scan` - WhatWeb Scan
 // * `Whispers Scan` - Whispers Scan
 // * `WhiteHat Sentinel` - WhiteHat Sentinel
 // * `Wiz Scan` - Wiz Scan
@@ -12571,6 +13573,7 @@ type ImportScanRequestMinimumSeverity string
 // * `Xygeni SAST Scan` - Xygeni SAST Scan
 // * `Xygeni SCA Scan` - Xygeni SCA Scan
 // * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+// * `YARA Scan` - YARA Scan
 // * `Yarn Audit Scan` - Yarn Audit Scan
 // * `ZAP Scan` - ZAP Scan
 // * `Zora Parser` - Zora Parser
@@ -13092,13 +14095,14 @@ type LocationProductReferenceRequestStatus string
 
 // Meta defines model for Meta.
 type Meta struct {
-	Endpoint *int   `json:"endpoint,omitempty"`
-	Finding  *int   `json:"finding,omitempty"`
-	Id       *int   `json:"id,omitempty"`
-	Location *int   `json:"location,omitempty"`
-	Name     string `json:"name"`
-	Product  *int   `json:"product,omitempty"`
-	Value    string `json:"value"`
+	Endpoint        *int   `json:"endpoint,omitempty"`
+	Finding         *int   `json:"finding,omitempty"`
+	Id              *int   `json:"id,omitempty"`
+	Location        *int   `json:"location,omitempty"`
+	LocationProduct *int   `json:"location_product,omitempty"`
+	Name            string `json:"name"`
+	Product         *int   `json:"product,omitempty"`
+	Value           string `json:"value"`
 }
 
 // MetaMain defines model for MetaMain.
@@ -13163,7 +14167,9 @@ type Note struct {
 	History  *[]NoteHistory `json:"history,omitempty"`
 	Id       *int           `json:"id,omitempty"`
 	NoteType *NoteType      `json:"note_type,omitempty"`
-	Private  *bool          `json:"private,omitempty"`
+
+	// Private Only you and superusers can see this note. It is also left out of reports and issue-tracker sync.
+	Private *bool `json:"private,omitempty"`
 }
 
 // NoteHistory defines model for NoteHistory.
@@ -13177,9 +14183,11 @@ type NoteHistory struct {
 
 // NoteRequest defines model for NoteRequest.
 type NoteRequest struct {
-	Edited  *bool  `json:"edited,omitempty"`
-	Entry   string `json:"entry"`
-	Private *bool  `json:"private,omitempty"`
+	Edited *bool  `json:"edited,omitempty"`
+	Entry  string `json:"entry"`
+
+	// Private Only you and superusers can see this note. It is also left out of reports and issue-tracker sync.
+	Private *bool `json:"private,omitempty"`
 }
 
 // NoteType defines model for NoteType.
@@ -13577,7 +14585,27 @@ type NotificationsRequestUpcomingEngagement string
 // * `alert` - alert
 type NotificationsRequestUserMentioned string
 
-// Organization defines model for Organization.
+// Organization Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type Organization struct {
 	AuthorizedUsers *[]int `json:"authorized_users,omitempty"`
 
@@ -13596,7 +14624,27 @@ type Organization struct {
 	Updated *time.Time `json:"updated,omitempty"`
 }
 
-// OrganizationRequest defines model for OrganizationRequest.
+// OrganizationRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type OrganizationRequest struct {
 	AuthorizedUsers *[]int  `json:"authorized_users,omitempty"`
 	CriticalAsset   *bool   `json:"critical_asset,omitempty"`
@@ -13685,6 +14733,19 @@ type PaginatedBurpRawRequestResponseMultiList struct {
 	// Previous Example: http://api.example.org/accounts/?offset=200&limit=100
 	Previous *string                       `json:"previous,omitempty"`
 	Results  []BurpRawRequestResponseMulti `json:"results"`
+}
+
+// PaginatedCICDInfrastructureList defines model for PaginatedCICDInfrastructureList.
+type PaginatedCICDInfrastructureList struct {
+	// Count Example: 123
+	Count int `json:"count"`
+
+	// Next Example: http://api.example.org/accounts/?offset=400&limit=100
+	Next *string `json:"next,omitempty"`
+
+	// Previous Example: http://api.example.org/accounts/?offset=200&limit=100
+	Previous *string              `json:"previous,omitempty"`
+	Results  []CICDInfrastructure `json:"results"`
 }
 
 // PaginatedConfigurationPermissionList defines model for PaginatedConfigurationPermissionList.
@@ -14335,18 +15396,56 @@ type PatchedAnnouncementRequestStyle string
 
 // PatchedAppAnalysisRequest defines model for PatchedAppAnalysisRequest.
 type PatchedAppAnalysisRequest struct {
-	Confidence   *int      `json:"confidence,omitempty"`
-	Icon         *string   `json:"icon,omitempty"`
-	Name         *string   `json:"name,omitempty"`
-	Product      *int      `json:"product,omitempty"`
-	Tags         *[]string `json:"tags,omitempty"`
-	User         *int      `json:"user,omitempty"`
-	Version      *string   `json:"version,omitempty"`
-	Website      *string   `json:"website,omitempty"`
-	WebsiteFound *string   `json:"website_found,omitempty"`
+	Confidence   *int                                    `json:"confidence,omitempty"`
+	Icon         *string                                 `json:"icon,omitempty"`
+	Name         *string                                 `json:"name,omitempty"`
+	Product      *int                                    `json:"product,omitempty"`
+	Tags         *[]string                               `json:"tags,omitempty"`
+	User         *int                                    `json:"user,omitempty"`
+	Version      *string                                 `json:"version,omitempty"`
+	Website      *PatchedAppAnalysisRequest_Website      `json:"website,omitempty"`
+	WebsiteFound *PatchedAppAnalysisRequest_WebsiteFound `json:"website_found,omitempty"`
 }
 
-// PatchedAssetAPIScanConfigurationRequest defines model for PatchedAssetAPIScanConfigurationRequest.
+// PatchedAppAnalysisRequestWebsite0 defines model for PatchedAppAnalysisRequest.Website.0.
+type PatchedAppAnalysisRequestWebsite0 = string
+
+// PatchedAppAnalysisRequestWebsite1 defines model for PatchedAppAnalysisRequest.Website.1.
+type PatchedAppAnalysisRequestWebsite1 = string
+
+// PatchedAppAnalysisRequest_Website defines model for PatchedAppAnalysisRequest.Website.
+type PatchedAppAnalysisRequest_Website struct {
+	union json.RawMessage
+}
+
+// PatchedAppAnalysisRequestWebsiteFound0 defines model for PatchedAppAnalysisRequest.WebsiteFound.0.
+type PatchedAppAnalysisRequestWebsiteFound0 = string
+
+// PatchedAppAnalysisRequestWebsiteFound1 defines model for PatchedAppAnalysisRequest.WebsiteFound.1.
+type PatchedAppAnalysisRequestWebsiteFound1 = string
+
+// PatchedAppAnalysisRequest_WebsiteFound defines model for PatchedAppAnalysisRequest.WebsiteFound.
+type PatchedAppAnalysisRequest_WebsiteFound struct {
+	union json.RawMessage
+}
+
+// PatchedAssetAPIScanConfigurationRequest Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type PatchedAssetAPIScanConfigurationRequest struct {
 	Asset             *int    `json:"asset,omitempty"`
 	ServiceKey1       *string `json:"service_key_1,omitempty"`
@@ -14355,7 +15454,27 @@ type PatchedAssetAPIScanConfigurationRequest struct {
 	ToolConfiguration *int    `json:"tool_configuration,omitempty"`
 }
 
-// PatchedAssetRequest defines model for PatchedAssetRequest.
+// PatchedAssetRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type PatchedAssetRequest struct {
 	AssetManagers     *int   `json:"asset_managers,omitempty"`
 	AssetNumericGrade *int   `json:"asset_numeric_grade,omitempty"`
@@ -14455,6 +15574,36 @@ type PatchedBurpRawRequestResponseMultiRequest struct {
 	Finding            *int    `json:"finding,omitempty"`
 }
 
+// PatchedCICDInfrastructureRequest defines model for PatchedCICDInfrastructureRequest.
+type PatchedCICDInfrastructureRequest struct {
+	Description *string `json:"description,omitempty"`
+
+	// InfrastructureType * `scm_server` - SCM Server
+	// * `build_server` - Build Server
+	// * `orchestration` - Orchestration Engine
+	InfrastructureType *PatchedCICDInfrastructureRequestInfrastructureType `json:"infrastructure_type,omitempty"`
+	Name               *string                                             `json:"name,omitempty"`
+
+	// Url Public URL of the tool (e.g., https://jenkins.company.com)
+	Url *PatchedCICDInfrastructureRequest_Url `json:"url,omitempty"`
+}
+
+// PatchedCICDInfrastructureRequestInfrastructureType * `scm_server` - SCM Server
+// * `build_server` - Build Server
+// * `orchestration` - Orchestration Engine
+type PatchedCICDInfrastructureRequestInfrastructureType string
+
+// PatchedCICDInfrastructureRequestUrl0 defines model for PatchedCICDInfrastructureRequest.Url.0.
+type PatchedCICDInfrastructureRequestUrl0 = string
+
+// PatchedCICDInfrastructureRequestUrl1 defines model for PatchedCICDInfrastructureRequest.Url.1.
+type PatchedCICDInfrastructureRequestUrl1 = string
+
+// PatchedCICDInfrastructureRequest_Url Public URL of the tool (e.g., https://jenkins.company.com)
+type PatchedCICDInfrastructureRequest_Url struct {
+	union json.RawMessage
+}
+
 // PatchedDevelopmentEnvironmentRequest defines model for PatchedDevelopmentEnvironmentRequest.
 type PatchedDevelopmentEnvironmentRequest struct {
 	Name *string `json:"name,omitempty"`
@@ -14484,11 +15633,17 @@ type PatchedEngagementRequest struct {
 	BranchTag *string `json:"branch_tag,omitempty"`
 
 	// BuildId Build ID of the product the engagement tested.
-	BuildId *string `json:"build_id,omitempty"`
+	BuildId   *string `json:"build_id,omitempty"`
+	CheckList *bool   `json:"check_list,omitempty"`
 
-	// BuildServer Build server responsible for CI/CD test
-	BuildServer *int  `json:"build_server,omitempty"`
-	CheckList   *bool `json:"check_list,omitempty"`
+	// CicdBuildServer Build server used for this CI/CD engagement
+	CicdBuildServer *int `json:"cicd_build_server,omitempty"`
+
+	// CicdOrchestrationEngine Orchestration engine used for this CI/CD engagement
+	CicdOrchestrationEngine *int `json:"cicd_orchestration_engine,omitempty"`
+
+	// CicdScmServer Source code management server used for this CI/CD engagement
+	CicdScmServer *int `json:"cicd_scm_server,omitempty"`
 
 	// CommitHash Commit hash from repo
 	CommitHash *string `json:"commit_hash,omitempty"`
@@ -14503,10 +15658,7 @@ type PatchedEngagementRequest struct {
 	FirstContacted *openapi_types.Date                     `json:"first_contacted,omitempty"`
 	Lead           *int                                    `json:"lead,omitempty"`
 	Name           *string                                 `json:"name,omitempty"`
-
-	// OrchestrationEngine Orchestration service responsible for CI/CD test
-	OrchestrationEngine *int  `json:"orchestration_engine,omitempty"`
-	PenTest             *bool `json:"pen_test,omitempty"`
+	PenTest        *bool                                   `json:"pen_test,omitempty"`
 
 	// Preset Settings and notes for performing this engagement.
 	Preset     *int    `json:"preset,omitempty"`
@@ -14515,11 +15667,8 @@ type PatchedEngagementRequest struct {
 	ReportType *int    `json:"report_type,omitempty"`
 	Requester  *int    `json:"requester,omitempty"`
 
-	// SourceCodeManagementServer Source code server for CI/CD test
-	SourceCodeManagementServer *int `json:"source_code_management_server,omitempty"`
-
 	// SourceCodeManagementUri Resource link to source code
-	SourceCodeManagementUri *string `json:"source_code_management_uri,omitempty"`
+	SourceCodeManagementUri *PatchedEngagementRequest_SourceCodeManagementUri `json:"source_code_management_uri,omitempty"`
 
 	// Status * `Not Started` - Not Started
 	// * `Blocked` - Blocked
@@ -14529,15 +15678,15 @@ type PatchedEngagementRequest struct {
 	// * `On Hold` - On Hold
 	// * `Scheduled` - Scheduled
 	// * `Waiting for Resource` - Waiting for Resource
-	Status       *PatchedEngagementRequestStatus `json:"status,omitempty"`
-	Tags         *[]string                       `json:"tags,omitempty"`
-	TargetEnd    *openapi_types.Date             `json:"target_end,omitempty"`
-	TargetStart  *openapi_types.Date             `json:"target_start,omitempty"`
-	TestStrategy *string                         `json:"test_strategy,omitempty"`
-	ThreatModel  *bool                           `json:"threat_model,omitempty"`
+	Status       *PatchedEngagementRequestStatus        `json:"status,omitempty"`
+	Tags         *[]string                              `json:"tags,omitempty"`
+	TargetEnd    *openapi_types.Date                    `json:"target_end,omitempty"`
+	TargetStart  *openapi_types.Date                    `json:"target_start,omitempty"`
+	TestStrategy *PatchedEngagementRequest_TestStrategy `json:"test_strategy,omitempty"`
+	ThreatModel  *bool                                  `json:"threat_model,omitempty"`
 
 	// Tracker Link to epic or ticket system with changes to version.
-	Tracker *string `json:"tracker,omitempty"`
+	Tracker *PatchedEngagementRequest_Tracker `json:"tracker,omitempty"`
 
 	// Version Version of the product the engagement tested.
 	Version *string `json:"version,omitempty"`
@@ -14546,6 +15695,17 @@ type PatchedEngagementRequest struct {
 // PatchedEngagementRequestEngagementType * `Interactive` - Interactive
 // * `CI/CD` - CI/CD
 type PatchedEngagementRequestEngagementType string
+
+// PatchedEngagementRequestSourceCodeManagementUri0 defines model for PatchedEngagementRequest.SourceCodeManagementUri.0.
+type PatchedEngagementRequestSourceCodeManagementUri0 = string
+
+// PatchedEngagementRequestSourceCodeManagementUri1 defines model for PatchedEngagementRequest.SourceCodeManagementUri.1.
+type PatchedEngagementRequestSourceCodeManagementUri1 = string
+
+// PatchedEngagementRequest_SourceCodeManagementUri Resource link to source code
+type PatchedEngagementRequest_SourceCodeManagementUri struct {
+	union json.RawMessage
+}
 
 // PatchedEngagementRequestStatus * `Not Started` - Not Started
 // * `Blocked` - Blocked
@@ -14556,6 +15716,28 @@ type PatchedEngagementRequestEngagementType string
 // * `Scheduled` - Scheduled
 // * `Waiting for Resource` - Waiting for Resource
 type PatchedEngagementRequestStatus string
+
+// PatchedEngagementRequestTestStrategy0 defines model for PatchedEngagementRequest.TestStrategy.0.
+type PatchedEngagementRequestTestStrategy0 = string
+
+// PatchedEngagementRequestTestStrategy1 defines model for PatchedEngagementRequest.TestStrategy.1.
+type PatchedEngagementRequestTestStrategy1 = string
+
+// PatchedEngagementRequest_TestStrategy defines model for PatchedEngagementRequest.TestStrategy.
+type PatchedEngagementRequest_TestStrategy struct {
+	union json.RawMessage
+}
+
+// PatchedEngagementRequestTracker0 defines model for PatchedEngagementRequest.Tracker.0.
+type PatchedEngagementRequestTracker0 = string
+
+// PatchedEngagementRequestTracker1 defines model for PatchedEngagementRequest.Tracker.1.
+type PatchedEngagementRequestTracker1 = string
+
+// PatchedEngagementRequest_Tracker Link to epic or ticket system with changes to version.
+type PatchedEngagementRequest_Tracker struct {
+	union json.RawMessage
+}
 
 // PatchedFindingNoteRequest defines model for PatchedFindingNoteRequest.
 type PatchedFindingNoteRequest struct {
@@ -14586,7 +15768,8 @@ type PatchedFindingRequest struct {
 	Cvssv4Score *float64 `json:"cvssv4_score,omitempty"`
 
 	// Cwe The CWE number associated with this flaw.
-	Cwe *int `json:"cwe,omitempty"`
+	Cwe  *int                 `json:"cwe,omitempty"`
+	Cwes *[]FindingCweRequest `json:"cwes,omitempty"`
 
 	// Date The date the flaw was discovered.
 	Date *openapi_types.Date `json:"date,omitempty"`
@@ -15041,9 +16224,11 @@ type PatchedNetworkLocationsRequest struct {
 
 // PatchedNoteRequest defines model for PatchedNoteRequest.
 type PatchedNoteRequest struct {
-	Edited  *bool   `json:"edited,omitempty"`
-	Entry   *string `json:"entry,omitempty"`
-	Private *bool   `json:"private,omitempty"`
+	Edited *bool   `json:"edited,omitempty"`
+	Entry  *string `json:"entry,omitempty"`
+
+	// Private Only you and superusers can see this note. It is also left out of reports and issue-tracker sync.
+	Private *bool `json:"private,omitempty"`
 }
 
 // PatchedNoteTypeRequest defines model for PatchedNoteTypeRequest.
@@ -15234,7 +16419,27 @@ type PatchedNotificationsRequestUpcomingEngagement string
 // * `alert` - alert
 type PatchedNotificationsRequestUserMentioned string
 
-// PatchedOrganizationRequest defines model for PatchedOrganizationRequest.
+// PatchedOrganizationRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type PatchedOrganizationRequest struct {
 	AuthorizedUsers *[]int  `json:"authorized_users,omitempty"`
 	CriticalAsset   *bool   `json:"critical_asset,omitempty"`
@@ -15243,7 +16448,23 @@ type PatchedOrganizationRequest struct {
 	Name            *string `json:"name,omitempty"`
 }
 
-// PatchedProductAPIScanConfigurationRequest defines model for PatchedProductAPIScanConfigurationRequest.
+// PatchedProductAPIScanConfigurationRequest Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type PatchedProductAPIScanConfigurationRequest struct {
 	Product           *int    `json:"product,omitempty"`
 	ServiceKey1       *string `json:"service_key_1,omitempty"`
@@ -15252,7 +16473,27 @@ type PatchedProductAPIScanConfigurationRequest struct {
 	ToolConfiguration *int    `json:"tool_configuration,omitempty"`
 }
 
-// PatchedProductRequest defines model for PatchedProductRequest.
+// PatchedProductRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type PatchedProductRequest struct {
 	AuthorizedUsers *[]int `json:"authorized_users,omitempty"`
 
@@ -15347,7 +16588,27 @@ type PatchedProductRequestOrigin string
 // * `web` - Web
 type PatchedProductRequestPlatform string
 
-// PatchedProductTypeRequest defines model for PatchedProductTypeRequest.
+// PatchedProductTypeRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type PatchedProductTypeRequest struct {
 	AuthorizedUsers *[]int  `json:"authorized_users,omitempty"`
 	CriticalProduct *bool   `json:"critical_product,omitempty"`
@@ -15383,7 +16644,7 @@ type PatchedRegulationRequest struct {
 	Name *string `json:"name,omitempty"`
 
 	// Reference An external URL for more information.
-	Reference *string `json:"reference,omitempty"`
+	Reference *PatchedRegulationRequest_Reference `json:"reference,omitempty"`
 }
 
 // PatchedRegulationRequestCategory The subject of the regulation.
@@ -15397,6 +16658,17 @@ type PatchedRegulationRequest struct {
 // * `government` - Government
 // * `other` - Other
 type PatchedRegulationRequestCategory string
+
+// PatchedRegulationRequestReference0 defines model for PatchedRegulationRequest.Reference.0.
+type PatchedRegulationRequestReference0 = string
+
+// PatchedRegulationRequestReference1 defines model for PatchedRegulationRequest.Reference.1.
+type PatchedRegulationRequestReference1 = string
+
+// PatchedRegulationRequest_Reference An external URL for more information.
+type PatchedRegulationRequest_Reference struct {
+	union json.RawMessage
+}
 
 // PatchedRiskAcceptanceRequest defines model for PatchedRiskAcceptanceRequest.
 type PatchedRiskAcceptanceRequest struct {
@@ -15811,7 +17083,23 @@ type PatchedToolConfigurationRequest struct {
 // * `SSH` - SSH
 type PatchedToolConfigurationRequestAuthenticationType string
 
-// PatchedToolProductSettingsRequest defines model for PatchedToolProductSettingsRequest.
+// PatchedToolProductSettingsRequest Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type PatchedToolProductSettingsRequest struct {
 	Description       *string `json:"description,omitempty"`
 	Name              *string `json:"name,omitempty"`
@@ -15862,7 +17150,7 @@ type PatchedUserContactInfoRequest struct {
 	BlockExecution *bool `json:"block_execution,omitempty"`
 
 	// CellNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
-	CellNumber *string `json:"cell_number,omitempty"`
+	CellNumber *PatchedUserContactInfoRequest_CellNumber `json:"cell_number,omitempty"`
 
 	// DeduplicationExecutionMode Controls how import/reimport deduplication post-processing is executed. 'Async' dispatches it to the background and returns immediately (default). 'Async, wait for deduplication' dispatches to the background but waits for deduplication to finish before responding, so notifications and statistics reflect the deduplicated state. 'Synchronous' runs the import deduplication inline. Can be overridden per request. Independent of block_execution, which forces all async tasks (notifications, jira, ...) to the foreground.
 	//
@@ -15879,8 +17167,8 @@ type PatchedUserContactInfoRequest struct {
 	PasswordLastReset *time.Time `json:"password_last_reset,omitempty"`
 
 	// PhoneNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
-	PhoneNumber *string `json:"phone_number,omitempty"`
-	SlackUserId *string `json:"slack_user_id,omitempty"`
+	PhoneNumber *PatchedUserContactInfoRequest_PhoneNumber `json:"phone_number,omitempty"`
+	SlackUserId *string                                    `json:"slack_user_id,omitempty"`
 
 	// SlackUsername Email address associated with your slack account
 	SlackUsername *string `json:"slack_username,omitempty"`
@@ -15895,12 +17183,34 @@ type PatchedUserContactInfoRequest struct {
 	User          *int  `json:"user,omitempty"`
 }
 
+// PatchedUserContactInfoRequestCellNumber0 defines model for PatchedUserContactInfoRequest.CellNumber.0.
+type PatchedUserContactInfoRequestCellNumber0 = string
+
+// PatchedUserContactInfoRequestCellNumber1 defines model for PatchedUserContactInfoRequest.CellNumber.1.
+type PatchedUserContactInfoRequestCellNumber1 = string
+
+// PatchedUserContactInfoRequest_CellNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
+type PatchedUserContactInfoRequest_CellNumber struct {
+	union json.RawMessage
+}
+
 // PatchedUserContactInfoRequestDeduplicationExecutionMode Controls how import/reimport deduplication post-processing is executed. 'Async' dispatches it to the background and returns immediately (default). 'Async, wait for deduplication' dispatches to the background but waits for deduplication to finish before responding, so notifications and statistics reflect the deduplicated state. 'Synchronous' runs the import deduplication inline. Can be overridden per request. Independent of block_execution, which forces all async tasks (notifications, jira, ...) to the foreground.
 //
 // * `async` - Async (do not wait)
 // * `async_wait` - Async, wait for deduplication
 // * `sync` - Synchronous (block)
 type PatchedUserContactInfoRequestDeduplicationExecutionMode string
+
+// PatchedUserContactInfoRequestPhoneNumber0 defines model for PatchedUserContactInfoRequest.PhoneNumber.0.
+type PatchedUserContactInfoRequestPhoneNumber0 = string
+
+// PatchedUserContactInfoRequestPhoneNumber1 defines model for PatchedUserContactInfoRequest.PhoneNumber.1.
+type PatchedUserContactInfoRequestPhoneNumber1 = string
+
+// PatchedUserContactInfoRequest_PhoneNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
+type PatchedUserContactInfoRequest_PhoneNumber struct {
+	union json.RawMessage
+}
 
 // PatchedUserRequest defines model for PatchedUserRequest.
 type PatchedUserRequest struct {
@@ -15923,7 +17233,27 @@ type PatchedUserRequest struct {
 	Username *string `json:"username,omitempty"`
 }
 
-// Product defines model for Product.
+// Product Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type Product struct {
 	AuthorizedUsers *[]int `json:"authorized_users,omitempty"`
 
@@ -16034,7 +17364,23 @@ type ProductOrigin string
 // * `web` - Web
 type ProductPlatform string
 
-// ProductAPIScanConfiguration defines model for ProductAPIScanConfiguration.
+// ProductAPIScanConfiguration Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type ProductAPIScanConfiguration struct {
 	Id       *int `json:"id,omitempty"`
 	Prefetch *struct {
@@ -16048,7 +17394,23 @@ type ProductAPIScanConfiguration struct {
 	ToolConfiguration int     `json:"tool_configuration"`
 }
 
-// ProductAPIScanConfigurationRequest defines model for ProductAPIScanConfigurationRequest.
+// ProductAPIScanConfigurationRequest Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type ProductAPIScanConfigurationRequest struct {
 	Product           int     `json:"product"`
 	ServiceKey1       *string `json:"service_key_1,omitempty"`
@@ -16063,7 +17425,27 @@ type ProductMeta struct {
 	Value string `json:"value"`
 }
 
-// ProductRequest defines model for ProductRequest.
+// ProductRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type ProductRequest struct {
 	AuthorizedUsers *[]int `json:"authorized_users,omitempty"`
 
@@ -16158,7 +17540,27 @@ type ProductRequestOrigin string
 // * `web` - Web
 type ProductRequestPlatform string
 
-// ProductType defines model for ProductType.
+// ProductType Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type ProductType struct {
 	AuthorizedUsers *[]int `json:"authorized_users,omitempty"`
 
@@ -16177,7 +17579,27 @@ type ProductType struct {
 	Updated *time.Time `json:"updated,omitempty"`
 }
 
-// ProductTypeRequest defines model for ProductTypeRequest.
+// ProductTypeRequest Enforce the member-management permission on “authorized_users“ writes.
+//
+// “authorized_users“ is a writable M2M on “Product“ and “Product_Type“, so
+// every “ModelSerializer“ over those models picks it up unless it is explicitly
+// excluded. Object access is derived from that list, which makes writing it a
+// member-management operation rather than an ordinary edit: it is gated behind
+// “Product_Manage_Members“ / “Product_Type_Manage_Members“, the same
+// permissions the web UI requires (dojo.product.ui.views.add_product_authorized_users).
+// The rest of these endpoints is governed by the corresponding “_Edit“ permission.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same models, so the rule holds wherever the field is
+// reachable. The permission is derived from “Meta.model“, so there is nothing
+// per-serializer to configure or forget.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent or unchanged (replay-safe), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type ProductTypeRequest struct {
 	AuthorizedUsers *[]int  `json:"authorized_users,omitempty"`
 	CriticalProduct *bool   `json:"critical_product,omitempty"`
@@ -16283,6 +17705,7 @@ type ReImportScan struct {
 	ScanDate *openapi_types.Date `json:"scan_date,omitempty"`
 
 	// ScanType * `Acunetix Scan` - Acunetix Scanner
+	// * `AIDE Scan` - AIDE Scan
 	// * `Alert Logic Scan` - Alert Logic Scan
 	// * `Anchore Engine Scan` - Anchore Engine Scan
 	// * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -16290,6 +17713,7 @@ type ReImportScan struct {
 	// * `Anchore Grype detailed` - Anchore Grype detailed
 	// * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 	// * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+	// * `APKLeaks Scan` - APKLeaks Scan
 	// * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 	// * `AppSpider Scan` - AppSpider Scan
 	// * `Aqua Scan` - Aqua Scan
@@ -16318,6 +17742,8 @@ type ReImportScan struct {
 	// * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 	// * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 	// * `CargoAudit Scan` - CargoAudit Scan
+	// * `cfn-lint Scan` - cfn-lint Scan
+	// * `cfn-nag Scan` - cfn-nag Scan
 	// * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 	// * `Checkmarx One Scan` - Checkmarx One Scan
 	// * `Checkmarx OSA` - Checkmarx OSA
@@ -16325,20 +17751,27 @@ type ReImportScan struct {
 	// * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 	// * `Checkov Scan` - Checkov Scan
 	// * `Chef Inspect Log` - Chef Inspect Log
+	// * `chkrootkit Scan` - chkrootkit Scan
 	// * `Choctaw Hog Scan` - Choctaw Hog Scan
 	// * `Clair Scan` - Clair Scan
+	// * `ClamAV Scan` - ClamAV Scan
 	// * `Cloudflare Insights` - Cloudflare Insights
 	// * `Cloudsploit Scan` - Cloudsploit Scan
 	// * `Cobalt.io API Import` - Cobalt.io API Import
 	// * `Cobalt.io Scan` - Cobalt.io Scan
 	// * `Codechecker Report native` - Codechecker Report native
+	// * `Composer Audit Scan` - Composer Audit Scan
+	// * `Conftest Scan` - Conftest Scan
 	// * `Contrast Scan` - Contrast Scan
 	// * `Coverity API` - Coverity API
 	// * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+	// * `Cppcheck Scan` - Cppcheck Scan
 	// * `Crashtest Security JSON File` - Crashtest Security JSON File
 	// * `Crashtest Security XML File` - Crashtest Security XML File
 	// * `CredScan Scan` - CredScan Scan
 	// * `Crunch42 Scan` - Crunch42 Scan
+	// * `CSAF Scan` - CSAF Scan
+	// * `cwe_checker Scan` - cwe_checker Scan
 	// * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 	// * `CycloneDX Scan` - CycloneDX Scan
 	// * `Cycognito Scan` - Cycognito Scan
@@ -16347,15 +17780,22 @@ type ReImportScan struct {
 	// * `Dependency Check Scan` - Dependency Check Scan
 	// * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 	// * `Detect-secrets Scan` - Detect-secrets Scan
+	// * `DevSkim Scan` - DevSkim Scan
+	// * `Dirsearch Scan` - Dirsearch Scan
 	// * `docker-bench-security Scan` - docker-bench-security Scan
 	// * `Dockle Scan` - Dockle Scan
+	// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 	// * `DrHeader JSON Importer` - DrHeader JSON Importer
 	// * `DSOP Scan` - DSOP Scan
 	// * `Duroc Hog Scan` - Duroc Hog Scan
 	// * `Edgescan Scan` - Edgescan Scan
 	// * `ESLint Scan` - ESLint Scan
 	// * `Essex Hog Scan` - Essex Hog Scan
+	// * `ffuf Scan` - ffuf Scan
+	// * `Firmwalker Scan` - Firmwalker Scan
+	// * `Flawfinder Scan` - Flawfinder Scan
 	// * `Fortify Scan` - Fortify Scan
+	// * `Fortify Scan v2` - Fortify Scan v2
 	// * `Garak Scan` - Garak Scan
 	// * `Generic Findings Import` - Generic Findings Import
 	// * `Ggshield Scan` - Ggshield Scan
@@ -16369,6 +17809,7 @@ type ReImportScan struct {
 	// * `GitLab SAST Report` - GitLab SAST Report
 	// * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 	// * `Gitleaks Scan` - Gitleaks Scan
+	// * `Gobuster Scan` - Gobuster Scan
 	// * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 	// * `Gosec Scanner` - Gosec Scanner
 	// * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -16380,11 +17821,13 @@ type ReImportScan struct {
 	// * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 	// * `HCLAppScan XML` - HCLAppScan XML
 	// * `Horusec Scan` - Horusec Scan
+	// * `httpx Scan` - httpx Scan
 	// * `Humble Json Importer` - Humble Json Importer
 	// * `HuskyCI Report` - HuskyCI Report
 	// * `Hydra Scan` - Hydra Scan
 	// * `IBM AppScan DAST` - IBM AppScan DAST
 	// * `Immuniweb Scan` - Immuniweb Scan
+	// * `Infer Scan` - Infer Scan
 	// * `IntSights Report` - IntSights Report
 	// * `Invicti Scan` - Invicti Scan
 	// * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -16399,24 +17842,31 @@ type ReImportScan struct {
 	// * `kube-bench Scan` - kube-bench Scan
 	// * `Kubeaudit Scan` - Kubeaudit Scan
 	// * `KubeHunter Scan` - KubeHunter Scan
+	// * `KubeLinter Scan` - KubeLinter Scan
 	// * `Kubescape JSON Importer` - Kubescape JSON Importer
 	// * `Legitify Scan` - Legitify Scan
+	// * `Lynis Scan` - Lynis Scan
+	// * `Masscan Scan` - Masscan Scan
 	// * `Mayhem SARIF Report` - Mayhem SARIF Report
 	// * `Mend Scan` - Mend Scan
 	// * `Meterian Scan` - Meterian Scan
 	// * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+	// * `Mix Audit Scan` - Mix Audit Scan
 	// * `MobSF Scan` - MobSF Scan
 	// * `Mobsfscan Scan` - MobSF Scan
 	// * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 	// * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 	// * `MSDefender Parser` - MSDefender Parser
 	// * `n0s1 Scanner` - n0s1 Scanner
+	// * `Naabu Scan` - Naabu Scan
 	// * `Nancy Scan` - Nancy Scan
 	// * `Netsparker Scan` - Netsparker Scan
+	// * `Nettacker Scan` - Nettacker Scan
 	// * `NeuVector (compliance)` - NeuVector (compliance)
 	// * `NeuVector (REST)` - NeuVector (REST)
 	// * `Nexpose Scan` - Nexpose Scan
 	// * `Nikto Scan` - Nikto Scan
+	// * `njsscan Scan` - njsscan Scan
 	// * `Nmap Scan` - Nmap Scan
 	// * `Node Security Platform Scan` - Node Security Platform Scan
 	// * `Nosey Parker Scan` - Nosey Parker Scan
@@ -16427,6 +17877,7 @@ type ReImportScan struct {
 	// * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 	// * `OpenVAS Parser` - OpenVAS Parser
 	// * `OpenVAS Parser v2` - OpenVAS Parser v2
+	// * `OpenVEX Scan` - OpenVEX Scan
 	// * `Orca Security Alerts` - Orca Security Alerts
 	// * `ORT evaluated model Importer` - ORT evaluated model Importer
 	// * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -16438,11 +17889,15 @@ type ReImportScan struct {
 	// * `PingCastle` - PingCastle
 	// * `pip-audit Scan` - pip-audit Scan
 	// * `PMD Scan` - PMD Scan
+	// * `pnpm Audit Scan` - pnpm Audit Scan
+	// * `Polaris Scan` - Polaris Scan
 	// * `Popeye Scan` - Popeye Scan
 	// * `Progpilot Scan` - Progpilot Scan
+	// * `Promptfoo Scan` - Promptfoo Scan
 	// * `Prowler Scan` - Prowler Scan
 	// * `PTART Report` - PTART Report
 	// * `PWN SAST` - PWN SAST
+	// * `QARK Scan` - QARK Scan
 	// * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 	// * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 	// * `Qualys Scan` - Qualys Scan
@@ -16453,11 +17908,13 @@ type ReImportScan struct {
 	// * `Retire.js Scan` - Retire.js Scan
 	// * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 	// * `Risk Recon API Importer` - Risk Recon API Importer
+	// * `rkhunter Scan` - rkhunter Scan
 	// * `Rubocop Scan` - Rubocop Scan
 	// * `Rusty Hog Scan` - Rusty Hog Scan
 	// * `SARIF` - SARIF
 	// * `Scantist Scan` - Scantist Scan
 	// * `Scout Suite Scan` - Scout Suite Scan
+	// * `Secretlint Scan` - Secretlint Scan
 	// * `Semgrep JSON Report` - Semgrep JSON Report
 	// * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 	// * `SKF Scan` - SKF Scan
@@ -16469,7 +17926,9 @@ type ReImportScan struct {
 	// * `SonarQube Scan` - SonarQube Scan
 	// * `SonarQube Scan detailed` - SonarQube Scan detailed
 	// * `Sonatype Application Scan` - Sonatype Application Scan
+	// * `SPDX Scan` - SPDX Scan
 	// * `SpotBugs Scan` - SpotBugs Scan
+	// * `Sqlmap Scan` - Sqlmap Scan
 	// * `SSH Audit Importer` - SSH Audit Importer
 	// * `SSL Labs Scan` - SSL Labs Scan
 	// * `Sslscan` - Sslscan
@@ -16499,6 +17958,7 @@ type ReImportScan struct {
 	// * `Wapiti Scan` - Wapiti Scan
 	// * `Wazuh` - Wazuh
 	// * `WFuzz JSON report` - WFuzz JSON report
+	// * `WhatWeb Scan` - WhatWeb Scan
 	// * `Whispers Scan` - Whispers Scan
 	// * `WhiteHat Sentinel` - WhiteHat Sentinel
 	// * `Wiz Scan` - Wiz Scan
@@ -16511,6 +17971,7 @@ type ReImportScan struct {
 	// * `Xygeni SAST Scan` - Xygeni SAST Scan
 	// * `Xygeni SCA Scan` - Xygeni SCA Scan
 	// * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+	// * `YARA Scan` - YARA Scan
 	// * `Yarn Audit Scan` - Yarn Audit Scan
 	// * `ZAP Scan` - ZAP Scan
 	// * `Zora Parser` - Zora Parser
@@ -16562,6 +18023,7 @@ type ReImportScanGroupBy string
 type ReImportScanMinimumSeverity string
 
 // ReImportScanScanType * `Acunetix Scan` - Acunetix Scanner
+// * `AIDE Scan` - AIDE Scan
 // * `Alert Logic Scan` - Alert Logic Scan
 // * `Anchore Engine Scan` - Anchore Engine Scan
 // * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -16569,6 +18031,7 @@ type ReImportScanMinimumSeverity string
 // * `Anchore Grype detailed` - Anchore Grype detailed
 // * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 // * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+// * `APKLeaks Scan` - APKLeaks Scan
 // * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 // * `AppSpider Scan` - AppSpider Scan
 // * `Aqua Scan` - Aqua Scan
@@ -16597,6 +18060,8 @@ type ReImportScanMinimumSeverity string
 // * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 // * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 // * `CargoAudit Scan` - CargoAudit Scan
+// * `cfn-lint Scan` - cfn-lint Scan
+// * `cfn-nag Scan` - cfn-nag Scan
 // * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 // * `Checkmarx One Scan` - Checkmarx One Scan
 // * `Checkmarx OSA` - Checkmarx OSA
@@ -16604,20 +18069,27 @@ type ReImportScanMinimumSeverity string
 // * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 // * `Checkov Scan` - Checkov Scan
 // * `Chef Inspect Log` - Chef Inspect Log
+// * `chkrootkit Scan` - chkrootkit Scan
 // * `Choctaw Hog Scan` - Choctaw Hog Scan
 // * `Clair Scan` - Clair Scan
+// * `ClamAV Scan` - ClamAV Scan
 // * `Cloudflare Insights` - Cloudflare Insights
 // * `Cloudsploit Scan` - Cloudsploit Scan
 // * `Cobalt.io API Import` - Cobalt.io API Import
 // * `Cobalt.io Scan` - Cobalt.io Scan
 // * `Codechecker Report native` - Codechecker Report native
+// * `Composer Audit Scan` - Composer Audit Scan
+// * `Conftest Scan` - Conftest Scan
 // * `Contrast Scan` - Contrast Scan
 // * `Coverity API` - Coverity API
 // * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+// * `Cppcheck Scan` - Cppcheck Scan
 // * `Crashtest Security JSON File` - Crashtest Security JSON File
 // * `Crashtest Security XML File` - Crashtest Security XML File
 // * `CredScan Scan` - CredScan Scan
 // * `Crunch42 Scan` - Crunch42 Scan
+// * `CSAF Scan` - CSAF Scan
+// * `cwe_checker Scan` - cwe_checker Scan
 // * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 // * `CycloneDX Scan` - CycloneDX Scan
 // * `Cycognito Scan` - Cycognito Scan
@@ -16626,15 +18098,22 @@ type ReImportScanMinimumSeverity string
 // * `Dependency Check Scan` - Dependency Check Scan
 // * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 // * `Detect-secrets Scan` - Detect-secrets Scan
+// * `DevSkim Scan` - DevSkim Scan
+// * `Dirsearch Scan` - Dirsearch Scan
 // * `docker-bench-security Scan` - docker-bench-security Scan
 // * `Dockle Scan` - Dockle Scan
+// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 // * `DrHeader JSON Importer` - DrHeader JSON Importer
 // * `DSOP Scan` - DSOP Scan
 // * `Duroc Hog Scan` - Duroc Hog Scan
 // * `Edgescan Scan` - Edgescan Scan
 // * `ESLint Scan` - ESLint Scan
 // * `Essex Hog Scan` - Essex Hog Scan
+// * `ffuf Scan` - ffuf Scan
+// * `Firmwalker Scan` - Firmwalker Scan
+// * `Flawfinder Scan` - Flawfinder Scan
 // * `Fortify Scan` - Fortify Scan
+// * `Fortify Scan v2` - Fortify Scan v2
 // * `Garak Scan` - Garak Scan
 // * `Generic Findings Import` - Generic Findings Import
 // * `Ggshield Scan` - Ggshield Scan
@@ -16648,6 +18127,7 @@ type ReImportScanMinimumSeverity string
 // * `GitLab SAST Report` - GitLab SAST Report
 // * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 // * `Gitleaks Scan` - Gitleaks Scan
+// * `Gobuster Scan` - Gobuster Scan
 // * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 // * `Gosec Scanner` - Gosec Scanner
 // * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -16659,11 +18139,13 @@ type ReImportScanMinimumSeverity string
 // * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 // * `HCLAppScan XML` - HCLAppScan XML
 // * `Horusec Scan` - Horusec Scan
+// * `httpx Scan` - httpx Scan
 // * `Humble Json Importer` - Humble Json Importer
 // * `HuskyCI Report` - HuskyCI Report
 // * `Hydra Scan` - Hydra Scan
 // * `IBM AppScan DAST` - IBM AppScan DAST
 // * `Immuniweb Scan` - Immuniweb Scan
+// * `Infer Scan` - Infer Scan
 // * `IntSights Report` - IntSights Report
 // * `Invicti Scan` - Invicti Scan
 // * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -16678,24 +18160,31 @@ type ReImportScanMinimumSeverity string
 // * `kube-bench Scan` - kube-bench Scan
 // * `Kubeaudit Scan` - Kubeaudit Scan
 // * `KubeHunter Scan` - KubeHunter Scan
+// * `KubeLinter Scan` - KubeLinter Scan
 // * `Kubescape JSON Importer` - Kubescape JSON Importer
 // * `Legitify Scan` - Legitify Scan
+// * `Lynis Scan` - Lynis Scan
+// * `Masscan Scan` - Masscan Scan
 // * `Mayhem SARIF Report` - Mayhem SARIF Report
 // * `Mend Scan` - Mend Scan
 // * `Meterian Scan` - Meterian Scan
 // * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+// * `Mix Audit Scan` - Mix Audit Scan
 // * `MobSF Scan` - MobSF Scan
 // * `Mobsfscan Scan` - MobSF Scan
 // * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 // * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 // * `MSDefender Parser` - MSDefender Parser
 // * `n0s1 Scanner` - n0s1 Scanner
+// * `Naabu Scan` - Naabu Scan
 // * `Nancy Scan` - Nancy Scan
 // * `Netsparker Scan` - Netsparker Scan
+// * `Nettacker Scan` - Nettacker Scan
 // * `NeuVector (compliance)` - NeuVector (compliance)
 // * `NeuVector (REST)` - NeuVector (REST)
 // * `Nexpose Scan` - Nexpose Scan
 // * `Nikto Scan` - Nikto Scan
+// * `njsscan Scan` - njsscan Scan
 // * `Nmap Scan` - Nmap Scan
 // * `Node Security Platform Scan` - Node Security Platform Scan
 // * `Nosey Parker Scan` - Nosey Parker Scan
@@ -16706,6 +18195,7 @@ type ReImportScanMinimumSeverity string
 // * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 // * `OpenVAS Parser` - OpenVAS Parser
 // * `OpenVAS Parser v2` - OpenVAS Parser v2
+// * `OpenVEX Scan` - OpenVEX Scan
 // * `Orca Security Alerts` - Orca Security Alerts
 // * `ORT evaluated model Importer` - ORT evaluated model Importer
 // * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -16717,11 +18207,15 @@ type ReImportScanMinimumSeverity string
 // * `PingCastle` - PingCastle
 // * `pip-audit Scan` - pip-audit Scan
 // * `PMD Scan` - PMD Scan
+// * `pnpm Audit Scan` - pnpm Audit Scan
+// * `Polaris Scan` - Polaris Scan
 // * `Popeye Scan` - Popeye Scan
 // * `Progpilot Scan` - Progpilot Scan
+// * `Promptfoo Scan` - Promptfoo Scan
 // * `Prowler Scan` - Prowler Scan
 // * `PTART Report` - PTART Report
 // * `PWN SAST` - PWN SAST
+// * `QARK Scan` - QARK Scan
 // * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 // * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 // * `Qualys Scan` - Qualys Scan
@@ -16732,11 +18226,13 @@ type ReImportScanMinimumSeverity string
 // * `Retire.js Scan` - Retire.js Scan
 // * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 // * `Risk Recon API Importer` - Risk Recon API Importer
+// * `rkhunter Scan` - rkhunter Scan
 // * `Rubocop Scan` - Rubocop Scan
 // * `Rusty Hog Scan` - Rusty Hog Scan
 // * `SARIF` - SARIF
 // * `Scantist Scan` - Scantist Scan
 // * `Scout Suite Scan` - Scout Suite Scan
+// * `Secretlint Scan` - Secretlint Scan
 // * `Semgrep JSON Report` - Semgrep JSON Report
 // * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 // * `SKF Scan` - SKF Scan
@@ -16748,7 +18244,9 @@ type ReImportScanMinimumSeverity string
 // * `SonarQube Scan` - SonarQube Scan
 // * `SonarQube Scan detailed` - SonarQube Scan detailed
 // * `Sonatype Application Scan` - Sonatype Application Scan
+// * `SPDX Scan` - SPDX Scan
 // * `SpotBugs Scan` - SpotBugs Scan
+// * `Sqlmap Scan` - Sqlmap Scan
 // * `SSH Audit Importer` - SSH Audit Importer
 // * `SSL Labs Scan` - SSL Labs Scan
 // * `Sslscan` - Sslscan
@@ -16778,6 +18276,7 @@ type ReImportScanMinimumSeverity string
 // * `Wapiti Scan` - Wapiti Scan
 // * `Wazuh` - Wazuh
 // * `WFuzz JSON report` - WFuzz JSON report
+// * `WhatWeb Scan` - WhatWeb Scan
 // * `Whispers Scan` - Whispers Scan
 // * `WhiteHat Sentinel` - WhiteHat Sentinel
 // * `Wiz Scan` - Wiz Scan
@@ -16790,6 +18289,7 @@ type ReImportScanMinimumSeverity string
 // * `Xygeni SAST Scan` - Xygeni SAST Scan
 // * `Xygeni SCA Scan` - Xygeni SCA Scan
 // * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+// * `YARA Scan` - YARA Scan
 // * `Yarn Audit Scan` - Yarn Audit Scan
 // * `ZAP Scan` - ZAP Scan
 // * `Zora Parser` - Zora Parser
@@ -16876,6 +18376,7 @@ type ReImportScanRequest struct {
 	ScanDate *openapi_types.Date `json:"scan_date,omitempty"`
 
 	// ScanType * `Acunetix Scan` - Acunetix Scanner
+	// * `AIDE Scan` - AIDE Scan
 	// * `Alert Logic Scan` - Alert Logic Scan
 	// * `Anchore Engine Scan` - Anchore Engine Scan
 	// * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -16883,6 +18384,7 @@ type ReImportScanRequest struct {
 	// * `Anchore Grype detailed` - Anchore Grype detailed
 	// * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 	// * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+	// * `APKLeaks Scan` - APKLeaks Scan
 	// * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 	// * `AppSpider Scan` - AppSpider Scan
 	// * `Aqua Scan` - Aqua Scan
@@ -16911,6 +18413,8 @@ type ReImportScanRequest struct {
 	// * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 	// * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 	// * `CargoAudit Scan` - CargoAudit Scan
+	// * `cfn-lint Scan` - cfn-lint Scan
+	// * `cfn-nag Scan` - cfn-nag Scan
 	// * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 	// * `Checkmarx One Scan` - Checkmarx One Scan
 	// * `Checkmarx OSA` - Checkmarx OSA
@@ -16918,20 +18422,27 @@ type ReImportScanRequest struct {
 	// * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 	// * `Checkov Scan` - Checkov Scan
 	// * `Chef Inspect Log` - Chef Inspect Log
+	// * `chkrootkit Scan` - chkrootkit Scan
 	// * `Choctaw Hog Scan` - Choctaw Hog Scan
 	// * `Clair Scan` - Clair Scan
+	// * `ClamAV Scan` - ClamAV Scan
 	// * `Cloudflare Insights` - Cloudflare Insights
 	// * `Cloudsploit Scan` - Cloudsploit Scan
 	// * `Cobalt.io API Import` - Cobalt.io API Import
 	// * `Cobalt.io Scan` - Cobalt.io Scan
 	// * `Codechecker Report native` - Codechecker Report native
+	// * `Composer Audit Scan` - Composer Audit Scan
+	// * `Conftest Scan` - Conftest Scan
 	// * `Contrast Scan` - Contrast Scan
 	// * `Coverity API` - Coverity API
 	// * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+	// * `Cppcheck Scan` - Cppcheck Scan
 	// * `Crashtest Security JSON File` - Crashtest Security JSON File
 	// * `Crashtest Security XML File` - Crashtest Security XML File
 	// * `CredScan Scan` - CredScan Scan
 	// * `Crunch42 Scan` - Crunch42 Scan
+	// * `CSAF Scan` - CSAF Scan
+	// * `cwe_checker Scan` - cwe_checker Scan
 	// * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 	// * `CycloneDX Scan` - CycloneDX Scan
 	// * `Cycognito Scan` - Cycognito Scan
@@ -16940,15 +18451,22 @@ type ReImportScanRequest struct {
 	// * `Dependency Check Scan` - Dependency Check Scan
 	// * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 	// * `Detect-secrets Scan` - Detect-secrets Scan
+	// * `DevSkim Scan` - DevSkim Scan
+	// * `Dirsearch Scan` - Dirsearch Scan
 	// * `docker-bench-security Scan` - docker-bench-security Scan
 	// * `Dockle Scan` - Dockle Scan
+	// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 	// * `DrHeader JSON Importer` - DrHeader JSON Importer
 	// * `DSOP Scan` - DSOP Scan
 	// * `Duroc Hog Scan` - Duroc Hog Scan
 	// * `Edgescan Scan` - Edgescan Scan
 	// * `ESLint Scan` - ESLint Scan
 	// * `Essex Hog Scan` - Essex Hog Scan
+	// * `ffuf Scan` - ffuf Scan
+	// * `Firmwalker Scan` - Firmwalker Scan
+	// * `Flawfinder Scan` - Flawfinder Scan
 	// * `Fortify Scan` - Fortify Scan
+	// * `Fortify Scan v2` - Fortify Scan v2
 	// * `Garak Scan` - Garak Scan
 	// * `Generic Findings Import` - Generic Findings Import
 	// * `Ggshield Scan` - Ggshield Scan
@@ -16962,6 +18480,7 @@ type ReImportScanRequest struct {
 	// * `GitLab SAST Report` - GitLab SAST Report
 	// * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 	// * `Gitleaks Scan` - Gitleaks Scan
+	// * `Gobuster Scan` - Gobuster Scan
 	// * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 	// * `Gosec Scanner` - Gosec Scanner
 	// * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -16973,11 +18492,13 @@ type ReImportScanRequest struct {
 	// * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 	// * `HCLAppScan XML` - HCLAppScan XML
 	// * `Horusec Scan` - Horusec Scan
+	// * `httpx Scan` - httpx Scan
 	// * `Humble Json Importer` - Humble Json Importer
 	// * `HuskyCI Report` - HuskyCI Report
 	// * `Hydra Scan` - Hydra Scan
 	// * `IBM AppScan DAST` - IBM AppScan DAST
 	// * `Immuniweb Scan` - Immuniweb Scan
+	// * `Infer Scan` - Infer Scan
 	// * `IntSights Report` - IntSights Report
 	// * `Invicti Scan` - Invicti Scan
 	// * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -16992,24 +18513,31 @@ type ReImportScanRequest struct {
 	// * `kube-bench Scan` - kube-bench Scan
 	// * `Kubeaudit Scan` - Kubeaudit Scan
 	// * `KubeHunter Scan` - KubeHunter Scan
+	// * `KubeLinter Scan` - KubeLinter Scan
 	// * `Kubescape JSON Importer` - Kubescape JSON Importer
 	// * `Legitify Scan` - Legitify Scan
+	// * `Lynis Scan` - Lynis Scan
+	// * `Masscan Scan` - Masscan Scan
 	// * `Mayhem SARIF Report` - Mayhem SARIF Report
 	// * `Mend Scan` - Mend Scan
 	// * `Meterian Scan` - Meterian Scan
 	// * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+	// * `Mix Audit Scan` - Mix Audit Scan
 	// * `MobSF Scan` - MobSF Scan
 	// * `Mobsfscan Scan` - MobSF Scan
 	// * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 	// * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 	// * `MSDefender Parser` - MSDefender Parser
 	// * `n0s1 Scanner` - n0s1 Scanner
+	// * `Naabu Scan` - Naabu Scan
 	// * `Nancy Scan` - Nancy Scan
 	// * `Netsparker Scan` - Netsparker Scan
+	// * `Nettacker Scan` - Nettacker Scan
 	// * `NeuVector (compliance)` - NeuVector (compliance)
 	// * `NeuVector (REST)` - NeuVector (REST)
 	// * `Nexpose Scan` - Nexpose Scan
 	// * `Nikto Scan` - Nikto Scan
+	// * `njsscan Scan` - njsscan Scan
 	// * `Nmap Scan` - Nmap Scan
 	// * `Node Security Platform Scan` - Node Security Platform Scan
 	// * `Nosey Parker Scan` - Nosey Parker Scan
@@ -17020,6 +18548,7 @@ type ReImportScanRequest struct {
 	// * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 	// * `OpenVAS Parser` - OpenVAS Parser
 	// * `OpenVAS Parser v2` - OpenVAS Parser v2
+	// * `OpenVEX Scan` - OpenVEX Scan
 	// * `Orca Security Alerts` - Orca Security Alerts
 	// * `ORT evaluated model Importer` - ORT evaluated model Importer
 	// * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -17031,11 +18560,15 @@ type ReImportScanRequest struct {
 	// * `PingCastle` - PingCastle
 	// * `pip-audit Scan` - pip-audit Scan
 	// * `PMD Scan` - PMD Scan
+	// * `pnpm Audit Scan` - pnpm Audit Scan
+	// * `Polaris Scan` - Polaris Scan
 	// * `Popeye Scan` - Popeye Scan
 	// * `Progpilot Scan` - Progpilot Scan
+	// * `Promptfoo Scan` - Promptfoo Scan
 	// * `Prowler Scan` - Prowler Scan
 	// * `PTART Report` - PTART Report
 	// * `PWN SAST` - PWN SAST
+	// * `QARK Scan` - QARK Scan
 	// * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 	// * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 	// * `Qualys Scan` - Qualys Scan
@@ -17046,11 +18579,13 @@ type ReImportScanRequest struct {
 	// * `Retire.js Scan` - Retire.js Scan
 	// * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 	// * `Risk Recon API Importer` - Risk Recon API Importer
+	// * `rkhunter Scan` - rkhunter Scan
 	// * `Rubocop Scan` - Rubocop Scan
 	// * `Rusty Hog Scan` - Rusty Hog Scan
 	// * `SARIF` - SARIF
 	// * `Scantist Scan` - Scantist Scan
 	// * `Scout Suite Scan` - Scout Suite Scan
+	// * `Secretlint Scan` - Secretlint Scan
 	// * `Semgrep JSON Report` - Semgrep JSON Report
 	// * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 	// * `SKF Scan` - SKF Scan
@@ -17062,7 +18597,9 @@ type ReImportScanRequest struct {
 	// * `SonarQube Scan` - SonarQube Scan
 	// * `SonarQube Scan detailed` - SonarQube Scan detailed
 	// * `Sonatype Application Scan` - Sonatype Application Scan
+	// * `SPDX Scan` - SPDX Scan
 	// * `SpotBugs Scan` - SpotBugs Scan
+	// * `Sqlmap Scan` - Sqlmap Scan
 	// * `SSH Audit Importer` - SSH Audit Importer
 	// * `SSL Labs Scan` - SSL Labs Scan
 	// * `Sslscan` - Sslscan
@@ -17092,6 +18629,7 @@ type ReImportScanRequest struct {
 	// * `Wapiti Scan` - Wapiti Scan
 	// * `Wazuh` - Wazuh
 	// * `WFuzz JSON report` - WFuzz JSON report
+	// * `WhatWeb Scan` - WhatWeb Scan
 	// * `Whispers Scan` - Whispers Scan
 	// * `WhiteHat Sentinel` - WhiteHat Sentinel
 	// * `Wiz Scan` - Wiz Scan
@@ -17104,6 +18642,7 @@ type ReImportScanRequest struct {
 	// * `Xygeni SAST Scan` - Xygeni SAST Scan
 	// * `Xygeni SCA Scan` - Xygeni SCA Scan
 	// * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+	// * `YARA Scan` - YARA Scan
 	// * `Yarn Audit Scan` - Yarn Audit Scan
 	// * `ZAP Scan` - ZAP Scan
 	// * `Zora Parser` - Zora Parser
@@ -17153,6 +18692,7 @@ type ReImportScanRequestGroupBy string
 type ReImportScanRequestMinimumSeverity string
 
 // ReImportScanRequestScanType * `Acunetix Scan` - Acunetix Scanner
+// * `AIDE Scan` - AIDE Scan
 // * `Alert Logic Scan` - Alert Logic Scan
 // * `Anchore Engine Scan` - Anchore Engine Scan
 // * `Anchore Enterprise Policy Check` - Anchore Enterprise Policy Check
@@ -17160,6 +18700,7 @@ type ReImportScanRequestMinimumSeverity string
 // * `Anchore Grype detailed` - Anchore Grype detailed
 // * `AnchoreCTL Policies Report` - AnchoreCTL Policies Report
 // * `AnchoreCTL Vuln Report` - AnchoreCTL Vuln Report
+// * `APKLeaks Scan` - APKLeaks Scan
 // * `AppCheck Web Application Scanner` - AppCheck Web Application Scanner
 // * `AppSpider Scan` - AppSpider Scan
 // * `Aqua Scan` - Aqua Scan
@@ -17188,6 +18729,8 @@ type ReImportScanRequestMinimumSeverity string
 // * `Burp GraphQL API` - Burp Suite DAST GraphQL API
 // * `Burp Suite DAST Scan` - Burp Suite DAST Scan
 // * `CargoAudit Scan` - CargoAudit Scan
+// * `cfn-lint Scan` - cfn-lint Scan
+// * `cfn-nag Scan` - cfn-nag Scan
 // * `Checkmarx CxFlow SAST` - Checkmarx CxFlow SAST
 // * `Checkmarx One Scan` - Checkmarx One Scan
 // * `Checkmarx OSA` - Checkmarx OSA
@@ -17195,20 +18738,27 @@ type ReImportScanRequestMinimumSeverity string
 // * `Checkmarx Scan detailed` - Checkmarx Scan detailed
 // * `Checkov Scan` - Checkov Scan
 // * `Chef Inspect Log` - Chef Inspect Log
+// * `chkrootkit Scan` - chkrootkit Scan
 // * `Choctaw Hog Scan` - Choctaw Hog Scan
 // * `Clair Scan` - Clair Scan
+// * `ClamAV Scan` - ClamAV Scan
 // * `Cloudflare Insights` - Cloudflare Insights
 // * `Cloudsploit Scan` - Cloudsploit Scan
 // * `Cobalt.io API Import` - Cobalt.io API Import
 // * `Cobalt.io Scan` - Cobalt.io Scan
 // * `Codechecker Report native` - Codechecker Report native
+// * `Composer Audit Scan` - Composer Audit Scan
+// * `Conftest Scan` - Conftest Scan
 // * `Contrast Scan` - Contrast Scan
 // * `Coverity API` - Coverity API
 // * `Coverity Scan JSON Report` - Coverity Scan JSON Report
+// * `Cppcheck Scan` - Cppcheck Scan
 // * `Crashtest Security JSON File` - Crashtest Security JSON File
 // * `Crashtest Security XML File` - Crashtest Security XML File
 // * `CredScan Scan` - CredScan Scan
 // * `Crunch42 Scan` - Crunch42 Scan
+// * `CSAF Scan` - CSAF Scan
+// * `cwe_checker Scan` - cwe_checker Scan
 // * `Cyberwatch scan (Galeax)` - Cyberwatch scan (Galeax)
 // * `CycloneDX Scan` - CycloneDX Scan
 // * `Cycognito Scan` - Cycognito Scan
@@ -17217,15 +18767,22 @@ type ReImportScanRequestMinimumSeverity string
 // * `Dependency Check Scan` - Dependency Check Scan
 // * `Dependency Track Finding Packaging Format (FPF) Export` - Dependency Track Finding Packaging Format (FPF) Export
 // * `Detect-secrets Scan` - Detect-secrets Scan
+// * `DevSkim Scan` - DevSkim Scan
+// * `Dirsearch Scan` - Dirsearch Scan
 // * `docker-bench-security Scan` - docker-bench-security Scan
 // * `Dockle Scan` - Dockle Scan
+// * `Dotnet Vulnerable Packages Scan` - Dotnet Vulnerable Packages Scan
 // * `DrHeader JSON Importer` - DrHeader JSON Importer
 // * `DSOP Scan` - DSOP Scan
 // * `Duroc Hog Scan` - Duroc Hog Scan
 // * `Edgescan Scan` - Edgescan Scan
 // * `ESLint Scan` - ESLint Scan
 // * `Essex Hog Scan` - Essex Hog Scan
+// * `ffuf Scan` - ffuf Scan
+// * `Firmwalker Scan` - Firmwalker Scan
+// * `Flawfinder Scan` - Flawfinder Scan
 // * `Fortify Scan` - Fortify Scan
+// * `Fortify Scan v2` - Fortify Scan v2
 // * `Garak Scan` - Garak Scan
 // * `Generic Findings Import` - Generic Findings Import
 // * `Ggshield Scan` - Ggshield Scan
@@ -17239,6 +18796,7 @@ type ReImportScanRequestMinimumSeverity string
 // * `GitLab SAST Report` - GitLab SAST Report
 // * `GitLab Secret Detection Report` - GitLab Secret Detection Report
 // * `Gitleaks Scan` - Gitleaks Scan
+// * `Gobuster Scan` - Gobuster Scan
 // * `Google Cloud Artifact Vulnerability Scan` - Google Cloud Artifact Vulnerability Scan
 // * `Gosec Scanner` - Gosec Scanner
 // * `Gottingen Hog Scan` - Gottingen Hog Scan
@@ -17250,11 +18808,13 @@ type ReImportScanRequestMinimumSeverity string
 // * `HCL AppScan on Cloud SAST XML` - HCL AppScan on Cloud SAST XML
 // * `HCLAppScan XML` - HCLAppScan XML
 // * `Horusec Scan` - Horusec Scan
+// * `httpx Scan` - httpx Scan
 // * `Humble Json Importer` - Humble Json Importer
 // * `HuskyCI Report` - HuskyCI Report
 // * `Hydra Scan` - Hydra Scan
 // * `IBM AppScan DAST` - IBM AppScan DAST
 // * `Immuniweb Scan` - Immuniweb Scan
+// * `Infer Scan` - Infer Scan
 // * `IntSights Report` - IntSights Report
 // * `Invicti Scan` - Invicti Scan
 // * `IriusRisk Threats Scan` - IriusRisk Threats Scan
@@ -17269,24 +18829,31 @@ type ReImportScanRequestMinimumSeverity string
 // * `kube-bench Scan` - kube-bench Scan
 // * `Kubeaudit Scan` - Kubeaudit Scan
 // * `KubeHunter Scan` - KubeHunter Scan
+// * `KubeLinter Scan` - KubeLinter Scan
 // * `Kubescape JSON Importer` - Kubescape JSON Importer
 // * `Legitify Scan` - Legitify Scan
+// * `Lynis Scan` - Lynis Scan
+// * `Masscan Scan` - Masscan Scan
 // * `Mayhem SARIF Report` - Mayhem SARIF Report
 // * `Mend Scan` - Mend Scan
 // * `Meterian Scan` - Meterian Scan
 // * `Microfocus Webinspect Scan` - Microfocus Webinspect Scan
+// * `Mix Audit Scan` - Mix Audit Scan
 // * `MobSF Scan` - MobSF Scan
 // * `Mobsfscan Scan` - MobSF Scan
 // * `MobSF Scorecard Scan` - MobSF Scorecard Scan
 // * `Mozilla Observatory Scan` - Mozilla Observatory Scan
 // * `MSDefender Parser` - MSDefender Parser
 // * `n0s1 Scanner` - n0s1 Scanner
+// * `Naabu Scan` - Naabu Scan
 // * `Nancy Scan` - Nancy Scan
 // * `Netsparker Scan` - Netsparker Scan
+// * `Nettacker Scan` - Nettacker Scan
 // * `NeuVector (compliance)` - NeuVector (compliance)
 // * `NeuVector (REST)` - NeuVector (REST)
 // * `Nexpose Scan` - Nexpose Scan
 // * `Nikto Scan` - Nikto Scan
+// * `njsscan Scan` - njsscan Scan
 // * `Nmap Scan` - Nmap Scan
 // * `Node Security Platform Scan` - Node Security Platform Scan
 // * `Nosey Parker Scan` - Nosey Parker Scan
@@ -17297,6 +18864,7 @@ type ReImportScanRequestMinimumSeverity string
 // * `Openscap Vulnerability Scan` - Openscap Vulnerability Scan
 // * `OpenVAS Parser` - OpenVAS Parser
 // * `OpenVAS Parser v2` - OpenVAS Parser v2
+// * `OpenVEX Scan` - OpenVEX Scan
 // * `Orca Security Alerts` - Orca Security Alerts
 // * `ORT evaluated model Importer` - ORT evaluated model Importer
 // * `OssIndex Devaudit SCA Scan Importer` - OssIndex Devaudit SCA Scan Importer
@@ -17308,11 +18876,15 @@ type ReImportScanRequestMinimumSeverity string
 // * `PingCastle` - PingCastle
 // * `pip-audit Scan` - pip-audit Scan
 // * `PMD Scan` - PMD Scan
+// * `pnpm Audit Scan` - pnpm Audit Scan
+// * `Polaris Scan` - Polaris Scan
 // * `Popeye Scan` - Popeye Scan
 // * `Progpilot Scan` - Progpilot Scan
+// * `Promptfoo Scan` - Promptfoo Scan
 // * `Prowler Scan` - Prowler Scan
 // * `PTART Report` - PTART Report
 // * `PWN SAST` - PWN SAST
+// * `QARK Scan` - QARK Scan
 // * `Qualys Hacker Guardian Scan` - Qualys Hacker Guardian Scan
 // * `Qualys Infrastructure Scan (WebGUI XML)` - Qualys Infrastructure Scan (WebGUI XML)
 // * `Qualys Scan` - Qualys Scan
@@ -17323,11 +18895,13 @@ type ReImportScanRequestMinimumSeverity string
 // * `Retire.js Scan` - Retire.js Scan
 // * `ReversingLabs Spectra Assure` - ReversingLabs Spectra Assure
 // * `Risk Recon API Importer` - Risk Recon API Importer
+// * `rkhunter Scan` - rkhunter Scan
 // * `Rubocop Scan` - Rubocop Scan
 // * `Rusty Hog Scan` - Rusty Hog Scan
 // * `SARIF` - SARIF
 // * `Scantist Scan` - Scantist Scan
 // * `Scout Suite Scan` - Scout Suite Scan
+// * `Secretlint Scan` - Secretlint Scan
 // * `Semgrep JSON Report` - Semgrep JSON Report
 // * `Semgrep Pro JSON Report` - Semgrep Pro JSON Report
 // * `SKF Scan` - SKF Scan
@@ -17339,7 +18913,9 @@ type ReImportScanRequestMinimumSeverity string
 // * `SonarQube Scan` - SonarQube Scan
 // * `SonarQube Scan detailed` - SonarQube Scan detailed
 // * `Sonatype Application Scan` - Sonatype Application Scan
+// * `SPDX Scan` - SPDX Scan
 // * `SpotBugs Scan` - SpotBugs Scan
+// * `Sqlmap Scan` - Sqlmap Scan
 // * `SSH Audit Importer` - SSH Audit Importer
 // * `SSL Labs Scan` - SSL Labs Scan
 // * `Sslscan` - Sslscan
@@ -17369,6 +18945,7 @@ type ReImportScanRequestMinimumSeverity string
 // * `Wapiti Scan` - Wapiti Scan
 // * `Wazuh` - Wazuh
 // * `WFuzz JSON report` - WFuzz JSON report
+// * `WhatWeb Scan` - WhatWeb Scan
 // * `Whispers Scan` - Whispers Scan
 // * `WhiteHat Sentinel` - WhiteHat Sentinel
 // * `Wiz Scan` - Wiz Scan
@@ -17381,6 +18958,7 @@ type ReImportScanRequestMinimumSeverity string
 // * `Xygeni SAST Scan` - Xygeni SAST Scan
 // * `Xygeni SCA Scan` - Xygeni SCA Scan
 // * `Xygeni Secrets Scan` - Xygeni Secrets Scan
+// * `YARA Scan` - YARA Scan
 // * `Yarn Audit Scan` - Yarn Audit Scan
 // * `ZAP Scan` - ZAP Scan
 // * `Zora Parser` - Zora Parser
@@ -17414,7 +18992,7 @@ type Regulation struct {
 	Name string `json:"name"`
 
 	// Reference An external URL for more information.
-	Reference *string `json:"reference,omitempty"`
+	Reference *Regulation_Reference `json:"reference,omitempty"`
 }
 
 // RegulationCategory The subject of the regulation.
@@ -17428,6 +19006,17 @@ type Regulation struct {
 // * `government` - Government
 // * `other` - Other
 type RegulationCategory string
+
+// RegulationReference0 defines model for Regulation.Reference.0.
+type RegulationReference0 = string
+
+// RegulationReference1 defines model for Regulation.Reference.1.
+type RegulationReference1 = string
+
+// Regulation_Reference An external URL for more information.
+type Regulation_Reference struct {
+	union json.RawMessage
+}
 
 // RegulationRequest defines model for RegulationRequest.
 type RegulationRequest struct {
@@ -17456,7 +19045,7 @@ type RegulationRequest struct {
 	Name string `json:"name"`
 
 	// Reference An external URL for more information.
-	Reference *string `json:"reference,omitempty"`
+	Reference *RegulationRequest_Reference `json:"reference,omitempty"`
 }
 
 // RegulationRequestCategory The subject of the regulation.
@@ -17470,6 +19059,17 @@ type RegulationRequest struct {
 // * `government` - Government
 // * `other` - Other
 type RegulationRequestCategory string
+
+// RegulationRequestReference0 defines model for RegulationRequest.Reference.0.
+type RegulationRequestReference0 = string
+
+// RegulationRequestReference1 defines model for RegulationRequest.Reference.1.
+type RegulationRequestReference1 = string
+
+// RegulationRequest_Reference An external URL for more information.
+type RegulationRequest_Reference struct {
+	union json.RawMessage
+}
 
 // ReportGenerate defines model for ReportGenerate.
 type ReportGenerate struct {
@@ -17497,7 +19097,23 @@ type ReportGenerateOptionRequest struct {
 	IncludeFindingImages    *bool `json:"include_finding_images,omitempty"`
 	IncludeFindingNotes     *bool `json:"include_finding_notes,omitempty"`
 	IncludeTableOfContents  *bool `json:"include_table_of_contents,omitempty"`
+
+	// ReportType Format for the generated report.
+	//
+	// * `JSON` - JSON
+	// * `HTML` - HTML
+	// * `CSV` - CSV
+	// * `Excel` - Excel
+	ReportType *ReportGenerateOptionRequestReportType `json:"report_type,omitempty"`
 }
+
+// ReportGenerateOptionRequestReportType Format for the generated report.
+//
+// * `JSON` - JSON
+// * `HTML` - HTML
+// * `CSV` - CSV
+// * `Excel` - Excel
+type ReportGenerateOptionRequestReportType string
 
 // RiskAcceptance defines model for RiskAcceptance.
 type RiskAcceptance struct {
@@ -17574,9 +19190,21 @@ type RiskAcceptanceDecision string
 // * `T` - Transfer (The risk is transferred to a 3rd party)
 type RiskAcceptanceRecommendation string
 
+// RiskAcceptanceExpireRequest defines model for RiskAcceptanceExpireRequest.
+type RiskAcceptanceExpireRequest struct {
+	Reason *string `json:"reason,omitempty"`
+}
+
 // RiskAcceptanceProof defines model for RiskAcceptanceProof.
 type RiskAcceptanceProof struct {
 	Path string `json:"path"`
+}
+
+// RiskAcceptanceReinstateRequest defines model for RiskAcceptanceReinstateRequest.
+type RiskAcceptanceReinstateRequest struct {
+	// ExpirationDate New expiration date. Omit it to reinstate for the number of days configured in the Risk Acceptance Form Default Days system setting.
+	ExpirationDate *time.Time `json:"expiration_date,omitempty"`
+	Reason         *string    `json:"reason,omitempty"`
 }
 
 // RiskAcceptanceRequest defines model for RiskAcceptanceRequest.
@@ -18281,7 +19909,7 @@ type TestCreate struct {
 	Files           *[]int     `json:"files,omitempty"`
 	Id              *int       `json:"id,omitempty"`
 	Lead            *int       `json:"lead,omitempty"`
-	Notes           *[]*int    `json:"notes,omitempty"`
+	Notes           *[]int     `json:"notes,omitempty"`
 	PercentComplete *int       `json:"percent_complete,omitempty"`
 	ScanType        *string    `json:"scan_type,omitempty"`
 	Tags            *[]string  `json:"tags,omitempty"`
@@ -18309,7 +19937,6 @@ type TestCreateRequest struct {
 	Engagement      int       `json:"engagement"`
 	Environment     *int      `json:"environment,omitempty"`
 	Lead            *int      `json:"lead,omitempty"`
-	Notes           *[]*int   `json:"notes,omitempty"`
 	PercentComplete *int      `json:"percent_complete,omitempty"`
 	ScanType        *string   `json:"scan_type,omitempty"`
 	Tags            *[]string `json:"tags,omitempty"`
@@ -18499,7 +20126,23 @@ type ToolConfigurationRequest struct {
 // * `SSH` - SSH
 type ToolConfigurationRequestAuthenticationType string
 
-// ToolProductSettings defines model for ToolProductSettings.
+// ToolProductSettings Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type ToolProductSettings struct {
 	Description *string `json:"description,omitempty"`
 	Id          *int    `json:"id,omitempty"`
@@ -18517,7 +20160,23 @@ type ToolProductSettings struct {
 	Url               *string `json:"url,omitempty"`
 }
 
-// ToolProductSettingsRequest defines model for ToolProductSettingsRequest.
+// ToolProductSettingsRequest Enforce “view_tool_configuration“ on “tool_configuration“ writes.
+//
+// Selecting a “tool_configuration“ lets an import run authenticated requests
+// with the credential stored on it, so it is gated by the same
+// “view_tool_configuration“ permission that guards the tool-configuration
+// views, not just the object permission these endpoints already check.
+//
+// Mix this into *every* serializer exposing the field, including alias
+// serializers over the same model, so the rule holds wherever the field is
+// reachable.
+//
+// The check hangs off “run_validation“ rather than “validate“ on purpose: a
+// subclass that defines its own “validate“ would otherwise shadow the mixin's
+// and silently drop the guard.
+//
+// No-ops when the field is absent (replay-safe on PATCH), mirroring
+// dojo.authorization.api_permissions.check_update_permission.
 type ToolProductSettingsRequest struct {
 	Description       *string `json:"description,omitempty"`
 	Name              string  `json:"name"`
@@ -18631,7 +20290,7 @@ type UserContactInfo struct {
 	BlockExecution *bool `json:"block_execution,omitempty"`
 
 	// CellNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
-	CellNumber *string `json:"cell_number,omitempty"`
+	CellNumber *UserContactInfo_CellNumber `json:"cell_number,omitempty"`
 
 	// DeduplicationExecutionMode Controls how import/reimport deduplication post-processing is executed. 'Async' dispatches it to the background and returns immediately (default). 'Async, wait for deduplication' dispatches to the background but waits for deduplication to finish before responding, so notifications and statistics reflect the deduplicated state. 'Synchronous' runs the import deduplication inline. Can be overridden per request. Independent of block_execution, which forces all async tasks (notifications, jira, ...) to the foreground.
 	//
@@ -18649,7 +20308,7 @@ type UserContactInfo struct {
 	PasswordLastReset *time.Time `json:"password_last_reset,omitempty"`
 
 	// PhoneNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
-	PhoneNumber *string `json:"phone_number,omitempty"`
+	PhoneNumber *UserContactInfo_PhoneNumber `json:"phone_number,omitempty"`
 	Prefetch    *struct {
 		User *map[string]UserStub `json:"user,omitempty"`
 	} `json:"prefetch,omitempty"`
@@ -18669,6 +20328,17 @@ type UserContactInfo struct {
 	UserProfile   *User `json:"user_profile,omitempty"`
 }
 
+// UserContactInfoCellNumber0 defines model for UserContactInfo.CellNumber.0.
+type UserContactInfoCellNumber0 = string
+
+// UserContactInfoCellNumber1 defines model for UserContactInfo.CellNumber.1.
+type UserContactInfoCellNumber1 = string
+
+// UserContactInfo_CellNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
+type UserContactInfo_CellNumber struct {
+	union json.RawMessage
+}
+
 // UserContactInfoDeduplicationExecutionMode Controls how import/reimport deduplication post-processing is executed. 'Async' dispatches it to the background and returns immediately (default). 'Async, wait for deduplication' dispatches to the background but waits for deduplication to finish before responding, so notifications and statistics reflect the deduplicated state. 'Synchronous' runs the import deduplication inline. Can be overridden per request. Independent of block_execution, which forces all async tasks (notifications, jira, ...) to the foreground.
 //
 // * `async` - Async (do not wait)
@@ -18676,13 +20346,24 @@ type UserContactInfo struct {
 // * `sync` - Synchronous (block)
 type UserContactInfoDeduplicationExecutionMode string
 
+// UserContactInfoPhoneNumber0 defines model for UserContactInfo.PhoneNumber.0.
+type UserContactInfoPhoneNumber0 = string
+
+// UserContactInfoPhoneNumber1 defines model for UserContactInfo.PhoneNumber.1.
+type UserContactInfoPhoneNumber1 = string
+
+// UserContactInfo_PhoneNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
+type UserContactInfo_PhoneNumber struct {
+	union json.RawMessage
+}
+
 // UserContactInfoRequest defines model for UserContactInfoRequest.
 type UserContactInfoRequest struct {
 	// BlockExecution Instead of async deduping a finding the findings will be deduped synchronously and will 'block' the user until completion.
 	BlockExecution *bool `json:"block_execution,omitempty"`
 
 	// CellNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
-	CellNumber *string `json:"cell_number,omitempty"`
+	CellNumber *UserContactInfoRequest_CellNumber `json:"cell_number,omitempty"`
 
 	// DeduplicationExecutionMode Controls how import/reimport deduplication post-processing is executed. 'Async' dispatches it to the background and returns immediately (default). 'Async, wait for deduplication' dispatches to the background but waits for deduplication to finish before responding, so notifications and statistics reflect the deduplicated state. 'Synchronous' runs the import deduplication inline. Can be overridden per request. Independent of block_execution, which forces all async tasks (notifications, jira, ...) to the foreground.
 	//
@@ -18699,8 +20380,8 @@ type UserContactInfoRequest struct {
 	PasswordLastReset *time.Time `json:"password_last_reset,omitempty"`
 
 	// PhoneNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
-	PhoneNumber *string `json:"phone_number,omitempty"`
-	SlackUserId *string `json:"slack_user_id,omitempty"`
+	PhoneNumber *UserContactInfoRequest_PhoneNumber `json:"phone_number,omitempty"`
+	SlackUserId *string                             `json:"slack_user_id,omitempty"`
 
 	// SlackUsername Email address associated with your slack account
 	SlackUsername *string `json:"slack_username,omitempty"`
@@ -18715,12 +20396,34 @@ type UserContactInfoRequest struct {
 	User          int   `json:"user"`
 }
 
+// UserContactInfoRequestCellNumber0 defines model for UserContactInfoRequest.CellNumber.0.
+type UserContactInfoRequestCellNumber0 = string
+
+// UserContactInfoRequestCellNumber1 defines model for UserContactInfoRequest.CellNumber.1.
+type UserContactInfoRequestCellNumber1 = string
+
+// UserContactInfoRequest_CellNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
+type UserContactInfoRequest_CellNumber struct {
+	union json.RawMessage
+}
+
 // UserContactInfoRequestDeduplicationExecutionMode Controls how import/reimport deduplication post-processing is executed. 'Async' dispatches it to the background and returns immediately (default). 'Async, wait for deduplication' dispatches to the background but waits for deduplication to finish before responding, so notifications and statistics reflect the deduplicated state. 'Synchronous' runs the import deduplication inline. Can be overridden per request. Independent of block_execution, which forces all async tasks (notifications, jira, ...) to the foreground.
 //
 // * `async` - Async (do not wait)
 // * `async_wait` - Async, wait for deduplication
 // * `sync` - Synchronous (block)
 type UserContactInfoRequestDeduplicationExecutionMode string
+
+// UserContactInfoRequestPhoneNumber0 defines model for UserContactInfoRequest.PhoneNumber.0.
+type UserContactInfoRequestPhoneNumber0 = string
+
+// UserContactInfoRequestPhoneNumber1 defines model for UserContactInfoRequest.PhoneNumber.1.
+type UserContactInfoRequestPhoneNumber1 = string
+
+// UserContactInfoRequest_PhoneNumber Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.
+type UserContactInfoRequest_PhoneNumber struct {
+	union json.RawMessage
+}
 
 // UserProfile defines model for UserProfile.
 type UserProfile struct {
@@ -19165,6 +20868,35 @@ type AssetsDeletePreviewListParams struct {
 // CeleryQueueTaskPurgeCreateJSONBody defines parameters for CeleryQueueTaskPurgeCreate.
 type CeleryQueueTaskPurgeCreateJSONBody struct {
 	TaskName string `json:"task_name"`
+}
+
+// CicdInfrastructureListParams defines parameters for CicdInfrastructureList.
+type CicdInfrastructureListParams struct {
+	Id *int `form:"id,omitempty" json:"id,omitempty"`
+
+	// InfrastructureType * `scm_server` - SCM Server
+	// * `build_server` - Build Server
+	// * `orchestration` - Orchestration Engine
+	InfrastructureType *CicdInfrastructureListParamsInfrastructureType `form:"infrastructure_type,omitempty" json:"infrastructure_type,omitempty"`
+
+	// Limit Number of results to return per page.
+	Limit *int    `form:"limit,omitempty" json:"limit,omitempty"`
+	Name  *string `form:"name,omitempty" json:"name,omitempty"`
+
+	// Offset The initial index from which to return the results.
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+}
+
+// CicdInfrastructureListParamsInfrastructureType defines parameters for CicdInfrastructureList.
+type CicdInfrastructureListParamsInfrastructureType string
+
+// CicdInfrastructureDeletePreviewListParams defines parameters for CicdInfrastructureDeletePreviewList.
+type CicdInfrastructureDeletePreviewListParams struct {
+	// Limit Number of results to return per page.
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Offset The initial index from which to return the results.
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
 }
 
 // ConfigurationPermissionsListParams defines parameters for ConfigurationPermissionsList.
@@ -20190,6 +21922,12 @@ type FindingsAcceptRisksCreateParamsMitigated time.Time
 
 // FindingsAcceptRisksCreateParamsO defines parameters for FindingsAcceptRisksCreate.
 type FindingsAcceptRisksCreateParamsO string
+
+// FindingsDestroyParams defines parameters for FindingsDestroy.
+type FindingsDestroyParams struct {
+	// PushToJira Close or reassign the linked JIRA issue when deleting this finding.
+	PushToJira *bool `form:"push_to_jira,omitempty" json:"push_to_jira,omitempty"`
+}
 
 // FindingsRetrieveParams defines parameters for FindingsRetrieve.
 type FindingsRetrieveParams struct {
@@ -22612,6 +24350,33 @@ type AssetsGenerateReportCreateMultipartRequestBody = ReportGenerateOptionReques
 // CeleryQueueTaskPurgeCreateJSONRequestBody defines body for CeleryQueueTaskPurgeCreate for application/json ContentType.
 type CeleryQueueTaskPurgeCreateJSONRequestBody CeleryQueueTaskPurgeCreateJSONBody
 
+// CicdInfrastructureCreateJSONRequestBody defines body for CicdInfrastructureCreate for application/json ContentType.
+type CicdInfrastructureCreateJSONRequestBody = CICDInfrastructureRequest
+
+// CicdInfrastructureCreateFormdataRequestBody defines body for CicdInfrastructureCreate for application/x-www-form-urlencoded ContentType.
+type CicdInfrastructureCreateFormdataRequestBody = CICDInfrastructureRequest
+
+// CicdInfrastructureCreateMultipartRequestBody defines body for CicdInfrastructureCreate for multipart/form-data ContentType.
+type CicdInfrastructureCreateMultipartRequestBody = CICDInfrastructureRequest
+
+// CicdInfrastructurePartialUpdateJSONRequestBody defines body for CicdInfrastructurePartialUpdate for application/json ContentType.
+type CicdInfrastructurePartialUpdateJSONRequestBody = PatchedCICDInfrastructureRequest
+
+// CicdInfrastructurePartialUpdateFormdataRequestBody defines body for CicdInfrastructurePartialUpdate for application/x-www-form-urlencoded ContentType.
+type CicdInfrastructurePartialUpdateFormdataRequestBody = PatchedCICDInfrastructureRequest
+
+// CicdInfrastructurePartialUpdateMultipartRequestBody defines body for CicdInfrastructurePartialUpdate for multipart/form-data ContentType.
+type CicdInfrastructurePartialUpdateMultipartRequestBody = PatchedCICDInfrastructureRequest
+
+// CicdInfrastructureUpdateJSONRequestBody defines body for CicdInfrastructureUpdate for application/json ContentType.
+type CicdInfrastructureUpdateJSONRequestBody = CICDInfrastructureRequest
+
+// CicdInfrastructureUpdateFormdataRequestBody defines body for CicdInfrastructureUpdate for application/x-www-form-urlencoded ContentType.
+type CicdInfrastructureUpdateFormdataRequestBody = CICDInfrastructureRequest
+
+// CicdInfrastructureUpdateMultipartRequestBody defines body for CicdInfrastructureUpdate for multipart/form-data ContentType.
+type CicdInfrastructureUpdateMultipartRequestBody = CICDInfrastructureRequest
+
 // DevelopmentEnvironmentsCreateJSONRequestBody defines body for DevelopmentEnvironmentsCreate for application/json ContentType.
 type DevelopmentEnvironmentsCreateJSONRequestBody = DevelopmentEnvironmentRequest
 
@@ -23557,6 +25322,15 @@ type RiskAcceptanceUpdateFormdataRequestBody = RiskAcceptanceRequest
 // RiskAcceptanceUpdateMultipartRequestBody defines body for RiskAcceptanceUpdate for multipart/form-data ContentType.
 type RiskAcceptanceUpdateMultipartRequestBody = RiskAcceptanceRequest
 
+// RiskAcceptanceExpireCreateJSONRequestBody defines body for RiskAcceptanceExpireCreate for application/json ContentType.
+type RiskAcceptanceExpireCreateJSONRequestBody = RiskAcceptanceExpireRequest
+
+// RiskAcceptanceExpireCreateFormdataRequestBody defines body for RiskAcceptanceExpireCreate for application/x-www-form-urlencoded ContentType.
+type RiskAcceptanceExpireCreateFormdataRequestBody = RiskAcceptanceExpireRequest
+
+// RiskAcceptanceExpireCreateMultipartRequestBody defines body for RiskAcceptanceExpireCreate for multipart/form-data ContentType.
+type RiskAcceptanceExpireCreateMultipartRequestBody = RiskAcceptanceExpireRequest
+
 // RiskAcceptanceNotesCreateJSONRequestBody defines body for RiskAcceptanceNotesCreate for application/json ContentType.
 type RiskAcceptanceNotesCreateJSONRequestBody = AddNewNoteOptionRequest
 
@@ -23565,6 +25339,15 @@ type RiskAcceptanceNotesCreateFormdataRequestBody = AddNewNoteOptionRequest
 
 // RiskAcceptanceNotesCreateMultipartRequestBody defines body for RiskAcceptanceNotesCreate for multipart/form-data ContentType.
 type RiskAcceptanceNotesCreateMultipartRequestBody = AddNewNoteOptionRequest
+
+// RiskAcceptanceReinstateCreateJSONRequestBody defines body for RiskAcceptanceReinstateCreate for application/json ContentType.
+type RiskAcceptanceReinstateCreateJSONRequestBody = RiskAcceptanceReinstateRequest
+
+// RiskAcceptanceReinstateCreateFormdataRequestBody defines body for RiskAcceptanceReinstateCreate for application/x-www-form-urlencoded ContentType.
+type RiskAcceptanceReinstateCreateFormdataRequestBody = RiskAcceptanceReinstateRequest
+
+// RiskAcceptanceReinstateCreateMultipartRequestBody defines body for RiskAcceptanceReinstateCreate for multipart/form-data ContentType.
+type RiskAcceptanceReinstateCreateMultipartRequestBody = RiskAcceptanceReinstateRequest
 
 // SlaConfigurationsCreateJSONRequestBody defines body for SlaConfigurationsCreate for application/json ContentType.
 type SlaConfigurationsCreateJSONRequestBody = SLAConfigurationRequest
@@ -23974,6 +25757,1742 @@ type UsersResetApiTokenCreateFormdataRequestBody = UserRequest
 // UsersResetApiTokenCreateMultipartRequestBody defines body for UsersResetApiTokenCreate for multipart/form-data ContentType.
 type UsersResetApiTokenCreateMultipartRequestBody = UserRequest
 
+// AsAppAnalysisWebsite0 returns the union data inside the AppAnalysis_Website as a AppAnalysisWebsite0
+func (t AppAnalysis_Website) AsAppAnalysisWebsite0() (AppAnalysisWebsite0, error) {
+	var body AppAnalysisWebsite0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisWebsite0 overwrites any union data inside the AppAnalysis_Website as the provided AppAnalysisWebsite0
+func (t *AppAnalysis_Website) FromAppAnalysisWebsite0(v AppAnalysisWebsite0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisWebsite0 performs a merge with any union data inside the AppAnalysis_Website, using the provided AppAnalysisWebsite0
+func (t *AppAnalysis_Website) MergeAppAnalysisWebsite0(v AppAnalysisWebsite0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAppAnalysisWebsite1 returns the union data inside the AppAnalysis_Website as a AppAnalysisWebsite1
+func (t AppAnalysis_Website) AsAppAnalysisWebsite1() (AppAnalysisWebsite1, error) {
+	var body AppAnalysisWebsite1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisWebsite1 overwrites any union data inside the AppAnalysis_Website as the provided AppAnalysisWebsite1
+func (t *AppAnalysis_Website) FromAppAnalysisWebsite1(v AppAnalysisWebsite1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisWebsite1 performs a merge with any union data inside the AppAnalysis_Website, using the provided AppAnalysisWebsite1
+func (t *AppAnalysis_Website) MergeAppAnalysisWebsite1(v AppAnalysisWebsite1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AppAnalysis_Website) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AppAnalysis_Website) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAppAnalysisWebsiteFound0 returns the union data inside the AppAnalysis_WebsiteFound as a AppAnalysisWebsiteFound0
+func (t AppAnalysis_WebsiteFound) AsAppAnalysisWebsiteFound0() (AppAnalysisWebsiteFound0, error) {
+	var body AppAnalysisWebsiteFound0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisWebsiteFound0 overwrites any union data inside the AppAnalysis_WebsiteFound as the provided AppAnalysisWebsiteFound0
+func (t *AppAnalysis_WebsiteFound) FromAppAnalysisWebsiteFound0(v AppAnalysisWebsiteFound0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisWebsiteFound0 performs a merge with any union data inside the AppAnalysis_WebsiteFound, using the provided AppAnalysisWebsiteFound0
+func (t *AppAnalysis_WebsiteFound) MergeAppAnalysisWebsiteFound0(v AppAnalysisWebsiteFound0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAppAnalysisWebsiteFound1 returns the union data inside the AppAnalysis_WebsiteFound as a AppAnalysisWebsiteFound1
+func (t AppAnalysis_WebsiteFound) AsAppAnalysisWebsiteFound1() (AppAnalysisWebsiteFound1, error) {
+	var body AppAnalysisWebsiteFound1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisWebsiteFound1 overwrites any union data inside the AppAnalysis_WebsiteFound as the provided AppAnalysisWebsiteFound1
+func (t *AppAnalysis_WebsiteFound) FromAppAnalysisWebsiteFound1(v AppAnalysisWebsiteFound1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisWebsiteFound1 performs a merge with any union data inside the AppAnalysis_WebsiteFound, using the provided AppAnalysisWebsiteFound1
+func (t *AppAnalysis_WebsiteFound) MergeAppAnalysisWebsiteFound1(v AppAnalysisWebsiteFound1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AppAnalysis_WebsiteFound) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AppAnalysis_WebsiteFound) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAppAnalysisRequestWebsite0 returns the union data inside the AppAnalysisRequest_Website as a AppAnalysisRequestWebsite0
+func (t AppAnalysisRequest_Website) AsAppAnalysisRequestWebsite0() (AppAnalysisRequestWebsite0, error) {
+	var body AppAnalysisRequestWebsite0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisRequestWebsite0 overwrites any union data inside the AppAnalysisRequest_Website as the provided AppAnalysisRequestWebsite0
+func (t *AppAnalysisRequest_Website) FromAppAnalysisRequestWebsite0(v AppAnalysisRequestWebsite0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisRequestWebsite0 performs a merge with any union data inside the AppAnalysisRequest_Website, using the provided AppAnalysisRequestWebsite0
+func (t *AppAnalysisRequest_Website) MergeAppAnalysisRequestWebsite0(v AppAnalysisRequestWebsite0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAppAnalysisRequestWebsite1 returns the union data inside the AppAnalysisRequest_Website as a AppAnalysisRequestWebsite1
+func (t AppAnalysisRequest_Website) AsAppAnalysisRequestWebsite1() (AppAnalysisRequestWebsite1, error) {
+	var body AppAnalysisRequestWebsite1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisRequestWebsite1 overwrites any union data inside the AppAnalysisRequest_Website as the provided AppAnalysisRequestWebsite1
+func (t *AppAnalysisRequest_Website) FromAppAnalysisRequestWebsite1(v AppAnalysisRequestWebsite1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisRequestWebsite1 performs a merge with any union data inside the AppAnalysisRequest_Website, using the provided AppAnalysisRequestWebsite1
+func (t *AppAnalysisRequest_Website) MergeAppAnalysisRequestWebsite1(v AppAnalysisRequestWebsite1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AppAnalysisRequest_Website) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AppAnalysisRequest_Website) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsAppAnalysisRequestWebsiteFound0 returns the union data inside the AppAnalysisRequest_WebsiteFound as a AppAnalysisRequestWebsiteFound0
+func (t AppAnalysisRequest_WebsiteFound) AsAppAnalysisRequestWebsiteFound0() (AppAnalysisRequestWebsiteFound0, error) {
+	var body AppAnalysisRequestWebsiteFound0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisRequestWebsiteFound0 overwrites any union data inside the AppAnalysisRequest_WebsiteFound as the provided AppAnalysisRequestWebsiteFound0
+func (t *AppAnalysisRequest_WebsiteFound) FromAppAnalysisRequestWebsiteFound0(v AppAnalysisRequestWebsiteFound0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisRequestWebsiteFound0 performs a merge with any union data inside the AppAnalysisRequest_WebsiteFound, using the provided AppAnalysisRequestWebsiteFound0
+func (t *AppAnalysisRequest_WebsiteFound) MergeAppAnalysisRequestWebsiteFound0(v AppAnalysisRequestWebsiteFound0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsAppAnalysisRequestWebsiteFound1 returns the union data inside the AppAnalysisRequest_WebsiteFound as a AppAnalysisRequestWebsiteFound1
+func (t AppAnalysisRequest_WebsiteFound) AsAppAnalysisRequestWebsiteFound1() (AppAnalysisRequestWebsiteFound1, error) {
+	var body AppAnalysisRequestWebsiteFound1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromAppAnalysisRequestWebsiteFound1 overwrites any union data inside the AppAnalysisRequest_WebsiteFound as the provided AppAnalysisRequestWebsiteFound1
+func (t *AppAnalysisRequest_WebsiteFound) FromAppAnalysisRequestWebsiteFound1(v AppAnalysisRequestWebsiteFound1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeAppAnalysisRequestWebsiteFound1 performs a merge with any union data inside the AppAnalysisRequest_WebsiteFound, using the provided AppAnalysisRequestWebsiteFound1
+func (t *AppAnalysisRequest_WebsiteFound) MergeAppAnalysisRequestWebsiteFound1(v AppAnalysisRequestWebsiteFound1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t AppAnalysisRequest_WebsiteFound) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *AppAnalysisRequest_WebsiteFound) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsCICDInfrastructureUrl0 returns the union data inside the CICDInfrastructure_Url as a CICDInfrastructureUrl0
+func (t CICDInfrastructure_Url) AsCICDInfrastructureUrl0() (CICDInfrastructureUrl0, error) {
+	var body CICDInfrastructureUrl0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCICDInfrastructureUrl0 overwrites any union data inside the CICDInfrastructure_Url as the provided CICDInfrastructureUrl0
+func (t *CICDInfrastructure_Url) FromCICDInfrastructureUrl0(v CICDInfrastructureUrl0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCICDInfrastructureUrl0 performs a merge with any union data inside the CICDInfrastructure_Url, using the provided CICDInfrastructureUrl0
+func (t *CICDInfrastructure_Url) MergeCICDInfrastructureUrl0(v CICDInfrastructureUrl0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCICDInfrastructureUrl1 returns the union data inside the CICDInfrastructure_Url as a CICDInfrastructureUrl1
+func (t CICDInfrastructure_Url) AsCICDInfrastructureUrl1() (CICDInfrastructureUrl1, error) {
+	var body CICDInfrastructureUrl1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCICDInfrastructureUrl1 overwrites any union data inside the CICDInfrastructure_Url as the provided CICDInfrastructureUrl1
+func (t *CICDInfrastructure_Url) FromCICDInfrastructureUrl1(v CICDInfrastructureUrl1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCICDInfrastructureUrl1 performs a merge with any union data inside the CICDInfrastructure_Url, using the provided CICDInfrastructureUrl1
+func (t *CICDInfrastructure_Url) MergeCICDInfrastructureUrl1(v CICDInfrastructureUrl1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CICDInfrastructure_Url) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CICDInfrastructure_Url) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsCICDInfrastructureRequestUrl0 returns the union data inside the CICDInfrastructureRequest_Url as a CICDInfrastructureRequestUrl0
+func (t CICDInfrastructureRequest_Url) AsCICDInfrastructureRequestUrl0() (CICDInfrastructureRequestUrl0, error) {
+	var body CICDInfrastructureRequestUrl0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCICDInfrastructureRequestUrl0 overwrites any union data inside the CICDInfrastructureRequest_Url as the provided CICDInfrastructureRequestUrl0
+func (t *CICDInfrastructureRequest_Url) FromCICDInfrastructureRequestUrl0(v CICDInfrastructureRequestUrl0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCICDInfrastructureRequestUrl0 performs a merge with any union data inside the CICDInfrastructureRequest_Url, using the provided CICDInfrastructureRequestUrl0
+func (t *CICDInfrastructureRequest_Url) MergeCICDInfrastructureRequestUrl0(v CICDInfrastructureRequestUrl0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsCICDInfrastructureRequestUrl1 returns the union data inside the CICDInfrastructureRequest_Url as a CICDInfrastructureRequestUrl1
+func (t CICDInfrastructureRequest_Url) AsCICDInfrastructureRequestUrl1() (CICDInfrastructureRequestUrl1, error) {
+	var body CICDInfrastructureRequestUrl1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCICDInfrastructureRequestUrl1 overwrites any union data inside the CICDInfrastructureRequest_Url as the provided CICDInfrastructureRequestUrl1
+func (t *CICDInfrastructureRequest_Url) FromCICDInfrastructureRequestUrl1(v CICDInfrastructureRequestUrl1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCICDInfrastructureRequestUrl1 performs a merge with any union data inside the CICDInfrastructureRequest_Url, using the provided CICDInfrastructureRequestUrl1
+func (t *CICDInfrastructureRequest_Url) MergeCICDInfrastructureRequestUrl1(v CICDInfrastructureRequestUrl1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CICDInfrastructureRequest_Url) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CICDInfrastructureRequest_Url) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsEngagementSourceCodeManagementUri0 returns the union data inside the Engagement_SourceCodeManagementUri as a EngagementSourceCodeManagementUri0
+func (t Engagement_SourceCodeManagementUri) AsEngagementSourceCodeManagementUri0() (EngagementSourceCodeManagementUri0, error) {
+	var body EngagementSourceCodeManagementUri0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementSourceCodeManagementUri0 overwrites any union data inside the Engagement_SourceCodeManagementUri as the provided EngagementSourceCodeManagementUri0
+func (t *Engagement_SourceCodeManagementUri) FromEngagementSourceCodeManagementUri0(v EngagementSourceCodeManagementUri0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementSourceCodeManagementUri0 performs a merge with any union data inside the Engagement_SourceCodeManagementUri, using the provided EngagementSourceCodeManagementUri0
+func (t *Engagement_SourceCodeManagementUri) MergeEngagementSourceCodeManagementUri0(v EngagementSourceCodeManagementUri0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsEngagementSourceCodeManagementUri1 returns the union data inside the Engagement_SourceCodeManagementUri as a EngagementSourceCodeManagementUri1
+func (t Engagement_SourceCodeManagementUri) AsEngagementSourceCodeManagementUri1() (EngagementSourceCodeManagementUri1, error) {
+	var body EngagementSourceCodeManagementUri1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementSourceCodeManagementUri1 overwrites any union data inside the Engagement_SourceCodeManagementUri as the provided EngagementSourceCodeManagementUri1
+func (t *Engagement_SourceCodeManagementUri) FromEngagementSourceCodeManagementUri1(v EngagementSourceCodeManagementUri1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementSourceCodeManagementUri1 performs a merge with any union data inside the Engagement_SourceCodeManagementUri, using the provided EngagementSourceCodeManagementUri1
+func (t *Engagement_SourceCodeManagementUri) MergeEngagementSourceCodeManagementUri1(v EngagementSourceCodeManagementUri1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Engagement_SourceCodeManagementUri) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Engagement_SourceCodeManagementUri) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsEngagementTestStrategy0 returns the union data inside the Engagement_TestStrategy as a EngagementTestStrategy0
+func (t Engagement_TestStrategy) AsEngagementTestStrategy0() (EngagementTestStrategy0, error) {
+	var body EngagementTestStrategy0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementTestStrategy0 overwrites any union data inside the Engagement_TestStrategy as the provided EngagementTestStrategy0
+func (t *Engagement_TestStrategy) FromEngagementTestStrategy0(v EngagementTestStrategy0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementTestStrategy0 performs a merge with any union data inside the Engagement_TestStrategy, using the provided EngagementTestStrategy0
+func (t *Engagement_TestStrategy) MergeEngagementTestStrategy0(v EngagementTestStrategy0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsEngagementTestStrategy1 returns the union data inside the Engagement_TestStrategy as a EngagementTestStrategy1
+func (t Engagement_TestStrategy) AsEngagementTestStrategy1() (EngagementTestStrategy1, error) {
+	var body EngagementTestStrategy1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementTestStrategy1 overwrites any union data inside the Engagement_TestStrategy as the provided EngagementTestStrategy1
+func (t *Engagement_TestStrategy) FromEngagementTestStrategy1(v EngagementTestStrategy1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementTestStrategy1 performs a merge with any union data inside the Engagement_TestStrategy, using the provided EngagementTestStrategy1
+func (t *Engagement_TestStrategy) MergeEngagementTestStrategy1(v EngagementTestStrategy1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Engagement_TestStrategy) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Engagement_TestStrategy) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsEngagementTracker0 returns the union data inside the Engagement_Tracker as a EngagementTracker0
+func (t Engagement_Tracker) AsEngagementTracker0() (EngagementTracker0, error) {
+	var body EngagementTracker0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementTracker0 overwrites any union data inside the Engagement_Tracker as the provided EngagementTracker0
+func (t *Engagement_Tracker) FromEngagementTracker0(v EngagementTracker0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementTracker0 performs a merge with any union data inside the Engagement_Tracker, using the provided EngagementTracker0
+func (t *Engagement_Tracker) MergeEngagementTracker0(v EngagementTracker0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsEngagementTracker1 returns the union data inside the Engagement_Tracker as a EngagementTracker1
+func (t Engagement_Tracker) AsEngagementTracker1() (EngagementTracker1, error) {
+	var body EngagementTracker1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementTracker1 overwrites any union data inside the Engagement_Tracker as the provided EngagementTracker1
+func (t *Engagement_Tracker) FromEngagementTracker1(v EngagementTracker1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementTracker1 performs a merge with any union data inside the Engagement_Tracker, using the provided EngagementTracker1
+func (t *Engagement_Tracker) MergeEngagementTracker1(v EngagementTracker1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Engagement_Tracker) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Engagement_Tracker) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsEngagementRequestSourceCodeManagementUri0 returns the union data inside the EngagementRequest_SourceCodeManagementUri as a EngagementRequestSourceCodeManagementUri0
+func (t EngagementRequest_SourceCodeManagementUri) AsEngagementRequestSourceCodeManagementUri0() (EngagementRequestSourceCodeManagementUri0, error) {
+	var body EngagementRequestSourceCodeManagementUri0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementRequestSourceCodeManagementUri0 overwrites any union data inside the EngagementRequest_SourceCodeManagementUri as the provided EngagementRequestSourceCodeManagementUri0
+func (t *EngagementRequest_SourceCodeManagementUri) FromEngagementRequestSourceCodeManagementUri0(v EngagementRequestSourceCodeManagementUri0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementRequestSourceCodeManagementUri0 performs a merge with any union data inside the EngagementRequest_SourceCodeManagementUri, using the provided EngagementRequestSourceCodeManagementUri0
+func (t *EngagementRequest_SourceCodeManagementUri) MergeEngagementRequestSourceCodeManagementUri0(v EngagementRequestSourceCodeManagementUri0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsEngagementRequestSourceCodeManagementUri1 returns the union data inside the EngagementRequest_SourceCodeManagementUri as a EngagementRequestSourceCodeManagementUri1
+func (t EngagementRequest_SourceCodeManagementUri) AsEngagementRequestSourceCodeManagementUri1() (EngagementRequestSourceCodeManagementUri1, error) {
+	var body EngagementRequestSourceCodeManagementUri1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementRequestSourceCodeManagementUri1 overwrites any union data inside the EngagementRequest_SourceCodeManagementUri as the provided EngagementRequestSourceCodeManagementUri1
+func (t *EngagementRequest_SourceCodeManagementUri) FromEngagementRequestSourceCodeManagementUri1(v EngagementRequestSourceCodeManagementUri1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementRequestSourceCodeManagementUri1 performs a merge with any union data inside the EngagementRequest_SourceCodeManagementUri, using the provided EngagementRequestSourceCodeManagementUri1
+func (t *EngagementRequest_SourceCodeManagementUri) MergeEngagementRequestSourceCodeManagementUri1(v EngagementRequestSourceCodeManagementUri1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t EngagementRequest_SourceCodeManagementUri) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *EngagementRequest_SourceCodeManagementUri) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsEngagementRequestTestStrategy0 returns the union data inside the EngagementRequest_TestStrategy as a EngagementRequestTestStrategy0
+func (t EngagementRequest_TestStrategy) AsEngagementRequestTestStrategy0() (EngagementRequestTestStrategy0, error) {
+	var body EngagementRequestTestStrategy0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementRequestTestStrategy0 overwrites any union data inside the EngagementRequest_TestStrategy as the provided EngagementRequestTestStrategy0
+func (t *EngagementRequest_TestStrategy) FromEngagementRequestTestStrategy0(v EngagementRequestTestStrategy0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementRequestTestStrategy0 performs a merge with any union data inside the EngagementRequest_TestStrategy, using the provided EngagementRequestTestStrategy0
+func (t *EngagementRequest_TestStrategy) MergeEngagementRequestTestStrategy0(v EngagementRequestTestStrategy0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsEngagementRequestTestStrategy1 returns the union data inside the EngagementRequest_TestStrategy as a EngagementRequestTestStrategy1
+func (t EngagementRequest_TestStrategy) AsEngagementRequestTestStrategy1() (EngagementRequestTestStrategy1, error) {
+	var body EngagementRequestTestStrategy1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementRequestTestStrategy1 overwrites any union data inside the EngagementRequest_TestStrategy as the provided EngagementRequestTestStrategy1
+func (t *EngagementRequest_TestStrategy) FromEngagementRequestTestStrategy1(v EngagementRequestTestStrategy1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementRequestTestStrategy1 performs a merge with any union data inside the EngagementRequest_TestStrategy, using the provided EngagementRequestTestStrategy1
+func (t *EngagementRequest_TestStrategy) MergeEngagementRequestTestStrategy1(v EngagementRequestTestStrategy1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t EngagementRequest_TestStrategy) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *EngagementRequest_TestStrategy) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsEngagementRequestTracker0 returns the union data inside the EngagementRequest_Tracker as a EngagementRequestTracker0
+func (t EngagementRequest_Tracker) AsEngagementRequestTracker0() (EngagementRequestTracker0, error) {
+	var body EngagementRequestTracker0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementRequestTracker0 overwrites any union data inside the EngagementRequest_Tracker as the provided EngagementRequestTracker0
+func (t *EngagementRequest_Tracker) FromEngagementRequestTracker0(v EngagementRequestTracker0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementRequestTracker0 performs a merge with any union data inside the EngagementRequest_Tracker, using the provided EngagementRequestTracker0
+func (t *EngagementRequest_Tracker) MergeEngagementRequestTracker0(v EngagementRequestTracker0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsEngagementRequestTracker1 returns the union data inside the EngagementRequest_Tracker as a EngagementRequestTracker1
+func (t EngagementRequest_Tracker) AsEngagementRequestTracker1() (EngagementRequestTracker1, error) {
+	var body EngagementRequestTracker1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromEngagementRequestTracker1 overwrites any union data inside the EngagementRequest_Tracker as the provided EngagementRequestTracker1
+func (t *EngagementRequest_Tracker) FromEngagementRequestTracker1(v EngagementRequestTracker1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeEngagementRequestTracker1 performs a merge with any union data inside the EngagementRequest_Tracker, using the provided EngagementRequestTracker1
+func (t *EngagementRequest_Tracker) MergeEngagementRequestTracker1(v EngagementRequestTracker1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t EngagementRequest_Tracker) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *EngagementRequest_Tracker) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsExecutiveSummaryTestStrategyRef0 returns the union data inside the ExecutiveSummary_TestStrategyRef as a ExecutiveSummaryTestStrategyRef0
+func (t ExecutiveSummary_TestStrategyRef) AsExecutiveSummaryTestStrategyRef0() (ExecutiveSummaryTestStrategyRef0, error) {
+	var body ExecutiveSummaryTestStrategyRef0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromExecutiveSummaryTestStrategyRef0 overwrites any union data inside the ExecutiveSummary_TestStrategyRef as the provided ExecutiveSummaryTestStrategyRef0
+func (t *ExecutiveSummary_TestStrategyRef) FromExecutiveSummaryTestStrategyRef0(v ExecutiveSummaryTestStrategyRef0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeExecutiveSummaryTestStrategyRef0 performs a merge with any union data inside the ExecutiveSummary_TestStrategyRef, using the provided ExecutiveSummaryTestStrategyRef0
+func (t *ExecutiveSummary_TestStrategyRef) MergeExecutiveSummaryTestStrategyRef0(v ExecutiveSummaryTestStrategyRef0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsExecutiveSummaryTestStrategyRef1 returns the union data inside the ExecutiveSummary_TestStrategyRef as a ExecutiveSummaryTestStrategyRef1
+func (t ExecutiveSummary_TestStrategyRef) AsExecutiveSummaryTestStrategyRef1() (ExecutiveSummaryTestStrategyRef1, error) {
+	var body ExecutiveSummaryTestStrategyRef1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromExecutiveSummaryTestStrategyRef1 overwrites any union data inside the ExecutiveSummary_TestStrategyRef as the provided ExecutiveSummaryTestStrategyRef1
+func (t *ExecutiveSummary_TestStrategyRef) FromExecutiveSummaryTestStrategyRef1(v ExecutiveSummaryTestStrategyRef1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeExecutiveSummaryTestStrategyRef1 performs a merge with any union data inside the ExecutiveSummary_TestStrategyRef, using the provided ExecutiveSummaryTestStrategyRef1
+func (t *ExecutiveSummary_TestStrategyRef) MergeExecutiveSummaryTestStrategyRef1(v ExecutiveSummaryTestStrategyRef1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ExecutiveSummary_TestStrategyRef) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ExecutiveSummary_TestStrategyRef) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedAppAnalysisRequestWebsite0 returns the union data inside the PatchedAppAnalysisRequest_Website as a PatchedAppAnalysisRequestWebsite0
+func (t PatchedAppAnalysisRequest_Website) AsPatchedAppAnalysisRequestWebsite0() (PatchedAppAnalysisRequestWebsite0, error) {
+	var body PatchedAppAnalysisRequestWebsite0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedAppAnalysisRequestWebsite0 overwrites any union data inside the PatchedAppAnalysisRequest_Website as the provided PatchedAppAnalysisRequestWebsite0
+func (t *PatchedAppAnalysisRequest_Website) FromPatchedAppAnalysisRequestWebsite0(v PatchedAppAnalysisRequestWebsite0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedAppAnalysisRequestWebsite0 performs a merge with any union data inside the PatchedAppAnalysisRequest_Website, using the provided PatchedAppAnalysisRequestWebsite0
+func (t *PatchedAppAnalysisRequest_Website) MergePatchedAppAnalysisRequestWebsite0(v PatchedAppAnalysisRequestWebsite0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedAppAnalysisRequestWebsite1 returns the union data inside the PatchedAppAnalysisRequest_Website as a PatchedAppAnalysisRequestWebsite1
+func (t PatchedAppAnalysisRequest_Website) AsPatchedAppAnalysisRequestWebsite1() (PatchedAppAnalysisRequestWebsite1, error) {
+	var body PatchedAppAnalysisRequestWebsite1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedAppAnalysisRequestWebsite1 overwrites any union data inside the PatchedAppAnalysisRequest_Website as the provided PatchedAppAnalysisRequestWebsite1
+func (t *PatchedAppAnalysisRequest_Website) FromPatchedAppAnalysisRequestWebsite1(v PatchedAppAnalysisRequestWebsite1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedAppAnalysisRequestWebsite1 performs a merge with any union data inside the PatchedAppAnalysisRequest_Website, using the provided PatchedAppAnalysisRequestWebsite1
+func (t *PatchedAppAnalysisRequest_Website) MergePatchedAppAnalysisRequestWebsite1(v PatchedAppAnalysisRequestWebsite1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedAppAnalysisRequest_Website) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedAppAnalysisRequest_Website) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedAppAnalysisRequestWebsiteFound0 returns the union data inside the PatchedAppAnalysisRequest_WebsiteFound as a PatchedAppAnalysisRequestWebsiteFound0
+func (t PatchedAppAnalysisRequest_WebsiteFound) AsPatchedAppAnalysisRequestWebsiteFound0() (PatchedAppAnalysisRequestWebsiteFound0, error) {
+	var body PatchedAppAnalysisRequestWebsiteFound0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedAppAnalysisRequestWebsiteFound0 overwrites any union data inside the PatchedAppAnalysisRequest_WebsiteFound as the provided PatchedAppAnalysisRequestWebsiteFound0
+func (t *PatchedAppAnalysisRequest_WebsiteFound) FromPatchedAppAnalysisRequestWebsiteFound0(v PatchedAppAnalysisRequestWebsiteFound0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedAppAnalysisRequestWebsiteFound0 performs a merge with any union data inside the PatchedAppAnalysisRequest_WebsiteFound, using the provided PatchedAppAnalysisRequestWebsiteFound0
+func (t *PatchedAppAnalysisRequest_WebsiteFound) MergePatchedAppAnalysisRequestWebsiteFound0(v PatchedAppAnalysisRequestWebsiteFound0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedAppAnalysisRequestWebsiteFound1 returns the union data inside the PatchedAppAnalysisRequest_WebsiteFound as a PatchedAppAnalysisRequestWebsiteFound1
+func (t PatchedAppAnalysisRequest_WebsiteFound) AsPatchedAppAnalysisRequestWebsiteFound1() (PatchedAppAnalysisRequestWebsiteFound1, error) {
+	var body PatchedAppAnalysisRequestWebsiteFound1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedAppAnalysisRequestWebsiteFound1 overwrites any union data inside the PatchedAppAnalysisRequest_WebsiteFound as the provided PatchedAppAnalysisRequestWebsiteFound1
+func (t *PatchedAppAnalysisRequest_WebsiteFound) FromPatchedAppAnalysisRequestWebsiteFound1(v PatchedAppAnalysisRequestWebsiteFound1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedAppAnalysisRequestWebsiteFound1 performs a merge with any union data inside the PatchedAppAnalysisRequest_WebsiteFound, using the provided PatchedAppAnalysisRequestWebsiteFound1
+func (t *PatchedAppAnalysisRequest_WebsiteFound) MergePatchedAppAnalysisRequestWebsiteFound1(v PatchedAppAnalysisRequestWebsiteFound1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedAppAnalysisRequest_WebsiteFound) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedAppAnalysisRequest_WebsiteFound) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedCICDInfrastructureRequestUrl0 returns the union data inside the PatchedCICDInfrastructureRequest_Url as a PatchedCICDInfrastructureRequestUrl0
+func (t PatchedCICDInfrastructureRequest_Url) AsPatchedCICDInfrastructureRequestUrl0() (PatchedCICDInfrastructureRequestUrl0, error) {
+	var body PatchedCICDInfrastructureRequestUrl0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedCICDInfrastructureRequestUrl0 overwrites any union data inside the PatchedCICDInfrastructureRequest_Url as the provided PatchedCICDInfrastructureRequestUrl0
+func (t *PatchedCICDInfrastructureRequest_Url) FromPatchedCICDInfrastructureRequestUrl0(v PatchedCICDInfrastructureRequestUrl0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedCICDInfrastructureRequestUrl0 performs a merge with any union data inside the PatchedCICDInfrastructureRequest_Url, using the provided PatchedCICDInfrastructureRequestUrl0
+func (t *PatchedCICDInfrastructureRequest_Url) MergePatchedCICDInfrastructureRequestUrl0(v PatchedCICDInfrastructureRequestUrl0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedCICDInfrastructureRequestUrl1 returns the union data inside the PatchedCICDInfrastructureRequest_Url as a PatchedCICDInfrastructureRequestUrl1
+func (t PatchedCICDInfrastructureRequest_Url) AsPatchedCICDInfrastructureRequestUrl1() (PatchedCICDInfrastructureRequestUrl1, error) {
+	var body PatchedCICDInfrastructureRequestUrl1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedCICDInfrastructureRequestUrl1 overwrites any union data inside the PatchedCICDInfrastructureRequest_Url as the provided PatchedCICDInfrastructureRequestUrl1
+func (t *PatchedCICDInfrastructureRequest_Url) FromPatchedCICDInfrastructureRequestUrl1(v PatchedCICDInfrastructureRequestUrl1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedCICDInfrastructureRequestUrl1 performs a merge with any union data inside the PatchedCICDInfrastructureRequest_Url, using the provided PatchedCICDInfrastructureRequestUrl1
+func (t *PatchedCICDInfrastructureRequest_Url) MergePatchedCICDInfrastructureRequestUrl1(v PatchedCICDInfrastructureRequestUrl1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedCICDInfrastructureRequest_Url) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedCICDInfrastructureRequest_Url) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedEngagementRequestSourceCodeManagementUri0 returns the union data inside the PatchedEngagementRequest_SourceCodeManagementUri as a PatchedEngagementRequestSourceCodeManagementUri0
+func (t PatchedEngagementRequest_SourceCodeManagementUri) AsPatchedEngagementRequestSourceCodeManagementUri0() (PatchedEngagementRequestSourceCodeManagementUri0, error) {
+	var body PatchedEngagementRequestSourceCodeManagementUri0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedEngagementRequestSourceCodeManagementUri0 overwrites any union data inside the PatchedEngagementRequest_SourceCodeManagementUri as the provided PatchedEngagementRequestSourceCodeManagementUri0
+func (t *PatchedEngagementRequest_SourceCodeManagementUri) FromPatchedEngagementRequestSourceCodeManagementUri0(v PatchedEngagementRequestSourceCodeManagementUri0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedEngagementRequestSourceCodeManagementUri0 performs a merge with any union data inside the PatchedEngagementRequest_SourceCodeManagementUri, using the provided PatchedEngagementRequestSourceCodeManagementUri0
+func (t *PatchedEngagementRequest_SourceCodeManagementUri) MergePatchedEngagementRequestSourceCodeManagementUri0(v PatchedEngagementRequestSourceCodeManagementUri0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedEngagementRequestSourceCodeManagementUri1 returns the union data inside the PatchedEngagementRequest_SourceCodeManagementUri as a PatchedEngagementRequestSourceCodeManagementUri1
+func (t PatchedEngagementRequest_SourceCodeManagementUri) AsPatchedEngagementRequestSourceCodeManagementUri1() (PatchedEngagementRequestSourceCodeManagementUri1, error) {
+	var body PatchedEngagementRequestSourceCodeManagementUri1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedEngagementRequestSourceCodeManagementUri1 overwrites any union data inside the PatchedEngagementRequest_SourceCodeManagementUri as the provided PatchedEngagementRequestSourceCodeManagementUri1
+func (t *PatchedEngagementRequest_SourceCodeManagementUri) FromPatchedEngagementRequestSourceCodeManagementUri1(v PatchedEngagementRequestSourceCodeManagementUri1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedEngagementRequestSourceCodeManagementUri1 performs a merge with any union data inside the PatchedEngagementRequest_SourceCodeManagementUri, using the provided PatchedEngagementRequestSourceCodeManagementUri1
+func (t *PatchedEngagementRequest_SourceCodeManagementUri) MergePatchedEngagementRequestSourceCodeManagementUri1(v PatchedEngagementRequestSourceCodeManagementUri1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedEngagementRequest_SourceCodeManagementUri) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedEngagementRequest_SourceCodeManagementUri) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedEngagementRequestTestStrategy0 returns the union data inside the PatchedEngagementRequest_TestStrategy as a PatchedEngagementRequestTestStrategy0
+func (t PatchedEngagementRequest_TestStrategy) AsPatchedEngagementRequestTestStrategy0() (PatchedEngagementRequestTestStrategy0, error) {
+	var body PatchedEngagementRequestTestStrategy0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedEngagementRequestTestStrategy0 overwrites any union data inside the PatchedEngagementRequest_TestStrategy as the provided PatchedEngagementRequestTestStrategy0
+func (t *PatchedEngagementRequest_TestStrategy) FromPatchedEngagementRequestTestStrategy0(v PatchedEngagementRequestTestStrategy0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedEngagementRequestTestStrategy0 performs a merge with any union data inside the PatchedEngagementRequest_TestStrategy, using the provided PatchedEngagementRequestTestStrategy0
+func (t *PatchedEngagementRequest_TestStrategy) MergePatchedEngagementRequestTestStrategy0(v PatchedEngagementRequestTestStrategy0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedEngagementRequestTestStrategy1 returns the union data inside the PatchedEngagementRequest_TestStrategy as a PatchedEngagementRequestTestStrategy1
+func (t PatchedEngagementRequest_TestStrategy) AsPatchedEngagementRequestTestStrategy1() (PatchedEngagementRequestTestStrategy1, error) {
+	var body PatchedEngagementRequestTestStrategy1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedEngagementRequestTestStrategy1 overwrites any union data inside the PatchedEngagementRequest_TestStrategy as the provided PatchedEngagementRequestTestStrategy1
+func (t *PatchedEngagementRequest_TestStrategy) FromPatchedEngagementRequestTestStrategy1(v PatchedEngagementRequestTestStrategy1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedEngagementRequestTestStrategy1 performs a merge with any union data inside the PatchedEngagementRequest_TestStrategy, using the provided PatchedEngagementRequestTestStrategy1
+func (t *PatchedEngagementRequest_TestStrategy) MergePatchedEngagementRequestTestStrategy1(v PatchedEngagementRequestTestStrategy1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedEngagementRequest_TestStrategy) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedEngagementRequest_TestStrategy) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedEngagementRequestTracker0 returns the union data inside the PatchedEngagementRequest_Tracker as a PatchedEngagementRequestTracker0
+func (t PatchedEngagementRequest_Tracker) AsPatchedEngagementRequestTracker0() (PatchedEngagementRequestTracker0, error) {
+	var body PatchedEngagementRequestTracker0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedEngagementRequestTracker0 overwrites any union data inside the PatchedEngagementRequest_Tracker as the provided PatchedEngagementRequestTracker0
+func (t *PatchedEngagementRequest_Tracker) FromPatchedEngagementRequestTracker0(v PatchedEngagementRequestTracker0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedEngagementRequestTracker0 performs a merge with any union data inside the PatchedEngagementRequest_Tracker, using the provided PatchedEngagementRequestTracker0
+func (t *PatchedEngagementRequest_Tracker) MergePatchedEngagementRequestTracker0(v PatchedEngagementRequestTracker0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedEngagementRequestTracker1 returns the union data inside the PatchedEngagementRequest_Tracker as a PatchedEngagementRequestTracker1
+func (t PatchedEngagementRequest_Tracker) AsPatchedEngagementRequestTracker1() (PatchedEngagementRequestTracker1, error) {
+	var body PatchedEngagementRequestTracker1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedEngagementRequestTracker1 overwrites any union data inside the PatchedEngagementRequest_Tracker as the provided PatchedEngagementRequestTracker1
+func (t *PatchedEngagementRequest_Tracker) FromPatchedEngagementRequestTracker1(v PatchedEngagementRequestTracker1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedEngagementRequestTracker1 performs a merge with any union data inside the PatchedEngagementRequest_Tracker, using the provided PatchedEngagementRequestTracker1
+func (t *PatchedEngagementRequest_Tracker) MergePatchedEngagementRequestTracker1(v PatchedEngagementRequestTracker1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedEngagementRequest_Tracker) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedEngagementRequest_Tracker) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedRegulationRequestReference0 returns the union data inside the PatchedRegulationRequest_Reference as a PatchedRegulationRequestReference0
+func (t PatchedRegulationRequest_Reference) AsPatchedRegulationRequestReference0() (PatchedRegulationRequestReference0, error) {
+	var body PatchedRegulationRequestReference0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedRegulationRequestReference0 overwrites any union data inside the PatchedRegulationRequest_Reference as the provided PatchedRegulationRequestReference0
+func (t *PatchedRegulationRequest_Reference) FromPatchedRegulationRequestReference0(v PatchedRegulationRequestReference0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedRegulationRequestReference0 performs a merge with any union data inside the PatchedRegulationRequest_Reference, using the provided PatchedRegulationRequestReference0
+func (t *PatchedRegulationRequest_Reference) MergePatchedRegulationRequestReference0(v PatchedRegulationRequestReference0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedRegulationRequestReference1 returns the union data inside the PatchedRegulationRequest_Reference as a PatchedRegulationRequestReference1
+func (t PatchedRegulationRequest_Reference) AsPatchedRegulationRequestReference1() (PatchedRegulationRequestReference1, error) {
+	var body PatchedRegulationRequestReference1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedRegulationRequestReference1 overwrites any union data inside the PatchedRegulationRequest_Reference as the provided PatchedRegulationRequestReference1
+func (t *PatchedRegulationRequest_Reference) FromPatchedRegulationRequestReference1(v PatchedRegulationRequestReference1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedRegulationRequestReference1 performs a merge with any union data inside the PatchedRegulationRequest_Reference, using the provided PatchedRegulationRequestReference1
+func (t *PatchedRegulationRequest_Reference) MergePatchedRegulationRequestReference1(v PatchedRegulationRequestReference1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedRegulationRequest_Reference) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedRegulationRequest_Reference) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedUserContactInfoRequestCellNumber0 returns the union data inside the PatchedUserContactInfoRequest_CellNumber as a PatchedUserContactInfoRequestCellNumber0
+func (t PatchedUserContactInfoRequest_CellNumber) AsPatchedUserContactInfoRequestCellNumber0() (PatchedUserContactInfoRequestCellNumber0, error) {
+	var body PatchedUserContactInfoRequestCellNumber0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedUserContactInfoRequestCellNumber0 overwrites any union data inside the PatchedUserContactInfoRequest_CellNumber as the provided PatchedUserContactInfoRequestCellNumber0
+func (t *PatchedUserContactInfoRequest_CellNumber) FromPatchedUserContactInfoRequestCellNumber0(v PatchedUserContactInfoRequestCellNumber0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedUserContactInfoRequestCellNumber0 performs a merge with any union data inside the PatchedUserContactInfoRequest_CellNumber, using the provided PatchedUserContactInfoRequestCellNumber0
+func (t *PatchedUserContactInfoRequest_CellNumber) MergePatchedUserContactInfoRequestCellNumber0(v PatchedUserContactInfoRequestCellNumber0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedUserContactInfoRequestCellNumber1 returns the union data inside the PatchedUserContactInfoRequest_CellNumber as a PatchedUserContactInfoRequestCellNumber1
+func (t PatchedUserContactInfoRequest_CellNumber) AsPatchedUserContactInfoRequestCellNumber1() (PatchedUserContactInfoRequestCellNumber1, error) {
+	var body PatchedUserContactInfoRequestCellNumber1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedUserContactInfoRequestCellNumber1 overwrites any union data inside the PatchedUserContactInfoRequest_CellNumber as the provided PatchedUserContactInfoRequestCellNumber1
+func (t *PatchedUserContactInfoRequest_CellNumber) FromPatchedUserContactInfoRequestCellNumber1(v PatchedUserContactInfoRequestCellNumber1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedUserContactInfoRequestCellNumber1 performs a merge with any union data inside the PatchedUserContactInfoRequest_CellNumber, using the provided PatchedUserContactInfoRequestCellNumber1
+func (t *PatchedUserContactInfoRequest_CellNumber) MergePatchedUserContactInfoRequestCellNumber1(v PatchedUserContactInfoRequestCellNumber1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedUserContactInfoRequest_CellNumber) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedUserContactInfoRequest_CellNumber) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsPatchedUserContactInfoRequestPhoneNumber0 returns the union data inside the PatchedUserContactInfoRequest_PhoneNumber as a PatchedUserContactInfoRequestPhoneNumber0
+func (t PatchedUserContactInfoRequest_PhoneNumber) AsPatchedUserContactInfoRequestPhoneNumber0() (PatchedUserContactInfoRequestPhoneNumber0, error) {
+	var body PatchedUserContactInfoRequestPhoneNumber0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedUserContactInfoRequestPhoneNumber0 overwrites any union data inside the PatchedUserContactInfoRequest_PhoneNumber as the provided PatchedUserContactInfoRequestPhoneNumber0
+func (t *PatchedUserContactInfoRequest_PhoneNumber) FromPatchedUserContactInfoRequestPhoneNumber0(v PatchedUserContactInfoRequestPhoneNumber0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedUserContactInfoRequestPhoneNumber0 performs a merge with any union data inside the PatchedUserContactInfoRequest_PhoneNumber, using the provided PatchedUserContactInfoRequestPhoneNumber0
+func (t *PatchedUserContactInfoRequest_PhoneNumber) MergePatchedUserContactInfoRequestPhoneNumber0(v PatchedUserContactInfoRequestPhoneNumber0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPatchedUserContactInfoRequestPhoneNumber1 returns the union data inside the PatchedUserContactInfoRequest_PhoneNumber as a PatchedUserContactInfoRequestPhoneNumber1
+func (t PatchedUserContactInfoRequest_PhoneNumber) AsPatchedUserContactInfoRequestPhoneNumber1() (PatchedUserContactInfoRequestPhoneNumber1, error) {
+	var body PatchedUserContactInfoRequestPhoneNumber1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPatchedUserContactInfoRequestPhoneNumber1 overwrites any union data inside the PatchedUserContactInfoRequest_PhoneNumber as the provided PatchedUserContactInfoRequestPhoneNumber1
+func (t *PatchedUserContactInfoRequest_PhoneNumber) FromPatchedUserContactInfoRequestPhoneNumber1(v PatchedUserContactInfoRequestPhoneNumber1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePatchedUserContactInfoRequestPhoneNumber1 performs a merge with any union data inside the PatchedUserContactInfoRequest_PhoneNumber, using the provided PatchedUserContactInfoRequestPhoneNumber1
+func (t *PatchedUserContactInfoRequest_PhoneNumber) MergePatchedUserContactInfoRequestPhoneNumber1(v PatchedUserContactInfoRequestPhoneNumber1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t PatchedUserContactInfoRequest_PhoneNumber) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *PatchedUserContactInfoRequest_PhoneNumber) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsRegulationReference0 returns the union data inside the Regulation_Reference as a RegulationReference0
+func (t Regulation_Reference) AsRegulationReference0() (RegulationReference0, error) {
+	var body RegulationReference0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRegulationReference0 overwrites any union data inside the Regulation_Reference as the provided RegulationReference0
+func (t *Regulation_Reference) FromRegulationReference0(v RegulationReference0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRegulationReference0 performs a merge with any union data inside the Regulation_Reference, using the provided RegulationReference0
+func (t *Regulation_Reference) MergeRegulationReference0(v RegulationReference0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRegulationReference1 returns the union data inside the Regulation_Reference as a RegulationReference1
+func (t Regulation_Reference) AsRegulationReference1() (RegulationReference1, error) {
+	var body RegulationReference1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRegulationReference1 overwrites any union data inside the Regulation_Reference as the provided RegulationReference1
+func (t *Regulation_Reference) FromRegulationReference1(v RegulationReference1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRegulationReference1 performs a merge with any union data inside the Regulation_Reference, using the provided RegulationReference1
+func (t *Regulation_Reference) MergeRegulationReference1(v RegulationReference1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Regulation_Reference) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Regulation_Reference) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsRegulationRequestReference0 returns the union data inside the RegulationRequest_Reference as a RegulationRequestReference0
+func (t RegulationRequest_Reference) AsRegulationRequestReference0() (RegulationRequestReference0, error) {
+	var body RegulationRequestReference0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRegulationRequestReference0 overwrites any union data inside the RegulationRequest_Reference as the provided RegulationRequestReference0
+func (t *RegulationRequest_Reference) FromRegulationRequestReference0(v RegulationRequestReference0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRegulationRequestReference0 performs a merge with any union data inside the RegulationRequest_Reference, using the provided RegulationRequestReference0
+func (t *RegulationRequest_Reference) MergeRegulationRequestReference0(v RegulationRequestReference0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsRegulationRequestReference1 returns the union data inside the RegulationRequest_Reference as a RegulationRequestReference1
+func (t RegulationRequest_Reference) AsRegulationRequestReference1() (RegulationRequestReference1, error) {
+	var body RegulationRequestReference1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromRegulationRequestReference1 overwrites any union data inside the RegulationRequest_Reference as the provided RegulationRequestReference1
+func (t *RegulationRequest_Reference) FromRegulationRequestReference1(v RegulationRequestReference1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeRegulationRequestReference1 performs a merge with any union data inside the RegulationRequest_Reference, using the provided RegulationRequestReference1
+func (t *RegulationRequest_Reference) MergeRegulationRequestReference1(v RegulationRequestReference1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t RegulationRequest_Reference) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *RegulationRequest_Reference) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsUserContactInfoCellNumber0 returns the union data inside the UserContactInfo_CellNumber as a UserContactInfoCellNumber0
+func (t UserContactInfo_CellNumber) AsUserContactInfoCellNumber0() (UserContactInfoCellNumber0, error) {
+	var body UserContactInfoCellNumber0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoCellNumber0 overwrites any union data inside the UserContactInfo_CellNumber as the provided UserContactInfoCellNumber0
+func (t *UserContactInfo_CellNumber) FromUserContactInfoCellNumber0(v UserContactInfoCellNumber0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoCellNumber0 performs a merge with any union data inside the UserContactInfo_CellNumber, using the provided UserContactInfoCellNumber0
+func (t *UserContactInfo_CellNumber) MergeUserContactInfoCellNumber0(v UserContactInfoCellNumber0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUserContactInfoCellNumber1 returns the union data inside the UserContactInfo_CellNumber as a UserContactInfoCellNumber1
+func (t UserContactInfo_CellNumber) AsUserContactInfoCellNumber1() (UserContactInfoCellNumber1, error) {
+	var body UserContactInfoCellNumber1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoCellNumber1 overwrites any union data inside the UserContactInfo_CellNumber as the provided UserContactInfoCellNumber1
+func (t *UserContactInfo_CellNumber) FromUserContactInfoCellNumber1(v UserContactInfoCellNumber1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoCellNumber1 performs a merge with any union data inside the UserContactInfo_CellNumber, using the provided UserContactInfoCellNumber1
+func (t *UserContactInfo_CellNumber) MergeUserContactInfoCellNumber1(v UserContactInfoCellNumber1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t UserContactInfo_CellNumber) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *UserContactInfo_CellNumber) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsUserContactInfoPhoneNumber0 returns the union data inside the UserContactInfo_PhoneNumber as a UserContactInfoPhoneNumber0
+func (t UserContactInfo_PhoneNumber) AsUserContactInfoPhoneNumber0() (UserContactInfoPhoneNumber0, error) {
+	var body UserContactInfoPhoneNumber0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoPhoneNumber0 overwrites any union data inside the UserContactInfo_PhoneNumber as the provided UserContactInfoPhoneNumber0
+func (t *UserContactInfo_PhoneNumber) FromUserContactInfoPhoneNumber0(v UserContactInfoPhoneNumber0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoPhoneNumber0 performs a merge with any union data inside the UserContactInfo_PhoneNumber, using the provided UserContactInfoPhoneNumber0
+func (t *UserContactInfo_PhoneNumber) MergeUserContactInfoPhoneNumber0(v UserContactInfoPhoneNumber0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUserContactInfoPhoneNumber1 returns the union data inside the UserContactInfo_PhoneNumber as a UserContactInfoPhoneNumber1
+func (t UserContactInfo_PhoneNumber) AsUserContactInfoPhoneNumber1() (UserContactInfoPhoneNumber1, error) {
+	var body UserContactInfoPhoneNumber1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoPhoneNumber1 overwrites any union data inside the UserContactInfo_PhoneNumber as the provided UserContactInfoPhoneNumber1
+func (t *UserContactInfo_PhoneNumber) FromUserContactInfoPhoneNumber1(v UserContactInfoPhoneNumber1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoPhoneNumber1 performs a merge with any union data inside the UserContactInfo_PhoneNumber, using the provided UserContactInfoPhoneNumber1
+func (t *UserContactInfo_PhoneNumber) MergeUserContactInfoPhoneNumber1(v UserContactInfoPhoneNumber1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t UserContactInfo_PhoneNumber) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *UserContactInfo_PhoneNumber) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsUserContactInfoRequestCellNumber0 returns the union data inside the UserContactInfoRequest_CellNumber as a UserContactInfoRequestCellNumber0
+func (t UserContactInfoRequest_CellNumber) AsUserContactInfoRequestCellNumber0() (UserContactInfoRequestCellNumber0, error) {
+	var body UserContactInfoRequestCellNumber0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoRequestCellNumber0 overwrites any union data inside the UserContactInfoRequest_CellNumber as the provided UserContactInfoRequestCellNumber0
+func (t *UserContactInfoRequest_CellNumber) FromUserContactInfoRequestCellNumber0(v UserContactInfoRequestCellNumber0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoRequestCellNumber0 performs a merge with any union data inside the UserContactInfoRequest_CellNumber, using the provided UserContactInfoRequestCellNumber0
+func (t *UserContactInfoRequest_CellNumber) MergeUserContactInfoRequestCellNumber0(v UserContactInfoRequestCellNumber0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUserContactInfoRequestCellNumber1 returns the union data inside the UserContactInfoRequest_CellNumber as a UserContactInfoRequestCellNumber1
+func (t UserContactInfoRequest_CellNumber) AsUserContactInfoRequestCellNumber1() (UserContactInfoRequestCellNumber1, error) {
+	var body UserContactInfoRequestCellNumber1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoRequestCellNumber1 overwrites any union data inside the UserContactInfoRequest_CellNumber as the provided UserContactInfoRequestCellNumber1
+func (t *UserContactInfoRequest_CellNumber) FromUserContactInfoRequestCellNumber1(v UserContactInfoRequestCellNumber1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoRequestCellNumber1 performs a merge with any union data inside the UserContactInfoRequest_CellNumber, using the provided UserContactInfoRequestCellNumber1
+func (t *UserContactInfoRequest_CellNumber) MergeUserContactInfoRequestCellNumber1(v UserContactInfoRequestCellNumber1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t UserContactInfoRequest_CellNumber) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *UserContactInfoRequest_CellNumber) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsUserContactInfoRequestPhoneNumber0 returns the union data inside the UserContactInfoRequest_PhoneNumber as a UserContactInfoRequestPhoneNumber0
+func (t UserContactInfoRequest_PhoneNumber) AsUserContactInfoRequestPhoneNumber0() (UserContactInfoRequestPhoneNumber0, error) {
+	var body UserContactInfoRequestPhoneNumber0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoRequestPhoneNumber0 overwrites any union data inside the UserContactInfoRequest_PhoneNumber as the provided UserContactInfoRequestPhoneNumber0
+func (t *UserContactInfoRequest_PhoneNumber) FromUserContactInfoRequestPhoneNumber0(v UserContactInfoRequestPhoneNumber0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoRequestPhoneNumber0 performs a merge with any union data inside the UserContactInfoRequest_PhoneNumber, using the provided UserContactInfoRequestPhoneNumber0
+func (t *UserContactInfoRequest_PhoneNumber) MergeUserContactInfoRequestPhoneNumber0(v UserContactInfoRequestPhoneNumber0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsUserContactInfoRequestPhoneNumber1 returns the union data inside the UserContactInfoRequest_PhoneNumber as a UserContactInfoRequestPhoneNumber1
+func (t UserContactInfoRequest_PhoneNumber) AsUserContactInfoRequestPhoneNumber1() (UserContactInfoRequestPhoneNumber1, error) {
+	var body UserContactInfoRequestPhoneNumber1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromUserContactInfoRequestPhoneNumber1 overwrites any union data inside the UserContactInfoRequest_PhoneNumber as the provided UserContactInfoRequestPhoneNumber1
+func (t *UserContactInfoRequest_PhoneNumber) FromUserContactInfoRequestPhoneNumber1(v UserContactInfoRequestPhoneNumber1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeUserContactInfoRequestPhoneNumber1 performs a merge with any union data inside the UserContactInfoRequest_PhoneNumber, using the provided UserContactInfoRequestPhoneNumber1
+func (t *UserContactInfoRequest_PhoneNumber) MergeUserContactInfoRequestPhoneNumber1(v UserContactInfoRequestPhoneNumber1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t UserContactInfoRequest_PhoneNumber) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *UserContactInfoRequest_PhoneNumber) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
 // RequestEditorFn is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
 
@@ -24254,6 +27773,54 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /api/v2/celery/status/ (the `CeleryStatusRetrieve` operationId).
 	CeleryStatusRetrieve(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureList performs a GET /api/v2/cicd_infrastructure/ (the `CicdInfrastructureList` operationId) request.
+	CicdInfrastructureList(ctx context.Context, params *CicdInfrastructureListParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureCreateWithBody performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request,
+	// with any type of body and a specified content type.
+	CicdInfrastructureCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureCreate performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+	// Takes a body of the `application/json` content type.
+	CicdInfrastructureCreate(ctx context.Context, body CicdInfrastructureCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureCreateWithFormdataBody performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type.
+	CicdInfrastructureCreateWithFormdataBody(ctx context.Context, body CicdInfrastructureCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureDestroy performs a DELETE /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureDestroy` operationId) request.
+	CicdInfrastructureDestroy(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureRetrieve performs a GET /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureRetrieve` operationId) request.
+	CicdInfrastructureRetrieve(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructurePartialUpdateWithBody performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request,
+	// with any type of body and a specified content type.
+	CicdInfrastructurePartialUpdateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructurePartialUpdate performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+	// Takes a body of the `application/json` content type.
+	CicdInfrastructurePartialUpdate(ctx context.Context, id int, body CicdInfrastructurePartialUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructurePartialUpdateWithFormdataBody performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type.
+	CicdInfrastructurePartialUpdateWithFormdataBody(ctx context.Context, id int, body CicdInfrastructurePartialUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureUpdateWithBody performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request,
+	// with any type of body and a specified content type.
+	CicdInfrastructureUpdateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureUpdate performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+	// Takes a body of the `application/json` content type.
+	CicdInfrastructureUpdate(ctx context.Context, id int, body CicdInfrastructureUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureUpdateWithFormdataBody performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type.
+	CicdInfrastructureUpdateWithFormdataBody(ctx context.Context, id int, body CicdInfrastructureUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CicdInfrastructureDeletePreviewList performs a GET /api/v2/cicd_infrastructure/{id}/delete_preview/ (the `CicdInfrastructureDeletePreviewList` operationId) request.
+	CicdInfrastructureDeletePreviewList(ctx context.Context, id int, params *CicdInfrastructureDeletePreviewListParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ConfigurationPermissionsList performs a GET /api/v2/configuration_permissions/ (the `ConfigurationPermissionsList` operationId) request.
 	ConfigurationPermissionsList(ctx context.Context, params *ConfigurationPermissionsListParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -24627,7 +28194,7 @@ type ClientInterface interface {
 	FindingsGenerateReportCreateWithFormdataBody(ctx context.Context, body FindingsGenerateReportCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// FindingsDestroy performs a DELETE /api/v2/findings/{id}/ (the `FindingsDestroy` operationId) request.
-	FindingsDestroy(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
+	FindingsDestroy(ctx context.Context, id int, params *FindingsDestroyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// FindingsRetrieve performs a GET /api/v2/findings/{id}/ (the `FindingsRetrieve` operationId) request.
 	FindingsRetrieve(ctx context.Context, id int, params *FindingsRetrieveParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -26063,6 +29630,24 @@ type ClientInterface interface {
 	// RiskAcceptanceDownloadProofRetrieve performs a GET /api/v2/risk_acceptance/{id}/download_proof/ (the `RiskAcceptanceDownloadProofRetrieve` operationId) request.
 	RiskAcceptanceDownloadProofRetrieve(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RiskAcceptanceExpireCreateWithBody performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Expire a risk acceptance now, instead of waiting for its expiration date.
+	RiskAcceptanceExpireCreateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RiskAcceptanceExpireCreate performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+	// Takes a body of the `application/json` content type.
+	//
+	// Expire a risk acceptance now, instead of waiting for its expiration date.
+	RiskAcceptanceExpireCreate(ctx context.Context, id int, body RiskAcceptanceExpireCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RiskAcceptanceExpireCreateWithFormdataBody performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type.
+	//
+	// Expire a risk acceptance now, instead of waiting for its expiration date.
+	RiskAcceptanceExpireCreateWithFormdataBody(ctx context.Context, id int, body RiskAcceptanceExpireCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// RiskAcceptanceNotesRetrieve performs a GET /api/v2/risk_acceptance/{id}/notes/ (the `RiskAcceptanceNotesRetrieve` operationId) request.
 	RiskAcceptanceNotesRetrieve(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -26077,6 +29662,33 @@ type ClientInterface interface {
 	// RiskAcceptanceNotesCreateWithFormdataBody performs a POST /api/v2/risk_acceptance/{id}/notes/ (the `RiskAcceptanceNotesCreate` operationId) request.
 	// Takes a body of the `application/x-www-form-urlencoded` content type.
 	RiskAcceptanceNotesCreateWithFormdataBody(ctx context.Context, id int, body RiskAcceptanceNotesCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RiskAcceptanceReinstateCreateWithBody performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+	//
+	// Send `expiration_date` to say how long for. Without one the risk acceptance is
+	// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+	RiskAcceptanceReinstateCreateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RiskAcceptanceReinstateCreate performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+	// Takes a body of the `application/json` content type.
+	//
+	// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+	//
+	// Send `expiration_date` to say how long for. Without one the risk acceptance is
+	// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+	RiskAcceptanceReinstateCreate(ctx context.Context, id int, body RiskAcceptanceReinstateCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RiskAcceptanceReinstateCreateWithFormdataBody performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type.
+	//
+	// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+	//
+	// Send `expiration_date` to say how long for. Without one the risk acceptance is
+	// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+	RiskAcceptanceReinstateCreateWithFormdataBody(ctx context.Context, id int, body RiskAcceptanceReinstateCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SlaConfigurationsList performs a GET /api/v2/sla_configurations/ (the `SlaConfigurationsList` operationId) request.
 	SlaConfigurationsList(ctx context.Context, params *SlaConfigurationsListParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -27535,6 +31147,184 @@ func (c *Client) CeleryStatusRetrieve(ctx context.Context, reqEditors ...Request
 	return c.Client.Do(req)
 }
 
+// CicdInfrastructureList performs a GET /api/v2/cicd_infrastructure/ (the `CicdInfrastructureList` operationId) request.
+func (c *Client) CicdInfrastructureList(ctx context.Context, params *CicdInfrastructureListParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureListRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureCreateWithBody performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request,
+// with any type of body and a specified content type.
+func (c *Client) CicdInfrastructureCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureCreateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureCreate performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+// Takes a body of the `application/json` content type.
+func (c *Client) CicdInfrastructureCreate(ctx context.Context, body CicdInfrastructureCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureCreateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureCreateWithFormdataBody performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type.
+func (c *Client) CicdInfrastructureCreateWithFormdataBody(ctx context.Context, body CicdInfrastructureCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureCreateRequestWithFormdataBody(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureDestroy performs a DELETE /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureDestroy` operationId) request.
+func (c *Client) CicdInfrastructureDestroy(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureDestroyRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureRetrieve performs a GET /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureRetrieve` operationId) request.
+func (c *Client) CicdInfrastructureRetrieve(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureRetrieveRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructurePartialUpdateWithBody performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request,
+// with any type of body and a specified content type.
+func (c *Client) CicdInfrastructurePartialUpdateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructurePartialUpdateRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructurePartialUpdate performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+// Takes a body of the `application/json` content type.
+func (c *Client) CicdInfrastructurePartialUpdate(ctx context.Context, id int, body CicdInfrastructurePartialUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructurePartialUpdateRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructurePartialUpdateWithFormdataBody performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type.
+func (c *Client) CicdInfrastructurePartialUpdateWithFormdataBody(ctx context.Context, id int, body CicdInfrastructurePartialUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructurePartialUpdateRequestWithFormdataBody(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureUpdateWithBody performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request,
+// with any type of body and a specified content type.
+func (c *Client) CicdInfrastructureUpdateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureUpdateRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureUpdate performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+// Takes a body of the `application/json` content type.
+func (c *Client) CicdInfrastructureUpdate(ctx context.Context, id int, body CicdInfrastructureUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureUpdateRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureUpdateWithFormdataBody performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type.
+func (c *Client) CicdInfrastructureUpdateWithFormdataBody(ctx context.Context, id int, body CicdInfrastructureUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureUpdateRequestWithFormdataBody(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CicdInfrastructureDeletePreviewList performs a GET /api/v2/cicd_infrastructure/{id}/delete_preview/ (the `CicdInfrastructureDeletePreviewList` operationId) request.
+func (c *Client) CicdInfrastructureDeletePreviewList(ctx context.Context, id int, params *CicdInfrastructureDeletePreviewListParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCicdInfrastructureDeletePreviewListRequest(c.Server, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ConfigurationPermissionsList performs a GET /api/v2/configuration_permissions/ (the `ConfigurationPermissionsList` operationId) request.
 func (c *Client) ConfigurationPermissionsList(ctx context.Context, params *ConfigurationPermissionsListParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewConfigurationPermissionsListRequest(c.Server, params)
@@ -28847,8 +32637,8 @@ func (c *Client) FindingsGenerateReportCreateWithFormdataBody(ctx context.Contex
 }
 
 // FindingsDestroy performs a DELETE /api/v2/findings/{id}/ (the `FindingsDestroy` operationId) request.
-func (c *Client) FindingsDestroy(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewFindingsDestroyRequest(c.Server, id)
+func (c *Client) FindingsDestroy(ctx context.Context, id int, params *FindingsDestroyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewFindingsDestroyRequest(c.Server, id, params)
 	if err != nil {
 		return nil, err
 	}
@@ -33813,6 +37603,54 @@ func (c *Client) RiskAcceptanceDownloadProofRetrieve(ctx context.Context, id int
 	return c.Client.Do(req)
 }
 
+// RiskAcceptanceExpireCreateWithBody performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request,
+// with any type of body and a specified content type.
+//
+// Expire a risk acceptance now, instead of waiting for its expiration date.
+func (c *Client) RiskAcceptanceExpireCreateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRiskAcceptanceExpireCreateRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RiskAcceptanceExpireCreate performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+// Takes a body of the `application/json` content type.
+//
+// Expire a risk acceptance now, instead of waiting for its expiration date.
+func (c *Client) RiskAcceptanceExpireCreate(ctx context.Context, id int, body RiskAcceptanceExpireCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRiskAcceptanceExpireCreateRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RiskAcceptanceExpireCreateWithFormdataBody performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type.
+//
+// Expire a risk acceptance now, instead of waiting for its expiration date.
+func (c *Client) RiskAcceptanceExpireCreateWithFormdataBody(ctx context.Context, id int, body RiskAcceptanceExpireCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRiskAcceptanceExpireCreateRequestWithFormdataBody(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // RiskAcceptanceNotesRetrieve performs a GET /api/v2/risk_acceptance/{id}/notes/ (the `RiskAcceptanceNotesRetrieve` operationId) request.
 func (c *Client) RiskAcceptanceNotesRetrieve(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRiskAcceptanceNotesRetrieveRequest(c.Server, id)
@@ -33858,6 +37696,63 @@ func (c *Client) RiskAcceptanceNotesCreate(ctx context.Context, id int, body Ris
 // Takes a body of the `application/x-www-form-urlencoded` content type.
 func (c *Client) RiskAcceptanceNotesCreateWithFormdataBody(ctx context.Context, id int, body RiskAcceptanceNotesCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRiskAcceptanceNotesCreateRequestWithFormdataBody(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RiskAcceptanceReinstateCreateWithBody performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request,
+// with any type of body and a specified content type.
+//
+// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+//
+// Send `expiration_date` to say how long for. Without one the risk acceptance is
+// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+func (c *Client) RiskAcceptanceReinstateCreateWithBody(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRiskAcceptanceReinstateCreateRequestWithBody(c.Server, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RiskAcceptanceReinstateCreate performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+// Takes a body of the `application/json` content type.
+//
+// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+//
+// Send `expiration_date` to say how long for. Without one the risk acceptance is
+// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+func (c *Client) RiskAcceptanceReinstateCreate(ctx context.Context, id int, body RiskAcceptanceReinstateCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRiskAcceptanceReinstateCreateRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RiskAcceptanceReinstateCreateWithFormdataBody performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type.
+//
+// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+//
+// Send `expiration_date` to say how long for. Without one the risk acceptance is
+// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+func (c *Client) RiskAcceptanceReinstateCreateWithFormdataBody(ctx context.Context, id int, body RiskAcceptanceReinstateCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRiskAcceptanceReinstateCreateRequestWithFormdataBody(c.Server, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -38403,6 +42298,416 @@ func NewCeleryStatusRetrieveRequest(server string) (*http.Request, error) {
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCicdInfrastructureListRequest constructs an http.Request for the CicdInfrastructureList method
+func NewCicdInfrastructureListRequest(server string, params *CicdInfrastructureListParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/cicd_infrastructure/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Id != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "id", *params.Id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.InfrastructureType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "infrastructure_type", *params.InfrastructureType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Name != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "name", *params.Name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Offset != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "offset", *params.Offset, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCicdInfrastructureCreateRequest calls the generic CicdInfrastructureCreate builder with application/json body
+func NewCicdInfrastructureCreateRequest(server string, body CicdInfrastructureCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCicdInfrastructureCreateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCicdInfrastructureCreateRequestWithFormdataBody calls the generic CicdInfrastructureCreate builder with application/x-www-form-urlencoded body
+func NewCicdInfrastructureCreateRequestWithFormdataBody(server string, body CicdInfrastructureCreateFormdataRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	bodyStr, err := runtime.MarshalForm(body, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = strings.NewReader(bodyStr.Encode())
+	return NewCicdInfrastructureCreateRequestWithBody(server, "application/x-www-form-urlencoded", bodyReader)
+}
+
+// NewCicdInfrastructureCreateRequestWithBody constructs an http.Request for the CicdInfrastructureCreate method, with any body, and a specified content type
+func NewCicdInfrastructureCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/cicd_infrastructure/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCicdInfrastructureDestroyRequest constructs an http.Request for the CicdInfrastructureDestroy method
+func NewCicdInfrastructureDestroyRequest(server string, id int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/cicd_infrastructure/%s/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCicdInfrastructureRetrieveRequest constructs an http.Request for the CicdInfrastructureRetrieve method
+func NewCicdInfrastructureRetrieveRequest(server string, id int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/cicd_infrastructure/%s/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCicdInfrastructurePartialUpdateRequest calls the generic CicdInfrastructurePartialUpdate builder with application/json body
+func NewCicdInfrastructurePartialUpdateRequest(server string, id int, body CicdInfrastructurePartialUpdateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCicdInfrastructurePartialUpdateRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewCicdInfrastructurePartialUpdateRequestWithFormdataBody calls the generic CicdInfrastructurePartialUpdate builder with application/x-www-form-urlencoded body
+func NewCicdInfrastructurePartialUpdateRequestWithFormdataBody(server string, id int, body CicdInfrastructurePartialUpdateFormdataRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	bodyStr, err := runtime.MarshalForm(body, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = strings.NewReader(bodyStr.Encode())
+	return NewCicdInfrastructurePartialUpdateRequestWithBody(server, id, "application/x-www-form-urlencoded", bodyReader)
+}
+
+// NewCicdInfrastructurePartialUpdateRequestWithBody constructs an http.Request for the CicdInfrastructurePartialUpdate method, with any body, and a specified content type
+func NewCicdInfrastructurePartialUpdateRequestWithBody(server string, id int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/cicd_infrastructure/%s/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCicdInfrastructureUpdateRequest calls the generic CicdInfrastructureUpdate builder with application/json body
+func NewCicdInfrastructureUpdateRequest(server string, id int, body CicdInfrastructureUpdateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCicdInfrastructureUpdateRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewCicdInfrastructureUpdateRequestWithFormdataBody calls the generic CicdInfrastructureUpdate builder with application/x-www-form-urlencoded body
+func NewCicdInfrastructureUpdateRequestWithFormdataBody(server string, id int, body CicdInfrastructureUpdateFormdataRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	bodyStr, err := runtime.MarshalForm(body, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = strings.NewReader(bodyStr.Encode())
+	return NewCicdInfrastructureUpdateRequestWithBody(server, id, "application/x-www-form-urlencoded", bodyReader)
+}
+
+// NewCicdInfrastructureUpdateRequestWithBody constructs an http.Request for the CicdInfrastructureUpdate method, with any body, and a specified content type
+func NewCicdInfrastructureUpdateRequestWithBody(server string, id int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/cicd_infrastructure/%s/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewCicdInfrastructureDeletePreviewListRequest constructs an http.Request for the CicdInfrastructureDeletePreviewList method
+func NewCicdInfrastructureDeletePreviewListRequest(server string, id int, params *CicdInfrastructureDeletePreviewListParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/cicd_infrastructure/%s/delete_preview/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Offset != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "offset", *params.Offset, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -44647,7 +48952,7 @@ func NewFindingsGenerateReportCreateRequestWithBody(server string, contentType s
 }
 
 // NewFindingsDestroyRequest constructs an http.Request for the FindingsDestroy method
-func NewFindingsDestroyRequest(server string, id int) (*http.Request, error) {
+func NewFindingsDestroyRequest(server string, id int, params *FindingsDestroyParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -44670,6 +48975,33 @@ func NewFindingsDestroyRequest(server string, id int) (*http.Request, error) {
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.PushToJira != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "push_to_jira", *params.PushToJira, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
@@ -58588,6 +62920,64 @@ func NewRiskAcceptanceDownloadProofRetrieveRequest(server string, id int) (*http
 	return req, nil
 }
 
+// NewRiskAcceptanceExpireCreateRequest calls the generic RiskAcceptanceExpireCreate builder with application/json body
+func NewRiskAcceptanceExpireCreateRequest(server string, id int, body RiskAcceptanceExpireCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRiskAcceptanceExpireCreateRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewRiskAcceptanceExpireCreateRequestWithFormdataBody calls the generic RiskAcceptanceExpireCreate builder with application/x-www-form-urlencoded body
+func NewRiskAcceptanceExpireCreateRequestWithFormdataBody(server string, id int, body RiskAcceptanceExpireCreateFormdataRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	bodyStr, err := runtime.MarshalForm(body, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = strings.NewReader(bodyStr.Encode())
+	return NewRiskAcceptanceExpireCreateRequestWithBody(server, id, "application/x-www-form-urlencoded", bodyReader)
+}
+
+// NewRiskAcceptanceExpireCreateRequestWithBody constructs an http.Request for the RiskAcceptanceExpireCreate method, with any body, and a specified content type
+func NewRiskAcceptanceExpireCreateRequestWithBody(server string, id int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/risk_acceptance/%s/expire/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewRiskAcceptanceNotesRetrieveRequest constructs an http.Request for the RiskAcceptanceNotesRetrieve method
 func NewRiskAcceptanceNotesRetrieveRequest(server string, id int) (*http.Request, error) {
 	var err error
@@ -58661,6 +63051,64 @@ func NewRiskAcceptanceNotesCreateRequestWithBody(server string, id int, contentT
 	}
 
 	operationPath := fmt.Sprintf("/api/v2/risk_acceptance/%s/notes/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRiskAcceptanceReinstateCreateRequest calls the generic RiskAcceptanceReinstateCreate builder with application/json body
+func NewRiskAcceptanceReinstateCreateRequest(server string, id int, body RiskAcceptanceReinstateCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRiskAcceptanceReinstateCreateRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewRiskAcceptanceReinstateCreateRequestWithFormdataBody calls the generic RiskAcceptanceReinstateCreate builder with application/x-www-form-urlencoded body
+func NewRiskAcceptanceReinstateCreateRequestWithFormdataBody(server string, id int, body RiskAcceptanceReinstateCreateFormdataRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	bodyStr, err := runtime.MarshalForm(body, nil)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = strings.NewReader(bodyStr.Encode())
+	return NewRiskAcceptanceReinstateCreateRequestWithBody(server, id, "application/x-www-form-urlencoded", bodyReader)
+}
+
+// NewRiskAcceptanceReinstateCreateRequestWithBody constructs an http.Request for the RiskAcceptanceReinstateCreate method, with any body, and a specified content type
+func NewRiskAcceptanceReinstateCreateRequestWithBody(server string, id int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v2/risk_acceptance/%s/reinstate/", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -66820,6 +71268,68 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v2/celery/status/ (the `CeleryStatusRetrieve` operationId).
 	CeleryStatusRetrieveWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*CeleryStatusRetrieveResponse, error)
 
+	// CicdInfrastructureListWithResponse performs a GET /api/v2/cicd_infrastructure/ (the `CicdInfrastructureList` operationId) request.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	CicdInfrastructureListWithResponse(ctx context.Context, params *CicdInfrastructureListParams, reqEditors ...RequestEditorFn) (*CicdInfrastructureListResponse, error)
+
+	// CicdInfrastructureCreateWithBodyWithResponse performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	CicdInfrastructureCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CicdInfrastructureCreateResponse, error)
+
+	// CicdInfrastructureCreateWithResponse performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	CicdInfrastructureCreateWithResponse(ctx context.Context, body CicdInfrastructureCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureCreateResponse, error)
+
+	// CicdInfrastructureCreateWithFormdataBodyWithResponse performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+	CicdInfrastructureCreateWithFormdataBodyWithResponse(ctx context.Context, body CicdInfrastructureCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureCreateResponse, error)
+
+	// CicdInfrastructureDestroyWithResponse performs a DELETE /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureDestroy` operationId) request.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	CicdInfrastructureDestroyWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*CicdInfrastructureDestroyResponse, error)
+
+	// CicdInfrastructureRetrieveWithResponse performs a GET /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureRetrieve` operationId) request.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	CicdInfrastructureRetrieveWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*CicdInfrastructureRetrieveResponse, error)
+
+	// CicdInfrastructurePartialUpdateWithBodyWithResponse performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	CicdInfrastructurePartialUpdateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CicdInfrastructurePartialUpdateResponse, error)
+
+	// CicdInfrastructurePartialUpdateWithResponse performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	CicdInfrastructurePartialUpdateWithResponse(ctx context.Context, id int, body CicdInfrastructurePartialUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructurePartialUpdateResponse, error)
+
+	// CicdInfrastructurePartialUpdateWithFormdataBodyWithResponse performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+	CicdInfrastructurePartialUpdateWithFormdataBodyWithResponse(ctx context.Context, id int, body CicdInfrastructurePartialUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructurePartialUpdateResponse, error)
+
+	// CicdInfrastructureUpdateWithBodyWithResponse performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	CicdInfrastructureUpdateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CicdInfrastructureUpdateResponse, error)
+
+	// CicdInfrastructureUpdateWithResponse performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	CicdInfrastructureUpdateWithResponse(ctx context.Context, id int, body CicdInfrastructureUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureUpdateResponse, error)
+
+	// CicdInfrastructureUpdateWithFormdataBodyWithResponse performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+	CicdInfrastructureUpdateWithFormdataBodyWithResponse(ctx context.Context, id int, body CicdInfrastructureUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureUpdateResponse, error)
+
+	// CicdInfrastructureDeletePreviewListWithResponse performs a GET /api/v2/cicd_infrastructure/{id}/delete_preview/ (the `CicdInfrastructureDeletePreviewList` operationId) request.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	CicdInfrastructureDeletePreviewListWithResponse(ctx context.Context, id int, params *CicdInfrastructureDeletePreviewListParams, reqEditors ...RequestEditorFn) (*CicdInfrastructureDeletePreviewListResponse, error)
+
 	// ConfigurationPermissionsListWithResponse performs a GET /api/v2/configuration_permissions/ (the `ConfigurationPermissionsList` operationId) request.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -67298,7 +71808,7 @@ type ClientWithResponsesInterface interface {
 	// FindingsDestroyWithResponse performs a DELETE /api/v2/findings/{id}/ (the `FindingsDestroy` operationId) request.
 	//
 	// Returns a wrapper object for the known response body format(s).
-	FindingsDestroyWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*FindingsDestroyResponse, error)
+	FindingsDestroyWithResponse(ctx context.Context, id int, params *FindingsDestroyParams, reqEditors ...RequestEditorFn) (*FindingsDestroyResponse, error)
 
 	// FindingsRetrieveWithResponse performs a GET /api/v2/findings/{id}/ (the `FindingsRetrieve` operationId) request.
 	//
@@ -69110,6 +73620,26 @@ type ClientWithResponsesInterface interface {
 	// Returns a wrapper object for the known response body format(s).
 	RiskAcceptanceDownloadProofRetrieveWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*RiskAcceptanceDownloadProofRetrieveResponse, error)
 
+	// RiskAcceptanceExpireCreateWithBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Expire a risk acceptance now, instead of waiting for its expiration date.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	RiskAcceptanceExpireCreateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RiskAcceptanceExpireCreateResponse, error)
+
+	// RiskAcceptanceExpireCreateWithResponse performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Expire a risk acceptance now, instead of waiting for its expiration date.
+	RiskAcceptanceExpireCreateWithResponse(ctx context.Context, id int, body RiskAcceptanceExpireCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceExpireCreateResponse, error)
+
+	// RiskAcceptanceExpireCreateWithFormdataBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Expire a risk acceptance now, instead of waiting for its expiration date.
+	RiskAcceptanceExpireCreateWithFormdataBodyWithResponse(ctx context.Context, id int, body RiskAcceptanceExpireCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceExpireCreateResponse, error)
+
 	// RiskAcceptanceNotesRetrieveWithResponse performs a GET /api/v2/risk_acceptance/{id}/notes/ (the `RiskAcceptanceNotesRetrieve` operationId) request.
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -69128,6 +73658,35 @@ type ClientWithResponsesInterface interface {
 	// RiskAcceptanceNotesCreateWithFormdataBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/notes/ (the `RiskAcceptanceNotesCreate` operationId) request.
 	// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
 	RiskAcceptanceNotesCreateWithFormdataBodyWithResponse(ctx context.Context, id int, body RiskAcceptanceNotesCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceNotesCreateResponse, error)
+
+	// RiskAcceptanceReinstateCreateWithBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+	//
+	// Send `expiration_date` to say how long for. Without one the risk acceptance is
+	// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	RiskAcceptanceReinstateCreateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RiskAcceptanceReinstateCreateResponse, error)
+
+	// RiskAcceptanceReinstateCreateWithResponse performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+	//
+	// Send `expiration_date` to say how long for. Without one the risk acceptance is
+	// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+	RiskAcceptanceReinstateCreateWithResponse(ctx context.Context, id int, body RiskAcceptanceReinstateCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceReinstateCreateResponse, error)
+
+	// RiskAcceptanceReinstateCreateWithFormdataBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+	// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+	//
+	// Send `expiration_date` to say how long for. Without one the risk acceptance is
+	// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+	RiskAcceptanceReinstateCreateWithFormdataBodyWithResponse(ctx context.Context, id int, body RiskAcceptanceReinstateCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceReinstateCreateResponse, error)
 
 	// SlaConfigurationsListWithResponse performs a GET /api/v2/sla_configurations/ (the `SlaConfigurationsList` operationId) request.
 	//
@@ -71169,6 +75728,286 @@ func (r CeleryStatusRetrieveResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r CeleryStatusRetrieveResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CicdInfrastructureListResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PaginatedCICDInfrastructureList
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CicdInfrastructureListResponse) GetJSON200() *PaginatedCICDInfrastructureList {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r CicdInfrastructureListResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CicdInfrastructureListResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CicdInfrastructureListResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CicdInfrastructureListResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CicdInfrastructureCreateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON201 the response for an HTTP 201 `application/json` response
+	JSON201 *CICDInfrastructure
+}
+
+// GetJSON201 returns the response for an HTTP 201 `application/json` response
+func (r CicdInfrastructureCreateResponse) GetJSON201() *CICDInfrastructure {
+	return r.JSON201
+}
+
+// GetBody returns the raw response body bytes
+func (r CicdInfrastructureCreateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CicdInfrastructureCreateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CicdInfrastructureCreateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CicdInfrastructureCreateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CicdInfrastructureDestroyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// GetBody returns the raw response body bytes
+func (r CicdInfrastructureDestroyResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CicdInfrastructureDestroyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CicdInfrastructureDestroyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CicdInfrastructureDestroyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CicdInfrastructureRetrieveResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CICDInfrastructure
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CicdInfrastructureRetrieveResponse) GetJSON200() *CICDInfrastructure {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r CicdInfrastructureRetrieveResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CicdInfrastructureRetrieveResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CicdInfrastructureRetrieveResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CicdInfrastructureRetrieveResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CicdInfrastructurePartialUpdateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CICDInfrastructure
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CicdInfrastructurePartialUpdateResponse) GetJSON200() *CICDInfrastructure {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r CicdInfrastructurePartialUpdateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CicdInfrastructurePartialUpdateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CicdInfrastructurePartialUpdateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CicdInfrastructurePartialUpdateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CicdInfrastructureUpdateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CICDInfrastructure
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CicdInfrastructureUpdateResponse) GetJSON200() *CICDInfrastructure {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r CicdInfrastructureUpdateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CicdInfrastructureUpdateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CicdInfrastructureUpdateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CicdInfrastructureUpdateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CicdInfrastructureDeletePreviewListResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PaginatedDeletePreviewList
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CicdInfrastructureDeletePreviewListResponse) GetJSON200() *PaginatedDeletePreviewList {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r CicdInfrastructureDeletePreviewListResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CicdInfrastructureDeletePreviewListResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CicdInfrastructureDeletePreviewListResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CicdInfrastructureDeletePreviewListResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -80832,6 +85671,47 @@ func (r RiskAcceptanceDownloadProofRetrieveResponse) ContentType() string {
 	return ""
 }
 
+type RiskAcceptanceExpireCreateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RiskAcceptance
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RiskAcceptanceExpireCreateResponse) GetJSON200() *RiskAcceptance {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r RiskAcceptanceExpireCreateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RiskAcceptanceExpireCreateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RiskAcceptanceExpireCreateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RiskAcceptanceExpireCreateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type RiskAcceptanceNotesRetrieveResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -80908,6 +85788,47 @@ func (r RiskAcceptanceNotesCreateResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r RiskAcceptanceNotesCreateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RiskAcceptanceReinstateCreateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RiskAcceptance
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RiskAcceptanceReinstateCreateResponse) GetJSON200() *RiskAcceptance {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r RiskAcceptanceReinstateCreateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RiskAcceptanceReinstateCreateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RiskAcceptanceReinstateCreateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RiskAcceptanceReinstateCreateResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -85530,6 +90451,146 @@ func (c *ClientWithResponses) CeleryStatusRetrieveWithResponse(ctx context.Conte
 	return ParseCeleryStatusRetrieveResponse(rsp)
 }
 
+// CicdInfrastructureListWithResponse performs a GET /api/v2/cicd_infrastructure/ (the `CicdInfrastructureList` operationId) request.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureListWithResponse(ctx context.Context, params *CicdInfrastructureListParams, reqEditors ...RequestEditorFn) (*CicdInfrastructureListResponse, error) {
+	rsp, err := c.CicdInfrastructureList(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureListResponse(rsp)
+}
+
+// CicdInfrastructureCreateWithBodyWithResponse performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request,
+// with any type of body and a specified content type.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CicdInfrastructureCreateResponse, error) {
+	rsp, err := c.CicdInfrastructureCreateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureCreateResponse(rsp)
+}
+
+// CicdInfrastructureCreateWithResponse performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureCreateWithResponse(ctx context.Context, body CicdInfrastructureCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureCreateResponse, error) {
+	rsp, err := c.CicdInfrastructureCreate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureCreateResponse(rsp)
+}
+
+// CicdInfrastructureCreateWithFormdataBodyWithResponse performs a POST /api/v2/cicd_infrastructure/ (the `CicdInfrastructureCreate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureCreateWithFormdataBodyWithResponse(ctx context.Context, body CicdInfrastructureCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureCreateResponse, error) {
+	rsp, err := c.CicdInfrastructureCreateWithFormdataBody(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureCreateResponse(rsp)
+}
+
+// CicdInfrastructureDestroyWithResponse performs a DELETE /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureDestroy` operationId) request.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureDestroyWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*CicdInfrastructureDestroyResponse, error) {
+	rsp, err := c.CicdInfrastructureDestroy(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureDestroyResponse(rsp)
+}
+
+// CicdInfrastructureRetrieveWithResponse performs a GET /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureRetrieve` operationId) request.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureRetrieveWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*CicdInfrastructureRetrieveResponse, error) {
+	rsp, err := c.CicdInfrastructureRetrieve(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureRetrieveResponse(rsp)
+}
+
+// CicdInfrastructurePartialUpdateWithBodyWithResponse performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request,
+// with any type of body and a specified content type.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructurePartialUpdateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CicdInfrastructurePartialUpdateResponse, error) {
+	rsp, err := c.CicdInfrastructurePartialUpdateWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructurePartialUpdateResponse(rsp)
+}
+
+// CicdInfrastructurePartialUpdateWithResponse performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructurePartialUpdateWithResponse(ctx context.Context, id int, body CicdInfrastructurePartialUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructurePartialUpdateResponse, error) {
+	rsp, err := c.CicdInfrastructurePartialUpdate(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructurePartialUpdateResponse(rsp)
+}
+
+// CicdInfrastructurePartialUpdateWithFormdataBodyWithResponse performs a PATCH /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructurePartialUpdate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructurePartialUpdateWithFormdataBodyWithResponse(ctx context.Context, id int, body CicdInfrastructurePartialUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructurePartialUpdateResponse, error) {
+	rsp, err := c.CicdInfrastructurePartialUpdateWithFormdataBody(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructurePartialUpdateResponse(rsp)
+}
+
+// CicdInfrastructureUpdateWithBodyWithResponse performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request,
+// with any type of body and a specified content type.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureUpdateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CicdInfrastructureUpdateResponse, error) {
+	rsp, err := c.CicdInfrastructureUpdateWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureUpdateResponse(rsp)
+}
+
+// CicdInfrastructureUpdateWithResponse performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureUpdateWithResponse(ctx context.Context, id int, body CicdInfrastructureUpdateJSONRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureUpdateResponse, error) {
+	rsp, err := c.CicdInfrastructureUpdate(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureUpdateResponse(rsp)
+}
+
+// CicdInfrastructureUpdateWithFormdataBodyWithResponse performs a PUT /api/v2/cicd_infrastructure/{id}/ (the `CicdInfrastructureUpdate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureUpdateWithFormdataBodyWithResponse(ctx context.Context, id int, body CicdInfrastructureUpdateFormdataRequestBody, reqEditors ...RequestEditorFn) (*CicdInfrastructureUpdateResponse, error) {
+	rsp, err := c.CicdInfrastructureUpdateWithFormdataBody(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureUpdateResponse(rsp)
+}
+
+// CicdInfrastructureDeletePreviewListWithResponse performs a GET /api/v2/cicd_infrastructure/{id}/delete_preview/ (the `CicdInfrastructureDeletePreviewList` operationId) request.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) CicdInfrastructureDeletePreviewListWithResponse(ctx context.Context, id int, params *CicdInfrastructureDeletePreviewListParams, reqEditors ...RequestEditorFn) (*CicdInfrastructureDeletePreviewListResponse, error) {
+	rsp, err := c.CicdInfrastructureDeletePreviewList(ctx, id, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCicdInfrastructureDeletePreviewListResponse(rsp)
+}
+
 // ConfigurationPermissionsListWithResponse performs a GET /api/v2/configuration_permissions/ (the `ConfigurationPermissionsList` operationId) request.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -86572,8 +91633,8 @@ func (c *ClientWithResponses) FindingsGenerateReportCreateWithFormdataBodyWithRe
 // FindingsDestroyWithResponse performs a DELETE /api/v2/findings/{id}/ (the `FindingsDestroy` operationId) request.
 //
 // Returns a wrapper object for the known response body format(s).
-func (c *ClientWithResponses) FindingsDestroyWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*FindingsDestroyResponse, error) {
-	rsp, err := c.FindingsDestroy(ctx, id, reqEditors...)
+func (c *ClientWithResponses) FindingsDestroyWithResponse(ctx context.Context, id int, params *FindingsDestroyParams, reqEditors ...RequestEditorFn) (*FindingsDestroyResponse, error) {
+	rsp, err := c.FindingsDestroy(ctx, id, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -90502,6 +95563,44 @@ func (c *ClientWithResponses) RiskAcceptanceDownloadProofRetrieveWithResponse(ct
 	return ParseRiskAcceptanceDownloadProofRetrieveResponse(rsp)
 }
 
+// RiskAcceptanceExpireCreateWithBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request,
+// with any type of body and a specified content type.
+//
+// Expire a risk acceptance now, instead of waiting for its expiration date.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) RiskAcceptanceExpireCreateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RiskAcceptanceExpireCreateResponse, error) {
+	rsp, err := c.RiskAcceptanceExpireCreateWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRiskAcceptanceExpireCreateResponse(rsp)
+}
+
+// RiskAcceptanceExpireCreateWithResponse performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Expire a risk acceptance now, instead of waiting for its expiration date.
+func (c *ClientWithResponses) RiskAcceptanceExpireCreateWithResponse(ctx context.Context, id int, body RiskAcceptanceExpireCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceExpireCreateResponse, error) {
+	rsp, err := c.RiskAcceptanceExpireCreate(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRiskAcceptanceExpireCreateResponse(rsp)
+}
+
+// RiskAcceptanceExpireCreateWithFormdataBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/expire/ (the `RiskAcceptanceExpireCreate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+//
+// Expire a risk acceptance now, instead of waiting for its expiration date.
+func (c *ClientWithResponses) RiskAcceptanceExpireCreateWithFormdataBodyWithResponse(ctx context.Context, id int, body RiskAcceptanceExpireCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceExpireCreateResponse, error) {
+	rsp, err := c.RiskAcceptanceExpireCreateWithFormdataBody(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRiskAcceptanceExpireCreateResponse(rsp)
+}
+
 // RiskAcceptanceNotesRetrieveWithResponse performs a GET /api/v2/risk_acceptance/{id}/notes/ (the `RiskAcceptanceNotesRetrieve` operationId) request.
 //
 // Returns a wrapper object for the known response body format(s).
@@ -90543,6 +95642,53 @@ func (c *ClientWithResponses) RiskAcceptanceNotesCreateWithFormdataBodyWithRespo
 		return nil, err
 	}
 	return ParseRiskAcceptanceNotesCreateResponse(rsp)
+}
+
+// RiskAcceptanceReinstateCreateWithBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request,
+// with any type of body and a specified content type.
+//
+// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+//
+// Send `expiration_date` to say how long for. Without one the risk acceptance is
+// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) RiskAcceptanceReinstateCreateWithBodyWithResponse(ctx context.Context, id int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RiskAcceptanceReinstateCreateResponse, error) {
+	rsp, err := c.RiskAcceptanceReinstateCreateWithBody(ctx, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRiskAcceptanceReinstateCreateResponse(rsp)
+}
+
+// RiskAcceptanceReinstateCreateWithResponse performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+//
+// Send `expiration_date` to say how long for. Without one the risk acceptance is
+// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+func (c *ClientWithResponses) RiskAcceptanceReinstateCreateWithResponse(ctx context.Context, id int, body RiskAcceptanceReinstateCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceReinstateCreateResponse, error) {
+	rsp, err := c.RiskAcceptanceReinstateCreate(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRiskAcceptanceReinstateCreateResponse(rsp)
+}
+
+// RiskAcceptanceReinstateCreateWithFormdataBodyWithResponse performs a POST /api/v2/risk_acceptance/{id}/reinstate/ (the `RiskAcceptanceReinstateCreate` operationId) request.
+// Takes a body of the `application/x-www-form-urlencoded` content type, and returns a wrapper object for the known response body format(s).
+//
+// Reinstate an expired risk acceptance, re-accepting the findings it covers.
+//
+// Send `expiration_date` to say how long for. Without one the risk acceptance is
+// reinstated for the number of days in the Risk Acceptance Form Default Days setting.
+func (c *ClientWithResponses) RiskAcceptanceReinstateCreateWithFormdataBodyWithResponse(ctx context.Context, id int, body RiskAcceptanceReinstateCreateFormdataRequestBody, reqEditors ...RequestEditorFn) (*RiskAcceptanceReinstateCreateResponse, error) {
+	rsp, err := c.RiskAcceptanceReinstateCreateWithFormdataBody(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRiskAcceptanceReinstateCreateResponse(rsp)
 }
 
 // SlaConfigurationsListWithResponse performs a GET /api/v2/sla_configurations/ (the `SlaConfigurationsList` operationId) request.
@@ -93308,6 +98454,178 @@ func ParseCeleryStatusRetrieveResponse(rsp *http.Response) (*CeleryStatusRetriev
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest CeleryStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCicdInfrastructureListResponse parses an HTTP response from a CicdInfrastructureListWithResponse call
+func ParseCicdInfrastructureListResponse(rsp *http.Response) (*CicdInfrastructureListResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CicdInfrastructureListResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PaginatedCICDInfrastructureList
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCicdInfrastructureCreateResponse parses an HTTP response from a CicdInfrastructureCreateWithResponse call
+func ParseCicdInfrastructureCreateResponse(rsp *http.Response) (*CicdInfrastructureCreateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CicdInfrastructureCreateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CICDInfrastructure
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCicdInfrastructureDestroyResponse parses an HTTP response from a CicdInfrastructureDestroyWithResponse call
+func ParseCicdInfrastructureDestroyResponse(rsp *http.Response) (*CicdInfrastructureDestroyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CicdInfrastructureDestroyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseCicdInfrastructureRetrieveResponse parses an HTTP response from a CicdInfrastructureRetrieveWithResponse call
+func ParseCicdInfrastructureRetrieveResponse(rsp *http.Response) (*CicdInfrastructureRetrieveResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CicdInfrastructureRetrieveResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CICDInfrastructure
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCicdInfrastructurePartialUpdateResponse parses an HTTP response from a CicdInfrastructurePartialUpdateWithResponse call
+func ParseCicdInfrastructurePartialUpdateResponse(rsp *http.Response) (*CicdInfrastructurePartialUpdateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CicdInfrastructurePartialUpdateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CICDInfrastructure
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCicdInfrastructureUpdateResponse parses an HTTP response from a CicdInfrastructureUpdateWithResponse call
+func ParseCicdInfrastructureUpdateResponse(rsp *http.Response) (*CicdInfrastructureUpdateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CicdInfrastructureUpdateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CICDInfrastructure
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCicdInfrastructureDeletePreviewListResponse parses an HTTP response from a CicdInfrastructureDeletePreviewListWithResponse call
+func ParseCicdInfrastructureDeletePreviewListResponse(rsp *http.Response) (*CicdInfrastructureDeletePreviewListResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CicdInfrastructureDeletePreviewListResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PaginatedDeletePreviewList
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -99276,6 +104594,35 @@ func ParseRiskAcceptanceDownloadProofRetrieveResponse(rsp *http.Response) (*Risk
 	return response, nil
 }
 
+// ParseRiskAcceptanceExpireCreateResponse parses an HTTP response from a RiskAcceptanceExpireCreateWithResponse call
+func ParseRiskAcceptanceExpireCreateResponse(rsp *http.Response) (*RiskAcceptanceExpireCreateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RiskAcceptanceExpireCreateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RiskAcceptance
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
 // ParseRiskAcceptanceNotesRetrieveResponse parses an HTTP response from a RiskAcceptanceNotesRetrieveWithResponse call
 func ParseRiskAcceptanceNotesRetrieveResponse(rsp *http.Response) (*RiskAcceptanceNotesRetrieveResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -99322,6 +104669,35 @@ func ParseRiskAcceptanceNotesCreateResponse(rsp *http.Response) (*RiskAcceptance
 			return nil, err
 		}
 		response.JSON201 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRiskAcceptanceReinstateCreateResponse parses an HTTP response from a RiskAcceptanceReinstateCreateWithResponse call
+func ParseRiskAcceptanceReinstateCreateResponse(rsp *http.Response) (*RiskAcceptanceReinstateCreateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RiskAcceptanceReinstateCreateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RiskAcceptance
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 400:
+		break // No content-type
 
 	}
 
