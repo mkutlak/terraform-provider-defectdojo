@@ -310,7 +310,7 @@ type specProperty struct {
 // defaultDdSpecVersion mirrors DD_VERSION in GNUmakefile:3. The Makefile exports
 // it, so every `make test-unit` / `make testacc-local` run supplies the real
 // value; this constant only matters for a bare `go test`.
-const defaultDdSpecVersion = "3.1.101"
+const defaultDdSpecVersion = "3.2.300"
 
 // ddClientPkgPath is the import path of the generated client, used to pick the
 // embedded ddclient struct out of a defectdojoResource() wrapper.
