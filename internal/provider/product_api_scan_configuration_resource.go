@@ -14,7 +14,8 @@ import (
 
 func (t productAPIScanConfigurationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "DefectDojo Product API Scan Configuration",
+		MarkdownDescription: "DefectDojo Product API Scan Configuration. **Deprecated:** DefectDojo removes the `product_api_scan_configuration` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.",
+		DeprecationMessage:  "DefectDojo deprecated the product_api_scan_configuration API in version 3.2.0. DefectDojo removes the API in version 3.5.0, on 2026-11-01. This resource then fails.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Computed:            true,

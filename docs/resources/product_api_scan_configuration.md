@@ -3,12 +3,12 @@
 page_title: "defectdojo_product_api_scan_configuration Resource - terraform-provider-defectdojo"
 subcategory: ""
 description: |-
-  DefectDojo Product API Scan Configuration
+  DefectDojo Product API Scan Configuration. Deprecated: DefectDojo removes the product_api_scan_configuration API in version 3.5.0, on 2026-11-01. The server adds X-Deprecated and X-End-Of-Life-Date headers to each response.
 ---
 
 # defectdojo_product_api_scan_configuration (Resource)
 
-DefectDojo Product API Scan Configuration
+DefectDojo Product API Scan Configuration. **Deprecated:** DefectDojo removes the `product_api_scan_configuration` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.
 
 ## Example Usage
 

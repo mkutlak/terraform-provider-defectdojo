@@ -3,12 +3,12 @@
 page_title: "defectdojo_tool_type Data Source - terraform-provider-defectdojo"
 subcategory: ""
 description: |-
-  Data source for Defect Dojo Tool Type. You can specify either the id or the name to look up the Tool Type.
+  Data source for Defect Dojo Tool Type. You can specify either the id or the name to look up the Tool Type. Deprecated: DefectDojo removes the tool_type API in version 3.5.0, on 2026-11-01. The server adds X-Deprecated and X-End-Of-Life-Date headers to each response.
 ---
 
 # defectdojo_tool_type (Data Source)
 
-Data source for Defect Dojo Tool Type. You can specify either the `id` or the `name` to look up the Tool Type.
+Data source for Defect Dojo Tool Type. You can specify either the `id` or the `name` to look up the Tool Type. **Deprecated:** DefectDojo removes the `tool_type` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.
 
 ## Example Usage
 

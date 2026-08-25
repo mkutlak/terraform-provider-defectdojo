@@ -14,7 +14,8 @@ import (
 
 func (t toolConfigurationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "DefectDojo Tool Configuration",
+		MarkdownDescription: "DefectDojo Tool Configuration. **Deprecated:** DefectDojo removes the `tool_configuration` API in version 3.5.0, on 2026-11-01. The server adds `X-Deprecated` and `X-End-Of-Life-Date` headers to each response.",
+		DeprecationMessage:  "DefectDojo deprecated the tool_configuration API in version 3.2.0. DefectDojo removes the API in version 3.5.0, on 2026-11-01. This resource then fails.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The name of the Tool Configuration",
