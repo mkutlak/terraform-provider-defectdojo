@@ -2,7 +2,7 @@ package ddclient
 
 // To regenerate the client from an OpenAPI spec, run:
 //
-//	make regen-client DD_VERSION=<version>    # e.g. DD_VERSION=3.1.101
+//	make regen-client DD_VERSION=<version>    # e.g. DD_VERSION=3.2.300
 //
 // Prerequisite: openapi-specs/<version>/defect_dojo.json must exist locally.
 // Collected specs are LOCAL artifacts, not tracked in git - collect one first
