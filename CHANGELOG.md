@@ -51,6 +51,38 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [1.2.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.1.0...v1.2.0) (2026-08-26)
+
+
+### Features
+
+* **cicd_infrastructure:** add the resource and data source ([d40bdb6](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d40bdb66d06f168f7531a3db547b878f459063c2))
+* regenerate ddclient from DefectDojo 3.2.300 spec ([27e6b66](https://github.com/mkutlak/terraform-provider-defectdojo/commit/27e6b6670ed2901e41f6fa344e63749a7211d060))
+* warn that DefectDojo 3.5.0 removes the tool and scan-config APIs ([84444e6](https://github.com/mkutlak/terraform-provider-defectdojo/commit/84444e64e4e08d58b8403170d057f10151aae481))
+
+
+### Bug Fixes
+
+* adapt the provider to the DefectDojo 3.2 client ([0d0409e](https://github.com/mkutlak/terraform-provider-defectdojo/commit/0d0409e81daaa821b98a0db218e0feff62b257d8))
+* harden the union-string mapping in the reflection engine ([35a649a](https://github.com/mkutlak/terraform-provider-defectdojo/commit/35a649a248676935d74a8c385d9dd8e1ddb536ca))
+* **url:** accept the protocols DefectDojo 3.2 added ([b75a494](https://github.com/mkutlak/terraform-provider-defectdojo/commit/b75a494da4dc20a6f2ab6d5f794cd0754703aed5))
+
+
+### Miscellaneous
+
+* **deps:** regenerate ddclient for oapi-codegen v2.8.0 ([b5fc562](https://github.com/mkutlak/terraform-provider-defectdojo/commit/b5fc56235f33884c6a061ab67209bd5d7ed55f08))
+* target DefectDojo 3.2.300 ([6759bba](https://github.com/mkutlak/terraform-provider-defectdojo/commit/6759bba49b4a2c59f5fe0508b3f4bf0c52a74092))
+
+
+### Documentation
+
+* re-verify the API claims against DefectDojo 3.2.300 ([54beaee](https://github.com/mkutlak/terraform-provider-defectdojo/commit/54beaeeb5ab8c9878a2e3087e6249b890b4719ba))
+
+
+### Tests
+
+* **cicd_infrastructure:** cover create, update, import and replace ([d16d8a4](https://github.com/mkutlak/terraform-provider-defectdojo/commit/d16d8a4b81d156a044c06ba14a23a17572edba18))
+
 ## [1.1.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.0.1...v1.1.0) (2026-08-20)
 
 
