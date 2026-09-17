@@ -51,6 +51,13 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [1.2.1](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.2.0...v1.2.1) (2026-09-17)
+
+
+### Miscellaneous
+
+* **deps:** bump github.com/oapi-codegen/runtime from 1.6.0 to 1.7.0 ([9559e35](https://github.com/mkutlak/terraform-provider-defectdojo/commit/9559e35eb99b99f3275cbf8785dcf5e9f1a91fdb))
+
 ## [1.2.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.1.0...v1.2.0) (2026-08-26)
 
 
