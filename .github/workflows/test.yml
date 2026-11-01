@@ -60,7 +60,7 @@ jobs:
       - run: make vet
       - uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.11.3
+          version: v2.15.0
 
   # Ensure project builds before running testing matrix
   build:

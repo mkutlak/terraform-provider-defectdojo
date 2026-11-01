@@ -71,7 +71,7 @@ func resourceDdTargets(t *testing.T, tfTypeName string) (map[string]ddTarget, re
 	}
 
 	modelType := reflect.TypeOf(model)
-	if modelType.Kind() != reflect.Ptr || modelType.Elem().Kind() != reflect.Struct {
+	if modelType.Kind() != reflect.Pointer || modelType.Elem().Kind() != reflect.Struct {
 		t.Errorf("resource %s: model must be a pointer to a struct, got %s", tfTypeName, modelType)
 		return nil, nil, false
 	}
@@ -187,7 +187,7 @@ func planningAsNull(attr any) bool {
 // isSliceTarget reports whether a ddclient field is a collection (or a pointer
 // to one).
 func isSliceTarget(ddType reflect.Type) bool {
-	if ddType.Kind() == reflect.Ptr {
+	if ddType.Kind() == reflect.Pointer {
 		ddType = ddType.Elem()
 	}
 	return ddType.Kind() == reflect.Slice
@@ -208,7 +208,7 @@ func isSliceTarget(ddType reflect.Type) bool {
 // apply that omits it.
 func ddTargetCanBeNull(ddType reflect.Type) bool {
 	switch {
-	case ddType.Kind() == reflect.Ptr,
+	case ddType.Kind() == reflect.Pointer,
 		ddType.Kind() == reflect.Slice,
 		ddType == reflect.TypeFor[time.Time](),
 		ddType == reflect.TypeFor[openapi_types.Date]():
@@ -364,7 +364,7 @@ func embeddedDdClientTypeName(wrapper reflect.Type) (string, bool) {
 			continue
 		}
 		ft := f.Type
-		if ft.Kind() == reflect.Ptr {
+		if ft.Kind() == reflect.Pointer {
 			ft = ft.Elem()
 		}
 		if ft.PkgPath() == ddClientPkgPath {

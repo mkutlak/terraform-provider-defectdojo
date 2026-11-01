@@ -162,7 +162,7 @@ func collectDdFields(t reflect.Type, seen map[string]bool, out *[]string) {
 	for f := range t.Fields() {
 		if f.Anonymous {
 			et := f.Type
-			if et.Kind() == reflect.Ptr {
+			if et.Kind() == reflect.Pointer {
 				et = et.Elem()
 			}
 			if et.Kind() == reflect.Struct {
@@ -190,7 +190,7 @@ func TestDdFieldCoverage(t *testing.T) {
 	for name, data := range ddFieldAuditTable {
 		t.Run(name, func(t *testing.T) {
 			tfType := reflect.TypeOf(data)
-			if tfType.Kind() != reflect.Ptr || tfType.Elem().Kind() != reflect.Struct {
+			if tfType.Kind() != reflect.Pointer || tfType.Elem().Kind() != reflect.Struct {
 				t.Fatalf("%s: table entry must be a pointer to a struct, got %s", name, tfType)
 			}
 			tfStruct := tfType.Elem()

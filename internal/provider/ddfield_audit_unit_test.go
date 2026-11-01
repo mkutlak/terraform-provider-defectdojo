@@ -110,7 +110,7 @@ var (
 // reached. This audit is what prevents that panic.
 func ddFieldPairingSupported(tfType, ddType reflect.Type) (bool, string) {
 	isPtrTo := func(t reflect.Type, elem func(reflect.Type) bool) bool {
-		return t.Kind() == reflect.Ptr && elem(t.Elem())
+		return t.Kind() == reflect.Pointer && elem(t.Elem())
 	}
 
 	switch tfType {
@@ -218,7 +218,7 @@ func ddFieldPairingSupported(tfType, ddType reflect.Type) (bool, string) {
 func ddStructType(t *testing.T, name string, ddRes defectdojoResource) reflect.Type {
 	t.Helper()
 	ddType := reflect.TypeOf(ddRes)
-	if ddType.Kind() != reflect.Ptr || ddType.Elem().Kind() != reflect.Struct {
+	if ddType.Kind() != reflect.Pointer || ddType.Elem().Kind() != reflect.Struct {
 		t.Fatalf("%s: defectdojoResource() must return a pointer to a struct, got %s", name, ddType)
 	}
 	return ddType.Elem()
@@ -235,7 +235,7 @@ func TestDdFieldAuditTagsResolve(t *testing.T) {
 	for name, data := range ddFieldAuditTable {
 		t.Run(name, func(t *testing.T) {
 			tfType := reflect.TypeOf(data)
-			if tfType.Kind() != reflect.Ptr || tfType.Elem().Kind() != reflect.Struct {
+			if tfType.Kind() != reflect.Pointer || tfType.Elem().Kind() != reflect.Struct {
 				t.Fatalf("%s: table entry must be a pointer to a struct, got %s", name, tfType)
 			}
 			tfStruct := tfType.Elem()
@@ -321,7 +321,7 @@ func TestDdFormatTagsAreKnown(t *testing.T) {
 					continue // reported by TestDdFieldAuditTagsResolve
 				}
 				ddType := ddField.Type
-				if ddType.Kind() == reflect.Ptr {
+				if ddType.Kind() == reflect.Pointer {
 					ddType = ddType.Elem()
 				}
 				if format == ddFormatTags {

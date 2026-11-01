@@ -124,7 +124,7 @@ func stillSetAfterUpdate(ddResource defectdojoResource, targets []clearTarget) [
 // clear target has to survive.
 func ddFieldIsEmpty(field reflect.Value) bool {
 	switch field.Kind() {
-	case reflect.Ptr:
+	case reflect.Pointer:
 		// Nil is the whole test. The pointee still gets looked at because the
 		// collections arrive as *[]T, and there an empty slice does mean empty.
 		if field.IsNil() {
@@ -195,7 +195,7 @@ func clearedDdFields(plan, state terraformResourceData, ddResource defectdojoRes
 		}
 
 		ddFieldType := ddField.Type
-		if ddFieldType.Kind() == reflect.Ptr {
+		if ddFieldType.Kind() == reflect.Pointer {
 			ddFieldType = ddFieldType.Elem()
 		}
 
