@@ -6,7 +6,12 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    # A compromised release is usually found and pulled within days. Security updates ignore this delay.
+    cooldown:
+      default-days: 7
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "monthly"
+    cooldown:
+      default-days: 7
