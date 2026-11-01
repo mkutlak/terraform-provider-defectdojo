@@ -22,6 +22,8 @@ env:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    # The GPG signing secrets live in this environment. It needs an approval and accepts only v* tags.
+    environment: release
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
