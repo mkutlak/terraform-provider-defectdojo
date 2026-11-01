@@ -585,7 +585,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 				if ddFieldDescriptor.Type.Kind() == reflect.String {
 					// if the destination field is a string (or named string type), we can grab the `Value` field and assign it directly
 					ddFieldValue.Set(fieldValue.MethodByName("ValueString").Call(nil)[0].Convert(ddFieldDescriptor.Type))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
 					// the destination field is a *string (or compatible/alias) so we have to set it to a pointer
 					destType := ddFieldDescriptor.Type.Elem()
 					destVal := reflect.New(destType)
@@ -602,7 +602,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						continue
 					}
 					ddFieldValue.Set(reflect.ValueOf(intVal))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
 					// the destination field is a *int
 					destType := ddFieldDescriptor.Type.Elem()
 					destVal := reflect.New(destType)
@@ -622,7 +622,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						continue
 					}
 					ddFieldValue.Set(reflect.ValueOf(t))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
 					str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
 					t, err := parseDateTime(str)
 					if err != nil {
@@ -638,7 +638,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						continue
 					}
 					ddFieldValue.Set(reflect.ValueOf(openapi_types.Date{Time: t}))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[openapi_types.Date]() {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[openapi_types.Date]() {
 					str := fieldValue.MethodByName("ValueString").Call(nil)[0].String()
 					t, err := parseDate(str)
 					if err != nil {
@@ -647,7 +647,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					}
 					d := openapi_types.Date{Time: t}
 					ddFieldValue.Set(reflect.ValueOf(&d))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
 					// The destination field is a pointer to an oapi-codegen
 					// oneOf-string wrapper (see isOapiUnionStringType). Marshal the
 					// configured string as a JSON string literal. Hand that literal
@@ -672,7 +672,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 			case typeOfTypesBool:
 				if ddFieldDescriptor.Type.Kind() == reflect.Bool {
 					ddFieldValue.Set(fieldValue.MethodByName("ValueBool").Call(nil)[0])
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Bool {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Bool {
 					destType := ddFieldDescriptor.Type.Elem()
 					destVal := reflect.New(destType)
 					destVal.Elem().Set(fieldValue.MethodByName("ValueBool").Call(nil)[0].Convert(destType))
@@ -686,7 +686,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 					destVal := reflect.New(ddFieldDescriptor.Type)
 					destVal.Elem().Set(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Convert(ddFieldDescriptor.Type))
 					ddFieldValue.Set(destVal.Elem())
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
 					destType := ddFieldDescriptor.Type.Elem()
 					destVal := reflect.New(destType)
 					destVal.Elem().Set(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Convert(destType))
@@ -694,7 +694,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Int32 {
 					v := int32(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Int())
 					ddFieldValue.Set(reflect.ValueOf(v))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int32 {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int32 {
 					v := int32(fieldValue.MethodByName("ValueInt64").Call(nil)[0].Int())
 					ddFieldValue.Set(reflect.ValueOf(&v))
 				} else {
@@ -704,13 +704,13 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 			case typeOfTypesFloat64:
 				if ddFieldDescriptor.Type.Kind() == reflect.Float64 {
 					ddFieldValue.Set(fieldValue.MethodByName("ValueFloat64").Call(nil)[0])
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float64 {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float64 {
 					v := fieldValue.MethodByName("ValueFloat64").Call(nil)[0].Float()
 					ddFieldValue.Set(reflect.ValueOf(&v))
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Float32 {
 					v := float32(fieldValue.MethodByName("ValueFloat64").Call(nil)[0].Float())
 					ddFieldValue.Set(reflect.ValueOf(v))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float32 {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float32 {
 					v := float32(fieldValue.MethodByName("ValueFloat64").Call(nil)[0].Float())
 					ddFieldValue.Set(reflect.ValueOf(&v))
 				} else {
@@ -752,7 +752,7 @@ func populateDefectdojoResource(ctx context.Context, diags *diag.Diagnostics, re
 						// was dropped with no diagnostic and no log line at all.
 						addUnsupportedMappingError(diags, "populateDefectdojoResource", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
 					// the destination field is a pointer to a slice; elements are
 					// converted one by one so defined element types (e.g. enum
 					// strings like dd.NotificationsRequestScanAdded) work too
@@ -834,7 +834,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					// subject to any `ddFormat` normalisation the attribute asks for
 					current := fieldValue.Interface().(types.String)
 					fieldValue.Set(reflect.ValueOf(renderStringValue(diags, tag, current, ddFieldValue.String())))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.String {
 					// if the source field is a pointer, make sure it's a pointer to a string, and then we can grab the pointed-to value,
 					// but only if the pointer is not nil
 					if !ddFieldValue.IsNil() {
@@ -845,7 +845,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Int {
 					fieldValue.Set(reflect.ValueOf(types.StringValue(fmt.Sprint(ddFieldValue.Int()))))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int {
 					if !ddFieldValue.IsNil() {
 						fieldValue.Set(reflect.ValueOf(types.StringValue(fmt.Sprint(ddFieldValue.Elem().Int()))))
 					} else {
@@ -861,7 +861,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[time.Time]() {
 					if !ddFieldValue.IsNil() {
 						t := ddFieldValue.Elem().Interface().(time.Time)
 						current := fieldValue.Interface().(types.String)
@@ -876,14 +876,14 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[openapi_types.Date]() {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem() == reflect.TypeFor[openapi_types.Date]() {
 					if !ddFieldValue.IsNil() {
 						d := ddFieldValue.Elem().Interface().(openapi_types.Date)
 						fieldValue.Set(reflect.ValueOf(types.StringValue(d.Format("2006-01-02"))))
 					} else {
 						fieldValue.Set(reflect.ValueOf(types.StringNull()))
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && isOapiUnionStringType(ddFieldDescriptor.Type.Elem()) {
 					// The source field is a pointer to an oapi-codegen
 					// oneOf-string wrapper (see isOapiUnionStringType). Read the
 					// bare JSON string out through the wrapper's own MarshalJSON.
@@ -912,7 +912,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 				if ddFieldDescriptor.Type.Kind() == reflect.Bool {
 					// if the source field is a bool, we can use it directly
 					fieldValue.Set(reflect.ValueOf(types.BoolValue(ddFieldValue.Bool())))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Bool {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Bool {
 					// if the source field is a pointer, make sure it's a pointer to a bool, and then we can grab the pointed-to value,
 					// but only if the pointer is not nil
 					if !ddFieldValue.IsNil() {
@@ -938,7 +938,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 				if ddFieldDescriptor.Type.Kind() == reflect.Int64 || ddFieldDescriptor.Type.Kind() == reflect.Int {
 					// if the source field is an int or int64, we can cast and use it directly
 					fieldValue.Set(reflect.ValueOf(types.Int64Value((int64)(ddFieldValue.Int()))))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && (ddFieldDescriptor.Type.Elem().Kind() == reflect.Int64 || ddFieldDescriptor.Type.Elem().Kind() == reflect.Int) {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && (ddFieldDescriptor.Type.Elem().Kind() == reflect.Int64 || ddFieldDescriptor.Type.Elem().Kind() == reflect.Int) {
 					// if the source field is a pointer, make sure it's a pointer to an int64, and then we can grab the pointed-to value,
 					// but only if the pointer is not nil
 					if !ddFieldValue.IsNil() {
@@ -948,7 +948,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Int32 {
 					fieldValue.Set(reflect.ValueOf(types.Int64Value(int64(ddFieldValue.Int()))))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int32 {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Int32 {
 					if !ddFieldValue.IsNil() {
 						fieldValue.Set(reflect.ValueOf(types.Int64Value(int64(ddFieldValue.Elem().Int()))))
 					} else {
@@ -961,7 +961,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 			case typeOfTypesFloat64:
 				if ddFieldDescriptor.Type.Kind() == reflect.Float64 {
 					fieldValue.Set(reflect.ValueOf(types.Float64Value(ddFieldValue.Float())))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float64 {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float64 {
 					if !ddFieldValue.IsNil() {
 						fieldValue.Set(reflect.ValueOf(types.Float64Value(ddFieldValue.Elem().Float())))
 					} else {
@@ -969,7 +969,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 					}
 				} else if ddFieldDescriptor.Type.Kind() == reflect.Float32 {
 					fieldValue.Set(reflect.ValueOf(types.Float64Value(float64(ddFieldValue.Interface().(float32)))))
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float32 {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Float32 {
 					if !ddFieldValue.IsNil() {
 						fieldValue.Set(reflect.ValueOf(types.Float64Value(float64(ddFieldValue.Elem().Interface().(float32)))))
 					} else {
@@ -1010,7 +1010,7 @@ func populateResourceData(ctx context.Context, diags *diag.Diagnostics, d *terra
 						// was dropped with no diagnostic and no log line at all.
 						addUnsupportedMappingError(diags, "populateResourceData", tag.Get("tfsdk"), fieldDescriptor.Type, ddFieldDescriptor.Type)
 					}
-				} else if ddFieldDescriptor.Type.Kind() == reflect.Ptr && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
+				} else if ddFieldDescriptor.Type.Kind() == reflect.Pointer && ddFieldDescriptor.Type.Elem().Kind() == reflect.Slice {
 					// the source field is a pointer to a slice
 					if ddFieldDescriptor.Type.Elem().Elem().Kind() == reflect.Int {
 						// it's a slice of int
