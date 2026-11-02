@@ -166,8 +166,8 @@ TESTARGS="-run TestFunctionName" make testacc
 A Docker Compose setup is included for running a local DefectDojo instance:
 
 ```shell
-make dd-up                  # Start DefectDojo (default v3.2.300)
-DD_VERSION=3.2.300 make dd-up  # Start a specific version (3.x only; 2.x is unsupported)
+make dd-up                  # Start DefectDojo (default v3.4.304)
+DD_VERSION=3.4.304 make dd-up  # Start a specific version (3.x only; 2.x is unsupported)
 make dd-spec                # Fetch OpenAPI spec from running instance
 make testacc-local          # Run acceptance tests against local instance
 make dd-down                # Stop and clean up

@@ -89,7 +89,7 @@ var ddFieldKnownUnmapped = map[string]map[string]string{ // model -> DD field ->
 	"metadataResourceData": {
 		"Endpoint":        "writable in MetaRequest, but DefectDojo 3.2.300 silently remaps it to the endpoint's own location instead of storing the endpoint itself; intentionally not exposed (see metadata_resource.go schema description)",
 		"Location":        "writable in MetaRequest, but DefectDojo 3.2.300 never persists it: every write silently drops the value; intentionally not exposed (see metadata_resource.go schema description)",
-		"LocationProduct": "read-only server-computed field added in DefectDojo 3.2, absent from MetaRequest and PatchedMetaRequest",
+		"LocationProduct": "writable in MetaRequest after DefectDojo 3.2.300, but not yet exposed; candidate for follow-up",
 	},
 	"notificationWebhookResourceData": {
 		"FirstError": "server-managed timestamp",
@@ -115,12 +115,16 @@ var ddFieldKnownUnmapped = map[string]map[string]string{ // model -> DD field ->
 		"Updated":  "server-managed timestamp",
 	},
 	"riskAcceptanceResourceData": {
-		"Created":               "server-managed timestamp",
-		"ExpirationDateHandled": "read-only server field per API docs (marked readonly in the OpenAPI schema; appears on RiskAcceptanceRequest only because oapi-codegen does not strip DRF read_only fields from generated request structs)",
-		"ExpirationDateWarned":  "read-only server field per API docs (marked readonly in the OpenAPI schema; appears on RiskAcceptanceRequest only because oapi-codegen does not strip DRF read_only fields from generated request structs)",
-		"Notes":                 "read-only server field, not in RiskAcceptanceRequest",
-		"Path":                  "read-only server field, not in RiskAcceptanceRequest (server-generated path to the uploaded proof file)",
-		"Updated":               "server-managed timestamp",
+		"Created":                "server-managed timestamp",
+		"ExpirationDateHandled":  "read-only server field per API docs (marked readonly in the OpenAPI schema; appears on RiskAcceptanceRequest only because oapi-codegen does not strip DRF read_only fields from generated request structs)",
+		"ExpirationDateWarned":   "read-only server field per API docs (marked readonly in the OpenAPI schema; appears on RiskAcceptanceRequest only because oapi-codegen does not strip DRF read_only fields from generated request structs)",
+		"Notes":                  "read-only server field, not in RiskAcceptanceRequest",
+		"Path":                   "read-only server field, not in RiskAcceptanceRequest (server-generated path to the uploaded proof file)",
+		"RestoreVerifiedExpired": "writable but not yet exposed; added in DefectDojo 3.3; candidate for follow-up",
+		"Updated":                "server-managed timestamp",
+	},
+	"systemSettingsResourceData": {
+		"InstallId": "read-only server field, not in SystemSettingsRequest (random instance id added in DefectDojo 3.4)",
 	},
 	"toolConfigurationResourceData": {
 		"Prefetch": "prefetch embellishment, not a model field",
@@ -133,15 +137,17 @@ var ddFieldKnownUnmapped = map[string]map[string]string{ // model -> DD field ->
 		"String": "redundant read-only string form (URL.String; the resource already exposes the parsed host/port/path/protocol/query/fragment fields)",
 	},
 	"userContactInfoResourceData": {
+		"Language":          "UI-only preference",
 		"PasswordLastReset": "server-managed timestamp",
 		"Prefetch":          "prefetch embellishment, not a model field",
+		"TokenExpiry":       "writable but not yet exposed; per-user API token expiry added in DefectDojo 3.3; candidate for follow-up",
 		"TokenLastReset":    "server-managed timestamp",
-		"UiUseTailwind":     "UI-only preference",
 		"UserProfile":       "nested struct — engine cannot map",
 	},
 	"userProfileResourceData": {
 		"ConfigurationPermissions": "*[]*int — element type unsupported",
 		"PasswordLastReset":        "server-managed timestamp",
+		"TokenExpiry":              "read-only server field (API token expiry added after DefectDojo 3.2.300)",
 		"TokenLastReset":           "server-managed timestamp",
 	},
 	"userResourceData": {
@@ -149,6 +155,7 @@ var ddFieldKnownUnmapped = map[string]map[string]string{ // model -> DD field ->
 		"DateJoined":               "server-managed timestamp",
 		"LastLogin":                "server-managed timestamp",
 		"PasswordLastReset":        "server-managed timestamp",
+		"TokenExpiry":              "read-only server field (API token expiry added after DefectDojo 3.2.300)",
 		"TokenLastReset":           "server-managed timestamp",
 	},
 }

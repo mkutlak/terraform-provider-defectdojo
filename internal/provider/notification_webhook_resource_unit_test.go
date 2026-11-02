@@ -15,7 +15,7 @@ func TestNotificationWebhookResourcePopulate(t *testing.T) {
 	expectedName := "My Webhook"
 	expectedUrl := "https://hooks.example.com/notify"
 	expectedHeaderName := "X-Webhook-Secret"
-	expectedStatus := "Active"
+	expectedStatus := dd.NotificationWebhooksStatusActive
 
 	ddResource := notificationWebhookDefectdojoResource{
 		NotificationWebhooks: dd.NotificationWebhooks{
@@ -36,7 +36,7 @@ func TestNotificationWebhookResourcePopulate(t *testing.T) {
 	assert.Equal(t, resourceData.Name.ValueString(), expectedName)
 	assert.Equal(t, resourceData.Url.ValueString(), expectedUrl)
 	assert.Equal(t, resourceData.HeaderName.ValueString(), expectedHeaderName)
-	assert.Equal(t, resourceData.Status.ValueString(), expectedStatus)
+	assert.Equal(t, resourceData.Status.ValueString(), string(expectedStatus))
 }
 
 func TestNotificationWebhookResourcePopulateDefectdojo(t *testing.T) {

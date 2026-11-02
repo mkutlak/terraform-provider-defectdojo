@@ -1,6 +1,6 @@
 default: testacc
 
-DD_VERSION ?= 3.2.300
+DD_VERSION ?= 3.4.304
 export DD_VERSION
 
 # Run acceptance tests
