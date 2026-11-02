@@ -487,3 +487,27 @@ func TestProductDescriptionValidator(t *testing.T) {
 		t.Errorf("description = %q was %s, but wantError=%v", tc.description, verb, tc.wantError)
 	}
 }
+
+// TestProductLookupValidators mirrors DefectDojo 3.4.304. The server checks
+// platform, life_cycle and origin against admin-editable lookup tables. Thus a
+// custom value can be valid. The server stores "" as null. Thus "" can never
+// match the configuration.
+func TestProductLookupValidators(t *testing.T) {
+	t.Parallel()
+
+	for _, name := range []string{"platform", "life_cycle", "origin"} {
+		attr := resourceStringAttribute(t, "defectdojo_product", name)
+		for _, tc := range []struct {
+			value     string
+			wantError bool
+		}{
+			{"web", false},
+			{"a custom lookup value", false},
+			{"", true},
+		} {
+			if got := runStringValidators(t, name, attr, tc.value); got != tc.wantError {
+				t.Errorf("%s = %q: got error %v, want %v", name, tc.value, got, tc.wantError)
+			}
+		}
+	}
+}

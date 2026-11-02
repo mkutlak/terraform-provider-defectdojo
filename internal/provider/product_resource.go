@@ -56,25 +56,27 @@ func (t productResource) Schema(ctx context.Context, req resource.SchemaRequest,
 					stringvalidator.OneOf("very high", "high", "medium", "low", "very low", "none", ""),
 				},
 			},
+			// Since DefectDojo 3.3, the server checks platform, life_cycle and
+			// origin against admin-editable lookup tables. It stores "" as null.
 			"platform": schema.StringAttribute{
-				MarkdownDescription: "The Platform of the Product. Valid values are: 'web service', 'desktop', 'iot', 'mobile', 'web'",
+				MarkdownDescription: "The Platform of the Product. The value must match the `value` of an entry in the DefectDojo product platform list. The default entries are 'web service', 'desktop', 'iot', 'mobile' and 'web'.",
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("web service", "desktop", "iot", "mobile", "web", ""),
+					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"life_cycle": schema.StringAttribute{
-				MarkdownDescription: "The Lifecycle state of the Product. Valid values are: 'construction', 'production', 'retirement'",
+				MarkdownDescription: "The Lifecycle state of the Product. The value must match the `value` of an entry in the DefectDojo product lifecycle list. The default entries are 'construction', 'production' and 'retirement'.",
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("construction", "production", "retirement", ""),
+					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"origin": schema.StringAttribute{
-				MarkdownDescription: "The Origin of the Product. Valid values are: 'third party library', 'purchased', 'contractor', 'internal', 'open source', 'outsourced'",
+				MarkdownDescription: "The Origin of the Product. The value must match the `value` of an entry in the DefectDojo product origin list. The default entries are 'third party library', 'purchased', 'contractor', 'internal', 'open source' and 'outsourced'.",
 				Optional:            true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("third party library", "purchased", "contractor", "internal", "open source", "outsourced", ""),
+					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"user_records": schema.Int64Attribute{

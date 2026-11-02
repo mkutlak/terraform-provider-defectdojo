@@ -43,15 +43,15 @@ func (t productDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 				Computed:            true,
 			},
 			"platform": schema.StringAttribute{
-				MarkdownDescription: "The Platform of the Product. Valid values are: 'web service', 'desktop', 'iot', 'mobile', 'web'",
+				MarkdownDescription: "The Platform of the Product. The value is the `value` of an entry in the DefectDojo product platform list. The default entries are 'web service', 'desktop', 'iot', 'mobile' and 'web'.",
 				Computed:            true,
 			},
 			"life_cycle": schema.StringAttribute{
-				MarkdownDescription: "The Lifecycle state of the Product. Valid values are: 'construction', 'production', 'retirement'",
+				MarkdownDescription: "The Lifecycle state of the Product. The value is the `value` of an entry in the DefectDojo product lifecycle list. The default entries are 'construction', 'production' and 'retirement'.",
 				Computed:            true,
 			},
 			"origin": schema.StringAttribute{
-				MarkdownDescription: "The Origin of the Product. Valid values are: 'third party library', 'purchased', 'contractor', 'internal', 'open source', 'outsourced'",
+				MarkdownDescription: "The Origin of the Product. The value is the `value` of an entry in the DefectDojo product origin list. The default entries are 'third party library', 'purchased', 'contractor', 'internal', 'open source' and 'outsourced'.",
 				Computed:            true,
 			},
 			"user_records": schema.Int64Attribute{
