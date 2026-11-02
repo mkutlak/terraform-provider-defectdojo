@@ -224,6 +224,9 @@ func productToRequest(p dd.Product) dd.ProductRequest {
 		ProdNumericGrade:              p.ProdNumericGrade,
 		ProdType:                      p.ProdType,
 		ProductManager:                p.ProductManager,
+		Lifecycle:                     p.Lifecycle,
+		Origin:                        p.Origin,
+		Platform:                      p.Platform,
 		Regulations:                   p.Regulations,
 		Revenue:                       p.Revenue,
 		Tags:                          p.Tags,
@@ -240,18 +243,6 @@ func productToRequest(p dd.Product) dd.ProductRequest {
 	if p.BusinessCriticality != nil {
 		v := dd.ProductRequestBusinessCriticality(*p.BusinessCriticality)
 		req.BusinessCriticality = &v
-	}
-	if p.Lifecycle != nil {
-		v := dd.ProductRequestLifecycle(*p.Lifecycle)
-		req.Lifecycle = &v
-	}
-	if p.Origin != nil {
-		v := dd.ProductRequestOrigin(*p.Origin)
-		req.Origin = &v
-	}
-	if p.Platform != nil {
-		v := dd.ProductRequestPlatform(*p.Platform)
-		req.Platform = &v
 	}
 	return req
 }

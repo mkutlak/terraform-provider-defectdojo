@@ -72,9 +72,9 @@ func TestProductResourcePopulate(t *testing.T) {
 			Name:                       expectedName,
 			Revenue:                    &expectedRevenue,
 			BusinessCriticality:        (*dd.ProductBusinessCriticality)(&expectedBusinessCriticality),
-			Platform:                   (*dd.ProductPlatform)(&expectedPlatform),
-			Lifecycle:                  (*dd.ProductLifecycle)(&expectedLifecycle),
-			Origin:                     (*dd.ProductOrigin)(&expectedOrigin),
+			Platform:                   &expectedPlatform,
+			Lifecycle:                  &expectedLifecycle,
+			Origin:                     &expectedOrigin,
 			EnableFullRiskAcceptance:   &expectedEnableFullRiskAcceptance,
 			EnableSimpleRiskAcceptance: &expectedEnableSimpleRiskAcceptance,
 			ExternalAudience:           &expectedExternalAudience,
@@ -321,9 +321,6 @@ func TestProductResource__defectdojoResource(t *testing.T) {
 
 func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
 	var nilBusinessCriticality *dd.ProductBusinessCriticality
-	var nilPlatform *dd.ProductPlatform
-	var nilLifecycle *dd.ProductLifecycle
-	var nilOrigin *dd.ProductOrigin
 	var nilString *string
 	var nilBool *bool
 	var nilInt *int
@@ -367,9 +364,9 @@ func TestProductResource__defectdojoResource_Nulls(t *testing.T) {
 	assert.Equal(t, ddProduct.Description, "")
 
 	assert.Equal(t, ddProduct.BusinessCriticality, nilBusinessCriticality)
-	assert.Equal(t, ddProduct.Platform, nilPlatform)
-	assert.Equal(t, ddProduct.Lifecycle, nilLifecycle)
-	assert.Equal(t, ddProduct.Origin, nilOrigin)
+	assert.Equal(t, ddProduct.Platform, nilString)
+	assert.Equal(t, ddProduct.Lifecycle, nilString)
+	assert.Equal(t, ddProduct.Origin, nilString)
 	assert.Equal(t, ddProduct.Revenue, nilString)
 
 	assert.Equal(t, ddProduct.EnableFullRiskAcceptance, nilBool)

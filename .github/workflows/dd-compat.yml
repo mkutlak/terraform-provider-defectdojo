@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       dd_versions:
-        description: "Comma-separated list of DefectDojo versions to test (e.g. 3.2.300,3.2.0 — 3.x only; 2.x is unsupported)"
+        description: "Comma-separated list of DefectDojo versions to test (e.g. 3.4.304,3.2.0 — 3.x only; 2.x is unsupported)"
         required: true
-        default: "3.2.300"
+        default: "3.4.304"
         type: string
 
 permissions:
@@ -26,7 +26,7 @@ jobs:
           VERSIONS=$(jq -Rs -c 'split(",") | map(gsub("\\s"; ""))' <<< "$DD_VERSIONS")
           # Each version goes into a shell command and a file path, so accept only digits and dots.
           if ! jq -e 'length > 0 and all(test("^[0-9]+(\\.[0-9]+)*$"))' <<< "$VERSIONS" > /dev/null; then
-            echo "::error::dd_versions must be comma-separated versions, for example 3.2.300,3.2.0"
+            echo "::error::dd_versions must be comma-separated versions, for example 3.4.304,3.2.0"
             exit 1
           fi
           echo "matrix={\"dd_version\":$VERSIONS}" >> "$GITHUB_OUTPUT"

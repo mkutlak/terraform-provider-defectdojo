@@ -15,10 +15,14 @@ This provider is built and tested against the following DefectDojo versions:
 
 | DefectDojo Version | Status | Notes |
 | ------------------ | ------ | ----- |
-| 3.2.300            | Tested | Latest tested version. API client generated from this version. |
+| 3.4.304            | Tested | Latest tested version. API client generated from this version. |
+| 3.3.300            | Tested | The full acceptance suite passed on 2026-11-02. CI does not test this version. |
+| 3.2.300            | Tested | The full acceptance suite passed on 2026-11-02. CI does not test this version. |
 | 2.x                | Unsupported | Not supported by provider 1.0 and later. For DefectDojo 2.x (incl. the removed RBAC/credential/endpoint resources) pin provider `~> 0.5`. |
 
-The provider may work with other versions but only the above are regularly tested.
+CI runs the acceptance suite against the latest tested version only.
+The other tested versions passed one full run of `make dd-compat-test`.
+The provider may work with other versions.
 If you encounter issues with an unlisted version, please
 [open an issue](https://github.com/mkutlak/terraform-provider-defectdojo/issues).
 
