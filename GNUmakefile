@@ -97,18 +97,41 @@ dd-spec:
 #
 # Procedure (see internal/ddclient/generate.go for details):
 #   1. Copy the versioned spec to the repo root as defect_dojo.json (gitignored).
-#   2. Run the go.mod-pinned oapi-codegen (never a global binary) with
-#      -generate types,client,skip-fmt. skip-fmt is required: the raw output
-#      contains invalid Go that gofmt rejects, which steps 3-4 clean up.
-#   3. Delete invalid bare-nil enum constants (` = <nil>` lines). String enums
-#      with the quoted value "<nil>" are valid Go and are kept.
+#   2. In that copy, remove the bare null from each enum that oapi-codegen
+#      writes without quotes (non-string and date/date-time schemas).
+#      oapi-codegen v2.8.1 and later rejects that null. String enums keep it as
+#      the quoted value "<nil>", which is valid Go.
+#   3. Run the go.mod-pinned oapi-codegen (never a global binary) with
+#      -generate types,client,skip-fmt. The raw output does not compile until
+#      step 4 removes the constants of time types.
 #   4. Remove const blocks and Valid() methods for enum types aliased to
 #      time.Time / openapi_types.Date (Go cannot have constants of those types).
 #   5. goimports -w.
-# All post-processing steps are idempotent.
+# All steps are idempotent.
 
 DDCLIENT_GEN := internal/ddclient/client.gen.go
 OAPI_CODEGEN_VERSION = $(shell go list -m -f '{{.Version}}' github.com/oapi-codegen/oapi-codegen/v2)
+
+# Python program for step 2. It edits the spec copy in place.
+define DDCLIENT_SPEC_PY
+import json, sys
+def walk(node):
+    if isinstance(node, dict):
+        enum = node.get("enum")
+        if isinstance(enum, list) and None in enum and (node.get("type") != "string" or node.get("format") in ("date", "date-time")):
+            node["enum"] = [v for v in enum if v is not None]
+        for v in node.values():
+            walk(v)
+    elif isinstance(node, list):
+        for v in node:
+            walk(v)
+with open(sys.argv[1]) as f:
+    doc = json.load(f)
+walk(doc)
+with open(sys.argv[1], "w") as f:
+    json.dump(doc, f)
+endef
+export DDCLIENT_SPEC_PY
 
 # awk program for step 4: pass 1 collects enum type names aliased to
 # time.Time / openapi_types.Date, pass 2 drops their const blocks and
@@ -128,9 +151,9 @@ regen-client:
 	@test -f openapi-specs/$(DD_VERSION)/defect_dojo.json || \
 		{ echo "error: openapi-specs/$(DD_VERSION)/defect_dojo.json not found"; exit 1; }
 	cp -f openapi-specs/$(DD_VERSION)/defect_dojo.json ./defect_dojo.json
+	python3 -I -c "$$DDCLIENT_SPEC_PY" defect_dojo.json
 	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@$(OAPI_CODEGEN_VERSION) \
 		-generate types,client,skip-fmt -package ddclient -o $(DDCLIENT_GEN) defect_dojo.json
-	sed -i '/ = <nil>$$/d' $(DDCLIENT_GEN)
 	awk "$$DDCLIENT_STRIP_AWK" $(DDCLIENT_GEN) $(DDCLIENT_GEN) > $(DDCLIENT_GEN).tmp
 	mv -f $(DDCLIENT_GEN).tmp $(DDCLIENT_GEN)
 	@if command -v goimports >/dev/null 2>&1; then \
