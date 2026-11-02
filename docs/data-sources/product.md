@@ -43,9 +43,9 @@ data "defectdojo_product" "example" {
 - `enable_skip_risk_acceptance` (Boolean) Allows simple risk acceptance by checking/unchecking a checkbox.
 - `external_audience` (Boolean) Specify if the application is used by people outside the organization.
 - `internet_accessible` (Boolean) Specify if the application is accessible from the public internet.
-- `life_cycle` (String) The Lifecycle state of the Product. Valid values are: 'construction', 'production', 'retirement'
-- `origin` (String) The Origin of the Product. Valid values are: 'third party library', 'purchased', 'contractor', 'internal', 'open source', 'outsourced'
-- `platform` (String) The Platform of the Product. Valid values are: 'web service', 'desktop', 'iot', 'mobile', 'web'
+- `life_cycle` (String) The Lifecycle state of the Product. The value is the `value` of an entry in the DefectDojo product lifecycle list. The default entries are 'construction', 'production' and 'retirement'.
+- `origin` (String) The Origin of the Product. The value is the `value` of an entry in the DefectDojo product origin list. The default entries are 'third party library', 'purchased', 'contractor', 'internal', 'open source' and 'outsourced'.
+- `platform` (String) The Platform of the Product. The value is the `value` of an entry in the DefectDojo product platform list. The default entries are 'web service', 'desktop', 'iot', 'mobile' and 'web'.
 - `prod_numeric_grade` (Number) The Numeric Grade of the Product
 - `product_manager_id` (Number) The ID of the user who is the PM for this product.
 - `product_type_id` (Number) The ID of the Product Type
