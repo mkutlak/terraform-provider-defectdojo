@@ -51,6 +51,38 @@ IMPROVEMENTS:
  - Remove commented-out debug code from reflection engine.
  - Update CI/CD workflows: Go 1.25, actions v6, Terraform matrix 1.8/1.9/1.10.
 
+## [1.3.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.2.0...v1.3.0) (2026-11-02)
+
+
+### Features
+
+* support DefectDojo 3.4.304 ([10a0989](https://github.com/mkutlak/terraform-provider-defectdojo/commit/10a09892b79fae5bac0b4a1a0dce81d37b6a00d6))
+
+
+### Bug Fixes
+
+* correct the removal date of the deprecated tool APIs ([5a16166](https://github.com/mkutlak/terraform-provider-defectdojo/commit/5a16166799273f3b25dfdcdfe83ba2f87fd6affa))
+* **product:** accept custom lookup values for platform, life_cycle and origin ([e6b8e51](https://github.com/mkutlak/terraform-provider-defectdojo/commit/e6b8e515df37f4a13019a9ee5402bcceb6e6f1c1))
+
+
+### Miscellaneous
+
+* **deps:** adapt regen-client to oapi-codegen v2.8.2 ([5a9331d](https://github.com/mkutlak/terraform-provider-defectdojo/commit/5a9331d9605fde920648a673d7e05c15bac462b3))
+* **deps:** bump github.com/oapi-codegen/runtime from 1.6.0 to 1.7.0 ([9559e35](https://github.com/mkutlak/terraform-provider-defectdojo/commit/9559e35eb99b99f3275cbf8785dcf5e9f1a91fdb))
+* **deps:** bump golangci-lint to v2.15.0 ([824fc99](https://github.com/mkutlak/terraform-provider-defectdojo/commit/824fc991273d0105097aed68a2721330e4859b9b))
+* **deps:** update all Go modules to their latest versions ([fd89ed4](https://github.com/mkutlak/terraform-provider-defectdojo/commit/fd89ed41cc2086a8e3d9c88f2c2bd7057f3ca0c9))
+
+
+### Documentation
+
+* add a security policy ([f44249c](https://github.com/mkutlak/terraform-provider-defectdojo/commit/f44249cc0f85095541683ff34efd3bf9176b4ba7))
+
+
+### CI/CD
+
+* harden the GitHub Actions workflows ([3a8564b](https://github.com/mkutlak/terraform-provider-defectdojo/commit/3a8564ba7b3ae14e81a6747c152bcacd7779a374))
+* **release:** run the release job in the release environment ([c16943e](https://github.com/mkutlak/terraform-provider-defectdojo/commit/c16943e260062cf4d60af4e72a1c0ce15cf49dee))
+
 ## [1.2.0](https://github.com/mkutlak/terraform-provider-defectdojo/compare/v1.1.0...v1.2.0) (2026-08-26)
 
 
